@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "frontend_livecoding_tasks",
+  "project_id": "4b3a2cb2-170f-4ca1-a593-b2a4b9ce5f67"
+}

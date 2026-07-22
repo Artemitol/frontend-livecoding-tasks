@@ -1,0 +1,144 @@
+<OperationalPackets VERSION="0.1.0">
+  <ExecutionPacketTemplate>
+    <!-- Canonical controller-to-worker execution packet. -->
+    <ExecutionPacket>
+      <module-id>M-TASK-LIBRARY</module-id>
+      <module-name>TaskLibrary</module-name>
+      <purpose>Add or update one approved task card without catalog, graph, or verification drift.</purpose>
+      <write-scope>
+        <file-1>tasks/&lt;task-slug&gt;/README.md</file-1>
+        <file-2>tasks/&lt;task-slug&gt;/assets/*</file-2>
+        <file-3>README.md</file-3>
+      </write-scope>
+      <contract-excerpt><![CDATA[
+Planned module contract excerpt goes here.
+      ]]></contract-excerpt>
+      <graph-entry-excerpt><![CDATA[
+Knowledge graph entry excerpt goes here.
+      ]]></graph-entry-excerpt>
+      <dependency-contract-summaries>
+        <dependency-1 module="M-GOVERNANCE">Authoring, synchronization, stop-condition, and Beads evidence rules.</dependency-1>
+        <dependency-2 module="M-TASK-TEMPLATE">Canonical metadata labels, visible sections, and progressive-disclosure structure.</dependency-2>
+      </dependency-contract-summaries>
+      <verification-excerpt><![CDATA[
+Verification-plan excerpt goes here.
+      ]]></verification-excerpt>
+      <assumptions>
+        <assumption-1>The mentor supplied or approved unambiguous metadata and task intent.</assumption-1>
+        <assumption-2>The stable task slug and all prerequisites can be resolved before editing.</assumption-2>
+      </assumptions>
+      <stop-conditions>
+        <condition-1>Stop for ambiguous metadata, missing prerequisite or asset, unreviewed solution logic, unexpected GitHub rendering, slug migration, or new tooling.</condition-1>
+      </stop-conditions>
+      <retry-budget>2</retry-budget>
+      <checkpoint-fields>
+        <field-1>assumptions-kept</field-1>
+        <field-2>commands-run</field-2>
+        <field-3>evidence-captured</field-3>
+        <field-4>next-action</field-4>
+      </checkpoint-fields>
+      <expected-graph-delta-fields>
+        <field-1>imports</field-1>
+        <field-2>exports</field-2>
+        <field-3>annotations</field-3>
+        <field-4>CrossLinks</field-4>
+      </expected-graph-delta-fields>
+      <expected-verification-delta-fields>
+        <field-1>test-files</field-1>
+        <field-2>module-checks</field-2>
+        <field-3>required-evidence-anchors</field-3>
+        <field-4>follow-up-checks</field-4>
+      </expected-verification-delta-fields>
+      <notes>
+        <note-1>Workers should only read more context when the packet is insufficient.</note-1>
+      </notes>
+    </ExecutionPacket>
+  </ExecutionPacketTemplate>
+
+  <GraphDeltaTemplate>
+    <!-- Canonical worker-to-controller graph delta. -->
+    <GraphDelta module="M-TASK-LIBRARY">
+      <imports-added />
+      <imports-removed />
+      <exports-added>
+        <export-1>task-slug</export-1>
+      </exports-added>
+      <exports-removed />
+      <annotations-added>
+        <annotation-1>&lt;export-task-slug PURPOSE="Expose one student-facing task card" /&gt;</annotation-1>
+      </annotations-added>
+      <annotations-removed />
+      <cross-links-added />
+      <cross-links-removed />
+      <notes>
+        <note-1>Only list graph facts that really changed in the code.</note-1>
+      </notes>
+    </GraphDelta>
+  </GraphDeltaTemplate>
+
+  <VerificationDeltaTemplate>
+    <!-- Canonical worker-to-controller verification delta. -->
+    <VerificationDelta module="M-TASK-LIBRARY">
+      <test-files-added>
+        <file-1>tasks/&lt;task-slug&gt;/README.md</file-1>
+        <file-2>README.md</file-2>
+      </test-files-added>
+      <test-files-removed />
+      <module-checks>
+        <command-1>Verify exact task metadata labels and mandatory document anchors.</command-1>
+        <command-2>Resolve prerequisite, asset, and catalog links against the repository filesystem.</command-2>
+        <command-3>Prove that the task slug appears exactly once in the catalog and graph annotations.</command-3>
+      </module-checks>
+      <required-evidence-anchors>
+        <marker-1>canonical metadata table</marker-1>
+        <marker-2>Условие / Критерии готовности / Теория / Подсказка N / Решение / Самопроверка</marker-2>
+        <marker-3>Beads mentor-review status</marker-3>
+      </required-evidence-anchors>
+      <required-trace-assertions>
+        <assertion-1>A task change must not complete before catalog and graph synchronization is verified.</assertion-1>
+      </required-trace-assertions>
+      <wave-follow-up>
+        <item-1>Compare canonical task metadata with the catalog row and graph annotation.</item-1>
+      </wave-follow-up>
+      <phase-follow-up>
+        <item-1>Run the full catalog projection, vocabulary, XML, and sampled GitHub-rendering review.</item-1>
+      </phase-follow-up>
+    </VerificationDelta>
+  </VerificationDeltaTemplate>
+
+  <FailurePacketTemplate>
+    <!-- Canonical verification-to-fixer failure handoff. -->
+    <FailurePacket>
+      <scenario>Task metadata and the student catalog disagree after an update.</scenario>
+      <contract-ref>M-TASK-LIBRARY / V-M-TASK-LIBRARY / V-M-CATALOG</contract-ref>
+      <expected-evidence>
+        <marker-1>Canonical task metadata and one matching README.md catalog row.</marker-1>
+        <assertion-1>The task slug and all projected metadata must match exactly.</assertion-1>
+      </expected-evidence>
+      <observed-evidence>
+        <artifact-1>The task card contains one metadata value.</artifact-1>
+        <artifact-2>The catalog row contains a different value or is missing.</artifact-2>
+      </observed-evidence>
+      <first-divergent-block>README.md catalog projection</first-divergent-block>
+      <suggested-next-action>Keep task metadata canonical, repair the derived catalog and graph facts, and rerun the full projection checks.</suggested-next-action>
+    </FailurePacket>
+  </FailurePacketTemplate>
+
+  <CheckpointReportTemplate>
+    <!-- Canonical worker or controller checkpoint report. -->
+    <CheckpointReport>
+      <scope>M-TASK-LIBRARY / one task wave</scope>
+      <assumptions-kept>
+        <item-1>Dependency contracts matched the packet.</item-1>
+      </assumptions-kept>
+      <commands-run>
+        <command-1>V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE checks.</command-1>
+      </commands-run>
+      <evidence-captured>
+        <item-1>Task, catalog, graph annotation, resolved links, and mentor-review status agree.</item-1>
+      </evidence-captured>
+      <retry-budget-used>0</retry-budget-used>
+      <next-action>Ready for shared-artifact sync.</next-action>
+    </CheckpointReport>
+  </CheckpointReportTemplate>
+</OperationalPackets>

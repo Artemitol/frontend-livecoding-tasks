@@ -1,0 +1,75 @@
+<TechnologyStack VERSION="0.2.0">
+  <Runtime>None required for repository readers or Markdown-only task authoring</Runtime>
+  <Language>GitHub Flavored Markdown; embedded JavaScript, TypeScript, JSX, and TSX use task-specific versions</Language>
+  <Framework>GitHub repository rendering; React examples use task-specific versions</Framework>
+
+  <Dependencies>
+    <dep name="github-markdown-renderer" version="hosted" purpose="Render README files, relative links, code fences, tables, and collapsed details sections" />
+  </Dependencies>
+
+  <VersionConstraints>
+    <constraint lib="task-examples" min="task-declared" max="task-declared" reason="Each task must state any language, React, or browser API version assumptions that affect its solution" />
+  </VersionConstraints>
+
+  <Tooling>
+    <tool name="repository" value="git" version="system" />
+    <tool name="content-search" value="rg" version="system" />
+    <tool name="file-enumeration" value="find" version="system" />
+    <tool name="xml-validation" value="xmllint" version="system" />
+    <tool name="issue-tracker" value="bd/Beads" version="repository-configured" />
+    <tool name="test-runner" value="not-applicable" version="not-applicable" />
+  </Tooling>
+
+  <ContentVocabulary>
+    <language-policy>Russian task prose and stable section labels by default; task-specific exceptions require mentor direction.</language-policy>
+    <metadata-labels>Технологии; Тема; Уровень; Время; Навыки; Предварительные знания</metadata-labels>
+    <technology-policy>Use an existing catalog value such as JavaScript, TypeScript, or React; a new value requires mentor approval.</technology-policy>
+    <topic-policy>Use one existing human-readable catalog topic; a new topic requires mentor approval to prevent synonyms.</topic-policy>
+    <level-policy>Use one existing catalog level; the initial level vocabulary is established with the first approved task wave.</level-policy>
+    <duration-policy>Use a human-readable estimated duration or range in minutes.</duration-policy>
+    <skills-policy>Use a concise list of observable skills exercised by the task.</skills-policy>
+    <prerequisites-policy>Use none or relative links to existing task cards plus any concise undeclared external knowledge requirement.</prerequisites-policy>
+  </ContentVocabulary>
+
+  <PreferredAgentStack>
+    <preferred-content-format>GitHub Flavored Markdown with relative repository links</preferred-content-format>
+    <preferred-progressive-disclosure>One details block for theory, one per hint, and one for the solution</preferred-progressive-disclosure>
+    <preferred-verification>Direct file inspection, stable anchors, link resolution, XML validation, and sampled GitHub rendered-view review</preferred-verification>
+    <discouraged-surface reason="The initial project intentionally has no repository runtime.">catalog generators, site frameworks, and package-manager-based Markdown pipelines</discouraged-surface>
+  </PreferredAgentStack>
+
+  <Testing>
+    <module-level>
+      <command>Use rg and direct reads to verify exact metadata labels, headings, summary anchors, and closed details blocks in the changed document.</command>
+      <focus>Fast deterministic document-contract checks close to one module.</focus>
+    </module-level>
+    <wave-level>
+      <command>Enumerate task cards, compare canonical metadata with README.md catalog entries, and resolve changed relative links against the filesystem.</command>
+      <focus>Prove atomic synchronization across task, catalog, and knowledge graph changes.</focus>
+    </wave-level>
+    <phase-level>
+      <command>Run xmllint on docs/*.xml, scan changed files for whitespace and placeholder defects, review the full catalog projection, and inspect GitHub rendering when template or HTML markup changes.</command>
+      <focus>Repository-wide structural integrity and student-visible GitHub behavior.</focus>
+    </phase-level>
+    <mocking-policy>No mocks or fakes; verification uses the actual Markdown and repository paths.</mocking-policy>
+  </Testing>
+
+  <Observability>
+    <logger>not-applicable for Markdown-only modules</logger>
+    <evidence-format>module-id, verification-ref, artifact-path, check, observed-result</evidence-format>
+    <required-fields>moduleId, verificationRef, artifactPath, checkResult, beadsIssueId, mentorReviewStatus</required-fields>
+    <stable-anchors>metadata table; Условие; Критерии готовности; Теория; Подсказка N; Решение; Самопроверка</stable-anchors>
+    <redaction>Never place secrets, credentials, private student data, or proprietary source material in task cards or evidence.</redaction>
+  </Observability>
+
+  <AutonomyPolicy>
+    <default-execution-profile>balanced</default-execution-profile>
+    <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
+    <replan-trigger>Ambiguous metadata, missing prerequisite or asset, task/catalog contradiction, unexpected GitHub rendering, or a solution requiring undeclared knowledge.</replan-trigger>
+    <checkpoint-requirement>Every task change must report assumptions, artifacts changed, checks run, evidence captured, mentor-review status, and next action.</checkpoint-requirement>
+  </AutonomyPolicy>
+
+  <DeliveryShape>
+    <shape>GitHub repository whose root README is the student entry point and whose task directories render self-contained Markdown cards.</shape>
+  </DeliveryShape>
+</TechnologyStack>

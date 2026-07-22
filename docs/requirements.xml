@@ -1,0 +1,89 @@
+<RequirementsAnalysis VERSION="0.2.0">
+  <Project>
+    <name>frontend-livecoding-tasks</name>
+    <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
+    <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
+  </Project>
+
+  <Actors>
+    <actor-Student>Primary reader who practices frontend skills independently through GitHub-rendered task cards.</actor-Student>
+    <actor-Mentor>Content owner who selects topics, requests task changes, and approves solution correctness.</actor-Mentor>
+    <actor-Agent>AI agent that authors or updates task cards and synchronizes derived planning and navigation artifacts.</actor-Agent>
+    <actor-GitHub>Repository renderer that presents Markdown, relative links, code fences, and collapsed details blocks.</actor-GitHub>
+  </Actors>
+
+  <UseCases>
+    <UC-001>
+      <Actor>Student</Actor>
+      <Action>Chooses a task from the repository catalog using technology, topic, level, duration, skills, and prerequisites.</Action>
+      <Goal>Start an exercise appropriate to the current learning need without cloning or running the repository.</Goal>
+      <Preconditions>The catalog and at least one task card exist on GitHub.</Preconditions>
+      <AcceptanceCriteria>Every catalog entry exposes the required metadata, links to exactly one existing task card, and matches that card's canonical metadata.</AcceptanceCriteria>
+      <Priority>high</Priority>
+      <RelatedFlows>DF-STUDY-TASK</RelatedFlows>
+    </UC-001>
+    <UC-002>
+      <Actor>Student</Actor>
+      <Action>Reads a self-contained task, optionally opens theory, reveals hints one at a time, and opens the solution only after attempting the exercise.</Action>
+      <Goal>Practice independently while controlling the amount of guidance and avoiding accidental spoilers.</Goal>
+      <Preconditions>The task conforms to the canonical task template and is rendered by GitHub.</Preconditions>
+      <AcceptanceCriteria>The prompt and readiness criteria are visible; theory, every hint, and the solution are separate collapsed details blocks; the card includes starter code when needed and ends with self-check questions.</AcceptanceCriteria>
+      <Priority>high</Priority>
+      <RelatedFlows>DF-STUDY-TASK</RelatedFlows>
+    </UC-002>
+    <UC-003>
+      <Actor>Mentor</Actor>
+      <Action>Requests an AI agent to add a frontend task.</Action>
+      <Goal>Grow the knowledge base without manually coordinating task, catalog, and GRACE navigation files.</Goal>
+      <Preconditions>The agent can read project governance and the canonical task template.</Preconditions>
+      <AcceptanceCriteria>The agent creates one task card, synchronizes the catalog and knowledge graph in the same change, records verification evidence in the task's Beads issue, and does not close acceptance before explicit mentor solution review.</AcceptanceCriteria>
+      <Priority>high</Priority>
+      <RelatedFlows>DF-ADD-TASK</RelatedFlows>
+    </UC-003>
+    <UC-004>
+      <Actor>Agent</Actor>
+      <Action>Updates task content or metadata while preserving repository-wide consistency.</Action>
+      <Goal>Prevent stale catalog entries, broken prerequisites, missing assets, and graph drift.</Goal>
+      <Preconditions>The existing task slug and all derived references can be resolved.</Preconditions>
+      <AcceptanceCriteria>The agent treats the task metadata as canonical, updates every derived reference, verifies uniqueness and link resolution, and stops for clarification when classification is ambiguous.</AcceptanceCriteria>
+      <Priority>high</Priority>
+      <RelatedFlows>DF-UPDATE-TASK</RelatedFlows>
+    </UC-004>
+  </UseCases>
+
+  <NonGoals>
+    <item-1>No executable learning platform, task runner, or mandatory local development environment.</item-1>
+    <item-2>No catalog generator, CI pipeline, or package-manager dependency in the initial architecture.</item-2>
+    <item-3>No guarantee that solutions are secret; collapsed sections prevent accidental spoilers but raw Markdown remains readable.</item-3>
+    <item-4>No requirement that every task ship runnable source code or automated tests.</item-4>
+  </NonGoals>
+
+  <Constraints>
+    <constraint-1>GitHub's rendered repository view is the primary student interface.</constraint-1>
+    <constraint-2>Markdown is the primary artifact; JavaScript, TypeScript, JSX, and TSX appear mainly as fenced examples.</constraint-2>
+    <constraint-3>Each task lives at tasks/&lt;task-slug&gt;/README.md with optional colocated assets.</constraint-3>
+    <constraint-4>Technology, topic, level, estimated duration, skills, and prerequisites are mandatory task metadata.</constraint-4>
+    <constraint-5>Theory, each individual hint, and the solution must be separate details blocks without the open attribute.</constraint-5>
+    <constraint-6>Task metadata is canonical; the root catalog and knowledge graph are agent-maintained derived artifacts.</constraint-6>
+    <constraint-7>Adding, deleting, renaming, or reclassifying a task is incomplete until all derived artifacts and links are synchronized.</constraint-7>
+    <constraint-8>New or materially changed solutions require mentor content review.</constraint-8>
+    <constraint-9>A task slug is a stable identifier; changing it is an explicit migration rather than a routine metadata edit.</constraint-9>
+    <constraint-10>Task prose and stable section labels are Russian unless the mentor explicitly requests another language for a task.</constraint-10>
+    <constraint-11>Metadata values reuse the current catalog vocabulary; introducing a new technology, topic, or level requires explicit mentor approval rather than an agent-created synonym.</constraint-11>
+    <constraint-12>The canonical metadata table uses the exact labels Технологии, Тема, Уровень, Время, Навыки, and Предварительные знания.</constraint-12>
+    <constraint-13>Each task card is represented in the M-TASK-LIBRARY knowledge-graph annotations by one export-&lt;task-slug&gt; entry.</constraint-13>
+  </Constraints>
+
+  <Risks>
+    <risk-1>Catalog metadata can drift from task cards if an agent updates only one artifact.</risk-1>
+    <risk-2>Uncontrolled topic naming can fragment equivalent tasks across near-duplicate categories.</risk-2>
+    <risk-3>An agent-generated solution can be structurally valid but technically incorrect or pedagogically misleading.</risk-3>
+    <risk-4>Nested Markdown or code fences inside details blocks can render differently than expected on GitHub.</risk-4>
+    <risk-5>Self-contained theory can grow until it obscures the exercise rather than supporting it.</risk-5>
+    <risk-6>Prerequisite and asset links can break after a task slug migration.</risk-6>
+  </Risks>
+
+  <OpenQuestions>
+    <question-1>At what repository size or observed drift rate should a deterministic catalog validator be reconsidered?</question-1>
+  </OpenQuestions>
+</RequirementsAnalysis>

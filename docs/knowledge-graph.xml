@@ -1,0 +1,61 @@
+<KnowledgeGraph>
+  <Project NAME="frontend-livecoding-tasks" VERSION="0.2.0">
+    <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
+    <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
+
+    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="partial">
+      <purpose>Define authoring, synchronization, verification, and stop-condition rules for the repository.</purpose>
+      <path>AGENTS.md; docs/*.xml</path>
+      <depends>none</depends>
+      <verification-ref>V-M-GOVERNANCE</verification-ref>
+      <annotations>
+        <export-authoringRules PURPOSE="Expose task authoring and synchronization requirements" />
+        <export-verificationContracts PURPOSE="Expose shared completion evidence and phase gates" />
+      </annotations>
+    </M-GOVERNANCE>
+
+    <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" STATUS="planned">
+      <purpose>Define the canonical GitHub-rendered structure for self-contained frontend task cards.</purpose>
+      <path>templates/task-template.md</path>
+      <depends>M-GOVERNANCE</depends>
+      <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
+      <annotations>
+        <type-TaskMetadata PURPOSE="Exact labels and values for technologies, topic, level, duration, skills, and prerequisites" />
+        <export-taskSchema PURPOSE="Expose mandatory metadata, visible sections, progressive disclosure, and self-check structure" />
+      </annotations>
+    </M-TASK-TEMPLATE>
+
+    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="planned">
+      <purpose>Store self-contained task cards and their canonical metadata.</purpose>
+      <path>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</path>
+      <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+      <verification-ref>V-M-TASK-LIBRARY</verification-ref>
+      <annotations>
+        <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
+        <export-taskCard PURPOSE="Expose the complete student-facing exercise through GitHub" />
+      </annotations>
+    </M-TASK-LIBRARY>
+
+    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="planned">
+      <purpose>Provide the student entry point and an agent-synchronized projection of canonical task metadata.</purpose>
+      <path>README.md</path>
+      <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
+      <verification-ref>V-M-CATALOG</verification-ref>
+      <annotations>
+        <export-studentIndex PURPOSE="Expose one compact canonical table with exactly one row per task and all required metadata" />
+      </annotations>
+    </M-CATALOG>
+
+    <CrossLink from="M-TASK-TEMPLATE" to="M-GOVERNANCE" relation="governed-by" />
+    <CrossLink from="M-GOVERNANCE" to="M-TASK-TEMPLATE" relation="governs" />
+    <CrossLink from="M-TASK-LIBRARY" to="M-TASK-TEMPLATE" relation="conforms-to" />
+    <CrossLink from="M-TASK-TEMPLATE" to="M-TASK-LIBRARY" relation="defines-contract-for" />
+    <CrossLink from="M-TASK-LIBRARY" to="M-GOVERNANCE" relation="governed-by" />
+    <CrossLink from="M-GOVERNANCE" to="M-TASK-LIBRARY" relation="governs" />
+    <CrossLink from="M-CATALOG" to="M-TASK-LIBRARY" relation="indexes" />
+    <CrossLink from="M-TASK-LIBRARY" to="M-CATALOG" relation="projected-into" />
+    <CrossLink from="M-CATALOG" to="M-GOVERNANCE" relation="governed-by" />
+    <CrossLink from="M-GOVERNANCE" to="M-CATALOG" relation="governs" />
+
+  </Project>
+</KnowledgeGraph>
