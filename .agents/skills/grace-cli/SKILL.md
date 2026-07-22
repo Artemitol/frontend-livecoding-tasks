@@ -7,39 +7,49 @@ Use the optional `grace` CLI as a fast GRACE-aware read/query layer.
 
 ## Prerequisites
 
-- The `grace` binary must be installed and available on `PATH`
+- The `grace` binary must be installed and available either on `PATH` or at `$HOME/.bun/bin/grace`
 - The target repository should already use GRACE artifacts and markup
 - Prefer `--path <project-root>` unless you are already in the project root
 
-If the CLI is missing, or the repository is not a GRACE project, say so and fall back to reading the relevant docs and code directly.
+## Resolve the CLI
+
+Non-interactive agent shells may not source `.zshrc`, so a Bun-installed Grace CLI can be executable even when `command -v grace` returns nothing. Resolve the executable before the first Grace command:
+
+```bash
+GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
+test -x "$GRACE_BIN"
+"$GRACE_BIN" --version
+```
+
+Use `"$GRACE_BIN"` instead of a bare `grace` command for the rest of the same shell session. Only treat the CLI as missing after both `PATH` lookup and `$HOME/.bun/bin/grace` fail. If the CLI is missing, or the repository is not a GRACE project, say so and fall back to reading the relevant docs and code directly.
 
 ## Choose the Right Command
 
-- `grace lint --path <project-root>`
+- `"$GRACE_BIN" lint --path <project-root>`
   Use for a fast integrity snapshot across semantic markup, XML artifacts, and export/map drift.
-- `grace lint --profile autonomous --path <project-root>`
+- `"$GRACE_BIN" lint --profile autonomous --path <project-root>`
   Use before long agent runs to verify that operational packets, verification entries, and observable evidence are strong enough for autonomous execution.
-- `grace lint --explain <code>`
+- `"$GRACE_BIN" lint --explain <code>`
   Use when a lint code appears in CI or review and you want the built-in explanation plus remediation guidance.
-- `grace status --path <project-root>`
+- `"$GRACE_BIN" status --path <project-root>`
   Use for a one-shot health report: artifact presence, codebase metrics, integrity snapshot, autonomy gate, recent changes, and the next safe action.
-- `grace status --with modules --path <project-root>`
+- `"$GRACE_BIN" status --with modules --path <project-root>`
   Use when you also want per-module health summaries in the same report.
-- `grace module find <query> --path <project-root>`
+- `"$GRACE_BIN" module find <query> --path <project-root>`
   Use to resolve module IDs from names, paths, dependencies, annotations, verification refs, or file-local `LINKS`.
-- `grace module show <id-or-path> --path <project-root>`
+- `"$GRACE_BIN" module show <id-or-path> --path <project-root>`
   Use to read the shared/public module view from `development-plan.xml`, `knowledge-graph.xml`, implementation steps, and linked files.
-- `grace module show <id> --with verification --path <project-root>`
+- `"$GRACE_BIN" module show <id> --with verification --path <project-root>`
   Use when you also need the module's verification excerpt.
-- `grace module health <id-or-path> --path <project-root>`
+- `"$GRACE_BIN" module health <id-or-path> --path <project-root>`
   Use for one module's implementation coverage, verification health, autonomy readiness, blockers, and next action.
-- `grace verification find <query> --path <project-root>`
+- `"$GRACE_BIN" verification find <query> --path <project-root>`
   Use to search verification entries by ID, module, priority, scenarios, test files, log markers, or commands.
-- `grace verification show <V-M-id-or-module> --path <project-root>`
+- `"$GRACE_BIN" verification show <V-M-id-or-module> --path <project-root>`
   Use to read one verification entry with its linked module context.
-- `grace file show <path> --path <project-root>`
+- `"$GRACE_BIN" file show <path> --path <project-root>`
   Use to read file-local/private `MODULE_CONTRACT`, `MODULE_MAP`, and `CHANGE_SUMMARY`.
-- `grace file show <path> --contracts --blocks --path <project-root>`
+- `"$GRACE_BIN" file show <path> --contracts --blocks --path <project-root>`
   Use when you also need function/type contracts and semantic block navigation.
 
 ## Recommended Workflow
@@ -76,15 +86,15 @@ Normalization rules:
 - assume verification IDs use exact `V-M-<UPPER-KEBAB>` form
 - assume field labels and anchor prefixes are canonical and should not be aliased
 
-1. Run `grace status` when you first need to understand the current project state.
-2. Run `grace status --with modules` when project-level health is not enough and you need module summaries.
-3. Run `grace lint` when integrity or drift matters.
-4. Run `grace lint --profile autonomous` before long autonomous execution.
-5. Run `grace lint --explain <code>` when one issue needs targeted remediation guidance.
+1. Run `"$GRACE_BIN" status` when you first need to understand the current project state.
+2. Run `"$GRACE_BIN" status --with modules` when project-level health is not enough and you need module summaries.
+3. Run `"$GRACE_BIN" lint` when integrity or drift matters.
+4. Run `"$GRACE_BIN" lint --profile autonomous` before long autonomous execution.
+5. Run `"$GRACE_BIN" lint --explain <code>` when one issue needs targeted remediation guidance.
 6. Use grep or exact-text search to narrow the target module, verification entry, file path, or semantic anchor.
-7. Run `grace module find` to resolve the target module from the user's words, a stack trace, or a changed path.
-8. Run `grace module show`, `grace module health`, and `grace verification show` for the narrowed shared/public truth.
-9. Run `grace file show` for the file-local/private truth.
+7. Run `"$GRACE_BIN" module find` to resolve the target module from the user's words, a stack trace, or a changed path.
+8. Run `"$GRACE_BIN" module show`, `"$GRACE_BIN" module health`, and `"$GRACE_BIN" verification show` for the narrowed shared/public truth.
+9. Run `"$GRACE_BIN" file show` for the file-local/private truth.
 10. Read the underlying XML or source files only for the narrowed scope that still needs deeper evidence.
 
 ## Output Guidance
@@ -96,8 +106,8 @@ Normalization rules:
 
 ## Public/Private Rule
 
-- `grace module show` is for shared/public module context.
-- `grace file show` is for file-local/private implementation context.
+- `"$GRACE_BIN" module show` is for shared/public module context.
+- `"$GRACE_BIN" file show` is for file-local/private implementation context.
 - If shared docs and file-local markup disagree, call out the drift instead of silently trusting one side.
 
 ## Important

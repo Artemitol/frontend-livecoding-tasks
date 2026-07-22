@@ -16,6 +16,7 @@
     <tool name="content-search" value="rg" version="system" />
     <tool name="file-enumeration" value="find" version="system" />
     <tool name="xml-validation" value="xmllint" version="system" />
+    <tool name="grace-cli" value="grace" version="3.11.0" fallback="$HOME/.bun/bin/grace" />
     <tool name="issue-tracker" value="bd/Beads" version="repository-configured" />
     <tool name="test-runner" value="not-applicable" version="not-applicable" />
   </Tooling>
@@ -35,6 +36,7 @@
     <preferred-content-format>GitHub Flavored Markdown with relative repository links</preferred-content-format>
     <preferred-progressive-disclosure>One details block for theory, one per hint, and one for the solution</preferred-progressive-disclosure>
     <preferred-verification>Direct file inspection, stable anchors, link resolution, XML validation, and sampled GitHub rendered-view review</preferred-verification>
+    <preferred-grace-resolution>Resolve grace from PATH, then fall back to $HOME/.bun/bin/grace before treating the CLI as unavailable.</preferred-grace-resolution>
     <discouraged-surface reason="The initial project intentionally has no repository runtime.">catalog generators, site frameworks, and package-manager-based Markdown pipelines</discouraged-surface>
   </PreferredAgentStack>
 

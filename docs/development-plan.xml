@@ -25,12 +25,12 @@
         </errors>
       </contract>
       <interface>
-        <export-authoringRules PURPOSE="Expose task authoring, delivery, and synchronization requirements" />
+        <export-authoringRules PURPOSE="Expose task authoring, delivery, tool-resolution, and synchronization requirements" />
         <export-verificationContracts PURPOSE="Expose module, flow, and phase completion evidence" />
       </interface>
       <depends>none</depends>
       <target>
-        <source>AGENTS.md; .gitignore; docs/*.xml</source>
+        <source>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml</source>
         <tests>V-M-GOVERNANCE direct artifact checks</tests>
       </target>
       <observability>

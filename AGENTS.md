@@ -18,6 +18,18 @@ No build system or package manager is required for Markdown-only tasks. Do not a
 
 Until those scripts exist, use `git status` to review changes and perform a manual Markdown review; do not document commands that cannot be run.
 
+### GRACE CLI Resolution
+
+The Grace CLI is installed through Bun, but non-interactive shells may not load the `.zshrc` entry that adds `$HOME/.bun/bin` to `PATH`. Before running Grace, resolve the executable in this order:
+
+```bash
+GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
+test -x "$GRACE_BIN"
+"$GRACE_BIN" --version
+```
+
+Use `"$GRACE_BIN"` for subsequent Grace commands in the same shell session. Do not report Grace as unavailable after only `command -v grace` fails; first test the `$HOME/.bun/bin/grace` fallback. If neither location is executable, follow the relevant Grace skill's documented fallback workflow.
+
 ## Coding Style & Naming Conventions
 
 Choose JavaScript, TypeScript, or React examples according to the learning goal and state that choice in the task document. For code snippets and runnable exercises, use two-space indentation, semicolons, single quotes, and trailing commas where supported. Name variables in camelCase (`formattedDuration`) and types in PascalCase (`TodoItem`). Prefer type aliases over interfaces. Name all files and task directories in kebab-case (`todo-list.md`, `debounced-search/`). Keep task-specific content and code within its task. Add formatter and linter configuration only with the first runnable code contribution, then run both before opening a pull request.
