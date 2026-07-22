@@ -7,7 +7,7 @@
 
   <Actors>
     <actor-Student>Primary reader who practices frontend skills independently through GitHub-rendered task cards.</actor-Student>
-    <actor-Mentor>Content owner who resolves classification disputes and accepts validated waves with optional spot checks.</actor-Mentor>
+    <actor-Mentor>Content owner who resolves classification disputes and accepts the complete library after the final audit.</actor-Mentor>
     <actor-Agent>AI agent that independently authors, deduplicates, validates, and publishes task cards while synchronizing derived artifacts.</actor-Agent>
     <actor-GitHub>Repository renderer that presents Markdown, relative links, code fences, and collapsed details blocks.</actor-GitHub>
   </Actors>
@@ -36,7 +36,7 @@
       <Action>Requests an AI agent to add a frontend task.</Action>
       <Goal>Grow the knowledge base without manually coordinating task, catalog, and GRACE navigation files.</Goal>
       <Preconditions>The agent can read project governance and the canonical task template.</Preconditions>
-      <AcceptanceCriteria>The agent publishes only an accepted original task card, synchronizes the catalog and knowledge graph in the same change, records hybrid verification evidence in Beads, and leaves the wave open until mentor acceptance.</AcceptanceCriteria>
+      <AcceptanceCriteria>The agent publishes only an accepted original task card, synchronizes the catalog and knowledge graph in the same change, records hybrid verification evidence in Beads, and closes the serialized wave after every technical publication gate and its complete report pass.</AcceptanceCriteria>
       <Priority>high</Priority>
       <RelatedFlows>DF-ADD-TASK</RelatedFlows>
     </UC-003>
@@ -75,7 +75,7 @@
     <constraint-5>Theory, each individual hint, and the solution must be separate details blocks without the open attribute.</constraint-5>
     <constraint-6>Task metadata is canonical; the root catalog and knowledge graph are agent-maintained derived artifacts.</constraint-6>
     <constraint-7>Adding, deleting, renaming, or reclassifying a task is incomplete until all derived artifacts and links are synchronized.</constraint-7>
-    <constraint-8>New or materially changed solutions require strict agent validation, wave-level evidence, and mentor acceptance with optional spot checks.</constraint-8>
+    <constraint-8>New or materially changed solutions require strict agent validation and wave-level technical publication evidence; per-wave human approval is not required, while explicit user acceptance of the complete library after the final audit gates top-level story closure.</constraint-8>
     <constraint-9>A task slug is a stable identifier; changing it is an explicit migration rather than a routine metadata edit.</constraint-9>
     <constraint-10>Task prose and stable section labels are Russian unless the mentor explicitly requests another language for a task.</constraint-10>
     <constraint-11>Metadata values reuse the current catalog vocabulary; introducing a new technology or topic requires explicit mentor approval rather than an agent-created synonym.</constraint-11>

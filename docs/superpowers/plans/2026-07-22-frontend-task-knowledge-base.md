@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Создать GitHub-first базу самостоятельно сформулированных frontend live-coding задач, где только строго принятые карточки публикуются волнами и остаются синхронны с каталогом, GRACE knowledge graph и Beads evidence.
+**Goal:** Создать GitHub-first базу самостоятельно сформулированных frontend live-coding задач, где только строго принятые карточки публикуются сериализованными техническими волнами, остаются синхронны с каталогом, GRACE knowledge graph и Beads evidence, а полная библиотека закрывает story только после единственного финального user review.
 
-**Architecture:** Пять GRACE-модулей выполняются последовательно: governance задаёт правила, template фиксирует каноническую карточку, validation отделяет кандидатов от публикации, library хранит только `accepted` карточки, а catalog является производной проекцией их метаданных. Долговременное состояние хранится в существующей Beads story `frontend-livecoding-tasks-kln`; один linked worktree и ветка `feature/frontend-livecoding-tasks-kln` используются для всех дочерних issues, а волны сериализуются из-за общей записи в `README.md` и `docs/knowledge-graph.xml`.
+**Architecture:** Пять GRACE-модулей выполняются последовательно: governance задаёт правила, template фиксирует каноническую карточку, validation отделяет кандидатов от публикации, library хранит только `accepted` карточки, а catalog является производной проекцией их метаданных. Долговременное состояние хранится в существующей Beads story `frontend-livecoding-tasks-kln`; один linked worktree и ветка `feature/frontend-livecoding-tasks-kln` используются для всех дочерних issues, а волны сериализуются из-за общей записи в `README.md` и `docs/knowledge-graph.xml`. Каждая волна закрывается непрерывно после своих технических gates; один final user review проходит только после B7.
 
 **Tech Stack:** GitHub Flavored Markdown, XML-артефакты GRACE 3.11.0, Git, Beads (`bd` 1.1.0), `rg`, `find`, `awk`, `xmllint`, временные task-specific JavaScript/TypeScript/React/DOM/browser harnesses без постоянного package manager или test runner.
 
@@ -43,7 +43,7 @@
 | `docs/knowledge-graph.xml` | Public navigation graph | Move module status with implementation; add exactly one `export-<stable-slug>` per accepted card. |
 | `docs/verification-plan.xml` | Shared verification contract | Change only if implementation reveals a real command, scenario, or evidence-surface delta. |
 | `docs/operational-packets.xml` | Canonical execution/evidence schemas | Consume as-is; change only if a confirmed schema defect blocks execution. |
-| Beads story/candidate/wave records | Durable scope, dependencies, decisions, evidence and mentor acceptance | Create/claim/update/close through `bd`; never duplicate this state in a Markdown TODO file. |
+| Beads story/candidate/wave records | Durable scope, dependencies, decisions, technical publication evidence/status and final user acceptance | Create/claim/update/close through `bd`; never duplicate this state in a Markdown TODO file. |
 
 ## Beads Decomposition and Dependency Graph
 
@@ -56,8 +56,8 @@ The existing top-level story is `frontend-livecoding-tasks-kln` (`feature`, `in_
 | `B3` | Define strict candidate validation policy | `docs/task-validation-policy.md`, `M-TASK-VALIDATION` status | Ordered gates, all outcomes, evidence matrix, Beads record schema, stop conditions | `B2` |
 | `B4` | Create student catalog empty state | `README.md`, `M-CATALOG` status | Understandable GitHub landing page, empty state, projection contract | `B3` |
 | `B5` | Approve scope, then freeze and validate initial candidate register | Beads vocabulary decision and candidate records only | Mentor-approved initial vocabulary/scope; finite frozen count; one evidence-backed terminal decision per candidate; no `needs-rewrite`; accepted candidates grouped | `B4` |
-| `B6-Wnn` | Publish accepted task wave nn | 8–10 cards, or final 1–7; README; graph; evidence | Atomic task/catalog/graph update, gates PASS, push, report, mentor acceptance | `B5` for first wave; previous wave thereafter |
-| `B7` | Run final library audit | All repository and Beads state | Counts, projection, links, XML, Markdown, GRACE, Git divergence and mentor acceptance PASS | last `B6-Wnn`, or `B5` if zero candidates are accepted |
+| `B6-Wnn` | Publish accepted task wave nn | 8–10 cards, or final 1–7; README; graph; evidence | Atomic task/catalog/graph update, candidate recheck, all technical gates PASS, push, GitHub rendering, complete report and technical close | `B5` for first wave; previous wave thereafter |
+| `B7` | Run final library audit | All repository and Beads state | Counts, projection, links, XML, Markdown, GRACE, Git divergence and technical publication PASS; complete-library user-review handoff prepared | last `B6-Wnn`, or `B5` if zero candidates are accepted |
 
 `Phase 7 — Scale review` is intentionally not a child that blocks this story. Create a separate Beads `decision` issue only after observed catalog drift, vocabulary conflicts, or repeated manual verification cost provides evidence; do not invent a date/count threshold and do not add automation without mentor approval.
 
@@ -195,8 +195,8 @@ bd show "$audit_id" >/dev/null 2>&1 || bd create --id="$audit_id" --type=task --
 
 bd show "$final_audit_id" >/dev/null 2>&1 || bd create --id="$final_audit_id" --type=task --priority=1 \
   --title='Run final knowledge-base audit' \
-  --description='Scope: prove final candidate, task, catalog, graph, link, GRACE, Git, and mentor-acceptance consistency.' \
-  --acceptance='Every candidate is terminal with no needs-rewrite; every accepted task is unique, verified, linked, graph-indexed, and mentor-accepted; all defined gates pass; branch divergence is reported.' \
+  --description='Scope: prove final candidate, task, catalog, graph, link, GRACE, Git, and technical wave-publication consistency, then prepare the complete-library user-review handoff.' \
+  --acceptance='Every candidate is terminal with no needs-rewrite; every accepted task is unique, verified, linked, graph-indexed, and technically published; all defined gates pass; branch divergence is reported; the story remains open for final user acceptance.' \
   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md' \
   --skills='beads,grace-reviewer,verification-before-completion'
 
@@ -230,7 +230,7 @@ Insert after `## Testing Guidelines` and before `## Commit & Pull Request Guidel
 - Keep theory, every hint, and the solution in independent `<details>` blocks without the `open` attribute. Keep the prompt, fixtures, starter code, and solution local even when targeted external reading is linked.
 - Publish only candidates with an `accepted` Beads validation decision. Keep `needs-rewrite`, `rejected`, and `duplicate` candidates out of `tasks/` and record their neutral decision evidence in Beads.
 - Validate JavaScript, TypeScript, React/DOM, UI, analysis, and output-prediction tasks with the evidence route defined in `docs/task-validation-policy.md`. Unavailable mandatory browser evidence is `BLOCKED`, never `PASS`.
-- Publish accepted cards in mentor-reviewed waves of 8–10, except that the final incomplete wave may contain 1–7. Keep the wave issue open until mentor acceptance is recorded.
+- Publish accepted cards in serialized technical waves of 8–10, except that the final incomplete wave may contain 1–7. Close each wave continuously after candidate recheck, all deterministic and hybrid gates pass, the focused commit is pushed, GitHub-rendered evidence is captured, and the complete wave report is recorded. Do not require per-wave mentor or user approval; keep the top-level story open until the user accepts the complete library after the final audit.
 - Stop instead of guessing when metadata, controlled vocabulary, environment, expected output, prerequisite, asset, external material, rendering, or mandatory evidence is ambiguous or unavailable.
 ```
 
@@ -576,9 +576,11 @@ Every candidate record contains: `candidateId`, `candidateRegisterSize`, `storyI
 
 Allowed `waveAcceptanceStatus` values are `not-applicable`, `pending`, `accepted`, and `changes-requested`. Accepted candidates use `pending` after wave assignment; non-accepted outcomes use `not-applicable`.
 
+`waveAcceptanceStatus` is a technical publication status, not a human approval. For an accepted candidate, `pending` means that its assigned wave has not completed every technical publication gate, `accepted` means that candidate recheck, required evidence, pushed commit, GitHub-rendered review, and the complete wave report all passed, and `changes-requested` means that a technical gate requires correction.
+
 ## Wave rules
 
-Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one Beads child issue, changes task cards/catalog/graph/evidence atomically, and remains open until mentor acceptance.
+Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one serialized Beads child issue, changes task cards/catalog/graph/evidence atomically, and closes continuously after candidate recheck, deterministic and hybrid PASS, pushed commit, GitHub-rendered evidence, and a complete wave report. Per-wave mentor or user approval is not required; the top-level story remains open until the user accepts the complete library after the final audit.
 
 ## Stop conditions
 
@@ -595,7 +597,8 @@ For content, metadata, prerequisite or asset changes, resolve all derived artifa
 - Only accepted candidates have task paths or wave IDs.
 - Every accepted candidate belongs to exactly one valid wave.
 - Every decision has concise reason, evidence type, observed result and remaining risk.
-- A wave closes only after technical PASS, pushed commit, report and mentor acceptance.
+- A wave closes only after candidate recheck, technical PASS, pushed commit, GitHub-rendered evidence, and a complete report.
+- The top-level story closes only after the final audit and explicit user acceptance of the complete library.
 ```
 
 - [ ] **Step 2: Review the policy against all specified gates and outcomes**
@@ -684,7 +687,7 @@ GitHub-first база самостоятельных упражнений по f
 
 ## Каталог задач
 
-Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и принятия первой волны ментором.
+Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и технической публикации первой волны.
 
 ## Как устроена карточка
 
@@ -821,7 +824,7 @@ candidate_issue_id="frontend-livecoding-tasks-kln-$candidate_id"
 bd show "$candidate_issue_id" >/dev/null 2>&1 || bd create --id="$candidate_issue_id" --type=task --priority=2 \
   --title="$candidate_id — $learning_goal" \
   --description="Candidate validation record for $candidate_id. Learning goal: $learning_goal. Proposed topic: $proposed_topic. Story: frontend-livecoding-tasks-kln." \
-  --acceptance='One ordered validation decision, reason, evidence type, observed result, duplicate target, wave ID, remaining risk, and wave-acceptance status are recorded; only accepted may be published.' \
+  --acceptance='One ordered validation decision, reason, evidence type, observed result, duplicate target, wave ID, remaining risk, and wave technical-publication status are recorded; only accepted may be published.' \
   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md'
 bd update "$candidate_issue_id" \
   --parent="$audit_id" \
@@ -872,8 +875,8 @@ For each group, create:
 wave_id="frontend-livecoding-tasks-kln-wave-$wave_number"
 bd show "$wave_id" >/dev/null 2>&1 || bd create --id="$wave_id" --type=task --priority=1 \
   --title="Publish accepted task wave $wave_number" \
-  --description="Scope: publish accepted candidates $wave_candidate_ids atomically as task cards, catalog rows, graph annotations, verification evidence, and a mentor-reviewed report." \
-  --acceptance="Wave size $wave_size is valid; every candidate is accepted; task/catalog/graph/evidence gates pass; the focused commit is pushed; mentor acceptance is recorded before close." \
+  --description="Scope: publish accepted candidates $wave_candidate_ids atomically as task cards, catalog rows, graph annotations, verification evidence, pushed commit, GitHub-rendered evidence, and a complete technical report." \
+  --acceptance="Wave size $wave_size is valid; every candidate is accepted and rechecked; task/catalog/graph/evidence gates pass; the focused commit is pushed; GitHub-rendered evidence and the complete report are recorded before technical close." \
   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md' \
   --skills='beads,grace-execute,systematic-debugging,verification-before-completion'
 bd update "$wave_id" --parent='frontend-livecoding-tasks-kln'
@@ -938,7 +941,7 @@ Expected: B5 closes; only the first wave becomes ready, or B7 becomes ready if t
 
 **Interfaces:**
 - Consumes: accepted candidate records with exact stable slugs/metadata/evidence; `taskSchema`; `DF-PUBLISH-TASK-WAVE`.
-- Produces: `TaskMetadataSet` delta, one `export-<stable-slug>` per card, technically passing pushed wave and mentor acceptance.
+- Produces: `TaskMetadataSet` delta, one `export-<stable-slug>` per card, technically passing pushed wave, GitHub-rendered evidence, complete report, and technical publication status.
 
 - [ ] **Step 1: Claim exactly the ready wave and enforce serialization**
 
@@ -1000,7 +1003,7 @@ Inside `M-TASK-LIBRARY > annotations` add exactly one self-closing entry per new
 
 Replace `stable-slug` in both tag and path with the exact card slug. Do not add task-level CrossLinks because the approved graph contract models cards as public annotations of `M-TASK-LIBRARY`.
 
-On the first accepted wave, change `M-TASK-LIBRARY` from `planned` to `implemented` in both `docs/development-plan.xml` and `docs/knowledge-graph.xml`, and change Phase 5 to `in-progress`. Phase 4 was completed by Task 5. On the final accepted wave, do not mark Phase 5 complete until mentor acceptance for that wave is recorded.
+On the first accepted wave, change `M-TASK-LIBRARY` from `planned` to `implemented` in both `docs/development-plan.xml` and `docs/knowledge-graph.xml`, and change Phase 5 to `in-progress`. Phase 4 was completed by Task 5. On the final accepted wave, mark Phase 5 complete after the wave's technical gates, pushed commit, GitHub-rendered evidence, and complete report pass; no human approval is required.
 
 - [ ] **Step 7: Run deterministic local, projection, graph and XML checks**
 
@@ -1110,9 +1113,9 @@ wave_commit="$(git rev-parse HEAD)"
 git push origin feature/frontend-livecoding-tasks-kln
 ```
 
-Inspect the pushed PR rendering for every changed card or, for a large wave, the template plus a documented mentor-selected sample while still structurally checking all cards. Confirm tables, code fences, details default state, relative links and assets. Unexpected rendering or inaccessible required browser evidence blocks acceptance and requires a follow-up commit on the same branch.
+Inspect the pushed PR rendering for every changed card or, for a large wave, the template plus a documented deterministic sample while still structurally checking all cards. Confirm tables, code fences, details default state, relative links and assets. Unexpected rendering or inaccessible required browser evidence sets the technical status to `changes-requested`, blocks wave closure, and requires a follow-up commit on the same branch.
 
-- [ ] **Step 9: Publish the wave report and wait for mentor acceptance**
+- [ ] **Step 9: Publish the complete wave report and record technical publication status**
 
 Build the report from the exact outputs captured in Steps 2–8 and append it:
 
@@ -1127,35 +1130,33 @@ wave_report="$(printf '%s\n' \
   'Checks: template, local links, external targets, projection, graph counts, XML, GRACE, whitespace, GitHub rendering' \
   "Commit/push: $wave_commit / feature/frontend-livecoding-tasks-kln" \
   "Remaining risks: $wave_remaining_risks" \
-  'Mentor acceptance: pending')"
+  'Technical publication status: accepted')"
 bd update "$wave_id" --append-notes="$wave_report"
 ```
 
 The variables contain complete observed values; use the literal `none` for an empty merge/risk set rather than omitting the field.
 
-Do not close the issue while acceptance is pending. If changes are requested, set candidate/wave acceptance to `changes-requested`, make only supported fixes, rerun all affected gates, push a focused `fix(tasks): address wave $wave_number review` commit, and return to pending.
+`waveAcceptanceStatus` is the retained Beads field name for technical publication status, not a human approval. If any technical check, render review, or report review requires changes, set candidate/wave status to `changes-requested`, make only supported fixes, rerun all affected gates, push a focused `fix(tasks): address wave $wave_number review` commit, and return to `pending` until every technical gate passes.
 
-- [ ] **Step 10: Record acceptance and close only this wave**
+- [ ] **Step 10: Record technical completion, close this wave, and continue**
 
-After explicit mentor acceptance:
-
-If this is the final wave, first apply these exact `docs/development-plan.xml` status changes:
+After Step 9 records a complete technically passing report, update every wave candidate to technical status `accepted`. If this is the final wave, first apply these exact `docs/development-plan.xml` status changes:
 
 ```xml
 <Phase-5 name="TaskWaves" status="completed">
-  <goal>Publish strictly accepted tasks through atomic task, catalog, graph, evidence, and mentor wave-acceptance updates.</goal>
+  <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, evidence, pushed-commit, GitHub-rendered, report, and technical-status updates.</goal>
   <step-1 module="M-TASK-LIBRARY" status="completed" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
   <step-2 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
-  <step-3 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor wave acceptance in Beads.</step-3>
+  <step-3 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Apply graph and verification deltas, record the complete report and technical publication status in Beads, close the wave, and continue.</step-3>
 </Phase-5>
 ```
 
 Then run:
 
 ```bash
-accepted_wave_commit="$(git rev-parse HEAD)"
+published_wave_commit="$(git rev-parse HEAD)"
 for candidate_issue_id in $wave_candidate_issue_ids; do
-  bd update "$candidate_issue_id" --set-metadata waveAcceptanceStatus=accepted --append-notes="Mentor accepted wave $wave_id at $accepted_wave_commit."
+  bd update "$candidate_issue_id" --set-metadata waveAcceptanceStatus=accepted --append-notes="Technical publication completed for wave $wave_id at $published_wave_commit."
 done
 
 if test "$is_final_wave" = true; then
@@ -1164,15 +1165,15 @@ if test "$is_final_wave" = true; then
   "$grace_bin" lint --fail-on errors --path "$PWD"
   git diff --check
   git add docs/development-plan.xml
-  git commit -m "docs: record accepted task waves"
+  git commit -m "docs: record technically published task waves"
   git push origin feature/frontend-livecoding-tasks-kln
 fi
 
-bd update "$wave_id" --append-notes="Mentor acceptance: accepted. Accepted commit: $accepted_wave_commit."
-bd close "$wave_id" --reason='Technically passing wave accepted by mentor.' --suggest-next
+bd update "$wave_id" --append-notes="Technical publication status: accepted. Published commit: $published_wave_commit."
+bd close "$wave_id" --reason='Candidate recheck, technical gates, push, GitHub rendering, and complete report passed.' --suggest-next
 ```
 
-If this was not the final wave, the next serialized wave becomes ready. The final-wave status commit contains no task-content changes and is made only after mentor acceptance.
+If this was not the final wave, continue immediately with the next serialized wave. The final-wave status commit contains no task-content changes and is made immediately after the final wave's technical gates and complete report pass.
 
 ---
 
@@ -1186,7 +1187,7 @@ If this was not the final wave, the next serialized wave becomes ready. The fina
 - Verify: all `README.md`, `tasks/*/README.md`, `templates/task-template.md`, `docs/*.xml`, local/external links and Git state
 
 **Interfaces:**
-- Consumes: frozen candidate register, all terminal decisions, mentor-accepted waves and complete `TaskMetadataSet`.
+- Consumes: frozen candidate register, all terminal decisions, technically published waves and complete `TaskMetadataSet`.
 - Produces: completed Phase 6 evidence, ready draft PR/branch and story handoff; the story itself closes only after the user accepts the complete result.
 
 - [ ] **Step 1: Claim B7 and prove every prerequisite is closed**
@@ -1200,7 +1201,7 @@ bd blocked
 bd update "$final_audit_id" --claim
 ```
 
-Expected: B7 has no open blocker; every wave issue is mentor-accepted and closed, or B5 proved `accepted_count=0`.
+Expected: B7 has no open blocker; every wave issue is technically published and closed, or B5 proved `accepted_count=0`.
 
 - [ ] **Step 2: Reconcile candidate accounting from Beads**
 
@@ -1321,7 +1322,7 @@ From the pushed branch/PR, perform `README catalog → task card → visible pro
 
 - [ ] **Step 5: Mark Phases 4–6 complete only after evidence**
 
-In `docs/development-plan.xml`, verify Phase 4 is already `completed`. Mark Phase 5 `completed` here only for the valid zero-accepted-candidate path; otherwise it was completed by final-wave acceptance. Mark Phase 6 and its step `completed` only when their exact Beads/evidence conditions hold. Do not mark Phase 7 complete and do not add automation; it remains a future evidence-triggered decision.
+In `docs/development-plan.xml`, verify Phase 4 is already `completed`. Mark Phase 5 `completed` here only for the valid zero-accepted-candidate path; otherwise it was completed by the final wave's technical closure. Mark Phase 6 and its step `completed` only when their exact Beads/evidence conditions hold. Do not mark Phase 7 complete and do not add automation; it remains a future evidence-triggered decision.
 
 - [ ] **Step 6: Commit final artifact-state changes and rerun the gates**
 
@@ -1356,7 +1357,7 @@ Run:
 
 ```bash
 final_commit="$(git rev-parse HEAD)"
-bd update "$final_audit_id" --append-notes="PASS: candidate accounting, accepted-wave status, task/catalog/graph projection, local/external links, task evidence, XML, standard GRACE lint, Markdown/whitespace, GitHub student flow, and Git divergence review. Final commit $final_commit."
+bd update "$final_audit_id" --append-notes="PASS: candidate accounting, technical wave-publication status, task/catalog/graph projection, local/external links, task evidence, XML, standard GRACE lint, Markdown/whitespace, GitHub student flow, and Git divergence review. Final commit $final_commit."
 bd close "$final_audit_id" --reason='Final repository and Beads audit passed.'
 bd update frontend-livecoding-tasks-kln --append-notes="Implementation complete at $final_commit; all planned child issues closed; awaiting user's final story acceptance before closing the story."
 bd preflight

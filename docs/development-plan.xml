@@ -3,7 +3,7 @@
     <objective>Provide a GitHub-first, self-contained frontend task knowledge base that an AI agent can extend without catalog or graph drift.</objective>
     <non-goal>Do not build an executable learning platform, catalog generator, or mandatory repository runtime.</non-goal>
     <risk-1>Task metadata is canonical while the student catalog and knowledge graph are derived, so all three artifacts must change atomically.</risk-1>
-    <risk-2>Structural verification cannot prove solution correctness; strict hybrid validation and mentor wave acceptance remain separate gates.</risk-2>
+    <risk-2>Structural verification cannot prove solution correctness; strict hybrid validation, pushed commits, GitHub-rendered evidence, and complete wave reports remain separate technical gates, while final complete-library user acceptance gates only top-level story closure.</risk-2>
     <risk-3>Collapsed details prevent accidental spoilers but do not conceal solutions from raw Markdown or repository search.</risk-3>
     <risk-4>Publishing before deduplication can create several cards for the same learning goal.</risk-4>
   </ArchitectureNotes>
@@ -106,7 +106,7 @@
       </interface>
       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
       <target>
-        <source>docs/task-validation-policy.md; Beads validation and wave-acceptance records</source>
+        <source>docs/task-validation-policy.md; Beads validation and technical wave-publication records</source>
         <tests>V-M-TASK-VALIDATION strict candidate and evidence checks</tests>
       </target>
       <observability>
@@ -149,14 +149,14 @@
         <tests>V-M-TASK-LIBRARY per-card and cross-card checks</tests>
       </target>
       <observability>
-        <evidence-anchor>task slug; metadata values; validation decision; prerequisite, asset, and supplementary links; wave-acceptance status</evidence-anchor>
+        <evidence-anchor>task slug; metadata values; validation decision; prerequisite, asset, and supplementary links; wave technical-publication status</evidence-anchor>
         <critical-check>The task is accepted, locally complete, independently authored, and every required path or link resolves.</critical-check>
       </observability>
       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
       <notes>
         <note-1>A slug is stable. Renaming it is a migration that must verify every inbound reference.</note-1>
         <note-2>Collapsed solutions are spoiler-resistant, not access-controlled.</note-2>
-        <note-3>The wave Beads issue remains open until mentor wave acceptance is recorded.</note-3>
+        <note-3>The serialized wave Beads issue closes continuously after candidate recheck, required technical evidence, pushed commit, GitHub-rendered review, and the complete wave report pass.</note-3>
         <note-4>Each accepted task adds one export-&lt;task-slug&gt; public annotation under M-TASK-LIBRARY in the knowledge graph.</note-4>
       </notes>
     </M-TASK-LIBRARY>
@@ -211,10 +211,10 @@
       <step-1>The agent creates accepted task cards and optional colocated assets.</step-1>
       <step-2>The agent synchronizes thematic README.md tables and one export-&lt;task-slug&gt; annotation per task.</step-2>
       <step-3>The agent runs V-M-TASK-LIBRARY, V-M-CATALOG, V-M-TASK-VALIDATION, and V-M-GOVERNANCE.</step-3>
-      <step-4>The agent publishes a wave report containing decisions, evidence, merges, checks, and remaining risks.</step-4>
-      <step-5>The mentor accepts the wave or requests fixes in the same story worktree and branch.</step-5>
-      <step-6>The agent closes the child Beads issue only after mentor acceptance.</step-6>
-      <evidence>Accepted paths, catalog rows, graph annotations, validation evidence, verification output, and mentor wave-acceptance status.</evidence>
+      <step-4>The agent pushes the focused wave commit and captures GitHub-rendered evidence for the changed student-facing artifacts.</step-4>
+      <step-5>The agent publishes a complete wave report containing decisions, evidence, merges, checks, and remaining risks, then records the technical publication status.</step-5>
+      <step-6>The agent closes the child Beads issue after every technical gate passes and continues to the next serialized wave without per-wave human approval.</step-6>
+      <evidence>Accepted paths, catalog rows, graph annotations, validation evidence, verification output, pushed commit, GitHub-rendered evidence, complete report, and wave technical-publication status.</evidence>
     </DF-PUBLISH-TASK-WAVE>
 
     <DF-ADD-TASK NAME="AddTask" TRIGGER="Mentor asks an AI agent to add a task">
@@ -222,8 +222,8 @@
       <step-2>The agent resolves mandatory metadata and environment and stops if classification is ambiguous.</step-2>
       <step-3>The agent completes DF-VALIDATE-TASK.</step-3>
       <step-4>An accepted card follows the same atomic task, catalog, graph, and evidence contract as DF-PUBLISH-TASK-WAVE.</step-4>
-      <step-5>The Beads issue remains open until mentor acceptance.</step-5>
-      <evidence>Validation decision, task path, catalog row, graph entry, link results, hybrid evidence, and mentor-acceptance status.</evidence>
+      <step-5>The serialized wave Beads issue closes after its technical publication gates and complete report pass.</step-5>
+      <evidence>Validation decision, task path, catalog row, graph entry, link results, hybrid evidence, pushed commit, GitHub-rendered evidence, complete report, and technical publication status.</evidence>
     </DF-ADD-TASK>
 
     <DF-STUDY-TASK NAME="StudyTask" TRIGGER="Student opens the repository on GitHub">
@@ -265,14 +265,14 @@
       <step-1 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
     </Phase-4>
     <Phase-5 name="TaskWaves" status="pending">
-      <goal>Publish strictly accepted tasks through atomic task, catalog, graph, evidence, and mentor wave-acceptance updates.</goal>
+      <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, evidence, pushed-commit, GitHub-rendered, report, and technical-status updates.</goal>
       <step-1 module="M-TASK-LIBRARY" status="pending" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
       <step-2 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
-      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor wave acceptance in Beads.</step-3>
+      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas, record the complete report and technical publication status in Beads, close the wave, and continue.</step-3>
     </Phase-5>
     <Phase-6 name="FinalAudit" status="pending">
-      <goal>Prove that every candidate has a terminal decision and every accepted task remains unique, verified, linked, and mentor-accepted.</goal>
-      <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Run full candidate-status, catalog, graph, XML, Markdown, link, branch-divergence, and acceptance checks.</step-1>
+      <goal>Prove that every candidate has a terminal decision and every accepted task remains unique, technically published, verified, and linked, then prepare the complete library for final user review.</goal>
+      <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Run full candidate-status, catalog, graph, XML, Markdown, link, branch-divergence, and technical publication checks; keep the top-level story open for final user acceptance.</step-1>
     </Phase-6>
     <Phase-7 name="ScaleReview" status="pending">
       <goal>Reassess controlled vocabularies and deterministic validation only after observed catalog size or drift justifies added tooling.</goal>
@@ -286,6 +286,6 @@
     <worker-owns>Only the explicitly accepted task cards, colocated assets, and packet-scoped derived updates</worker-owns>
     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
     <replan-trigger>Ambiguous metadata or environment, duplicate learning goal, missing prerequisite or asset, unexpected GitHub rendering, contradictory task and catalog facts, unavailable mandatory evidence, or any requirement for new permanent runtime tooling.</replan-trigger>
-    <checkpoint-requirement>Every step must leave assumptions, validation decisions, artifacts changed, checks run, observed evidence, mentor wave-acceptance status, and next action.</checkpoint-requirement>
+    <checkpoint-requirement>Every step must leave assumptions, validation decisions, artifacts changed, checks run, observed evidence, wave technical-publication status, and next action.</checkpoint-requirement>
   </ExecutionPolicy>
 </DevelopmentPlan>

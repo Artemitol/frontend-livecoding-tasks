@@ -53,9 +53,11 @@ Every candidate record contains: `candidateId`, `candidateRegisterSize`, `storyI
 
 Allowed `waveAcceptanceStatus` values are `not-applicable`, `pending`, `accepted`, and `changes-requested`. Accepted candidates use `pending` after wave assignment; non-accepted outcomes use `not-applicable`.
 
+`waveAcceptanceStatus` is a technical publication status, not a human approval. For an accepted candidate, `pending` means that its assigned wave has not completed every technical publication gate, `accepted` means that candidate recheck, required evidence, pushed commit, GitHub-rendered review, and the complete wave report all passed, and `changes-requested` means that a technical gate requires correction.
+
 ## Wave rules
 
-Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one Beads child issue, changes task cards/catalog/graph/evidence atomically, and remains open until mentor acceptance.
+Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one serialized Beads child issue, changes task cards/catalog/graph/evidence atomically, and closes continuously after candidate recheck, deterministic and hybrid PASS, pushed commit, GitHub-rendered evidence, and a complete wave report. Per-wave mentor or user approval is not required; the top-level story remains open until the user accepts the complete library after the final audit.
 
 ## Stop conditions
 
@@ -72,4 +74,5 @@ For content, metadata, prerequisite or asset changes, resolve all derived artifa
 - Only accepted candidates have task paths or wave IDs.
 - Every accepted candidate belongs to exactly one valid wave.
 - Every decision has concise reason, evidence type, observed result and remaining risk.
-- A wave closes only after technical PASS, pushed commit, report and mentor acceptance.
+- A wave closes only after candidate recheck, technical PASS, pushed commit, GitHub-rendered evidence, and a complete report.
+- The top-level story closes only after the final audit and explicit user acceptance of the complete library.

@@ -50,7 +50,7 @@
       <focus>Prove both document structure and solution correctness without adding a permanent repository runtime.</focus>
     </module-level>
     <wave-level>
-      <command>Validate 8-10 accepted cards, or 1-7 in the final incomplete wave; compare canonical metadata with thematic README.md tables, resolve local and external links, and record validation decisions plus mentor wave acceptance in Beads.</command>
+      <command>Validate 8-10 accepted cards, or 1-7 in the final incomplete wave; compare canonical metadata with thematic README.md tables, resolve local and external links, push the focused commit, capture GitHub-rendered evidence, and record validation decisions, the complete report, and technical publication status in Beads.</command>
       <focus>Prove candidate quality and atomic synchronization across task, catalog, knowledge graph, and evidence changes.</focus>
     </wave-level>
     <phase-level>
@@ -72,7 +72,7 @@
     <default-execution-profile>balanced</default-execution-profile>
     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
     <replan-trigger>Ambiguous metadata or environment, duplicate learning goal, missing prerequisite or asset, task/catalog contradiction, unexpected GitHub rendering, unavailable mandatory evidence, or a solution requiring undeclared knowledge.</replan-trigger>
-    <checkpoint-requirement>Every task change must report assumptions, validation decision, artifacts changed, checks run, evidence captured, wave-acceptance status, and next action.</checkpoint-requirement>
+    <checkpoint-requirement>Every task change must report assumptions, validation decision, artifacts changed, checks run, evidence captured, wave technical-publication status, and next action.</checkpoint-requirement>
   </AutonomyPolicy>
 
   <DeliveryShape>

@@ -22,7 +22,7 @@ M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLAT
         <dependency-3 module="M-TASK-VALIDATION">Strict validation decisions and hybrid evidence; only accepted can be published.</dependency-3>
       </dependency-contract-summaries>
       <verification-excerpt><![CDATA[
-Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify hybrid task evidence, local and supplementary links, unique thematic catalog projection, one graph annotation, and mentor wave acceptance.
+Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify candidate recheck, hybrid task evidence, local and supplementary links, unique thematic catalog projection, one graph annotation, pushed commit, GitHub-rendered evidence, complete wave report, and technical publication status.
       ]]></verification-excerpt>
       <assumptions>
         <assumption-1>The task has an accepted validation decision with task-appropriate evidence.</assumption-1>
@@ -73,6 +73,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <observed-result>Concrete result supporting the decision.</observed-result>
       <wave-id>Wave child issue ID for accepted, otherwise none</wave-id>
       <remaining-risk>Known residual risk or none</remaining-risk>
+      <!-- Technical publication status, never a per-wave human approval. -->
       <wave-acceptance-status>not-applicable | pending | accepted | changes-requested</wave-acceptance-status>
     </CandidateValidationRecord>
   </CandidateValidationRecordTemplate>
@@ -115,7 +116,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <required-evidence-anchors>
         <marker-1>canonical metadata table</marker-1>
         <marker-2>Условие / Критерии готовности / Теория / Подсказка N / Решение / Самопроверка</marker-2>
-        <marker-3>Beads validation decision and mentor wave-acceptance status</marker-3>
+        <marker-3>Beads validation decision and wave technical-publication status</marker-3>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>A task change must not complete before catalog and graph synchronization is verified.</assertion-1>
@@ -124,7 +125,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <item-1>Compare canonical task metadata with the catalog row and graph annotation.</item-1>
       </wave-follow-up>
       <phase-follow-up>
-        <item-1>Run the full candidate-status, catalog projection, vocabulary, XML, link, evidence, acceptance, and sampled GitHub-rendering review.</item-1>
+        <item-1>Run the full candidate-status, catalog projection, vocabulary, XML, link, evidence, technical-publication, and sampled GitHub-rendering review; prepare the complete library for final user acceptance.</item-1>
       </phase-follow-up>
     </VerificationDelta>
   </VerificationDeltaTemplate>
@@ -158,12 +159,13 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <command-1>V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE checks.</command-1>
       </commands-run>
       <evidence-captured>
-        <item-1>Task, catalog, graph annotation, resolved links, and mentor-review status agree.</item-1>
+        <item-1>Task, catalog, graph annotation, resolved links, technical publication evidence, and status agree.</item-1>
       </evidence-captured>
       <retry-budget-used>0</retry-budget-used>
       <next-action>Ready for shared-artifact sync.</next-action>
       <validation-decision>accepted</validation-decision>
-      <wave-acceptance-status>pending mentor acceptance</wave-acceptance-status>
+      <!-- The exact accepted value means technical publication complete. -->
+      <wave-acceptance-status>accepted</wave-acceptance-status>
     </CheckpointReport>
   </CheckpointReportTemplate>
 </OperationalPackets>
