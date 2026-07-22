@@ -260,9 +260,9 @@
       <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>
       <step-1 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
     </Phase-3>
-    <Phase-4 name="CandidateAudit" status="pending">
+    <Phase-4 name="CandidateAudit" status="completed">
       <goal>Freeze a finite neutral Beads candidate register, deduplicate it, and record a validation decision for every stable candidate ID.</goal>
-      <step-1 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
+      <step-1 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
     </Phase-4>
     <Phase-5 name="TaskWaves" status="pending">
       <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, evidence, pushed-commit, GitHub-rendered, report, and technical-status updates.</goal>
