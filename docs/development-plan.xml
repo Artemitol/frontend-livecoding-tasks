@@ -78,7 +78,7 @@
       </notes>
     </M-TASK-TEMPLATE>
 
-    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" LAYER="2" ORDER="1" STATUS="planned">
+    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" LAYER="2" ORDER="1" STATUS="implemented">
       <contract>
         <purpose>Deduplicate and strictly validate independently authored candidates before any task card is published.</purpose>
         <inputs>
@@ -251,10 +251,10 @@
       <goal>Record approved requirements, worktree isolation, technology boundaries, module contracts, data flows, verification references, and stop conditions.</goal>
       <step-1 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Finalize and review the written specification and all GRACE planning artifacts.</step-1>
     </Phase-1>
-    <Phase-2 name="TaskContract" status="pending">
+    <Phase-2 name="TaskContract" status="completed">
       <goal>Create the canonical GitHub-first task structure and strict validation policy before any task content is added.</goal>
       <step-1 module="M-TASK-TEMPLATE" status="completed" verification="V-M-TASK-TEMPLATE">Create and render-review templates/task-template.md.</step-1>
-      <step-2 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Create docs/task-validation-policy.md and prove all terminal decisions and hybrid evidence routes.</step-2>
+      <step-2 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Create docs/task-validation-policy.md and prove all terminal decisions and hybrid evidence routes.</step-2>
     </Phase-2>
     <Phase-3 name="StudentEntryPoint" status="pending">
       <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>

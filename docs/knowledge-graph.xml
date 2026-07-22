@@ -25,7 +25,7 @@
       </annotations>
     </M-TASK-TEMPLATE>
 
-    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" STATUS="planned">
+    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" STATUS="implemented">
       <purpose>Deduplicate and strictly validate independently authored candidates before publication.</purpose>
       <path>docs/task-validation-policy.md; Beads validation and wave-acceptance records</path>
       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
