@@ -161,7 +161,7 @@
       </notes>
     </M-TASK-LIBRARY>
 
-    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="planned">
+    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="implemented">
       <contract>
         <purpose>Provide the GitHub repository entry point and thematic, agent-synchronized projections of task metadata.</purpose>
         <inputs>
@@ -256,9 +256,9 @@
       <step-1 module="M-TASK-TEMPLATE" status="completed" verification="V-M-TASK-TEMPLATE">Create and render-review templates/task-template.md.</step-1>
       <step-2 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Create docs/task-validation-policy.md and prove all terminal decisions and hybrid evidence routes.</step-2>
     </Phase-2>
-    <Phase-3 name="StudentEntryPoint" status="pending">
+    <Phase-3 name="StudentEntryPoint" status="completed">
       <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>
-      <step-1 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
+      <step-1 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
     </Phase-3>
     <Phase-4 name="CandidateAudit" status="pending">
       <goal>Freeze a finite neutral Beads candidate register, deduplicate it, and record a validation decision for every stable candidate ID.</goal>

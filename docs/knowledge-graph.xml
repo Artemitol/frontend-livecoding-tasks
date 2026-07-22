@@ -48,7 +48,7 @@
       </annotations>
     </M-TASK-LIBRARY>
 
-    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="planned">
+    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="implemented">
       <purpose>Provide the student entry point and thematic, agent-synchronized projections of canonical task metadata.</purpose>
       <path>README.md</path>
       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
