@@ -45,6 +45,8 @@
     <V-M-GOVERNANCE MODULE="M-GOVERNANCE" PRIORITY="high">
       <test-files>
         <file>AGENTS.md</file>
+        <file>.gitignore</file>
+        <file>.agents/skills/grace-cli/SKILL.md</file>
         <file>docs/requirements.xml</file>
         <file>docs/technology.xml</file>
         <file>docs/development-plan.xml</file>
@@ -57,14 +59,20 @@
         <check-2>Search for unresolved template placeholders and placeholder IDs.</check-2>
         <check-3>Cross-check every M-*, V-M-*, DF-*, VF-*, UC-*, Phase-*, and Gate-Phase-* reference.</check-3>
         <check-4>Verify that every accepted task slug has exactly one export-&lt;task-slug&gt; annotation under M-TASK-LIBRARY.</check-4>
+        <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires delivery from feature/* through a pull request targeting main, and that .gitignore excludes /docs/superpowers/.</check-5>
+        <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>
         <scenario-2 kind="failure">A missing verification ref, contradictory contract, or invalid XML blocks completion.</scenario-2>
+        <scenario-3 kind="success">A non-interactive shell omits grace from PATH, GRACE_BIN resolves to $HOME/.bun/bin/grace, and the standard lint completes without issues.</scenario-3>
+        <scenario-4 kind="failure">Neither PATH nor $HOME/.bun/bin/grace provides an executable CLI, so the agent reports the missing tool and uses the documented direct-inspection fallback.</scenario-4>
       </scenarios>
       <required-evidence-anchors>
         <marker-1>M-GOVERNANCE</marker-1>
         <marker-2>V-M-GOVERNANCE</marker-2>
+        <marker-3>$HOME/.bun/bin/grace</marker-3>
+        <marker-4>.agents/skills/grace-cli/SKILL.md</marker-4>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>No implementation phase begins while a blocking shared-artifact contradiction remains.</assertion-1>
@@ -162,6 +170,7 @@
       <commands>
         <command-1>xmllint --noout docs/*.xml</command-1>
         <command-2>Review module, verification, flow, use-case, and phase cross-references.</command-2>
+        <command-3>Resolve GRACE_BIN from PATH with $HOME/.bun/bin/grace as fallback and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</command-3>
       </commands>
       <required-evidence>
         <evidence-1>All approved design decisions appear in requirements, technology, development plan, verification plan, and knowledge graph.</evidence-1>

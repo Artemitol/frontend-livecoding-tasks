@@ -18,6 +18,18 @@ No build system or package manager is required for Markdown-only tasks. Do not a
 
 Until those scripts exist, use `git status` to review changes and perform a manual Markdown review; do not document commands that cannot be run.
 
+### GRACE CLI Resolution
+
+The Grace CLI is installed through Bun, but non-interactive shells may not load the `.zshrc` entry that adds `$HOME/.bun/bin` to `PATH`. Before running Grace, resolve the executable in this order:
+
+```bash
+GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
+test -x "$GRACE_BIN"
+"$GRACE_BIN" --version
+```
+
+Use `"$GRACE_BIN"` for subsequent Grace commands in the same shell session. Do not report Grace as unavailable after only `command -v grace` fails; first test the `$HOME/.bun/bin/grace` fallback. If neither location is executable, follow the relevant Grace skill's documented fallback workflow.
+
 ## Coding Style & Naming Conventions
 
 Choose JavaScript, TypeScript, or React examples according to the learning goal and state that choice in the task document. For code snippets and runnable exercises, use two-space indentation, semicolons, single quotes, and trailing commas where supported. Name variables in camelCase (`formattedDuration`) and types in PascalCase (`TodoItem`). Prefer type aliases over interfaces. Name all files and task directories in kebab-case (`todo-list.md`, `debounced-search/`). Keep task-specific content and code within its task. Add formatter and linter configuration only with the first runnable code contribution, then run both before opening a pull request.
@@ -28,7 +40,7 @@ Markdown-only tasks do not require automated tests. Review their structure, link
 
 ## Commit & Pull Request Guidelines
 
-Agents are authorized to create branches, commits, and pushes automatically. After a coherent change passes its relevant verification gates, create a focused commit and push the active branch without asking for additional permission. An explicit user instruction not to branch, commit, or push overrides this default for that task.
+Agents are authorized to create branches, commits, pushes, and pull requests automatically. Never commit or push directly to `main`. Before making project changes, create or reuse a `feature/*` branch. After a coherent change passes its relevant verification gates, create a focused commit, push the active `feature/*` branch, and open a pull request targeting `main` without asking for additional permission. An explicit user instruction not to branch, commit, push, or create a pull request overrides this default for that task.
 
 Write commit messages in English and follow Conventional Commits 1.0.0:
 
@@ -44,9 +56,9 @@ Use `feat` for new functionality and `fix` for bug fixes. Other meaningful types
 
 Use the author's existing local Git `user.name` and `user.email` for both author and committer identity. Do not add `Co-authored-by`, `Signed-off-by`, `Generated-by`, or any Codex/agent attribution to commits. Do not install or enable hooks that add agent attribution.
 
-A Beads story is a top-level issue of type `feature` or `epic` that owns multiple child issues through the Beads parent relationship. Create or reuse one branch per story named `feature/<story-id>`. Implement, verify, commit, and push all child issues for that story on the same branch; do not create a separate branch for each child issue. Standalone Beads issues do not require a dedicated branch and may use the current appropriate branch unless the user requests otherwise.
+A Beads story is a top-level issue of type `feature` or `epic` that owns multiple child issues through the Beads parent relationship. Create or reuse one branch per story named `feature/<story-id>`. Implement, verify, commit, and push all child issues for that story on the same branch; do not create a separate branch for each child issue. For a standalone Beads issue, create or reuse an appropriate `feature/*` branch; never implement or commit the issue directly on `main`.
 
-For a new branch, configure its upstream on the first push. Automatic Git authority does not include force-pushing, merging, deleting branches, or rewriting published history unless the user explicitly requests the specific action.
+For a new branch, configure its upstream on the first push and create a pull request targeting `main`. Automatic Git authority does not include force-pushing, merging, deleting branches, or rewriting published history unless the user explicitly requests the specific action.
 
 Pull requests should summarize the task, list verification commands and results, link related issues, and include screenshots or recordings for visible UI changes.
 

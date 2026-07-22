@@ -72,6 +72,8 @@
     <constraint-11>Metadata values reuse the current catalog vocabulary; introducing a new technology, topic, or level requires explicit mentor approval rather than an agent-created synonym.</constraint-11>
     <constraint-12>The canonical metadata table uses the exact labels Технологии, Тема, Уровень, Время, Навыки, and Предварительные знания.</constraint-12>
     <constraint-13>Each task card is represented in the M-TASK-LIBRARY knowledge-graph annotations by one export-&lt;task-slug&gt; entry.</constraint-13>
+    <constraint-14>Agents never commit or push directly to main; they deliver changes from feature/* branches through pull requests targeting main.</constraint-14>
+    <constraint-15>Agents resolve the Grace CLI from PATH first and then $HOME/.bun/bin/grace before declaring it unavailable in a non-interactive shell.</constraint-15>
   </Constraints>
 
   <Risks>

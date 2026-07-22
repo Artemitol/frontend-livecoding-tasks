@@ -4,12 +4,12 @@
     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
 
     <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="partial">
-      <purpose>Define authoring, synchronization, verification, and stop-condition rules for the repository.</purpose>
-      <path>AGENTS.md; docs/*.xml</path>
+      <purpose>Define authoring, delivery, synchronization, verification, and stop-condition rules for the repository.</purpose>
+      <path>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml</path>
       <depends>none</depends>
       <verification-ref>V-M-GOVERNANCE</verification-ref>
       <annotations>
-        <export-authoringRules PURPOSE="Expose task authoring and synchronization requirements" />
+        <export-authoringRules PURPOSE="Expose task authoring, delivery, tool-resolution, and synchronization requirements" />
         <export-verificationContracts PURPOSE="Expose shared completion evidence and phase gates" />
       </annotations>
     </M-GOVERNANCE>
