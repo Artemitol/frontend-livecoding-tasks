@@ -28,7 +28,27 @@ Markdown-only tasks do not require automated tests. Review their structure, link
 
 ## Commit & Pull Request Guidelines
 
-There is no existing commit history to establish a convention. Use short, imperative subjects with an optional Conventional Commit prefix, for example `feat: add debounced search task`. Keep commits focused. Pull requests should summarize the task, list verification commands and results, link related issues, and include screenshots or recordings for visible UI changes.
+Agents are authorized to create branches, commits, and pushes automatically. After a coherent change passes its relevant verification gates, create a focused commit and push the active branch without asking for additional permission. An explicit user instruction not to branch, commit, or push overrides this default for that task.
+
+Write commit messages in English and follow Conventional Commits 1.0.0:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Use `feat` for new functionality and `fix` for bug fixes. Other meaningful types such as `docs`, `chore`, `refactor`, `test`, `build`, `ci`, `style`, and `perf` are allowed. Mark breaking changes with `!` after the type or scope, or with a `BREAKING CHANGE:` footer. Keep subjects short and imperative and keep each commit focused.
+
+Use the author's existing local Git `user.name` and `user.email` for both author and committer identity. Do not add `Co-authored-by`, `Signed-off-by`, `Generated-by`, or any Codex/agent attribution to commits. Do not install or enable hooks that add agent attribution.
+
+A Beads story is a top-level issue of type `feature` or `epic` that owns multiple child issues through the Beads parent relationship. Create or reuse one branch per story named `feature/<story-id>`. Implement, verify, commit, and push all child issues for that story on the same branch; do not create a separate branch for each child issue. Standalone Beads issues do not require a dedicated branch and may use the current appropriate branch unless the user requests otherwise.
+
+For a new branch, configure its upstream on the first push. Automatic Git authority does not include force-pushing, merging, deleting branches, or rewriting published history unless the user explicitly requests the specific action.
+
+Pull requests should summarize the task, list verification commands and results, link related issues, and include screenshots or recordings for visible UI changes.
 
 # GRACE Framework - Project Engineering Protocol
 
