@@ -55,7 +55,7 @@ The existing top-level story is `frontend-livecoding-tasks-kln` (`feature`, `in_
 | `B2` | Create canonical task template | `templates/task-template.md`, `M-TASK-TEMPLATE` status | Exact labels/sections, independent closed details, rendered GitHub review | `B1` |
 | `B3` | Define strict candidate validation policy | `docs/task-validation-policy.md`, `M-TASK-VALIDATION` status | Ordered gates, all outcomes, evidence matrix, Beads record schema, stop conditions | `B2` |
 | `B4` | Create student catalog empty state | `README.md`, `M-CATALOG` status | Understandable GitHub landing page, empty state, projection contract | `B3` |
-| `B5` | Approve scope, then freeze and validate initial candidate register | Beads vocabulary decision and candidate records only | Mentor-approved initial vocabulary/scope; finite frozen count; one evidence-backed terminal decision per candidate; no `needs-rewrite`; accepted candidates grouped | `B4` |
+| `B5` | Use the approved scope, then freeze and validate initial candidate register | Beads vocabulary decision and candidate records only | Closed `frontend-livecoding-tasks-kln-initial-vocabulary` decision; finite frozen count; one evidence-backed terminal decision per candidate; no `needs-rewrite`; accepted candidates grouped | `B4` |
 | `B6-Wnn` | Publish accepted task wave nn | 8–10 cards, or final 1–7; README; graph; evidence | Atomic task/catalog/graph update, candidate recheck, all technical gates PASS, push, GitHub rendering, complete report and technical close | `B5` for first wave; previous wave thereafter |
 | `B7` | Run final library audit | All repository and Beads state | Counts, projection, links, XML, Markdown, GRACE, Git divergence and technical publication PASS; complete-library user-review handoff prepared | last `B6-Wnn`, or `B5` if zero candidates are accepted |
 
@@ -188,8 +188,8 @@ bd show "$catalog_id" >/dev/null 2>&1 || bd create --id="$catalog_id" --type=tas
 
 bd show "$audit_id" >/dev/null 2>&1 || bd create --id="$audit_id" --type=task --priority=1 \
   --title='Approve scope, freeze and validate initial candidate register' \
-  --description='Scope: obtain mentor approval for initial controlled vocabulary and candidate boundary, independently author a finite neutral inventory, freeze it, deduplicate it, collect hybrid evidence, and assign one terminal decision per stable candidate ID.' \
-  --acceptance='Mentor scope/vocabulary decision is recorded; terminal-decision count equals frozen register size; no needs-rewrite remains; accepted candidates are grouped into valid waves; rejected and duplicate decisions remain neutral and unpublished.' \
+  --description='Scope: consume the recorded initial-vocabulary decision, reconstruct its approved finite neutral inventory, freeze it, deduplicate it, collect hybrid evidence, and assign one terminal decision per stable candidate ID.' \
+  --acceptance='The closed frontend-livecoding-tasks-kln-initial-vocabulary decision is recorded; terminal-decision count equals frozen register size; no needs-rewrite remains; accepted candidates are grouped into valid waves; rejected and duplicate decisions remain neutral and unpublished.' \
   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md' \
   --skills='beads,systematic-debugging,verification-before-completion'
 
@@ -199,6 +199,18 @@ bd show "$final_audit_id" >/dev/null 2>&1 || bd create --id="$final_audit_id" --
   --acceptance='Every candidate is terminal with no needs-rewrite; every accepted task is unique, verified, linked, graph-indexed, and technically published; all defined gates pass; branch divergence is reported; the story remains open for final user acceptance.' \
   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md' \
   --skills='beads,grace-reviewer,verification-before-completion'
+
+# Reconcile reused records as well as newly created ones. These replacements are
+# idempotent and preserve notes, metadata, candidate rows, and dependency state.
+bd update "$story_id" \
+  --description='Design and initialize a GitHub-first knowledge base of independently authored frontend live-coding tasks. Publish every accepted candidate through serialized technical waves, then obtain one explicit user acceptance of the complete library after the final audit.' \
+  --acceptance='Approved specification and GRACE artifacts are consistent; every candidate is terminal; accepted tasks pass strict hybrid verification and appear exactly once in catalog and graph; every wave is technically published; the final branch is pushed without force; the complete library is explicitly accepted once before story closure.'
+bd update "$audit_id" \
+  --description='Scope: consume the recorded initial-vocabulary decision, reconstruct its approved finite neutral inventory, freeze it, deduplicate it, collect hybrid evidence, and assign one terminal decision per stable candidate ID.' \
+  --acceptance='The closed frontend-livecoding-tasks-kln-initial-vocabulary decision is recorded; terminal-decision count equals frozen register size; no needs-rewrite remains; accepted candidates are grouped into valid waves; rejected and duplicate decisions remain neutral and unpublished.'
+bd update "$final_audit_id" \
+  --description='Scope: prove final candidate, task, catalog, graph, link, GRACE, Git, and technical wave-publication consistency, then prepare the complete-library user-review handoff.' \
+  --acceptance='Every candidate is terminal with no needs-rewrite; every accepted task is unique, verified, linked, graph-indexed, and technically published; all defined gates pass; branch divergence is reported; the story remains open for final user acceptance.'
 
 for child_id in "$governance_id" "$template_id" "$validation_id" "$catalog_id" "$audit_id" "$final_audit_id"; do
   bd update "$child_id" --parent="$story_id"
@@ -792,28 +804,21 @@ Expected: no candidate task card exists before the audit.
 
 Produce `/tmp/frontend-livecoding-tasks-kln-candidate-inventory.tsv` with these exact tab-separated columns: `candidateId`, `learningGoal`, `proposedTopic`, `technology`, `format`, `level`, `environment`. Assign provisional sequential IDs `candidate-001` through `candidate-N` after semantic deduplication of the inventory itself. Do not store copied wording, source provenance, draft cards or rejected content in `tasks/`.
 
-Because the initial catalog has no established topic set, this provisional inventory must not be frozen until the next mentor decision. `N=0` is allowed only when the audit evidence explicitly concludes that no independently authored candidate meets the learning-value scope; do not fabricate filler to reach a wave size.
+The initial catalog had no established topic set when this inventory was authored, so it required the durable decision in Step 3 before freeze. That decision is now recorded. Reconstruct the scratch TSV from the exact 20 approved rows already recorded in B5 if the temporary file is absent; do not add, remove, reclassify, or renumber a row while reconstructing it. `N=0` remains valid for a future inventory only when its audit evidence explicitly concludes that no independently authored candidate meets the learning-value scope; do not fabricate filler to reach a wave size.
 
-- [ ] **Step 3: Obtain the mentor-owned initial vocabulary and scope decision**
+- [ ] **Step 3: Confirm the already-satisfied initial vocabulary and scope decision**
 
-Create or reuse one explicit human-needed decision and make it a blocker of B5:
+The user has already approved `candidate-001..candidate-020` and the proposed technology/topic vocabulary without changes. Treat `frontend-livecoding-tasks-kln-initial-vocabulary` as the durable source of that decision; do not create a fresh decision, ask again, or pause this execution checkpoint.
 
 ```bash
 vocabulary_decision_id='frontend-livecoding-tasks-kln-initial-vocabulary'
-bd show "$vocabulary_decision_id" >/dev/null 2>&1 || bd create --id="$vocabulary_decision_id" \
-  --type=decision --priority=1 --labels=human \
-  --title='Approve initial task vocabulary and candidate boundary' \
-  --description="Decision required: approve or revise the proposed technologies, one-primary-topic vocabulary, and finite candidate inventory boundary before register freeze. Proposed inventory and vocabulary are recorded in B5 $audit_id notes." \
-  --acceptance='Mentor records approved technologies/topics and confirms or revises the finite candidate boundary; no candidate record is frozen before the response.' \
-  --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md'
-bd update "$vocabulary_decision_id" --parent='frontend-livecoding-tasks-kln'
-inventory_evidence="$(sed -n '1,240p' /tmp/frontend-livecoding-tasks-kln-candidate-inventory.tsv)"
-bd update "$audit_id" --append-notes="Proposed initial vocabulary and candidate boundary from /tmp inventory:\n$inventory_evidence\nAwaiting $vocabulary_decision_id."
-bd dep add "$audit_id" "$vocabulary_decision_id"
-bd human list
+bd show "$vocabulary_decision_id"
+bd show "$audit_id"
 ```
 
-Pause execution and ask the mentor to approve or revise the recorded vocabulary/boundary. After the response is captured with `bd human respond "$vocabulary_decision_id" --response="$mentor_response"`, update the provisional inventory exactly as decided, re-deduplicate it, assign final contiguous IDs, and continue. This checkpoint resolves mentor-owned classification without inventing product scope inside the plan.
+Expected: the decision is closed with the exact approval of `candidate-001..candidate-020` and the proposed technologies/topics, and B5 notes contain the same inventory plus the recorded approval. Continue directly to candidate-record creation; the closed decision already satisfies this checkpoint.
+
+The approval is intentionally limited to this initial vocabulary and boundary. Any later new or ambiguous technology/topic value, reclassification, candidate addition/removal, or material boundary change must stop before freeze/publication and receive a new explicit human decision recorded in Beads. Never infer a future classification decision from this one.
 
 - [ ] **Step 4: Create one Beads candidate record per approved row**
 
@@ -1183,12 +1188,12 @@ If this was not the final wave, continue immediately with the next serialized wa
 - Modify: `docs/development-plan.xml`
 - Modify: `docs/knowledge-graph.xml` only if final audit finds a confirmed missing/extra annotation
 - Modify: `docs/verification-plan.xml` only if final evidence changes its contract
-- Modify: Beads final-audit and story records
+- Modify: Beads final-audit, final-review decision, corrective-work, and story records
 - Verify: all `README.md`, `tasks/*/README.md`, `templates/task-template.md`, `docs/*.xml`, local/external links and Git state
 
 **Interfaces:**
 - Consumes: frozen candidate register, all terminal decisions, technically published waves and complete `TaskMetadataSet`.
-- Produces: completed Phase 6 evidence, ready draft PR/branch and story handoff; the story itself closes only after the user accepts the complete result.
+- Produces: completed Phase 6 evidence, ready draft PR/branch, one durable complete-library review decision, and an explicit accept-or-correct story-closure path; the story itself closes only after the user accepts the complete result.
 
 - [ ] **Step 1: Claim B7 and prove every prerequisite is closed**
 
@@ -1266,6 +1271,16 @@ while IFS= read -r task_file; do
     case "$value" in *'|'*|*'\t'*) exit 1;; esac
   done
 
+  case "$topic" in
+    'Коллекции'|'Модель выполнения JavaScript'|'Асинхронность'|'Моделирование типов'|'Сужение типов'|'DOM-события'|'Доступность интерфейса'|'Состояние React'|'Эффекты React'|'CSS-раскладка') ;;
+    *) exit 1;;
+  esac
+  case "$format" in Реализация|Отладка|Разбор|'Прогноз вывода') ;; *) exit 1;; esac
+  while IFS= read -r technology; do
+    test -n "$technology"
+    case "$technology" in JavaScript|TypeScript|HTML|'DOM API'|React|CSS) ;; *) exit 1;; esac
+  done < <(printf '%s\n' "$technologies" | tr ',' '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+
   case "$level" in Базовый) rank=1;; Средний) rank=2;; Продвинутый) rank=3;; *) exit 1;; esac
   row="| [$title](tasks/$slug/README.md) | $technologies | $format | $level | $duration | $skills | $prerequisites |"
   printf '%s\t%s\t%s\t%s\n' "$topic" "$rank" "$title" "$row" >>"$expected_file"
@@ -1302,7 +1317,7 @@ chmod +x "$final_projection_check"
 for xml in docs/*.xml; do xmllint --noout "$xml" || exit 1; done
 grace_bin="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
 "$grace_bin" lint --fail-on errors --path "$PWD"
-rg -n --glob '!docs/superpowers/plans/**' 'TBD|TODO|implement later|fill in details' README.md AGENTS.md templates docs tasks && exit 1 || true
+if rg -n --glob '!docs/superpowers/plans/**' 'TBD|TODO|implement later|fill in details' README.md AGENTS.md templates docs tasks; then exit 1; fi
 git diff --check
 
 while IFS= read -r task_file; do
@@ -1351,7 +1366,7 @@ git status --short --branch
 
 Expected: the worktree is clean; report the exact `behind ahead` counts. If origin/main advanced, do not rebase/force-push; report the divergence and request explicit integration direction if it blocks mergeability.
 
-- [ ] **Step 8: Close B7, update the story, and leave final acceptance to the user**
+- [ ] **Step 8: Close B7 after the technical final audit**
 
 Run:
 
@@ -1359,12 +1374,110 @@ Run:
 final_commit="$(git rev-parse HEAD)"
 bd update "$final_audit_id" --append-notes="PASS: candidate accounting, technical wave-publication status, task/catalog/graph projection, local/external links, task evidence, XML, standard GRACE lint, Markdown/whitespace, GitHub student flow, and Git divergence review. Final commit $final_commit."
 bd close "$final_audit_id" --reason='Final repository and Beads audit passed.'
-bd update frontend-livecoding-tasks-kln --append-notes="Implementation complete at $final_commit; all planned child issues closed; awaiting user's final story acceptance before closing the story."
+bd update frontend-livecoding-tasks-kln --append-notes="Technical implementation and B7 audit complete at $final_commit; awaiting one durable complete-library final-review decision before story closure."
 bd preflight
 git status --short --branch
 ```
 
-Expected: B7 is closed, the top-level story remains `in_progress` only for explicit user acceptance, `bd preflight` has no blocking tracker defect, and Git is clean.
+Expected: B7 is technically closed, `bd preflight` has no blocking tracker defect, Git is clean, and the top-level story remains `in_progress`. Closing B7 is not user acceptance and never closes the story.
+
+- [ ] **Step 9: Create one durable complete-library review decision and ask once**
+
+After B7 closes, create or reuse this single human decision and attach the exact review package:
+
+```bash
+story_id='frontend-livecoding-tasks-kln'
+final_review_decision_id='frontend-livecoding-tasks-kln-final-acceptance'
+final_commit="$(git rev-parse HEAD)"
+review_package="Complete-library final review. Branch: feature/frontend-livecoding-tasks-kln. Commit: $final_commit. Draft PR: https://github.com/Artemitol/frontend-livecoding-tasks/pull/2. Technical evidence: $final_audit_id notes and the final complete-library report. Review: root catalog, every accepted task card, candidate accounting, wave reports, GitHub-rendered student flow, and recorded remaining risks."
+
+bd show "$final_review_decision_id" >/dev/null 2>&1 || bd create --id="$final_review_decision_id" \
+  --type=decision --priority=1 --labels=human \
+  --title='Accept the complete frontend live-coding task library' \
+  --description='Final human decision after B7 technical close: accept the complete library and authorize story closure, or request scoped changes while keeping the story open.' \
+  --acceptance='The exact user response and reviewed commit/package are durable; acceptance closes this decision and the top-level story, while requested changes keep both open until corrective gates and another final review pass.' \
+  --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md'
+bd update "$final_review_decision_id" --parent="$story_id" --append-notes="$review_package"
+bd update "$story_id" --append-notes="Final review requested through $final_review_decision_id. $review_package Story must not close before explicit acceptance."
+if ! bd dep list "$story_id" --json | rg -F "\"id\": \"$final_review_decision_id\"" >/dev/null; then
+  if decision_dependency_error="$(bd dep add "$story_id" "$final_review_decision_id" 2>&1)"; then
+    :
+  elif printf '%s\n' "$decision_dependency_error" | rg -i 'cycle|parent-child|hierarch' >/dev/null; then
+    bd dep relate "$story_id" "$final_review_decision_id"
+    bd update "$story_id" --append-notes="Beads hierarchy prevented a blocking edge; $final_review_decision_id is the explicit story-closure gate."
+  else
+    printf '%s\n' "$decision_dependency_error" >&2
+    exit 1
+  fi
+fi
+bd human list
+```
+
+Use the blocking dependency above when this Beads version permits a parent story to depend on its child decision. If it rejects only that relationship shape, use `bd dep relate "$story_id" "$final_review_decision_id"` and retain the explicit closure-gate note on the story; any other dependency error is `BLOCKED`, not permission to continue silently.
+
+Present the review package to the user once and ask for exactly one of two outcomes: explicit acceptance of the complete library at `final_commit`, or requested changes. Stop and wait. Do not close the decision or story merely because the package was delivered or no response arrived.
+
+- [ ] **Step 10: Durably record the response and close only after explicit acceptance**
+
+Copy the user's response exactly into `user_response`. If the user explicitly accepts the reviewed commit/package, use `bd human respond` only now. Beads 1.1.0 is known to fail here with `storage is nil`, so handle only that known failure with the durable notes-and-close fallback:
+
+```bash
+test -n "$user_response"
+
+if human_respond_error="$(bd human respond "$final_review_decision_id" --response="$user_response" 2>&1)"; then
+  :
+elif printf '%s\n' "$human_respond_error" | rg -F 'storage is nil' >/dev/null; then
+  bd update "$final_review_decision_id" --append-notes="Exact user acceptance response: $user_response"
+  bd close "$final_review_decision_id" --reason='Explicit user acceptance recorded through the bd 1.1.0 storage-is-nil fallback.'
+else
+  printf '%s\n' "$human_respond_error" >&2
+  exit 1
+fi
+
+bd update "$story_id" --append-notes="Explicit final acceptance for commit $final_commit. Exact user response: $user_response. Decision: $final_review_decision_id."
+bd close "$story_id" --reason="User explicitly accepted the complete library at $final_commit."
+bd preflight
+bd show "$final_review_decision_id"
+bd show "$story_id"
+```
+
+Expected: both records contain the reviewed commit/package and exact response, the decision is closed, and only then is the top-level story closed. If `bd human respond` fails for anything other than the exact known `storage is nil` defect, stop with both records open.
+
+If the user requests changes, do not run the acceptance commands above. Reopen B7 and record/decompose the response with this template; run the issue-creation portion once per independently closable correction:
+
+```bash
+bd update "$final_review_decision_id" --append-notes="Exact user change request for $final_commit: $user_response"
+bd update "$story_id" --append-notes="Final review remains open. Exact user change request for $final_commit: $user_response"
+
+if bd show "$final_audit_id" | rg -F 'CLOSED' >/dev/null; then
+  bd reopen "$final_audit_id" --reason="User requested changes after review of $final_commit; rerun the final audit against the revised package."
+fi
+
+ensure_blocking_dependency() {
+  blocked_id="$1"
+  blocker_id="$2"
+  if ! bd dep list "$blocked_id" --json | rg -F "\"id\": \"$blocker_id\"" >/dev/null; then
+    bd dep add "$blocked_id" "$blocker_id"
+  fi
+}
+
+ensure_blocking_dependency "$final_review_decision_id" "$final_audit_id"
+
+corrective_issue_id="frontend-livecoding-tasks-kln-final-review-fix-$stable_correction_slug"
+bd show "$corrective_issue_id" >/dev/null 2>&1 || bd create --id="$corrective_issue_id" \
+  --type=task --priority=1 \
+  --title="$corrective_title" \
+  --description="$corrective_scope" \
+  --acceptance="$corrective_acceptance_and_affected_gates" \
+  --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md'
+bd update "$corrective_issue_id" --parent="$story_id"
+ensure_blocking_dependency "$final_audit_id" "$corrective_issue_id"
+ensure_blocking_dependency "$final_review_decision_id" "$corrective_issue_id"
+bd show "$final_review_decision_id"
+bd show "$story_id"
+```
+
+Keep both decision and story open. Implement only the requested scope and close each corrective issue only after its affected candidate/module/wave gates pass. Then rerun Task 7 Steps 1–8 in full against the revised commit, including the current candidate accounting, controlled-vocabulary/format checks, final projection, GitHub-rendered flow, push, divergence check, and re-closed B7 evidence. Only after B7 closes again may execution update the same decision with the new commit/review package and return to Step 9 for one review request of the revised package. Never treat requested changes, silence, an old B7 close, or technical PASS as final acceptance.
 
 ## Execution Handoff
 
