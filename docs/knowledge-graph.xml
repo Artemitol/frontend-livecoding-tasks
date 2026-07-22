@@ -14,7 +14,7 @@
       </annotations>
     </M-GOVERNANCE>
 
-    <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" STATUS="planned">
+    <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" STATUS="implemented">
       <purpose>Define the canonical GitHub-rendered structure for self-contained frontend task cards.</purpose>
       <path>templates/task-template.md</path>
       <depends>M-GOVERNANCE</depends>
