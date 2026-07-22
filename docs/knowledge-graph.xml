@@ -3,7 +3,7 @@
     <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
 
-    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="partial">
+    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="implemented">
       <purpose>Define authoring, delivery, synchronization, verification, and stop-condition rules for the repository.</purpose>
       <path>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml; docs/superpowers/specs/*.md</path>
       <depends>none</depends>

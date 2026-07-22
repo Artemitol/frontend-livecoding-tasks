@@ -38,6 +38,18 @@ Choose JavaScript, TypeScript, or React examples according to the learning goal 
 
 Markdown-only tasks do not require automated tests. Review their structure, links, code fences, terminology, and example consistency manually. When a task includes a runnable solution or bug fix, add tests using `*.test.ts` or `*.test.tsx` and describe behavior rather than implementation details. In frontend tests, prefer `data-testid` selectors when identifying elements. Do not test CSS or visual styling with automated tests; verify it manually or with browser-based visual checks. Cover the primary interaction, an edge case, and failure handling when relevant. Document any task-specific manual verification steps in its Markdown file or README.
 
+## Task Publication Contract
+
+- Store each accepted exercise at `tasks/<stable-slug>/README.md`; treat the slug as a stable identifier and handle renames as migrations with inbound-link verification.
+- Use the exact metadata labels `Технологии`, `Тема`, `Формат`, `Уровень`, `Время`, `Навыки`, `Предварительные знания`, and `Среда выполнения`.
+- Use only the approved format values `Реализация`, `Отладка`, `Разбор`, and `Прогноз вывода`, and the level values `Базовый`, `Средний`, and `Продвинутый`.
+- Treat task metadata as canonical. Update the root catalog and the task-library knowledge-graph annotation in the same change; every accepted task must appear exactly once in each projection.
+- Keep theory, every hint, and the solution in independent `<details>` blocks without the `open` attribute. Keep the prompt, fixtures, starter code, and solution local even when targeted external reading is linked.
+- Publish only candidates with an `accepted` Beads validation decision. Keep `needs-rewrite`, `rejected`, and `duplicate` candidates out of `tasks/` and record their neutral decision evidence in Beads.
+- Validate JavaScript, TypeScript, React/DOM, UI, analysis, and output-prediction tasks with the evidence route defined in `docs/task-validation-policy.md`. Unavailable mandatory browser evidence is `BLOCKED`, never `PASS`.
+- Publish accepted cards in mentor-reviewed waves of 8–10, except that the final incomplete wave may contain 1–7. Keep the wave issue open until mentor acceptance is recorded.
+- Stop instead of guessing when metadata, controlled vocabulary, environment, expected output, prerequisite, asset, external material, rendering, or mandatory evidence is ambiguous or unavailable.
+
 ## Commit & Pull Request Guidelines
 
 Agents are authorized to create branches, commits, pushes, and pull requests automatically. Never commit or push directly to `main`. Before making project changes, create or reuse a `feature/*` branch. After a coherent change passes its relevant verification gates, create a focused commit, push the active `feature/*` branch, and open a pull request targeting `main` without asking for additional permission. An explicit user instruction not to branch, commit, push, or create a pull request overrides this default for that task.

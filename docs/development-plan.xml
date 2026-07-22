@@ -9,7 +9,7 @@
   </ArchitectureNotes>
 
   <Modules>
-    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" LAYER="0" ORDER="1" STATUS="partial">
+    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" LAYER="0" ORDER="1" STATUS="implemented">
       <contract>
         <purpose>Define the repository's authoring, delivery, synchronization, verification, and stop-condition rules.</purpose>
         <inputs>
@@ -247,9 +247,9 @@
   </DataFlow>
 
   <ImplementationOrder>
-    <Phase-1 name="Governance" status="in-progress">
+    <Phase-1 name="Governance" status="completed">
       <goal>Record approved requirements, worktree isolation, technology boundaries, module contracts, data flows, verification references, and stop conditions.</goal>
-      <step-1 module="M-GOVERNANCE" status="in-progress" verification="V-M-GOVERNANCE">Finalize and review the written specification and all GRACE planning artifacts.</step-1>
+      <step-1 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Finalize and review the written specification and all GRACE planning artifacts.</step-1>
     </Phase-1>
     <Phase-2 name="TaskContract" status="pending">
       <goal>Create the canonical GitHub-first task structure and strict validation policy before any task content is added.</goal>
