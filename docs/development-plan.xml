@@ -1,10 +1,11 @@
-<DevelopmentPlan VERSION="0.2.0">
+<DevelopmentPlan VERSION="0.3.0">
   <ArchitectureNotes>
     <objective>Provide a GitHub-first, self-contained frontend task knowledge base that an AI agent can extend without catalog or graph drift.</objective>
     <non-goal>Do not build an executable learning platform, catalog generator, or mandatory repository runtime.</non-goal>
     <risk-1>Task metadata is canonical while the student catalog and knowledge graph are derived, so all three artifacts must change atomically.</risk-1>
-    <risk-2>Structural verification cannot prove solution correctness; mentor content review remains a required gate.</risk-2>
+    <risk-2>Structural verification cannot prove solution correctness; strict hybrid validation and mentor wave acceptance remain separate gates.</risk-2>
     <risk-3>Collapsed details prevent accidental spoilers but do not conceal solutions from raw Markdown or repository search.</risk-3>
+    <risk-4>Publishing before deduplication can create several cards for the same learning goal.</risk-4>
   </ArchitectureNotes>
 
   <Modules>
@@ -59,7 +60,7 @@
         </errors>
       </contract>
       <interface>
-        <type-TaskMetadata PURPOSE="Exact labels and values for technologies, topic, level, duration, skills, and prerequisites" />
+        <type-TaskMetadata PURPOSE="Exact labels and controlled values for technologies, topic, format, level, duration, skills, prerequisites, and execution environment" />
         <export-taskSchema PURPOSE="Expose mandatory metadata, visible sections, collapsed sections, and self-check structure" />
       </interface>
       <depends>M-GOVERNANCE</depends>
@@ -68,7 +69,7 @@
         <tests>V-M-TASK-TEMPLATE document-contract checks</tests>
       </target>
       <observability>
-        <evidence-anchor>metadata table; Условие; Критерии готовности; Теория; Подсказка N; Решение; Самопроверка</evidence-anchor>
+        <evidence-anchor>metadata table; Условие; Критерии готовности; Теория; Подсказка N; Решение; Самопроверка; Дополнительные материалы</evidence-anchor>
         <critical-check>All details blocks are closed by default and each hint has its own block.</critical-check>
       </observability>
       <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
@@ -77,50 +78,92 @@
       </notes>
     </M-TASK-TEMPLATE>
 
-    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" LAYER="2" ORDER="1" STATUS="planned">
+    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" LAYER="2" ORDER="1" STATUS="planned">
+      <contract>
+        <purpose>Deduplicate and strictly validate independently authored candidates before any task card is published.</purpose>
+        <inputs>
+          <param name="candidate" type="TaskCardDraft" />
+          <param name="candidate-register" type="CandidateRegister" />
+          <param name="accepted-library" type="TaskMetadataSet" />
+          <param name="task-contract" type="TaskSchema" />
+        </inputs>
+        <outputs>
+          <param name="decision" type="ValidationDecision" />
+          <param name="accepted-card" type="AcceptedTaskCard" optional="true" />
+          <param name="evidence" type="BeadsValidationRecord" />
+        </outputs>
+        <errors>
+          <error code="DUPLICATE_LEARNING_GOAL" />
+          <error code="AMBIGUOUS_TASK_CONTRACT" />
+          <error code="INVALID_SOLUTION" />
+          <error code="MANDATORY_EVIDENCE_UNAVAILABLE" />
+        </errors>
+      </contract>
+      <interface>
+        <type-ValidationDecision PURPOSE="accepted, needs-rewrite, rejected, or duplicate" />
+        <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and terminal-decision accounting" />
+        <export-validateCandidate PURPOSE="Apply identity, learning-value, contract, completeness, examples, solution, verification, and editorial gates" />
+      </interface>
+      <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+      <target>
+        <source>docs/task-validation-policy.md; Beads validation and wave-acceptance records</source>
+        <tests>V-M-TASK-VALIDATION strict candidate and evidence checks</tests>
+      </target>
+      <observability>
+        <evidence-anchor>validation decision; evidence type; executed or reviewed scenario; rejection or merge reason</evidence-anchor>
+        <critical-check>Only accepted produces an AcceptedTaskCard; unavailable required browser evidence is BLOCKED rather than PASS.</critical-check>
+      </observability>
+      <verification-ref>V-M-TASK-VALIDATION</verification-ref>
+      <notes>
+        <note-1>Temporary harnesses do not become a permanent repository runtime.</note-1>
+        <note-2>External learning materials may supplement theory but cannot carry the local prompt, fixtures, starter code, or solution.</note-2>
+      </notes>
+    </M-TASK-VALIDATION>
+
+    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" LAYER="3" ORDER="1" STATUS="planned">
       <contract>
         <purpose>Store self-contained task cards whose metadata is canonical for every derived navigation artifact.</purpose>
         <inputs>
-          <param name="approved-task-content" type="TaskCardDraft" />
-          <param name="mentor-review" type="ContentReviewDecision" />
+          <param name="approved-task-content" type="AcceptedTaskCard" />
+          <param name="validation-evidence" type="BeadsValidationRecord" />
         </inputs>
         <outputs>
           <param name="task-card" type="tasks/&lt;task-slug&gt;/README.md" />
           <param name="canonical-metadata" type="TaskMetadata" />
-          <param name="review-evidence" type="BeadsIssueRecord" />
+          <param name="wave-evidence" type="BeadsIssueRecord" />
         </outputs>
         <errors>
           <error code="AMBIGUOUS_METADATA" />
           <error code="MISSING_PREREQUISITE" />
           <error code="MISSING_ASSET" />
-          <error code="SOLUTION_REVIEW_REQUIRED" />
+          <error code="VALIDATION_REQUIRED" />
         </errors>
       </contract>
       <interface>
         <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
         <export-taskCard PURPOSE="Expose the complete student-facing exercise through GitHub" />
       </interface>
-      <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+      <depends>M-TASK-VALIDATION, M-TASK-TEMPLATE, M-GOVERNANCE</depends>
       <target>
         <source>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</source>
         <tests>V-M-TASK-LIBRARY per-card and cross-card checks</tests>
       </target>
       <observability>
-        <evidence-anchor>task slug; metadata values; prerequisite links; asset links; mentor-review status</evidence-anchor>
-        <critical-check>The task is self-contained and every referenced repository path resolves.</critical-check>
+        <evidence-anchor>task slug; metadata values; validation decision; prerequisite, asset, and supplementary links; wave-acceptance status</evidence-anchor>
+        <critical-check>The task is accepted, locally complete, independently authored, and every required path or link resolves.</critical-check>
       </observability>
       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
       <notes>
         <note-1>A slug is stable. Renaming it is a migration that must verify every inbound reference.</note-1>
         <note-2>Collapsed solutions are spoiler-resistant, not access-controlled.</note-2>
-        <note-3>The Beads issue remains open until mentor solution review is recorded.</note-3>
+        <note-3>The wave Beads issue remains open until mentor wave acceptance is recorded.</note-3>
         <note-4>Each accepted task adds one export-&lt;task-slug&gt; public annotation under M-TASK-LIBRARY in the knowledge graph.</note-4>
       </notes>
     </M-TASK-LIBRARY>
 
-    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="3" ORDER="1" STATUS="planned">
+    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="planned">
       <contract>
-        <purpose>Provide the GitHub repository entry point and a compact, agent-synchronized projection of task metadata.</purpose>
+        <purpose>Provide the GitHub repository entry point and thematic, agent-synchronized projections of task metadata.</purpose>
         <inputs>
           <param name="canonical-task-metadata" type="TaskMetadataSet" />
         </inputs>
@@ -135,7 +178,7 @@
         </errors>
       </contract>
       <interface>
-        <export-studentIndex PURPOSE="Expose one compact canonical table in which every task appears once with all required metadata" />
+        <export-studentIndex PURPOSE="Expose thematic tables in which every task appears once with all catalog metadata" />
       </interface>
       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
       <target>
@@ -155,21 +198,39 @@
   </Modules>
 
   <DataFlow>
+    <DF-VALIDATE-TASK NAME="ValidateTask" TRIGGER="Agent prepares a candidate for possible publication">
+      <step-1>The agent checks the learning goal against accepted tasks and merges semantically equivalent candidates.</step-1>
+      <step-2>The agent independently authors the candidate against M-TASK-TEMPLATE.</step-2>
+      <step-3>The agent applies identity, learning-value, contract, local-completeness, examples, solution, verification, and editorial gates.</step-3>
+      <step-4>The agent obtains task-appropriate temporary execution, type-check, trace, browser, or manual evidence.</step-4>
+      <step-5>The agent records accepted, needs-rewrite, rejected, or duplicate in Beads; only accepted yields an AcceptedTaskCard.</step-5>
+      <evidence>Validation decision, duplicate or rejection reason when applicable, evidence type, observed result, and unresolved risk.</evidence>
+    </DF-VALIDATE-TASK>
+
+    <DF-PUBLISH-TASK-WAVE NAME="PublishTaskWave" TRIGGER="Eight to ten accepted task cards are ready">
+      <step-1>The agent creates accepted task cards and optional colocated assets.</step-1>
+      <step-2>The agent synchronizes thematic README.md tables and one export-&lt;task-slug&gt; annotation per task.</step-2>
+      <step-3>The agent runs V-M-TASK-LIBRARY, V-M-CATALOG, V-M-TASK-VALIDATION, and V-M-GOVERNANCE.</step-3>
+      <step-4>The agent publishes a wave report containing decisions, evidence, merges, checks, and remaining risks.</step-4>
+      <step-5>The mentor accepts the wave or requests fixes in the same story worktree and branch.</step-5>
+      <step-6>The agent closes the child Beads issue only after mentor acceptance.</step-6>
+      <evidence>Accepted paths, catalog rows, graph annotations, validation evidence, verification output, and mentor wave-acceptance status.</evidence>
+    </DF-PUBLISH-TASK-WAVE>
+
     <DF-ADD-TASK NAME="AddTask" TRIGGER="Mentor asks an AI agent to add a task">
-      <step-1>The agent reads M-GOVERNANCE and M-TASK-TEMPLATE.</step-1>
-      <step-2>The agent resolves mandatory metadata and stops if classification is ambiguous.</step-2>
-      <step-3>The agent creates tasks/&lt;task-slug&gt;/README.md and optional colocated assets.</step-3>
-      <step-4>The agent synchronizes README.md and adds one export-&lt;task-slug&gt; annotation to M-TASK-LIBRARY in docs/knowledge-graph.xml.</step-4>
-      <step-5>The agent runs V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE checks.</step-5>
-      <step-6>The mentor reviews solution correctness before content acceptance.</step-6>
-      <evidence>Task path, catalog row, graph entry, link-resolution results, document anchors, and mentor-review status.</evidence>
+      <step-1>The agent reads M-GOVERNANCE, M-TASK-TEMPLATE, and M-TASK-VALIDATION.</step-1>
+      <step-2>The agent resolves mandatory metadata and environment and stops if classification is ambiguous.</step-2>
+      <step-3>The agent completes DF-VALIDATE-TASK.</step-3>
+      <step-4>An accepted card follows the same atomic task, catalog, graph, and evidence contract as DF-PUBLISH-TASK-WAVE.</step-4>
+      <step-5>The Beads issue remains open until mentor acceptance.</step-5>
+      <evidence>Validation decision, task path, catalog row, graph entry, link results, hybrid evidence, and mentor-acceptance status.</evidence>
     </DF-ADD-TASK>
 
     <DF-STUDY-TASK NAME="StudyTask" TRIGGER="Student opens the repository on GitHub">
       <step-1>The student chooses a task from README.md using visible metadata.</step-1>
       <step-2>GitHub follows a relative link to the task card.</step-2>
       <step-3>The student reads the visible goal, prompt, starter code, and readiness criteria.</step-3>
-      <step-4>The student optionally opens theory and then reveals hints one at a time.</step-4>
+      <step-4>The student optionally opens theory, targeted additional materials, and then reveals hints one at a time.</step-4>
       <step-5>The student opens the solution after attempting the task and completes self-check questions.</step-5>
       <evidence>Working relative link, matching metadata, visible required sections, and closed progressive-disclosure blocks.</evidence>
     </DF-STUDY-TASK>
@@ -177,44 +238,54 @@
     <DF-UPDATE-TASK NAME="UpdateTask" TRIGGER="Agent changes task content, metadata, path, prerequisites, or assets">
       <step-1>The agent treats the task card metadata and stable slug as the current canonical record.</step-1>
       <step-2>The agent updates the task content and identifies every derived artifact and inbound reference.</step-2>
-      <step-3>The agent synchronizes catalog placement and knowledge-graph facts.</step-3>
-      <step-4>The agent checks uniqueness, metadata equality, prerequisites, assets, and relative links.</step-4>
-      <step-5>A slug change uses a dedicated migration path and verifies all inbound references.</step-5>
-      <evidence>Before/after metadata, unique catalog projection, resolved links, graph delta, and migration evidence when applicable.</evidence>
+      <step-3>The agent reruns every M-TASK-VALIDATION gate affected by the change.</step-3>
+      <step-4>The agent synchronizes catalog placement and knowledge-graph facts.</step-4>
+      <step-5>The agent checks uniqueness, metadata equality, prerequisites, assets, supplementary links, and relative links.</step-5>
+      <step-6>A slug change uses a dedicated migration path and verifies all inbound references.</step-6>
+      <evidence>Before/after metadata, validation evidence, unique thematic projection, resolved links, graph delta, and migration evidence when applicable.</evidence>
     </DF-UPDATE-TASK>
   </DataFlow>
 
   <ImplementationOrder>
     <Phase-1 name="Governance" status="in-progress">
-      <goal>Record approved requirements, technology boundaries, module contracts, data flows, verification references, and stop conditions.</goal>
-      <step-1 module="M-GOVERNANCE" status="in-progress" verification="V-M-GOVERNANCE">Finalize and review all GRACE planning artifacts.</step-1>
+      <goal>Record approved requirements, worktree isolation, technology boundaries, module contracts, data flows, verification references, and stop conditions.</goal>
+      <step-1 module="M-GOVERNANCE" status="in-progress" verification="V-M-GOVERNANCE">Finalize and review the written specification and all GRACE planning artifacts.</step-1>
     </Phase-1>
     <Phase-2 name="TaskContract" status="pending">
-      <goal>Create the canonical GitHub-first task structure before any task content is added.</goal>
+      <goal>Create the canonical GitHub-first task structure and strict validation policy before any task content is added.</goal>
       <step-1 module="M-TASK-TEMPLATE" status="pending" verification="V-M-TASK-TEMPLATE">Create and render-review templates/task-template.md.</step-1>
+      <step-2 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Create docs/task-validation-policy.md and prove all terminal decisions and hybrid evidence routes.</step-2>
     </Phase-2>
     <Phase-3 name="StudentEntryPoint" status="pending">
       <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>
       <step-1 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
     </Phase-3>
-    <Phase-4 name="TaskWaves" status="pending">
-      <goal>Add mentor-approved tasks through atomic task, catalog, graph, and evidence updates.</goal>
-      <step-1 module="M-TASK-LIBRARY" status="pending" verification="V-M-TASK-LIBRARY">Add one task card from the canonical template.</step-1>
-      <step-2 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Synchronize the student catalog for the task wave.</step-2>
-      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor-review status in the Beads issue.</step-3>
+    <Phase-4 name="CandidateAudit" status="pending">
+      <goal>Freeze a finite neutral Beads candidate register, deduplicate it, and record a validation decision for every stable candidate ID.</goal>
+      <step-1 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
     </Phase-4>
-    <Phase-5 name="ScaleReview" status="pending">
+    <Phase-5 name="TaskWaves" status="pending">
+      <goal>Publish strictly accepted tasks through atomic task, catalog, graph, evidence, and mentor wave-acceptance updates.</goal>
+      <step-1 module="M-TASK-LIBRARY" status="pending" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
+      <step-2 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
+      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor wave acceptance in Beads.</step-3>
+    </Phase-5>
+    <Phase-6 name="FinalAudit" status="pending">
+      <goal>Prove that every candidate has a terminal decision and every accepted task remains unique, verified, linked, and mentor-accepted.</goal>
+      <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Run full candidate-status, catalog, graph, XML, Markdown, link, branch-divergence, and acceptance checks.</step-1>
+    </Phase-6>
+    <Phase-7 name="ScaleReview" status="pending">
       <goal>Reassess controlled vocabularies and deterministic validation only after observed catalog size or drift justifies added tooling.</goal>
       <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Review drift evidence and explicitly approve or reject automation.</step-1>
-    </Phase-5>
+    </Phase-7>
   </ImplementationOrder>
 
   <ExecutionPolicy>
     <default-profile>balanced</default-profile>
     <controller-owns>docs/development-plan.xml, docs/knowledge-graph.xml, docs/verification-plan.xml, and catalog synchronization decisions</controller-owns>
-    <worker-owns>Only the explicitly approved task card, colocated assets, and packet-scoped derived updates</worker-owns>
+    <worker-owns>Only the explicitly accepted task cards, colocated assets, and packet-scoped derived updates</worker-owns>
     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
-    <replan-trigger>Ambiguous metadata, missing prerequisite or asset, unexpected GitHub rendering, contradictory task and catalog facts, unreviewed solution logic, or any requirement for new runtime tooling.</replan-trigger>
-    <checkpoint-requirement>Every step must leave assumptions, artifacts changed, checks run, observed evidence, mentor-review status, and next action.</checkpoint-requirement>
+    <replan-trigger>Ambiguous metadata or environment, duplicate learning goal, missing prerequisite or asset, unexpected GitHub rendering, contradictory task and catalog facts, unavailable mandatory evidence, or any requirement for new permanent runtime tooling.</replan-trigger>
+    <checkpoint-requirement>Every step must leave assumptions, validation decisions, artifacts changed, checks run, observed evidence, mentor wave-acceptance status, and next action.</checkpoint-requirement>
   </ExecutionPolicy>
 </DevelopmentPlan>

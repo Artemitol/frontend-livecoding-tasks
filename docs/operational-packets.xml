@@ -1,4 +1,4 @@
-<OperationalPackets VERSION="0.1.0">
+<OperationalPackets VERSION="0.2.0">
   <ExecutionPacketTemplate>
     <!-- Canonical controller-to-worker execution packet. -->
     <ExecutionPacket>
@@ -11,24 +11,25 @@
         <file-3>README.md</file-3>
       </write-scope>
       <contract-excerpt><![CDATA[
-Planned module contract excerpt goes here.
+Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. The task card is canonical for metadata, while README.md and knowledge-graph annotations are derived and must change atomically.
       ]]></contract-excerpt>
       <graph-entry-excerpt><![CDATA[
-Knowledge graph entry excerpt goes here.
+M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLATE, is governed by M-GOVERNANCE, and is projected into M-CATALOG.
       ]]></graph-entry-excerpt>
       <dependency-contract-summaries>
         <dependency-1 module="M-GOVERNANCE">Authoring, synchronization, stop-condition, and Beads evidence rules.</dependency-1>
         <dependency-2 module="M-TASK-TEMPLATE">Canonical metadata labels, visible sections, and progressive-disclosure structure.</dependency-2>
+        <dependency-3 module="M-TASK-VALIDATION">Strict validation decisions and hybrid evidence; only accepted can be published.</dependency-3>
       </dependency-contract-summaries>
       <verification-excerpt><![CDATA[
-Verification-plan excerpt goes here.
+Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify hybrid task evidence, local and supplementary links, unique thematic catalog projection, one graph annotation, and mentor wave acceptance.
       ]]></verification-excerpt>
       <assumptions>
-        <assumption-1>The mentor supplied or approved unambiguous metadata and task intent.</assumption-1>
-        <assumption-2>The stable task slug and all prerequisites can be resolved before editing.</assumption-2>
+        <assumption-1>The task has an accepted validation decision with task-appropriate evidence.</assumption-1>
+        <assumption-2>The stable task slug, controlled metadata, execution environment, prerequisites, assets, and supplementary links can be resolved before editing.</assumption-2>
       </assumptions>
       <stop-conditions>
-        <condition-1>Stop for ambiguous metadata, missing prerequisite or asset, unreviewed solution logic, unexpected GitHub rendering, slug migration, or new tooling.</condition-1>
+        <condition-1>Stop for non-accepted validation, ambiguous metadata or environment, duplicate goal, missing prerequisite or asset, broken supplementary link, unavailable mandatory evidence, unexpected GitHub rendering, slug migration, or new permanent tooling.</condition-1>
       </stop-conditions>
       <retry-budget>2</retry-budget>
       <checkpoint-fields>
@@ -36,6 +37,8 @@ Verification-plan excerpt goes here.
         <field-2>commands-run</field-2>
         <field-3>evidence-captured</field-3>
         <field-4>next-action</field-4>
+        <field-5>validation-decision</field-5>
+        <field-6>wave-acceptance-status</field-6>
       </checkpoint-fields>
       <expected-graph-delta-fields>
         <field-1>imports</field-1>
@@ -55,6 +58,25 @@ Verification-plan excerpt goes here.
     </ExecutionPacket>
   </ExecutionPacketTemplate>
 
+  <CandidateValidationRecordTemplate>
+    <!-- Canonical candidate decision recorded in Beads before publication. -->
+    <CandidateValidationRecord>
+      <candidate-id>candidate-stable-id</candidate-id>
+      <candidate-register-size>finite frozen count</candidate-register-size>
+      <story-id>frontend-livecoding-tasks-story-id</story-id>
+      <learning-goal>Independently authored one-sentence observable learning goal.</learning-goal>
+      <proposed-topic>Controlled topic value</proposed-topic>
+      <decision>accepted | needs-rewrite | rejected | duplicate</decision>
+      <decision-reason>Concise contract, quality, or duplication reason.</decision-reason>
+      <duplicate-target>Stable candidate ID or none</duplicate-target>
+      <evidence-type>execution | type-check | trace | browser | manual</evidence-type>
+      <observed-result>Concrete result supporting the decision.</observed-result>
+      <wave-id>Wave child issue ID for accepted, otherwise none</wave-id>
+      <remaining-risk>Known residual risk or none</remaining-risk>
+      <wave-acceptance-status>not-applicable | pending | accepted | changes-requested</wave-acceptance-status>
+    </CandidateValidationRecord>
+  </CandidateValidationRecordTemplate>
+
   <GraphDeltaTemplate>
     <!-- Canonical worker-to-controller graph delta. -->
     <GraphDelta module="M-TASK-LIBRARY">
@@ -71,7 +93,7 @@ Verification-plan excerpt goes here.
       <cross-links-added />
       <cross-links-removed />
       <notes>
-        <note-1>Only list graph facts that really changed in the code.</note-1>
+        <note-1>Only list graph facts that really changed in repository artifacts.</note-1>
       </notes>
     </GraphDelta>
   </GraphDeltaTemplate>
@@ -85,14 +107,15 @@ Verification-plan excerpt goes here.
       </test-files-added>
       <test-files-removed />
       <module-checks>
-        <command-1>Verify exact task metadata labels and mandatory document anchors.</command-1>
-        <command-2>Resolve prerequisite, asset, and catalog links against the repository filesystem.</command-2>
-        <command-3>Prove that the task slug appears exactly once in the catalog and graph annotations.</command-3>
+        <command-1>Verify accepted validation status, exact metadata labels, controlled values, execution environment, and mandatory document anchors.</command-1>
+        <command-2>Resolve prerequisite, asset, catalog, and supplementary links.</command-2>
+        <command-3>Verify task-appropriate execution, type-check, trace, browser, or manual evidence.</command-3>
+        <command-4>Prove that the task slug appears exactly once in thematic catalog tables and graph annotations.</command-4>
       </module-checks>
       <required-evidence-anchors>
         <marker-1>canonical metadata table</marker-1>
         <marker-2>Условие / Критерии готовности / Теория / Подсказка N / Решение / Самопроверка</marker-2>
-        <marker-3>Beads mentor-review status</marker-3>
+        <marker-3>Beads validation decision and mentor wave-acceptance status</marker-3>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>A task change must not complete before catalog and graph synchronization is verified.</assertion-1>
@@ -101,7 +124,7 @@ Verification-plan excerpt goes here.
         <item-1>Compare canonical task metadata with the catalog row and graph annotation.</item-1>
       </wave-follow-up>
       <phase-follow-up>
-        <item-1>Run the full catalog projection, vocabulary, XML, and sampled GitHub-rendering review.</item-1>
+        <item-1>Run the full candidate-status, catalog projection, vocabulary, XML, link, evidence, acceptance, and sampled GitHub-rendering review.</item-1>
       </phase-follow-up>
     </VerificationDelta>
   </VerificationDeltaTemplate>
@@ -139,6 +162,8 @@ Verification-plan excerpt goes here.
       </evidence-captured>
       <retry-budget-used>0</retry-budget-used>
       <next-action>Ready for shared-artifact sync.</next-action>
+      <validation-decision>accepted</validation-decision>
+      <wave-acceptance-status>pending mentor acceptance</wave-acceptance-status>
     </CheckpointReport>
   </CheckpointReportTemplate>
 </OperationalPackets>

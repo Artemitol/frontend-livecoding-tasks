@@ -42,6 +42,18 @@ Markdown-only tasks do not require automated tests. Review their structure, link
 
 Agents are authorized to create branches, commits, pushes, and pull requests automatically. Never commit or push directly to `main`. Before making project changes, create or reuse a `feature/*` branch. After a coherent change passes its relevant verification gates, create a focused commit, push the active `feature/*` branch, and open a pull request targeting `main` without asking for additional permission. An explicit user instruction not to branch, commit, push, or create a pull request overrides this default for that task.
 
+### Worktree Isolation
+
+Before making project changes, work from an isolated Git worktree based on the current remote default branch:
+
+1. Detect whether the current checkout is already a linked worktree. Do not create a nested worktree.
+2. Run `git fetch origin` and use the resulting `origin/main` as the base; do not assume the local `main` is current.
+3. Prefer a native worktree facility when the agent environment provides one. Otherwise use `git worktree add`.
+4. For a Beads story, create or reuse `feature/<story-id>` and keep every child issue for that story in the same worktree and branch.
+5. Prefer `.worktrees/` for a project-local manual worktree. The directory must remain ignored by Git.
+6. Verify a clean project-appropriate baseline before editing. If the baseline fails, report the evidence and get direction before proceeding.
+7. Before final delivery, fetch `origin` again and report branch divergence. Do not force-push, rewrite published history, or integrate a conflicting `main` without the required explicit authority.
+
 Write commit messages in English and follow Conventional Commits 1.0.0:
 
 ```

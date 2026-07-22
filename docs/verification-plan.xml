@@ -1,12 +1,12 @@
-<VerificationPlan VERSION="0.2.0">
+<VerificationPlan VERSION="0.3.0">
   <GlobalPolicy>
     <evidence-format>module-id, verification-ref, artifact-path, check, observed-result</evidence-format>
     <deterministic-first>true</deterministic-first>
     <module-level-focus>Check mandatory document structure, stable anchors, and local references close to the changed artifact.</module-level-focus>
-    <wave-level-focus>Prove atomic synchronization across task card, catalog, knowledge graph, and verification deltas.</wave-level-focus>
+    <wave-level-focus>Prove strict validation and atomic synchronization across 8-10 accepted task cards, thematic catalog tables, knowledge graph, evidence, and mentor acceptance.</wave-level-focus>
     <phase-level-focus>Validate all GRACE XML, catalog projection integrity, controlled vocabulary use, and GitHub rendering when shared Markdown structure changes.</phase-level-focus>
     <autonomy-gate>Every module requires executable or manual checks, observable artifact evidence, stop conditions, and wave or phase follow-up before autonomous edits.</autonomy-gate>
-    <mentor-review-gate>Structural checks never replace mentor review of new or materially changed solution content.</mentor-review-gate>
+    <mentor-review-gate>Strict agent validation never replaces mentor wave acceptance; the mentor may spot-check individual cards.</mentor-review-gate>
     <redaction>Never include secrets, credentials, private student data, or proprietary source material in repository content or evidence.</redaction>
   </GlobalPolicy>
 
@@ -22,12 +22,12 @@
     </VF-001>
     <VF-002 NAME="AgentAddsTask" USE_CASES="UC-003" DATA_FLOW="DF-ADD-TASK" PRIORITY="high">
       <scenario>An AI agent adds one task from a mentor request.</scenario>
-      <expected-outcome>The task card, catalog projection, graph entry, and verification evidence change atomically, followed by mentor solution review.</expected-outcome>
+      <expected-outcome>An accepted task card, catalog projection, graph entry, and hybrid verification evidence change atomically, followed by mentor wave acceptance.</expected-outcome>
       <required-signals>
         <artifact-marker>tasks/&lt;task-slug&gt;/README.md</artifact-marker>
         <artifact-marker>README.md unique catalog entry</artifact-marker>
         <artifact-marker>docs/knowledge-graph.xml task-library context</artifact-marker>
-        <trace-sequence>CONTRACT_READ -> METADATA_RESOLVED -> TASK_WRITTEN -> CATALOG_SYNCED -> GRAPH_SYNCED -> CHECKED -> MENTOR_REVIEWED</trace-sequence>
+        <trace-sequence>CONTRACT_READ -> METADATA_RESOLVED -> CANDIDATE_VALIDATED -> TASK_WRITTEN -> CATALOG_SYNCED -> GRAPH_SYNCED -> CHECKED -> WAVE_ACCEPTED</trace-sequence>
       </required-signals>
     </VF-002>
     <VF-003 NAME="AgentUpdatesTask" USE_CASES="UC-004" DATA_FLOW="DF-UPDATE-TASK" PRIORITY="high">
@@ -39,6 +39,15 @@
         <trace-sequence>CHANGE_CLASSIFIED -> DERIVED_ARTIFACTS_IDENTIFIED -> SYNCHRONIZED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
       </required-signals>
     </VF-003>
+    <VF-004 NAME="AgentValidatesCandidate" USE_CASES="UC-005" DATA_FLOW="DF-VALIDATE-TASK, DF-PUBLISH-TASK-WAVE" PRIORITY="high">
+      <scenario>An agent evaluates a candidate before publication and later publishes accepted cards as one wave.</scenario>
+      <expected-outcome>Every stable ID in the frozen candidate register receives accepted, needs-rewrite, rejected, or duplicate with evidence; only accepted enters tasks/, and the wave remains open until mentor acceptance.</expected-outcome>
+      <required-signals>
+        <artifact-marker>Beads validation decision and evidence type</artifact-marker>
+        <artifact-marker>accepted card or neutral non-publication reason</artifact-marker>
+        <trace-sequence>IDENTITY -> LEARNING_VALUE -> CONTRACT -> LOCAL_COMPLETENESS -> EXAMPLES -> SOLUTION -> VERIFICATION -> EDITORIAL -> DECISION -> WAVE_ACCEPTANCE</trace-sequence>
+      </required-signals>
+    </VF-004>
   </CriticalFlows>
 
   <ModuleVerification>
@@ -53,13 +62,14 @@
         <file>docs/verification-plan.xml</file>
         <file>docs/knowledge-graph.xml</file>
         <file>docs/operational-packets.xml</file>
+        <file>docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md</file>
       </test-files>
       <module-checks>
         <check-1>xmllint --noout docs/*.xml</check-1>
         <check-2>Search for unresolved template placeholders and placeholder IDs.</check-2>
         <check-3>Cross-check every M-*, V-M-*, DF-*, VF-*, UC-*, Phase-*, and Gate-Phase-* reference.</check-3>
         <check-4>Verify that every accepted task slug has exactly one export-&lt;task-slug&gt; annotation under M-TASK-LIBRARY.</check-4>
-        <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires delivery from feature/* through a pull request targeting main, and that .gitignore excludes /docs/superpowers/.</check-5>
+        <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires fetch plus isolated worktree creation from current origin/main, keeps one feature/&lt;story-id&gt; branch per story, and that .gitignore excludes .worktrees/ without excluding written specifications.</check-5>
         <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
       </module-checks>
       <scenarios>
@@ -73,6 +83,8 @@
         <marker-2>V-M-GOVERNANCE</marker-2>
         <marker-3>$HOME/.bun/bin/grace</marker-3>
         <marker-4>.agents/skills/grace-cli/SKILL.md</marker-4>
+        <marker-5>feature/&lt;story-id&gt;</marker-5>
+        <marker-6>.worktrees/</marker-6>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>No implementation phase begins while a blocking shared-artifact contradiction remains.</assertion-1>
@@ -86,10 +98,11 @@
         <file>templates/task-template.md</file>
       </test-files>
       <module-checks>
-        <check-1>Verify exact mandatory metadata labels: Технологии, Тема, Уровень, Время, Навыки, and Предварительные знания.</check-1>
-        <check-2>Verify visible goal, prompt, starter-code guidance, readiness criteria, and self-check sections.</check-2>
-        <check-3>Verify separate closed details blocks for theory, each hint, and the solution; reject the open attribute.</check-3>
-        <check-4>Review the rendered GitHub view whenever the template or its HTML structure changes.</check-4>
+        <check-1>Verify exact mandatory metadata labels: Технологии, Тема, Формат, Уровень, Время, Навыки, Предварительные знания, and Среда выполнения.</check-1>
+        <check-2>Verify controlled formats Реализация, Отладка, Разбор, Прогноз вывода and levels Базовый, Средний, Продвинутый.</check-2>
+        <check-3>Verify visible goal, prompt, inputs or analysis questions, constraints, starter-code guidance, examples, readiness criteria, self-check, and optional targeted additional materials.</check-3>
+        <check-4>Verify separate closed details blocks for theory, each hint, and the solution; reject the open attribute.</check-4>
+        <check-5>Review the rendered GitHub view whenever the template or its HTML structure changes.</check-5>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">The template renders compactly and allows theory, one hint at a time, and the solution to be opened independently.</scenario-1>
@@ -110,6 +123,37 @@
       <phase-follow-up>Sample the GitHub-rendered template and first conforming task.</phase-follow-up>
     </V-M-TASK-TEMPLATE>
 
+    <V-M-TASK-VALIDATION MODULE="M-TASK-VALIDATION" PRIORITY="high">
+      <test-files>
+        <file>docs/task-validation-policy.md</file>
+        <file>Beads candidate and wave records</file>
+      </test-files>
+      <module-checks>
+        <check-1>Apply identity, learning-value, contract, local-completeness, examples, solution, verification, and editorial gates in order.</check-1>
+        <check-2>Freeze a finite Beads candidate register with stable IDs, then verify every candidate decision is accepted, needs-rewrite, rejected, or duplicate with a concise reason and evidence type.</check-2>
+        <check-3>Run JavaScript, type-check TypeScript, exercise React or DOM in a temporary harness, use browser evidence for UI, or compare a written trace with actual output as appropriate.</check-3>
+        <check-4>Verify external materials are targeted and reachable directly or through a valid redirect while prompt, starter code, fixtures, and solution remain local; required reading must not require a paid subscription or closed account.</check-4>
+        <check-5>Reject publication when mandatory browser evidence is unavailable; record BLOCKED rather than PASS.</check-5>
+      </module-checks>
+      <scenarios>
+        <scenario-1 kind="success">An independently authored candidate has a unique learning goal, explicit environment, correct examples and solution, and matching hybrid evidence, so it becomes accepted.</scenario-1>
+        <scenario-2 kind="failure">An ambiguous, duplicated, incorrect, externally incomplete, or unverifiable candidate cannot enter tasks/.</scenario-2>
+      </scenarios>
+      <required-evidence-anchors>
+        <marker-1>ValidationDecision</marker-1>
+        <marker-2>evidence type and observed result</marker-2>
+        <marker-3>duplicate merge or rejection reason</marker-3>
+        <marker-4>mentor wave-acceptance status</marker-4>
+        <marker-5>candidate register size and stable candidate ID</marker-5>
+      </required-evidence-anchors>
+      <required-trace-assertions>
+        <assertion-1>Only accepted produces an AcceptedTaskCard.</assertion-1>
+        <assertion-2>Temporary harnesses do not introduce permanent repository runtime tooling.</assertion-2>
+      </required-trace-assertions>
+      <wave-follow-up>Group 8-10 accepted cards, or 1-7 in the final incomplete wave; commit and push the technically passing wave, publish the validation report, and keep the child Beads issue open until mentor acceptance.</wave-follow-up>
+      <phase-follow-up>Prove terminal-decision count equals frozen candidate-register size and no needs-rewrite remains at story completion.</phase-follow-up>
+    </V-M-TASK-VALIDATION>
+
     <V-M-TASK-LIBRARY MODULE="M-TASK-LIBRARY" PRIORITY="high">
       <test-files>
         <file>tasks/&lt;task-slug&gt;/README.md</file>
@@ -117,18 +161,18 @@
       </test-files>
       <module-checks>
         <check-1>Enumerate task cards and verify each conforms to the current template contract.</check-1>
-        <check-2>Resolve every prerequisite and asset link against the repository filesystem.</check-2>
-        <check-3>Verify metadata vocabulary, stable slug, self-contained theory, incremental hints, and task-specific version assumptions.</check-3>
-        <check-4>Record explicit mentor review for new or materially changed solution content.</check-4>
+        <check-2>Resolve every prerequisite and asset link against the repository filesystem and verify every supplementary external link is reachable.</check-2>
+        <check-3>Verify controlled metadata vocabulary, stable slug, local prompt and solution completeness, incremental hints, and task-specific environment assumptions.</check-3>
+        <check-4>Verify an accepted validation decision and record mentor wave acceptance before closing the child issue.</check-4>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">A student can understand and attempt the task using only the GitHub-rendered card.</scenario-1>
-        <scenario-2 kind="failure">A missing prerequisite, missing asset, undeclared knowledge dependency, ambiguous classification, or unreviewed solution blocks acceptance.</scenario-2>
+        <scenario-2 kind="failure">A non-accepted decision, missing prerequisite or asset, broken required or supplementary link, undeclared environment dependency, ambiguous classification, or unaccepted wave blocks completion.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
         <marker-1>canonical metadata table</marker-1>
         <marker-2>relative prerequisite links</marker-2>
-        <marker-3>mentor-review status</marker-3>
+        <marker-3>validation decision and mentor wave-acceptance status</marker-3>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>A task edit must not complete before dependent catalog and graph updates are verified.</assertion-1>
@@ -145,7 +189,7 @@
       <module-checks>
         <check-1>Enumerate all task cards and prove that each stable slug appears exactly once in the catalog.</check-1>
         <check-2>Resolve every catalog link and compare projected metadata with the canonical task metadata.</check-2>
-        <check-3>Verify one compact canonical table, exactly one row per task, all required metadata columns, and an explicit empty state before the first task exists.</check-3>
+        <check-3>Verify thematic tables, exactly one row per task across all themes, all catalog metadata columns, controlled topic names, level-then-name ordering, and an explicit empty state before the first task exists.</check-3>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">A student can choose and open a task using compact, accurate metadata.</scenario-1>
@@ -174,18 +218,20 @@
       </commands>
       <required-evidence>
         <evidence-1>All approved design decisions appear in requirements, technology, development plan, verification plan, and knowledge graph.</evidence-1>
-        <evidence-2>No unresolved placeholder or blocking open question affects Phases 2 through 4.</evidence-2>
+        <evidence-2>No unresolved placeholder or blocking open question affects Phases 2 through 6.</evidence-2>
       </required-evidence>
     </Gate-Phase-1>
     <Gate-Phase-2 PHASE="Phase-2">
-      <goal>The task template proves the GitHub-first progressive-disclosure contract before any task content is added.</goal>
+      <goal>The task template and strict validation policy prove the GitHub-first publication contract before any task content is added.</goal>
       <commands>
         <command-1>Run all V-M-TASK-TEMPLATE checks.</command-1>
-        <command-2>Review the rendered GitHub template or first conforming task.</command-2>
+        <command-2>Run all V-M-TASK-VALIDATION policy checks.</command-2>
+        <command-3>Review the rendered GitHub template or first conforming task.</command-3>
       </commands>
       <required-evidence>
         <evidence-1>All mandatory metadata and document anchors exist.</evidence-1>
         <evidence-2>Theory, hints, and solution are independently collapsed by default.</evidence-2>
+        <evidence-3>Only accepted can produce an AcceptedTaskCard and every other decision remains unpublished.</evidence-3>
       </required-evidence>
     </Gate-Phase-2>
     <Gate-Phase-3 PHASE="Phase-3">
@@ -198,18 +244,41 @@
       </required-evidence>
     </Gate-Phase-3>
     <Gate-Phase-4 PHASE="Phase-4">
-      <goal>Each task wave leaves the student view and agent navigation internally consistent.</goal>
+      <goal>The initial candidate pool is deduplicated and every candidate has an evidence-backed validation state before wave publication.</goal>
       <commands>
-        <command-1>Run V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE.</command-1>
-        <command-2>Scan changed files for trailing whitespace, unresolved placeholders, and malformed document anchors.</command-2>
+        <command-1>Freeze the Beads candidate register, run V-M-TASK-VALIDATION for every stable candidate ID, and group accepted cards into waves of 8-10 with a final-wave exception of 1-7.</command-1>
       </commands>
       <required-evidence>
-        <evidence-1>Task, catalog, graph, and verification deltas are atomic.</evidence-1>
-        <evidence-2>All links resolve and the task appears exactly once.</evidence-2>
-        <evidence-3>Mentor solution review is recorded in the task's Beads issue before that issue is closed.</evidence-3>
+        <evidence-1>Every candidate is accepted, needs-rewrite, rejected, or duplicate with a reason and evidence type.</evidence-1>
+        <evidence-2>Duplicate learning goals are merged before publication.</evidence-2>
+        <evidence-3>The candidate register has a fixed size and every unplanned addition receives a new stable ID before validation.</evidence-3>
       </required-evidence>
     </Gate-Phase-4>
     <Gate-Phase-5 PHASE="Phase-5">
+      <goal>Each accepted wave leaves the student view, validation evidence, and agent navigation internally consistent.</goal>
+      <commands>
+        <command-1>Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE.</command-1>
+        <command-2>Scan changed files for trailing whitespace, unresolved placeholders, malformed document anchors, and broken local or external links.</command-2>
+      </commands>
+      <required-evidence>
+        <evidence-1>Accepted task, catalog, graph, and verification deltas are atomic.</evidence-1>
+        <evidence-2>All links resolve and every task appears exactly once.</evidence-2>
+        <evidence-3>Mentor wave acceptance is recorded before the child Beads issue is closed.</evidence-3>
+      </required-evidence>
+    </Gate-Phase-5>
+    <Gate-Phase-6 PHASE="Phase-6">
+      <goal>The complete initial library has no unresolved candidate, validation, catalog, graph, link, acceptance, or Git-divergence defect.</goal>
+      <commands>
+        <command-1>Run every module verification and the full GRACE, Markdown, link, catalog-projection, and Beads-status audit.</command-1>
+        <command-2>Fetch origin and report branch divergence from origin/main without rewriting published history.</command-2>
+      </commands>
+      <required-evidence>
+        <evidence-1>No needs-rewrite remains and terminal-decision count equals frozen candidate-register size.</evidence-1>
+        <evidence-2>Every accepted card is mentor-wave-accepted and appears exactly once in catalog and graph.</evidence-2>
+        <evidence-3>The feature branch is pushed without force and divergence is reported.</evidence-3>
+      </required-evidence>
+    </Gate-Phase-6>
+    <Gate-Phase-7 PHASE="Phase-7">
       <goal>Automation is introduced only when observed scale or drift justifies its maintenance cost.</goal>
       <commands>
         <command-1>Review task count, catalog drift incidents, vocabulary conflicts, and repeated manual verification cost.</command-1>
@@ -218,14 +287,14 @@
         <evidence-1>A Beads issue records the observed problem, alternatives, mentor decision, and resulting scope.</evidence-1>
         <evidence-2>No generator, validator, CI, or runtime tooling is added without explicit approval.</evidence-2>
       </required-evidence>
-    </Gate-Phase-5>
+    </Gate-Phase-7>
   </PhaseGates>
 
   <FailurePackets>
     <packet-template>
       <canonical-schema>docs/operational-packets.xml</canonical-schema>
       <expected-fields>scenario, contract-ref, expected-evidence, observed-evidence, first-divergent-artifact-or-anchor, next-action</expected-fields>
-      <stop-conditions>ambiguous metadata; missing prerequisite or asset; unexpected GitHub rendering; catalog drift; unresolved inbound link; unreviewed solution</stop-conditions>
+      <stop-conditions>ambiguous metadata or environment; duplicate learning goal; missing prerequisite or asset; broken supplementary link; unexpected GitHub rendering; catalog drift; unresolved inbound link; unavailable mandatory evidence; unaccepted wave</stop-conditions>
     </packet-template>
   </FailurePackets>
 </VerificationPlan>

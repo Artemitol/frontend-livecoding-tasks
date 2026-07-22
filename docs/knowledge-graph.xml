@@ -1,15 +1,15 @@
 <KnowledgeGraph>
-  <Project NAME="frontend-livecoding-tasks" VERSION="0.2.0">
+  <Project NAME="frontend-livecoding-tasks" VERSION="0.3.0">
     <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
 
     <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="partial">
       <purpose>Define authoring, delivery, synchronization, verification, and stop-condition rules for the repository.</purpose>
-      <path>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml</path>
+      <path>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml; docs/superpowers/specs/*.md</path>
       <depends>none</depends>
       <verification-ref>V-M-GOVERNANCE</verification-ref>
       <annotations>
-        <export-authoringRules PURPOSE="Expose task authoring, delivery, tool-resolution, and synchronization requirements" />
+        <export-authoringRules PURPOSE="Expose task authoring, worktree isolation, delivery, tool-resolution, and synchronization requirements" />
         <export-verificationContracts PURPOSE="Expose shared completion evidence and phase gates" />
       </annotations>
     </M-GOVERNANCE>
@@ -20,15 +20,27 @@
       <depends>M-GOVERNANCE</depends>
       <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
       <annotations>
-        <type-TaskMetadata PURPOSE="Exact labels and values for technologies, topic, level, duration, skills, and prerequisites" />
+        <type-TaskMetadata PURPOSE="Exact labels and controlled values for technologies, topic, format, level, duration, skills, prerequisites, and execution environment" />
         <export-taskSchema PURPOSE="Expose mandatory metadata, visible sections, progressive disclosure, and self-check structure" />
       </annotations>
     </M-TASK-TEMPLATE>
 
-    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="planned">
-      <purpose>Store self-contained task cards and their canonical metadata.</purpose>
-      <path>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</path>
+    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" STATUS="planned">
+      <purpose>Deduplicate and strictly validate independently authored candidates before publication.</purpose>
+      <path>docs/task-validation-policy.md; Beads validation and wave-acceptance records</path>
       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+      <verification-ref>V-M-TASK-VALIDATION</verification-ref>
+      <annotations>
+        <type-ValidationDecision PURPOSE="accepted, needs-rewrite, rejected, or duplicate" />
+        <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and one validation decision per entry" />
+        <export-validateCandidate PURPOSE="Apply strict content, solution, evidence, and editorial gates" />
+      </annotations>
+    </M-TASK-VALIDATION>
+
+    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="planned">
+      <purpose>Store accepted, locally complete task cards and their canonical metadata.</purpose>
+      <path>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</path>
+      <depends>M-TASK-VALIDATION, M-TASK-TEMPLATE, M-GOVERNANCE</depends>
       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
       <annotations>
         <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
@@ -37,17 +49,23 @@
     </M-TASK-LIBRARY>
 
     <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="planned">
-      <purpose>Provide the student entry point and an agent-synchronized projection of canonical task metadata.</purpose>
+      <purpose>Provide the student entry point and thematic, agent-synchronized projections of canonical task metadata.</purpose>
       <path>README.md</path>
       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
       <verification-ref>V-M-CATALOG</verification-ref>
       <annotations>
-        <export-studentIndex PURPOSE="Expose one compact canonical table with exactly one row per task and all required metadata" />
+        <export-studentIndex PURPOSE="Expose thematic tables with exactly one row per task and all catalog metadata" />
       </annotations>
     </M-CATALOG>
 
     <CrossLink from="M-TASK-TEMPLATE" to="M-GOVERNANCE" relation="governed-by" />
     <CrossLink from="M-GOVERNANCE" to="M-TASK-TEMPLATE" relation="governs" />
+    <CrossLink from="M-TASK-VALIDATION" to="M-TASK-TEMPLATE" relation="validates-against" />
+    <CrossLink from="M-TASK-TEMPLATE" to="M-TASK-VALIDATION" relation="defines-contract-for" />
+    <CrossLink from="M-TASK-VALIDATION" to="M-GOVERNANCE" relation="governed-by" />
+    <CrossLink from="M-GOVERNANCE" to="M-TASK-VALIDATION" relation="governs" />
+    <CrossLink from="M-TASK-LIBRARY" to="M-TASK-VALIDATION" relation="accepts-output-from" />
+    <CrossLink from="M-TASK-VALIDATION" to="M-TASK-LIBRARY" relation="gates-publication-into" />
     <CrossLink from="M-TASK-LIBRARY" to="M-TASK-TEMPLATE" relation="conforms-to" />
     <CrossLink from="M-TASK-TEMPLATE" to="M-TASK-LIBRARY" relation="defines-contract-for" />
     <CrossLink from="M-TASK-LIBRARY" to="M-GOVERNANCE" relation="governed-by" />
