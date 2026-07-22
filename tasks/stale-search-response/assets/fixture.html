@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>candidate-006 — stale search response</title>
+    <style>body{font:16px/1.5 system-ui;margin:2rem;max-width:52rem}label,button{margin-right:.5rem}pre{padding:1rem;background:#f4f4f4}.pass{color:#087f23}.fail{color:#b00020}</style>
+  </head>
+  <body>
+    <h1>candidate-006: актуальный результат поиска</h1>
+    <p>Локальный controlled fetch: <code>старый</code> отвечает через 80 мс, <code>новый</code> — через 10 мс.</p>
+    <label>Запрос <input id="query" value="старый"></label>
+    <button id="search" type="button">Искать</button>
+    <button id="scenario" type="button">Запустить сценарий гонки</button>
+    <button id="failure" type="button">Проверить ошибку</button>
+    <p id="result" aria-live="polite">Результата нет.</p>
+    <pre id="trace"></pre>
+    <script type="module">
+      const queryInput = document.querySelector('#query');
+      const result = document.querySelector('#result');
+      const trace = document.querySelector('#trace');
+      let latestRequestId = 0;
+      const entries = [];
+      const log = (entry) => { entries.push(entry); trace.textContent = entries.join('\n'); console.log('[candidate-006]', entry); };
+      const localFetch = (query) => new Promise((resolve, reject) => setTimeout(() => {
+        if (query === 'ошибка') reject(new Error('Локальная ошибка fixture'));
+        else resolve({ query, items: [`${query}: результат`] });
+      }, query === 'старый' ? 80 : 10));
+      async function search(query) {
+        query = query.trim();
+        if (query === '') { result.textContent = 'Введите непустой запрос.'; result.className = 'fail'; log('reject empty query'); return; }
+        const requestId = ++latestRequestId;
+        log(`start #${requestId}: ${query}`);
+        try {
+          const response = await localFetch(query);
+          if (requestId !== latestRequestId) { log(`ignore stale #${requestId}: ${response.query}`); return; }
+          result.textContent = `Результат: ${response.items[0]}`;
+          result.className = '';
+          log(`render current #${requestId}: ${response.query}`);
+        } catch (error) {
+          if (requestId !== latestRequestId) { log(`ignore stale failure #${requestId}: ${query}`); return; }
+          result.textContent = `Ошибка поиска: ${error.message}`;
+          result.className = 'fail';
+          log(`render failure #${requestId}: ${query}`);
+        }
+      }
+      document.querySelector('#search').addEventListener('click', () => search(queryInput.value));
+      document.querySelector('#failure').addEventListener('click', () => search('ошибка'));
+      document.querySelector('#scenario').addEventListener('click', async () => {
+        entries.length = 0; trace.textContent = ''; result.textContent = 'Ожидание ответов…';
+        const staleRequestId = latestRequestId + 1;
+        void search('старый');
+        void search('новый');
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const pass = result.textContent === 'Результат: новый: результат' && entries.includes(`ignore stale #${staleRequestId}: старый`);
+        result.textContent += ` — ${pass ? 'PASS' : 'FAIL'}`;
+        result.className = pass ? 'pass' : 'fail';
+        console.log('[candidate-006] result', { pass, latestRequestId, entries: [...entries] });
+      });
+    </script>
+  </body>
+</html>

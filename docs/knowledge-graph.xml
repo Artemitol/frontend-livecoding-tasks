@@ -37,7 +37,7 @@
       </annotations>
     </M-TASK-VALIDATION>
 
-    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="planned">
+    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="implemented">
       <purpose>Store accepted, locally complete task cards and their canonical metadata.</purpose>
       <path>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</path>
       <depends>M-TASK-VALIDATION, M-TASK-TEMPLATE, M-GOVERNANCE</depends>
@@ -45,6 +45,16 @@
       <annotations>
         <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
         <export-taskCard PURPOSE="Expose the complete student-facing exercise through GitHub" />
+        <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" />
+        <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" />
+        <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" />
+        <export-this-callback-binding PURPOSE="Expose the accepted student-facing task card at tasks/this-callback-binding/README.md" />
+        <export-browser-event-loop-order PURPOSE="Expose the accepted student-facing task card at tasks/browser-event-loop-order/README.md" />
+        <export-stale-search-response PURPOSE="Expose the accepted student-facing task card at tasks/stale-search-response/README.md" />
+        <export-discriminated-load-state PURPOSE="Expose the accepted student-facing task card at tasks/discriminated-load-state/README.md" />
+        <export-typed-object-property PURPOSE="Expose the accepted student-facing task card at tasks/typed-object-property/README.md" />
+        <export-response-union-narrowing PURPOSE="Expose the accepted student-facing task card at tasks/response-union-narrowing/README.md" />
+        <export-validate-unknown-profile PURPOSE="Expose the accepted student-facing task card at tasks/validate-unknown-profile/README.md" />
       </annotations>
     </M-TASK-LIBRARY>
 

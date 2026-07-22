@@ -120,7 +120,7 @@
       </notes>
     </M-TASK-VALIDATION>
 
-    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" LAYER="3" ORDER="1" STATUS="planned">
+    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" LAYER="3" ORDER="1" STATUS="implemented">
       <contract>
         <purpose>Store self-contained task cards whose metadata is canonical for every derived navigation artifact.</purpose>
         <inputs>
@@ -264,11 +264,11 @@
       <goal>Freeze a finite neutral Beads candidate register, deduplicate it, and record a validation decision for every stable candidate ID.</goal>
       <step-1 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
     </Phase-4>
-    <Phase-5 name="TaskWaves" status="pending">
+    <Phase-5 name="TaskWaves" status="in-progress">
       <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, evidence, pushed-commit, GitHub-rendered, report, and technical-status updates.</goal>
-      <step-1 module="M-TASK-LIBRARY" status="pending" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
-      <step-2 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
-      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas, record the complete report and technical publication status in Beads, close the wave, and continue.</step-3>
+      <step-1 module="M-TASK-LIBRARY" status="in-progress" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
+      <step-2 module="M-CATALOG" status="in-progress" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
+      <step-3 module="M-GOVERNANCE" status="in-progress" verification="V-M-GOVERNANCE">Apply graph and verification deltas, record the complete report and technical publication status in Beads, close the wave, and continue.</step-3>
     </Phase-5>
     <Phase-6 name="FinalAudit" status="pending">
       <goal>Prove that every candidate has a terminal decision and every accepted task remains unique, technically published, verified, and linked, then prepare the complete library for final user review.</goal>
