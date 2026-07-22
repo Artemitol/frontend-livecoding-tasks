@@ -45,6 +45,7 @@
     <V-M-GOVERNANCE MODULE="M-GOVERNANCE" PRIORITY="high">
       <test-files>
         <file>AGENTS.md</file>
+        <file>.gitignore</file>
         <file>docs/requirements.xml</file>
         <file>docs/technology.xml</file>
         <file>docs/development-plan.xml</file>
@@ -57,6 +58,7 @@
         <check-2>Search for unresolved template placeholders and placeholder IDs.</check-2>
         <check-3>Cross-check every M-*, V-M-*, DF-*, VF-*, UC-*, Phase-*, and Gate-Phase-* reference.</check-3>
         <check-4>Verify that every accepted task slug has exactly one export-&lt;task-slug&gt; annotation under M-TASK-LIBRARY.</check-4>
+        <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires delivery from feature/* through a pull request targeting main, and that .gitignore excludes /docs/superpowers/.</check-5>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>

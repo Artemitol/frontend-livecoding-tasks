@@ -10,7 +10,7 @@
   <Modules>
     <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" LAYER="0" ORDER="1" STATUS="partial">
       <contract>
-        <purpose>Define the repository's authoring, synchronization, verification, and stop-condition rules.</purpose>
+        <purpose>Define the repository's authoring, delivery, synchronization, verification, and stop-condition rules.</purpose>
         <inputs>
           <param name="approved-design" type="DesignDecisions" />
           <param name="repository-state" type="ArtifactSet" />
@@ -25,12 +25,12 @@
         </errors>
       </contract>
       <interface>
-        <export-authoringRules PURPOSE="Expose task authoring and synchronization requirements" />
+        <export-authoringRules PURPOSE="Expose task authoring, delivery, and synchronization requirements" />
         <export-verificationContracts PURPOSE="Expose module, flow, and phase completion evidence" />
       </interface>
       <depends>none</depends>
       <target>
-        <source>AGENTS.md; docs/*.xml</source>
+        <source>AGENTS.md; .gitignore; docs/*.xml</source>
         <tests>V-M-GOVERNANCE direct artifact checks</tests>
       </target>
       <observability>
