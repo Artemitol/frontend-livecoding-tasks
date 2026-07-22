@@ -45,6 +45,41 @@ GitHub-first база самостоятельных упражнений по f
 | [Безопасная обработка результата запроса](tasks/response-union-narrowing/README.md) | TypeScript | Отладка | Средний | 20 минут | discriminated union, сужение по Boolean-дискриминанту, обработка пустой строки | Union-типы и условные ветви |
 | [Проверка JSON-профиля без assertion](tasks/validate-unknown-profile/README.md) | TypeScript | Реализация | Продвинутый | 30 минут | unknown, type guard, валидация массива, discriminated union | `unknown`, union-типы и функции-предикаты типов |
 
+## DOM-события
+
+| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Удаление динамической строки через делегирование событий](tasks/delegated-dynamic-list/README.md) | JavaScript, DOM API | Реализация | Базовый | 18 минут | Всплытие click, поиск целевого action, безопасная проверка DOM-контейнера | Обработчик click |
+| [Повторная инициализация без дублирования listener](tasks/idempotent-event-listeners/README.md) | JavaScript, DOM API | Отладка | Средний | 20 минут | Парный lifecycle listener, cleanup, идемпотентная инициализация | addEventListener и removeEventListener |
+
+## Доступность интерфейса
+
+| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Вкладки с ARIA и клавиатурной навигацией](tasks/accessible-keyboard-tabs/README.md) | HTML, JavaScript, DOM API | Реализация | Средний | 30 минут | ARIA selected и controls, roving tabindex, Arrow keys, Home и End | HTML button и обработчик keydown |
+| [Диалог с удержанием и восстановлением фокуса](tasks/modal-focus-lifecycle/README.md) | HTML, JavaScript, DOM API | Отладка | Продвинутый | 30 минут | Modal dialog lifecycle, keyboard focus trap, Escape, restoration focus | HTML dialog, keydown и focus |
+
+## Состояние React
+
+| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Производный список без копии состояния](tasks/react-derived-list/README.md) | TypeScript, React | Реализация | Базовый | 20 минут | props, локальное состояние фильтра, производные данные, useMemo | Базовые props и useState |
+| [Три обновления счётчика в одном событии](tasks/react-batched-counter/README.md) | TypeScript, React | Отладка | Средний | 15 минут | функциональное обновление state, batching, отладка замыканий | useState и обработчики событий |
+
+## Эффекты React
+
+| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Подписка, которая следует за выбранным каналом](tasks/react-effect-subscription/README.md) | TypeScript, React | Отладка | Средний | 25 минут | useEffect, зависимости, cleanup, внешняя подписка | useState, useEffect |
+| [Идемпотентный cleanup в корневом StrictMode](tasks/react-strictmode-cleanup/README.md) | TypeScript, React | Разбор | Продвинутый | 30 минут | StrictMode, жизненный цикл effect, идемпотентный cleanup, причинная трассировка | useEffect и cleanup |
+
+## CSS-раскладка
+
+| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Длинное слово во flex-строке](tasks/flex-long-text-overflow/README.md) | HTML, CSS | Отладка | Средний | 20 минут | Flexbox, min-width, overflow-wrap, ручная проверка раскладки | Базовая flex-раскладка |
+| [Сетка карточек от ширины контейнера](tasks/container-responsive-grid/README.md) | HTML, CSS | Реализация | Продвинутый | 30 минут | CSS Grid, auto-fit, minmax, container-driven layout, ручное измерение | CSS Grid и fr-единицы |
+
 ## Как устроена карточка
 
 Метаданные внутри `tasks/<stable-slug>/README.md` являются источником истины. Условие, критерии готовности и самопроверка видимы сразу; теория, каждая подсказка и решение закрыты независимо. Внешние материалы дополняют карточку, но не заменяют локальные условие, fixtures, стартовый код или решение.

@@ -55,6 +55,16 @@
         <export-typed-object-property PURPOSE="Expose the accepted student-facing task card at tasks/typed-object-property/README.md" />
         <export-response-union-narrowing PURPOSE="Expose the accepted student-facing task card at tasks/response-union-narrowing/README.md" />
         <export-validate-unknown-profile PURPOSE="Expose the accepted student-facing task card at tasks/validate-unknown-profile/README.md" />
+        <export-delegated-dynamic-list PURPOSE="Expose the accepted student-facing task card at tasks/delegated-dynamic-list/README.md" />
+        <export-idempotent-event-listeners PURPOSE="Expose the accepted student-facing task card at tasks/idempotent-event-listeners/README.md" />
+        <export-accessible-keyboard-tabs PURPOSE="Expose the accepted student-facing task card at tasks/accessible-keyboard-tabs/README.md" />
+        <export-modal-focus-lifecycle PURPOSE="Expose the accepted student-facing task card at tasks/modal-focus-lifecycle/README.md" />
+        <export-react-derived-list PURPOSE="Expose the accepted student-facing task card at tasks/react-derived-list/README.md" />
+        <export-react-batched-counter PURPOSE="Expose the accepted student-facing task card at tasks/react-batched-counter/README.md" />
+        <export-react-effect-subscription PURPOSE="Expose the accepted student-facing task card at tasks/react-effect-subscription/README.md" />
+        <export-react-strictmode-cleanup PURPOSE="Expose the accepted student-facing task card at tasks/react-strictmode-cleanup/README.md" />
+        <export-flex-long-text-overflow PURPOSE="Expose the accepted student-facing task card at tasks/flex-long-text-overflow/README.md" />
+        <export-container-responsive-grid PURPOSE="Expose the accepted student-facing task card at tasks/container-responsive-grid/README.md" />
       </annotations>
     </M-TASK-LIBRARY>
 
