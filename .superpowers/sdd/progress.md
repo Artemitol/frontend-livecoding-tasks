@@ -14,3 +14,4 @@ R1: complete (commits c0d2af7..7def387, review clean; rendered template evidence
 R2: complete (commits 1434e65..7f8bdd8, review clean; 13 collection paths and root-preservation gate PASS; Beads issue closed)
 R3: complete (commit 236fc07, review clean after uncontaminated Programiz rerun; 8 target-editor rows, fixture deletion, Phase-10 and controller gates PASS; Beads issue closed)
 R4: complete (commit 7531df3, review clean; 4 TypeScript Playground 5.9.3 strict rows and Phase-11 controller gates PASS; Beads issue closed)
+R5: complete (commit 782087c, review clean; 4 CodePen/browser manual rows, 2 fixture deletions and Phase-12 controller gates PASS; Beads issue closed)

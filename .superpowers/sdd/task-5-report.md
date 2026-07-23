@@ -1,130 +1,89 @@
-# Task 5 final candidate-audit report
+# Task 5 report: R5 HTML/CSS and accessibility cards
 
 ## Status
 
-`PASS — B5 closed`
+`DONE` — four HTML/CSS and accessibility cards are migrated, preservation and target-editor evidence is durable in Beads, both text fixtures were removed only after their inline replacements passed, Phase 12 facts are synchronized, and commit `782087cd59810379f56feecc2ca13f8f5b4b37f8` is pushed. R5 intentionally remains `in_progress` for controller independent review.
 
-The frozen initial register contains 20 terminal `accepted` decisions. Every candidate passed the strict ordered gates, has a unique stable slug, an exact checksum-addressed payload, one valid wave assignment, and durable evidence. No task card was published during the audit.
+## Scope
 
-B5 `frontend-livecoding-tasks-kln-audit` is closed. `frontend-livecoding-tasks-kln-wave-01` is the only ready issue; wave 02 remains serialized behind wave 01.
+Migrated only:
 
-## Published audit commit
+- `tasks/flex-long-text-overflow/README.md`;
+- `tasks/container-responsive-grid/README.md`;
+- `tasks/accessible-keyboard-tabs/README.md`;
+- `tasks/modal-focus-lifecycle/README.md`.
 
-- Branch: `feature/frontend-livecoding-tasks-kln`
-- Commit: `402c444081bb208986672ad7ca2c4052f311abd3`
-- Commit message: `docs: record completed candidate audit`
-- Remote branch ref: `402c444081bb208986672ad7ca2c4052f311abd3`
-- Tracked change: only `docs/development-plan.xml`, Phase 4 pending → completed
+Removed only after replacement PASS:
 
-## Terminal accounting
+- `tasks/accessible-keyboard-tabs/assets/fixture.html`;
+- `tasks/modal-focus-lifecycle/assets/fixture.html`.
 
-- `candidateRegisterSize=20`
-- Accepted: 20
-- Rejected: 0
-- Duplicate: 0
-- Needs rewrite: 0
-- Pending decision: 0
-- Closed validation records: 20
-- Unique stable slugs: 20
-- Accepted candidates with exactly one wave: 20
-- Published task cards before waves: 0
+Updated only the R5-owned migration facts in:
 
-## Frozen sources
+- `docs/knowledge-graph.xml`;
+- `docs/verification-plan.xml`.
 
-- Inventory: `/tmp/frontend-livecoding-tasks-kln-candidate-inventory.tsv`
-- Inventory SHA-256: `96d74bd6e289d67894acb40bf4ce4c00b70c32e6ea835788ad36e04c77917f7b`
-- Stable-slug mapping: `/tmp/frontend-livecoding-tasks-kln-stable-slugs.tsv`
-- Every exact payload is embedded in its Beads record with deterministic UTF-8 SHA-256 and a canonical single trailing LF extraction rule.
+The root `README.md`, HTML/CSS collection pages, unrelated task cards, and `docs/development-plan.xml` are unchanged from baseline `ce9d7790bb49396831214569d10c9de42fc97688`.
 
-| Candidate | Stable slug | Wave | Payload SHA-256 |
-| --- | --- | --- | --- |
-| 001 | `immutable-category-totals` | 01 | `de51a1e36fdc46826a5c1518b515f69d8225a645f317d5d4e1ad504145b4b191` |
-| 002 | `stable-product-sort` | 01 | `cfa2e0d833ac577cdc7eed363aa73036b9d543aad30015960c6e5f05fa355d46` |
-| 003 | `loop-closure-bindings` | 01 | `d7d46e06142ce4350c0991ee7613cb46ac156865ae6de5c8a5f0bb5c0bf26a74` |
-| 004 | `this-callback-binding` | 01 | `b9e4ad3f5c7e62107e5f409f36f1b27f7243617933bc7451d22cb59c2d87c5f6` |
-| 005 | `browser-event-loop-order` | 01 | `f572c7234423564a9f891194e303fc7bd524d0a211c1ec5417ffe6b90cf1fbd9` |
-| 006 | `stale-search-response` | 01 | `329e3ef849a20f7c922e772a443853932eeb0113fa10300ccebe1fa8129720b0` |
-| 007 | `discriminated-load-state` | 01 | `af14fb593bdf5d1a5cbd36f6aea660de0a0cfdb34d8c34763a7e20d75a4fb4ec` |
-| 008 | `typed-object-property` | 01 | `cc0bb36711cda5d850eb6f89619906478d673ad015790f43bc51a439581a2c57` |
-| 009 | `response-union-narrowing` | 01 | `fad49f394370d3b63960941efffd7f9d196f48203dbfc4d3e38ecc091eadbade` |
-| 010 | `validate-unknown-profile` | 01 | `9138bde7bafdcb8a108db0767030bd47030d3c708ecc5dad2ec718450037628e` |
-| 011 | `delegated-dynamic-list` | 02 | `9e0f62d9b56a6da89c3af3c27a81ff477adb59c5be73b6da28ce946ca004d95f` |
-| 012 | `idempotent-event-listeners` | 02 | `cc5bf4d2be24413744312305353bc41a5df06b2ff2a4f898239f31f1de3cccd3` |
-| 013 | `accessible-keyboard-tabs` | 02 | `5f6477bc9610cb7b6f1a3f655daea2752ba61286eea49e14d515da6134113e28` |
-| 014 | `modal-focus-lifecycle` | 02 | `2a13b58bd233a50580a608420ab196bc08b0236de4c8cfe6195ff9d7f407a330` |
-| 015 | `react-derived-list` | 02 | `c40baee6944c391d45a083188aa7e5eca7ab3c82701d5cda0306394ed65ca51c` |
-| 016 | `react-batched-counter` | 02 | `ffd5ca0e20e6a9c0d091bff0070d8470e7aa047b059ac9e31499234a462ec309` |
-| 017 | `react-effect-subscription` | 02 | `c417d42cb420f747a430bd60c9386354fef5e58bf022f28ae432084d272b58a9` |
-| 018 | `react-strictmode-cleanup` | 02 | `6c0dce2ffd017554c33547d3f15162b6890b795c09d3cdda9bf89359899970bb` |
-| 019 | `flex-long-text-overflow` | 02 | `2d1fe391619bd43b81d12cd995c30a41735aff48beee3ecb8c66fcc8c436f247` |
-| 020 | `container-responsive-grid` | 02 | `c595049cfbc3b3b1b2b3b8b06d59a7bc4f114a2ad5a4582ff8f9e8c68b20e214` |
+## Contract and content
 
-## Required task-local assets
+All four cards use the complex StudentTaskCard structure with their stable titles and slugs, exact CodePen URL, one complete copy-ready HTML document for the starter and solution, observable completion criteria, three exact progressive closed hints, a complete closed solution with explanation, reflection-only closed self-check, exact five-field metadata, and both navigation links.
 
-Candidates 006, 013, and 014 use the durable task-relative path `assets/fixture.html`. Exact asset bytes are embedded in their Beads records.
+The migration preserves:
 
-| Candidate | Asset SHA-256 |
-| --- | --- |
-| 006 | `4ef0bfc5dfc9204150d5910b1b143f6670c43ca7422d76db7dfabbcb0aaaf93b` |
-| 013 | `4222c7cf8476e8afc11036a9b7f620bd6fd0a0c242f1e6c4f013c39705780127` |
-| 014 | `718d6a91fe2c7ea3428eef40ae36a953db2750a9754639b231975a04c240b12f` |
+- flex-item shrink behavior and complete long-word wrapping at `640 CSS px` without clipping or page overflow;
+- container-driven Grid behavior at exact `360` and `768 CSS px` widths without viewport breakpoint or JavaScript layout;
+- ARIA tab selection, roving tabindex, `aria-controls`, panels, focus, Arrow keys, Home and End;
+- native dialog initial focus, two-way Tab boundary trap, Escape/close lifecycle and initiator focus restoration.
 
-Their final Local-completeness, Solution, Verification-linkage, and Editorial checks passed after removal of temporary absolute paths.
+The complete source contents and SHA-256 hashes of both former fixture files were stored in the R5 Beads preservation ledger before any card edit.
 
-## Browser Verification
+## Beads evidence
 
-Current Google Chrome 150 controller evidence passed before final Editorial for every browser candidate:
+Before edits, R5 notes received all four learning goals, prerequisites, exact browser/version/viewport/keyboard scenarios, and both fixture payloads:
 
-- 005: exact visible and console order `sync:start`, `sync:end`, `microtask:promise`, `timer:0`.
-- 006: two race reruns without reload used IDs 5/6 and 7/8; each rendered current `новый` and ignored stale `старый`; local error and whitespace-only input matched exactly.
-- 011: dynamically added `Задача 2` was removed by the delegated handler; only `Задача 1` remained.
-- 012: initialize twice plus one action produced counter 1 and one active listener.
-- 013: ArrowRight/Home/End produced the required focus, ARIA selection, and visible panel states.
-- 014: initial focus, forward/reverse trap, explicit Escape close, and opener focus restoration passed; native cancel remains fallback.
-- 015: state filters and deterministic prop append produced `Банан`, empty, then `Банан` plus `Банановый смузи`.
-- 016: two `+3` clicks produced 3 then 6.
-- 017: sports selection produced the expected message, one subscription, and active channel.
-- 018: root StrictMode produced setup=2/release=1; the double-release probe produced release=2/skipped=1 and the required trace.
-- 019: at 640×900, document/body had no horizontal overflow; computed CSS and screenshot showed the full wrapped long word.
-- 020: at viewport 1100, measured container widths were exactly 360 and 768; one then two equal columns rendered; no `@media` or `ResizeObserver` existed.
+- accessible tabs fixture SHA-256: `4222c7cf8476e8afc11036a9b7f620bd6fd0a0c242f1e6c4f013c39705780127`;
+- modal fixture SHA-256: `718d6a91fe2c7ea3428eef40ae36a953db2750a9754639b231975a04c240b12f`.
 
-After this Verification PASS, final Editorial PASS was rerun against each current payload checksum.
+After controller verification, R5 notes received four complete `CardMigrationEvidence` rows with slug, complex mode, exact CodePen profile, source contract, destination locations, expected result, observed viewport/state/action/result, collection sync and final `PASS`.
 
-## Serialized waves
+R5 remains open and `in_progress`; the controller owns independent review and closure.
 
-### `frontend-livecoding-tasks-kln-wave-01`
+## CodePen and browser evidence
 
-- Size: 10
-- Candidates: `candidate-001..candidate-010`
-- Status at audit completion: open and ready, technical closure pending
-- Its B5 dependency is closed
+My browser runtime was not used as a substitute for the controller gate. I stopped before fixture removal and Phase 12 acceptance and handed the four complete solution blocks plus exact selectors and scenarios to the controller.
 
-### `frontend-livecoding-tasks-kln-wave-02`
+The controller then verified four clean CodePen copies:
 
-- Size: 10
-- Candidates: `candidate-011..candidate-020`
-- Status at audit completion: open, technical closure pending
-- Depends on B5 and wave 01
+- flex: Chrome 150 reduced UA, result iframe `640 CSS px`, page `scrollWidth=clientWidth=640`; the exact word occupied three visible lines with `overflow-wrap: anywhere`, label/button visible and no clipping, ellipsis or page overflow;
+- container Grid: one simultaneous fixture measured exactly `360px` with one `332px` track, the other exactly `768px` with two equal `364px` tracks; all twelve card instances were visible and source contained no `@media` or JavaScript;
+- accessible tabs: ArrowRight, wrapped ArrowLeft, Home and End each kept exactly one selected/tabbable tab and one visible `aria-controls` panel with focus and `PASS`; unsupported `x` changed no focus, ARIA, panel or status state;
+- modal: open focused `#name`; Tab and Shift+Tab crossed both trap boundaries; Escape and close-button paths closed the dialog and restored `#open`; every observable status was `PASS`.
 
-The final audit depends on B5 and both serialized waves.
+Manual screenshots were used for layout and focus-ring claims. CSS unit tests and jsdom were not used as substitutes.
 
-## Completion gates
+## Fresh verification
 
-- Inline browser scripts parsed under Node.js 26.4.0: PASS, 6/6.
-- React/TypeScript temporary harness: `npm run check` PASS.
-- React build: `npm run build` PASS, 28 modules transformed.
-- Payload SHA against Beads metadata: PASS, 20/20.
-- Task-local asset SHA and relative-link checks: PASS, 3/3.
-- Stable slugs: PASS, 20 unique kebab-case values.
-- Closed candidate accounting: PASS, 20 accepted and exactly one wave each.
-- `xmllint --noout docs/*.xml`: PASS.
-- Grace `3.11.0`, standard profile: 0 errors, 0 warnings.
-- `git diff --check` and staged diff check: PASS.
-- Remote branch SHA equals local commit SHA: PASS.
+The final pre-commit gate passed:
 
-## Remaining risks and preserved artifacts
+- exact hint, solution, self-check, metadata, details-pair, HTML-fence, editor URL and navigation counts for all four cards;
+- no forbidden legacy structural headings or metadata fields;
+- exact controlled metadata matrix and exactly one thematic collection membership per slug;
+- starter and solution browser ESM syntax checks for both accessibility cards;
+- no `assets/fixture.html` remains anywhere under `tasks/` and no removed path remains in either card;
+- root `README.md` and `docs/development-plan.xml` unchanged from the task baseline;
+- all `docs/*.xml` valid with `xmllint`;
+- Grace `3.11.0` lint: `0` issues;
+- exactly four durable R5 CardMigrationEvidence rows;
+- Phase 12 verification status implemented and exactly four R5 graph exports implemented;
+- `git diff --check` passed.
 
-- Wave publication still must reproduce the exact payload/asset checksums or revalidate changes, then pass task/catalog/graph/evidence, GitHub-rendered, push, and report gates.
-- `waveAcceptanceStatus=pending` is technical publication state, not user approval.
-- The top-level story remains open until final audit and explicit complete-library acceptance.
-- Untracked `docs/superpowers/.DS_Store` is an OS/user artifact and was preserved untouched and unstaged.
+## Commit and push
+
+- Commit: `782087cd59810379f56feecc2ca13f8f5b4b37f8` — `docs(tasks): redesign HTML and CSS task cards`.
+- Push: succeeded to `origin/feature/frontend-livecoding-tasks-kln`; local and remote refs match exactly.
+- Controller-owned `.superpowers/sdd/task-5-brief.md` and this report were excluded from the task commit.
+
+## Concerns
+
+None. GitHub-rendered final evidence remains assigned to R8 by the approved plan.
