@@ -1,0 +1,124 @@
+# Review package: b3370ac876a7cb0ed457c0b8c130961b2c162154..b96b5c0def205902d53823a8f2e2b15ef8a364f1
+
+## Commits
+b96b5c0 docs: finalize task authoring governance
+
+## Files changed
+ AGENTS.md                 | 12 ++++++++++++
+ docs/development-plan.xml |  6 +++---
+ docs/knowledge-graph.xml  |  2 +-
+ 3 files changed, 16 insertions(+), 4 deletions(-)
+
+## Diff
+diff --git a/AGENTS.md b/AGENTS.md
+index fbf8f3c..6f61d16 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -31,20 +31,32 @@ test -x "$GRACE_BIN"
+ Use `"$GRACE_BIN"` for subsequent Grace commands in the same shell session. Do not report Grace as unavailable after only `command -v grace` fails; first test the `$HOME/.bun/bin/grace` fallback. If neither location is executable, follow the relevant Grace skill's documented fallback workflow.
+ 
+ ## Coding Style & Naming Conventions
+ 
+ Choose JavaScript, TypeScript, or React examples according to the learning goal and state that choice in the task document. For code snippets and runnable exercises, use two-space indentation, semicolons, single quotes, and trailing commas where supported. Name variables in camelCase (`formattedDuration`) and types in PascalCase (`TodoItem`). Prefer type aliases over interfaces. Name all files and task directories in kebab-case (`todo-list.md`, `debounced-search/`). Keep task-specific content and code within its task. Add formatter and linter configuration only with the first runnable code contribution, then run both before opening a pull request.
+ 
+ ## Testing Guidelines
+ 
+ Markdown-only tasks do not require automated tests. Review their structure, links, code fences, terminology, and example consistency manually. When a task includes a runnable solution or bug fix, add tests using `*.test.ts` or `*.test.tsx` and describe behavior rather than implementation details. In frontend tests, prefer `data-testid` selectors when identifying elements. Do not test CSS or visual styling with automated tests; verify it manually or with browser-based visual checks. Cover the primary interaction, an edge case, and failure handling when relevant. Document any task-specific manual verification steps in its Markdown file or README.
+ 
++## Task Publication Contract
++
++- Store each accepted exercise at `tasks/<stable-slug>/README.md`; treat the slug as a stable identifier and handle renames as migrations with inbound-link verification.
++- Use the exact metadata labels `Технологии`, `Тема`, `Формат`, `Уровень`, `Время`, `Навыки`, `Предварительные знания`, and `Среда выполнения`.
++- Use only the approved format values `Реализация`, `Отладка`, `Разбор`, and `Прогноз вывода`, and the level values `Базовый`, `Средний`, and `Продвинутый`.
++- Treat task metadata as canonical. Update the root catalog and the task-library knowledge-graph annotation in the same change; every accepted task must appear exactly once in each projection.
++- Keep theory, every hint, and the solution in independent `<details>` blocks without the `open` attribute. Keep the prompt, fixtures, starter code, and solution local even when targeted external reading is linked.
++- Publish only candidates with an `accepted` Beads validation decision. Keep `needs-rewrite`, `rejected`, and `duplicate` candidates out of `tasks/` and record their neutral decision evidence in Beads.
++- Validate JavaScript, TypeScript, React/DOM, UI, analysis, and output-prediction tasks with the evidence route defined in `docs/task-validation-policy.md`. Unavailable mandatory browser evidence is `BLOCKED`, never `PASS`.
++- Publish accepted cards in mentor-reviewed waves of 8–10, except that the final incomplete wave may contain 1–7. Keep the wave issue open until mentor acceptance is recorded.
++- Stop instead of guessing when metadata, controlled vocabulary, environment, expected output, prerequisite, asset, external material, rendering, or mandatory evidence is ambiguous or unavailable.
++
+ ## Commit & Pull Request Guidelines
+ 
+ Agents are authorized to create branches, commits, pushes, and pull requests automatically. Never commit or push directly to `main`. Before making project changes, create or reuse a `feature/*` branch. After a coherent change passes its relevant verification gates, create a focused commit, push the active `feature/*` branch, and open a pull request targeting `main` without asking for additional permission. An explicit user instruction not to branch, commit, push, or create a pull request overrides this default for that task.
+ 
+ ### Worktree Isolation
+ 
+ Before making project changes, work from an isolated Git worktree based on the current remote default branch:
+ 
+ 1. Detect whether the current checkout is already a linked worktree. Do not create a nested worktree.
+ 2. Run `git fetch origin` and use the resulting `origin/main` as the base; do not assume the local `main` is current.
+diff --git a/docs/development-plan.xml b/docs/development-plan.xml
+index c5142f2..7371cae 100644
+--- a/docs/development-plan.xml
++++ b/docs/development-plan.xml
+@@ -2,21 +2,21 @@
+   <ArchitectureNotes>
+     <objective>Provide a GitHub-first, self-contained frontend task knowledge base that an AI agent can extend without catalog or graph drift.</objective>
+     <non-goal>Do not build an executable learning platform, catalog generator, or mandatory repository runtime.</non-goal>
+     <risk-1>Task metadata is canonical while the student catalog and knowledge graph are derived, so all three artifacts must change atomically.</risk-1>
+     <risk-2>Structural verification cannot prove solution correctness; strict hybrid validation and mentor wave acceptance remain separate gates.</risk-2>
+     <risk-3>Collapsed details prevent accidental spoilers but do not conceal solutions from raw Markdown or repository search.</risk-3>
+     <risk-4>Publishing before deduplication can create several cards for the same learning goal.</risk-4>
+   </ArchitectureNotes>
+ 
+   <Modules>
+-    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" LAYER="0" ORDER="1" STATUS="partial">
++    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" LAYER="0" ORDER="1" STATUS="implemented">
+       <contract>
+         <purpose>Define the repository's authoring, delivery, synchronization, verification, and stop-condition rules.</purpose>
+         <inputs>
+           <param name="approved-design" type="DesignDecisions" />
+           <param name="repository-state" type="ArtifactSet" />
+         </inputs>
+         <outputs>
+           <param name="authoring-rules" type="AGENTS.md" />
+           <param name="shared-contracts" type="GRACEArtifacts" />
+         </outputs>
+@@ -240,23 +240,23 @@
+       <step-2>The agent updates the task content and identifies every derived artifact and inbound reference.</step-2>
+       <step-3>The agent reruns every M-TASK-VALIDATION gate affected by the change.</step-3>
+       <step-4>The agent synchronizes catalog placement and knowledge-graph facts.</step-4>
+       <step-5>The agent checks uniqueness, metadata equality, prerequisites, assets, supplementary links, and relative links.</step-5>
+       <step-6>A slug change uses a dedicated migration path and verifies all inbound references.</step-6>
+       <evidence>Before/after metadata, validation evidence, unique thematic projection, resolved links, graph delta, and migration evidence when applicable.</evidence>
+     </DF-UPDATE-TASK>
+   </DataFlow>
+ 
+   <ImplementationOrder>
+-    <Phase-1 name="Governance" status="in-progress">
++    <Phase-1 name="Governance" status="completed">
+       <goal>Record approved requirements, worktree isolation, technology boundaries, module contracts, data flows, verification references, and stop conditions.</goal>
+-      <step-1 module="M-GOVERNANCE" status="in-progress" verification="V-M-GOVERNANCE">Finalize and review the written specification and all GRACE planning artifacts.</step-1>
++      <step-1 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Finalize and review the written specification and all GRACE planning artifacts.</step-1>
+     </Phase-1>
+     <Phase-2 name="TaskContract" status="pending">
+       <goal>Create the canonical GitHub-first task structure and strict validation policy before any task content is added.</goal>
+       <step-1 module="M-TASK-TEMPLATE" status="pending" verification="V-M-TASK-TEMPLATE">Create and render-review templates/task-template.md.</step-1>
+       <step-2 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Create docs/task-validation-policy.md and prove all terminal decisions and hybrid evidence routes.</step-2>
+     </Phase-2>
+     <Phase-3 name="StudentEntryPoint" status="pending">
+       <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>
+       <step-1 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
+     </Phase-3>
+diff --git a/docs/knowledge-graph.xml b/docs/knowledge-graph.xml
+index df3fd8b..2b99103 100644
+--- a/docs/knowledge-graph.xml
++++ b/docs/knowledge-graph.xml
+@@ -1,16 +1,16 @@
+ <KnowledgeGraph>
+   <Project NAME="frontend-livecoding-tasks" VERSION="0.3.0">
+     <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
+     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
+ 
+-    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="partial">
++    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="implemented">
+       <purpose>Define authoring, delivery, synchronization, verification, and stop-condition rules for the repository.</purpose>
+       <path>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml; docs/superpowers/specs/*.md</path>
+       <depends>none</depends>
+       <verification-ref>V-M-GOVERNANCE</verification-ref>
+       <annotations>
+         <export-authoringRules PURPOSE="Expose task authoring, worktree isolation, delivery, tool-resolution, and synchronization requirements" />
+         <export-verificationContracts PURPOSE="Expose shared completion evidence and phase gates" />
+       </annotations>
+     </M-GOVERNANCE>
+ 
