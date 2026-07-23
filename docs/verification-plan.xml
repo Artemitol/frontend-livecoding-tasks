@@ -82,7 +82,7 @@
         <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires fetch plus isolated worktree creation from current origin/main, keeps one feature/&lt;story-id&gt; branch per story, and that .gitignore excludes .worktrees/ without excluding written specifications.</check-5>
         <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
         <check-7>Verify Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs across governance, technology, validation, the current root map, and affected cards; verify all twenty stable slugs appear exactly once in the fixed TaskEditorProfileMap.</check-7>
-        <check-8>Verify Phases 8 through 14 are implemented with the current root hub, thirteen collections, twenty migrated cards, and synchronized graph facts, while Phase 15 and Gate-Phase-15 remain pending.</check-8>
+        <check-8>Verify Phases 8 through 15 are completed with the current root hub, thirteen collections, twenty migrated cards, synchronized graph facts, and Gate-Phase-15 implemented with PASS evidence.</check-8>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>
@@ -232,7 +232,7 @@
         <assertion-1>Collection synchronization must use the card title and metadata plus approved collection order as source data and must not silently rewrite the card to match stale navigation.</assertion-1>
       </required-trace-assertions>
       <wave-follow-up>Run full thematic, optional interview, graph, verification, link, title, duration, and editor-profile synchronization checks after every redesign unit.</wave-follow-up>
-      <phase-follow-up>Review collection-first usability, membership uniqueness, controlled vocabulary, the current four-block hub, and the pending rendered audit.</phase-follow-up>
+      <phase-follow-up>Review collection-first usability, membership uniqueness, controlled vocabulary, the current four-block hub, and the completed rendered audit.</phase-follow-up>
     </V-M-CATALOG>
   </ModuleVerification>
 
@@ -405,7 +405,7 @@
         <evidence-3>Old root task tables and agent-maintenance prose are absent; Phase 15 rendered audit remains pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-14>
-    <Gate-Phase-15 PHASE="Phase-15" status="pending">
+    <Gate-Phase-15 PHASE="Phase-15" status="implemented">
       <goal>The published branch or pull request renders the complete student experience without missing pages, broken navigation, malformed details, or hidden editor defects.</goal>
       <commands>
         <command-1>Open the root README, all thirteen collection pages, and all twenty task pages; record resolved URL, visible title, no-404 result, required links, and details behavior.</command-1>
@@ -413,8 +413,9 @@
         <command-3>Record all results, remaining risks, pushed commit, pull request state, and final user-acceptance request in Beads.</command-3>
       </commands>
       <required-evidence>
-        <evidence-1>Complete URL inventory and deep flow matrix pass on the published student experience.</evidence-1>
+        <evidence-1>PASS: the complete 34-page URL inventory and deep flow matrix passed on the published student experience.</evidence-1>
         <evidence-2>The top-level story remains open until the user explicitly accepts the complete migrated library.</evidence-2>
+        <evidence-3>All four external editor surfaces opened, all six editor-profile instructions rendered, and the three former fixture cards passed the deep flow without hidden asset dependencies.</evidence-3>
       </required-evidence>
     </Gate-Phase-15>
   </PhaseGates>

@@ -48,7 +48,7 @@
       <annotations>
         <type-TaskMetadataSet PURPOSE="Collection of five-field task metadata records exposed to thematic and interview collections" />
         <export-taskCard PURPOSE="Expose one complete copy-ready StudentTaskCard through GitHub" />
-        <const-cardMigrationState PURPOSE="Phases 10 through 14 implemented all twenty card migrations, thematic and optional interview membership, and root cutover; only the Phase 15 rendered final audit remains pending" />
+        <const-cardMigrationState PURPOSE="Phases 10 through 15 implemented all twenty card migrations, thematic and optional interview membership, root cutover, and the published rendered final audit" RENDERED_AUDIT_STATUS="PASS" />
         <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-arrays-and-objects" INTERVIEW_COLLECTION="collection-interview-01" />
         <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-arrays-and-objects" INTERVIEW_COLLECTION="collection-interview-02" />
         <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-this-and-closures" INTERVIEW_COLLECTION="collection-interview-01" />
@@ -93,7 +93,7 @@
         <collection-interview-01 PATH="collections/interviews/interview-01/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-interview-02 PATH="collections/interviews/interview-02/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-interview-03 PATH="collections/interviews/interview-03/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
-        <const-collectionMigrationState PURPOSE="Phases 9 and 14 implemented all thirteen collection pages, fifteen unique interview entries, and the current root hub; only the Phase 15 rendered audit remains pending" />
+        <const-collectionMigrationState PURPOSE="Phases 9 through 15 implemented all thirteen collection pages, fifteen unique interview entries, the current root hub, and the published rendered audit" RENDERED_AUDIT_STATUS="PASS" />
       </annotations>
     </M-CATALOG>
 
