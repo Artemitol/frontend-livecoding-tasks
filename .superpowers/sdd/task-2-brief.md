@@ -1,208 +1,109 @@
-### Task 2: Create the Canonical GitHub-Rendered Task Template
+### Task 2: R2 — Thematic Collections and Interview Shells
 
 **Files:**
-- Create: `templates/task-template.md`
-- Modify: `docs/development-plan.xml`
+
+- Create: `collections/javascript/arrays-and-objects/README.md`
+- Create: `collections/javascript/this-and-closures/README.md`
+- Create: `collections/javascript/event-loop-and-async/README.md`
+- Create: `collections/javascript/dom-and-events/README.md`
+- Create: `collections/typescript/type-modeling/README.md`
+- Create: `collections/typescript/narrowing-and-validation/README.md`
+- Create: `collections/html-css/layout/README.md`
+- Create: `collections/html-css/accessibility/README.md`
+- Create: `collections/react/state-and-derived-data/README.md`
+- Create: `collections/react/effects-and-lifecycle/README.md`
+- Create: `collections/interviews/interview-01/README.md`
+- Create: `collections/interviews/interview-02/README.md`
+- Create: `collections/interviews/interview-03/README.md`
 - Modify: `docs/knowledge-graph.xml`
-- Verify: `docs/verification-plan.xml` (`V-M-TASK-TEMPLATE`)
+- Modify: `docs/verification-plan.xml`
+- Track: `frontend-livecoding-tasks-kln-student-r2-collections`
 
 **Interfaces:**
-- Consumes: `authoringRules` from Task 1; exact metadata vocabulary and `TaskMetadata` contract.
-- Produces: `taskSchema` / `MarkdownTemplate` consumed by validation and every accepted task card.
 
-- [ ] **Step 1: Claim B2 and reread its contracts**
+- Consumes: `CollectionEntry`; existing student titles and exact card durations.
+- Produces: 10 final thematic pages, 3 unlinked interview shells, implemented `Phase-9` facts, and stable paths consumed by R3–R8.
 
-Run:
-
-```bash
-template_id='frontend-livecoding-tasks-kln-template'
-bd update "$template_id" --claim
-rg -n 'M-TASK-TEMPLATE|V-M-TASK-TEMPLATE|type-TaskMetadata|export-taskSchema' \
-  docs/development-plan.xml docs/knowledge-graph.xml docs/verification-plan.xml
-```
-
-Expected: the module, interface and verification anchors resolve before editing.
-
-- [ ] **Step 2: Create the complete canonical template**
-
-Create `templates/task-template.md` with this complete content. Values between `⟦` and `⟧` are intentional authoring fields of the template, not unfinished implementation placeholders; the uncommon sentinel keeps later placeholder scans from rejecting valid JavaScript/JSX braces.
-
-````markdown
-# ⟦Название задачи⟧
-
-**Учебная цель:** ⟦Одно наблюдаемое умение, которое тренирует задача.⟧
-
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | ⟦Значения из approved vocabulary⟧ |
-| Тема | ⟦Одна основная тема из approved vocabulary⟧ |
-| Формат | ⟦Реализация / Отладка / Разбор / Прогноз вывода⟧ |
-| Уровень | ⟦Базовый / Средний / Продвинутый⟧ |
-| Время | ⟦Оценка или диапазон в минутах⟧ |
-| Навыки | ⟦Краткий список наблюдаемых навыков⟧ |
-| Предварительные знания | ⟦Нет / относительные ссылки / явно обозначенное targeted reading⟧ |
-| Среда выполнения | ⟦Точные runtime, mode и значимые версии⟧ |
-
-<details>
-<summary>Теория</summary>
-
-⟦Краткий локальный контекст, необходимый для попытки. Не копируйте объёмную внешнюю документацию.⟧
-
-</details>
-
-## Условие
-
-⟦Самодостаточное условие без скрытого внешнего контекста.⟧
-
-### Входы
-
-⟦Точные входы или, для Разбора/Прогноза вывода, точные вопросы ученику.⟧
-
-### Выходы
-
-⟦Наблюдаемый результат или формат ответа.⟧
-
-### Ограничения и побочные эффекты
-
-- ⟦Границы входов и данных.⟧
-- ⟦Разрешённая или запрещённая мутация.⟧
-- ⟦Ошибки, пустой результат и допустимые side effects.⟧
-
-### Стартовый код
-
-⟦Приведите полный стартовый код, когда без него меняется контракт; иначе явно напишите «Не требуется».⟧
-
-```js
-// Полный task-specific starter code, если он требуется.
-```
-
-### Примеры
-
-#### Обычный сценарий
-
-⟦Вход, ожидаемый результат и краткое объяснение.⟧
-
-#### Граничный сценарий
-
-⟦Граница и ожидаемый результат.⟧
-
-#### Ошибка или пустой результат
-
-⟦Негативный сценарий и ожидаемое поведение, когда он применим.⟧
-
-## Критерии готовности
-
-- ⟦Наблюдаемый критерий основного поведения.⟧
-- ⟦Наблюдаемый критерий граничного сценария.⟧
-- ⟦Наблюдаемый критерий ошибки, пустого результата или ограничения.⟧
-- ⟦Для UI: состояния, взаимодействия и ручные визуальные критерии.⟧
-
-<details>
-<summary>Подсказка 1</summary>
-
-⟦Минимальная направляющая подсказка без полного решения.⟧
-
-</details>
-
-<!-- Повторяйте отдельный закрытый details для Подсказка 2, Подсказка 3 и далее только по необходимости. -->
-
-<details>
-<summary>Решение</summary>
-
-### Подход
-
-⟦Почему решение удовлетворяет контракту.⟧
-
-```js
-// Полное task-specific решение.
-```
-
-### Сложность
-
-- Время: ⟦точная оценка⟧.
-- Память: ⟦точная оценка⟧.
-
-### Компромиссы и альтернативы
-
-⟦Существенные компромиссы и краткое сравнение других корректных решений.⟧
-
-</details>
-
-## Самопроверка
-
-- ⟦Вопрос о ключевой концепции.⟧
-- ⟦Вопрос о границе или ошибке.⟧
-- ⟦Вопрос о компромиссе решения.⟧
-
-## Дополнительные материалы
-
-- [⟦Название материала⟧](⟦URL⟧) — ⟦зачем открывать и какой точный фрагмент изучить⟧.
-
-<!-- Удалите весь раздел, если targeted materials не добавляют учебной ценности. -->
-````
-
-- [ ] **Step 3: Run deterministic template checks before status changes**
-
-Run:
+- [ ] **Step 1: Claim R2 and verify R1**
 
 ```bash
-test "$(for label in 'Технологии' 'Тема' 'Формат' 'Уровень' 'Время' 'Навыки' 'Предварительные знания' 'Среда выполнения'; do rg -F "| $label |" templates/task-template.md >/dev/null || exit 1; done; echo PASS)" = PASS
-test "$(rg -c '^<details>$' templates/task-template.md)" -ge 3
-test "$(rg -c '^</details>$' templates/task-template.md)" = "$(rg -c '^<details>$' templates/task-template.md)"
-! rg -n '<details[^>]*\bopen\b' templates/task-template.md
-rg -n '^## (Условие|Критерии готовности|Самопроверка)$|^<summary>(Теория|Подсказка 1|Решение)</summary>$' templates/task-template.md
+bd show frontend-livecoding-tasks-kln-student-r1-contract
+bd update frontend-livecoding-tasks-kln-student-r2-collections --claim
+git status --short --branch
 ```
 
-Expected: all eight labels exist; details tags are paired; no `open` attribute exists; required visible/collapsed anchors are found.
+Expected: R1 is closed, R2 is `in_progress`, checkout is clean.
 
-- [ ] **Step 4: Render-review the template on GitHub**
+- [ ] **Step 2: Create all ten thematic pages from the exact matrix**
 
-Create the reviewable template commit only after Step 3:
+Every file contains, in order:
+
+1. `# <Ученическое название>`;
+2. the exact two-sentence introduction below;
+3. `После задачи нажмите «Назад», чтобы вернуться к этому списку.`;
+4. the exact ordered entries below.
+
+| Path | Title | Introduction | Ordered entries |
+| --- | --- | --- | --- |
+| `collections/javascript/arrays-and-objects/README.md` | `Массивы и объекты` | `Потренируйтесь преобразовывать коллекции без неожиданных мутаций. Задачи идут от прямой агрегации к сортировке по нескольким правилам.` | `Итоги по категориям без мутаций` — `Научитесь проверять данные и собирать суммы по категориям, не меняя исходный массив. Примерно 15 минут.`; `Стабильная сортировка товаров по двум ключам` — `Исправьте сортировку по наличию и цене, сохранив порядок равных элементов. Примерно 20 минут.` |
+| `collections/javascript/this-and-closures/README.md` | `` `this` и замыкания `` | `Разберитесь, какие значения сохраняют замыкания и откуда функция получает this. Сначала проследите цикл, затем сравните разные формы вызова.` | `Замыкания, созданные внутри цикла` — `Предскажите значения функций, созданных на разных итерациях цикла. Примерно 10 минут.`; `` `this` у метода, стрелки и отделённого callback `` — `Объясните три способа вызова и причины разных значений this. Примерно 15 минут.` |
+| `collections/javascript/event-loop-and-async/README.md` | `Event loop и асинхронность` | `Потренируйтесь рассуждать о порядке и актуальности асинхронных действий. Первая задача разбирает очереди event loop, вторая — гонку ответов поиска.` | `Порядок синхронного кода, microtask и timer callback` — `Определите порядок обычного кода, Promise и setTimeout в браузере. Примерно 12 минут.`; `Актуальный результат поиска при гонке ответов` — `Исправьте поиск так, чтобы поздний устаревший ответ не заменял новый. Примерно 25 минут.` |
+| `collections/javascript/dom-and-events/README.md` | `DOM и события` | `Научитесь управлять DOM-событиями без лишних обработчиков. Задачи покрывают делегирование и безопасную повторную инициализацию.` | `Удаление динамической строки через делегирование событий` — `Добавьте один обработчик контейнеру и удаляйте строки, появившиеся позже. Примерно 18 минут.`; `Повторная инициализация без дублирования listener` — `Исправьте lifecycle обработчика, чтобы повторный запуск не удваивал реакцию. Примерно 20 минут.` |
+| `collections/typescript/type-modeling/README.md` | `Моделирование типов` | `Потренируйтесь выражать связи между состояниями, ключами и значениями в типах. Сначала смоделируйте состояния, затем сохраните точный тип свойства.` | `Взаимоисключающие состояния загрузки` — `Опишите допустимые состояния через discriminated union и исчерпывающий switch. Примерно 20 минут.`; `Точный тип значения по ключу настройки` — `Свяжите generic-ключ объекта с точным типом возвращаемого значения. Примерно 20 минут.` |
+| `collections/typescript/narrowing-and-validation/README.md` | `Сужение и проверка данных` | `Научитесь безопасно переходить от широкого типа к проверенному значению. Задачи идут от готового union к полной runtime-проверке unknown.` | `Безопасная обработка результата запроса` — `Исправьте сужение успешного и ошибочного результата запроса. Примерно 20 минут.`; `Проверка JSON-профиля без assertion` — `Проверьте unknown JSON и получите типизированный результат без assertion. Примерно 30 минут.` |
+| `collections/html-css/layout/README.md` | `Вёрстка` | `Потренируйтесь исправлять раскладку без JavaScript. Сначала разберите flex-переполнение, затем постройте сетку от ширины контейнера.` | `Длинное слово во flex-строке` — `Разрешите flex-элементу сжиматься и переносить длинное слово без обрезки. Примерно 20 минут.`; `Сетка карточек от ширины контейнера` — `Соберите grid, который меняет число колонок по ширине контейнера. Примерно 30 минут.` |
+| `collections/html-css/accessibility/README.md` | `Доступность интерфейсов` | `Потренируйтесь управлять клавиатурой, ARIA и фокусом в интерактивных компонентах. Сначала реализуйте вкладки, затем исправьте полный lifecycle модального диалога.` | `Вкладки с ARIA и клавиатурной навигацией` — `Свяжите вкладки и панели и добавьте управление стрелками, Home и End. Примерно 30 минут.`; `Диалог с удержанием и восстановлением фокуса` — `Удержите фокус внутри диалога и верните его кнопке после закрытия. Примерно 30 минут.` |
+| `collections/react/state-and-derived-data/README.md` | `React: состояние и производные данные` | `Потренируйтесь отличать состояние от данных, которые можно вычислить. Затем исправьте обновления, зависящие от предыдущего state.` | `Производный список без копии состояния` — `Вычисляйте отфильтрованный список из props и state без дублирования данных. Примерно 20 минут.`; `Три обновления счётчика в одном событии` — `Исправьте три batched-обновления через функциональную форму setState. Примерно 15 минут.` |
+| `collections/react/effects-and-lifecycle/README.md` | `React: эффекты и жизненный цикл` | `Разберитесь, как React синхронизируется с внешними ресурсами. Задачи покрывают зависимости effect, cleanup и проверочный цикл StrictMode.` | `Подписка, которая следует за выбранным каналом` — `Синхронизируйте подписку с выбранным каналом и снимайте старый ресурс. Примерно 25 минут.`; `Идемпотентный cleanup в корневом StrictMode` — `Объясните дополнительный цикл StrictMode и сделайте cleanup повторно безопасным. Примерно 30 минут.` |
+
+Each entry uses `../../../tasks/<slug>/README.md`. Do not add tables, format, difficulty, slug text or metadata labels.
+
+Expected: every thematic page has exactly two entries in the specification order.
+
+- [ ] **Step 3: Create the three unlinked interview shells**
+
+Each shell contains only:
+
+```markdown
+# Собеседование №N
+
+Запускайте отдельный таймер перед каждой задачей. Указанное время приблизительное: оно помогает держать темп, но не является строгим лимитом. Сначала решайте без подсказок.
+
+Подборка будет подключена к ученическому пути после завершения миграции всех карточек.
+```
+
+Replace `N` with `1`, `2`, or `3` in the corresponding file. Do not add task links before R7.
+
+Expected: three pages render coherently but are not referenced by root README.
+
+- [ ] **Step 4: Synchronize only facts implemented by R2**
+
+Update `docs/knowledge-graph.xml` with the 13 collection path annotations and links from `M-CATALOG`; mark thematic pages available and interview composition pending. Update `docs/verification-plan.xml` so `Gate-Phase-9` proves exact path set, two tasks per thematic page, relative links, titles, descriptions and times while forbidding root cutover.
+
+Expected: graph and verification describe the actual intermediate state; root README remains untouched.
+
+- [ ] **Step 5: Verify, commit, push and close R2**
 
 ```bash
-git add templates/task-template.md
-git commit -m "docs: add canonical task template"
-template_content_commit="$(git rev-parse HEAD)"
-git push origin feature/frontend-livecoding-tasks-kln
-```
-
-Inspect the rendered file in the existing draft PR. Verify: the table renders, prompt/criteria/self-check remain visible, theory/hint/solution bodies are hidden initially, and each block opens independently. If GitHub cannot be reached or rendering differs, record `BLOCKED` in B2 and stop rather than changing GRACE status.
-
-- [ ] **Step 5: Mark M-TASK-TEMPLATE implemented only after rendered PASS**
-
-Apply:
-
-```xml
-<!-- docs/development-plan.xml -->
-<M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" LAYER="1" ORDER="1" STATUS="implemented">
-...
-<step-1 module="M-TASK-TEMPLATE" status="completed" verification="V-M-TASK-TEMPLATE">Create and render-review templates/task-template.md.</step-1>
-
-<!-- docs/knowledge-graph.xml -->
-<M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" STATUS="implemented">
-```
-
-Keep Phase 2 `in-progress`/`pending` until Task 3 also passes.
-
-- [ ] **Step 6: Verify, commit, push and close B2**
-
-Run:
-
-```bash
-xmllint --noout docs/*.xml
-grace_bin="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
-"$grace_bin" lint --fail-on errors --path "$PWD"
+test "$(find collections -type f -name README.md | wc -l | tr -d ' ')" = "13"
+test "$(find collections -mindepth 3 -maxdepth 3 -type f -name README.md | wc -l | tr -d ' ')" = "13"
+test "$(rg -l 'После задачи нажмите «Назад»' collections/{javascript,typescript,html-css,react}/*/README.md | wc -l | tr -d ' ')" = "10"
+test "$(rg -l 'Подборка будет подключена' collections/interviews/*/README.md | wc -l | tr -d ' ')" = "3"
+git diff --exit-code HEAD -- README.md
+for file in docs/*.xml; do xmllint --noout "$file"; done
+GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
+"$GRACE_BIN" lint --fail-on errors --path "$PWD"
 git diff --check
-template_content_commit="$(git rev-parse HEAD)"
-git add docs/development-plan.xml docs/knowledge-graph.xml
-git commit -m "docs: record task template verification"
-template_verification_commit="$(git rev-parse HEAD)"
+git add collections docs/knowledge-graph.xml docs/verification-plan.xml
+git commit -m "docs: add student task collections"
 git push origin feature/frontend-livecoding-tasks-kln
-bd update "$template_id" --append-notes="PASS: exact labels, paired closed details, required anchors, GitHub rendered review, xmllint, standard GRACE lint, whitespace. Content commit $template_content_commit; verification-status commit $template_verification_commit."
-bd close "$template_id" --reason='Canonical task template implemented and rendered successfully.' --suggest-next
+R2_COMMIT="$(git rev-parse HEAD)"
+bd update frontend-livecoding-tasks-kln-student-r2-collections \
+  --append-notes "PASS: 10 thematic pages and 3 unlinked interview shells; root README unchanged; XML and GRACE lint pass. Commit ${R2_COMMIT} pushed."
+bd close frontend-livecoding-tasks-kln-student-r2-collections --reason "Collection paths and Phase-9 gate verified"
 ```
 
-Expected: B2 closes and B3 becomes ready.
+Expected: R2 closed; R3 ready; old root catalog still provides access to all tasks.
 
 ---
 

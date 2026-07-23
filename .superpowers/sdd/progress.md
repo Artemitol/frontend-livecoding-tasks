@@ -11,3 +11,4 @@ Cadence sync: complete (commits 5027b80..558d06d; per-wave technical closure and
 
 Preflight: complete (local root checkout, branch feature/frontend-livecoding-tasks-kln, workspace removed, baseline c0d2af7)
 R1: complete (commits c0d2af7..7def387, review clean; rendered template evidence PASS; Beads issue closed)
+R2: complete (commits 1434e65..7f8bdd8, review clean; 13 collection paths and root-preservation gate PASS; Beads issue closed)
