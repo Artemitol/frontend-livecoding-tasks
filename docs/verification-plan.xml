@@ -344,7 +344,7 @@
         <evidence-2>All thematic titles, introductions, descriptions, order, exact times, and relative task links pass; root cutover and interview composition remain pending.</evidence-2>
       </required-evidence>
     </Gate-Phase-9>
-    <Gate-Phase-10 PHASE="Phase-10" status="pending">
+    <Gate-Phase-10 PHASE="Phase-10" status="implemented">
       <goal>Eight JavaScript and DOM cards conform to StudentTaskCard and preserve behavior in Programiz or the exact CodePen mode.</goal>
       <commands>
         <command-1>Run per-card structure, five-field metadata, exactly-three-hints, copy-ready, FILE, preservation, content, collection-sync, and target-editor checks for the approved eight slugs.</command-1>
@@ -352,8 +352,9 @@
         <command-3>Delete stale-search-response/assets/fixture.html only after its embedded replacement passes CodePen and browser evidence.</command-3>
       </commands>
       <required-evidence>
-        <evidence-1>Eight complete CardMigrationEvidence rows have final target-editor PASS and synchronized graph and verification facts.</evidence-1>
-        <evidence-2>No TypeScript, HTML/CSS, accessibility, or React migration fact is claimed implemented.</evidence-2>
+        <evidence-1>Eight complete CardMigrationEvidence rows in the R3 Beads notes record preservation, expected behavior, observed Programiz or CodePen behavior, and final target-editor PASS.</evidence-1>
+        <evidence-2>The this-callback-binding browser ESM trace and binding reasons match the source Node ESM contract, and stale-search-response/assets/fixture.html was removed only after the complete inline replacement passed both stale-success and stale-failure scenarios in CodePen.</evidence-2>
+        <evidence-3>Only the eight JavaScript and DOM migration facts are implemented; TypeScript, HTML/CSS, accessibility, React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-10>
     <Gate-Phase-11 PHASE="Phase-11" status="pending">

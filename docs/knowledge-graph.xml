@@ -48,19 +48,19 @@
       <annotations>
         <type-TaskMetadataSet PURPOSE="Collection of five-field task metadata records exposed to thematic and interview collections" />
         <export-taskCard PURPOSE="Expose one complete copy-ready StudentTaskCard through GitHub" />
-        <const-cardMigrationState PURPOSE="Phase 8 contract implemented; all twenty existing card migrations remain pending in Phases 10 through 13" />
-        <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" />
-        <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" />
-        <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" />
-        <export-this-callback-binding PURPOSE="Expose the accepted student-facing task card at tasks/this-callback-binding/README.md" />
-        <export-browser-event-loop-order PURPOSE="Expose the accepted student-facing task card at tasks/browser-event-loop-order/README.md" />
-        <export-stale-search-response PURPOSE="Expose the accepted student-facing task card at tasks/stale-search-response/README.md" />
+        <const-cardMigrationState PURPOSE="Phase 10 implemented eight JavaScript and DOM card migrations; twelve TypeScript, HTML/CSS, accessibility, and React migrations remain pending in Phases 11 through 13" />
+        <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
+        <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
+        <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
+        <export-this-callback-binding PURPOSE="Expose the accepted student-facing task card at tasks/this-callback-binding/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="CodePen browser ESM" />
+        <export-browser-event-loop-order PURPOSE="Expose the accepted student-facing task card at tasks/browser-event-loop-order/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="CodePen classic script" />
+        <export-stale-search-response PURPOSE="Expose the accepted student-facing task card at tasks/stale-search-response/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
         <export-discriminated-load-state PURPOSE="Expose the accepted student-facing task card at tasks/discriminated-load-state/README.md" />
         <export-typed-object-property PURPOSE="Expose the accepted student-facing task card at tasks/typed-object-property/README.md" />
         <export-response-union-narrowing PURPOSE="Expose the accepted student-facing task card at tasks/response-union-narrowing/README.md" />
         <export-validate-unknown-profile PURPOSE="Expose the accepted student-facing task card at tasks/validate-unknown-profile/README.md" />
-        <export-delegated-dynamic-list PURPOSE="Expose the accepted student-facing task card at tasks/delegated-dynamic-list/README.md" />
-        <export-idempotent-event-listeners PURPOSE="Expose the accepted student-facing task card at tasks/idempotent-event-listeners/README.md" />
+        <export-delegated-dynamic-list PURPOSE="Expose the accepted student-facing task card at tasks/delegated-dynamic-list/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
+        <export-idempotent-event-listeners PURPOSE="Expose the accepted student-facing task card at tasks/idempotent-event-listeners/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
         <export-accessible-keyboard-tabs PURPOSE="Expose the accepted student-facing task card at tasks/accessible-keyboard-tabs/README.md" />
         <export-modal-focus-lifecycle PURPOSE="Expose the accepted student-facing task card at tasks/modal-focus-lifecycle/README.md" />
         <export-react-derived-list PURPOSE="Expose the accepted student-facing task card at tasks/react-derived-list/README.md" />

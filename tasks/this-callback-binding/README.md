@@ -1,112 +1,159 @@
 # `this` у метода, стрелки и отделённого callback
 
-**Учебная цель:** Прослеживать привязку this у метода, стрелочной функции и переданного callback.
+[← Все подборки](../../README.md)
 
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | JavaScript |
-| Тема | Модель выполнения JavaScript |
-| Формат | Разбор |
-| Уровень | Средний |
-| Время | 15 минут |
-| Навыки | receiver метода, лексический `this` стрелки, strict mode |
-| Предварительные знания | Нет |
-| Среда выполнения | Node.js 26.4.0, ECMAScript modules, strict mode |
-
-<details>
-<summary>Теория</summary>
-
-Обычный метод получает `this` из формы вызова: в `toolbox.describeMethod()` получателем является `toolbox`. Стрелочная функция не создаёт собственный `this`, а использует лексический `this` места создания. В ESM верхнеуровневый `this` равен `undefined`; при вызове отделённой обычной функции strict mode также передаёт ей `undefined`.
-
-</details>
+Сначала запишите прогноз. Затем откройте [CodePen](https://pen.new), очистите панели HTML, CSS и JS, вставьте весь блок ниже в панель **HTML** и нажмите **Run**. Код выполняется в браузере как `<script type="module">`: это сохраняет strict mode и верхнеуровневый `this === undefined`, как в исходном Node.js ESM-сценарии.
 
 ## Условие
 
-Разберите программу: укажите точные три строки stdout и объясните причину каждой. Отдельно объясните, почему последний вызов выбрасывает ошибку, но программа продолжает работу.
+```html
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>this у трёх форм вызова</title>
+    <style>
+      body {
+        font: 16px/1.5 system-ui;
+        margin: 2rem;
+      }
 
-### Входы
+      pre {
+        padding: 1rem;
+        background: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Три формы вызова</h1>
+    <pre id="trace"></pre>
 
-Дана фиксированная ESM-программа. В ответе нужны:
+    <script type="module">
+      // Учебная цель: прослеживать привязку this у метода,
+      // стрелочной функции и переданного callback.
+      //
+      // До запуска предскажите три строки в точном порядке.
+      // Объясните receiver метода, лексический this стрелки
+      // и TypeError отделённого вызова. Код не изменяйте.
 
-1. три строки stdout в точном порядке;
-2. объяснение receiver метода;
-3. объяснение лексического `this` стрелочной функции;
-4. объяснение `TypeError` при вызове отделённого callback.
+      const trace = document.querySelector('#trace');
+      const print = (entry) => {
+        trace.append(`${entry}\n`);
+        console.log(entry);
+      };
 
-### Выходы
+      const toolbox = {
+        status: 'save',
+        describeMethod() {
+          print(`method:${this.status}`);
+        },
+        describeArrow: () => {
+          print(`arrow:${this?.status ?? 'missing'}`);
+        },
+      };
 
-Три строки stdout и причинный trace привязки `this`.
+      toolbox.describeMethod();
+      toolbox.describeArrow();
 
-### Ограничения и побочные эффекты
+      const callback = toolbox.describeMethod;
 
-- Выполняйте код именно как ESM в Node.js 26.4.0; в этой среде включён strict mode.
-- Не меняйте форму вызовов и не добавляйте `bind`, `call` или `apply`.
-- Ожидаемый `TypeError` должен быть пойман локально.
-- Единственный внешний побочный эффект — вывод в stdout.
-
-### Фикстуры
-
-Фикстура — приведённый ниже локальный объект и три формы вызова.
-
-### Стартовый код
-
-```js
-const toolbox = {
-  status: 'save',
-  describeMethod() {
-    console.log(`method:${this.status}`);
-  },
-  describeArrow: () => {
-    console.log(`arrow:${this?.status ?? 'missing'}`);
-  },
-};
-
-toolbox.describeMethod();
-toolbox.describeArrow();
-
-const callback = toolbox.describeMethod;
-
-try {
-  callback();
-} catch (error) {
-  console.log(`error:${error.name}`);
-}
+      try {
+        callback();
+      } catch (error) {
+        print(`error:${error.name}`);
+      }
+    </script>
+  </body>
+</html>
 ```
 
-### Примеры
+## Готово, когда
 
-#### Обычный сценарий
+- До запуска записаны строки `method:save`, `arrow:missing`, `error:TypeError` именно в таком порядке.
+- Объяснение связывает первую строку с receiver `toolbox`, а вторую — с лексическим верхнеуровневым `this` браузерного ESM.
+- Объяснено, что отделённый strict-mode вызов получает `this === undefined`, а пойманный `TypeError` не останавливает программу.
 
-Вызов `toolbox.describeMethod()` имеет receiver `toolbox`, поэтому первая строка — `method:save`.
-
-#### Граничный сценарий
-
-Стрелочная функция не получает `toolbox` как `this`; её лексический ESM `this` равен `undefined`, поэтому вторая строка — `arrow:missing`.
-
-#### Ошибка или пустой результат
-
-`callback()` вызывается без receiver. В strict mode `this` внутри `describeMethod` равен `undefined`, чтение `this.status` выбрасывает `TypeError`, а `catch` печатает `error:TypeError`.
-
-## Критерии готовности
-
-- Указаны строки `method:save`, `arrow:missing`, `error:TypeError` именно в таком порядке.
-- Объяснение не приписывает стрелочной функции динамический `this` от `toolbox`.
-- Объяснение связывает ошибку с отделённым вызовом в strict ESM, а не с содержимым `status`.
-- Указано, что ошибка поймана и не останавливает программу.
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый ответ целиком.
 
 <details>
-<summary>Подсказка 1</summary>
+<summary>Подсказка 1 — куда смотреть</summary>
 
-Смотрите не на место записи функции в объекте, а на вид каждого вызова: `object.method()` и `callback()` создают разные условия для обычной функции.
+Смотрите на форму каждого вызова, а не только на место, где функция записана: `object.method()` и `callback()` задают разные условия.
+
+</details>
+
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
+
+Для каждой строки отдельно ответьте на вопрос: создаёт ли функция собственный `this`, и есть ли объект слева от точки в момент вызова?
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+У обычного метода receiver берётся из вызова. У стрелки `this` приходит из места создания. После присваивания метода в `callback` receiver исчезает, а ESM уже работает в strict mode.
 
 </details>
 
 <details>
 <summary>Решение</summary>
 
-### Подход
+```html
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>this у трёх форм вызова</title>
+    <style>
+      body {
+        font: 16px/1.5 system-ui;
+        margin: 2rem;
+      }
 
-Метод вызывается через объект, поэтому `this === toolbox` и доступен `status`. Стрелка создана на верхнем уровне ESM, где `this` равен `undefined`; optional chaining и `??` дают `missing`. После присваивания в `callback` обычная функция вызывается без receiver. Strict mode не подставляет глобальный объект, поэтому чтение `this.status` вызывает пойманный `TypeError`.
+      pre {
+        padding: 1rem;
+        background: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Три формы вызова</h1>
+    <pre id="trace"></pre>
+
+    <script type="module">
+      const trace = document.querySelector('#trace');
+      const print = (entry) => {
+        trace.append(`${entry}\n`);
+        console.log(entry);
+      };
+
+      const toolbox = {
+        status: 'save',
+        describeMethod() {
+          print(`method:${this.status}`);
+        },
+        describeArrow: () => {
+          print(`arrow:${this?.status ?? 'missing'}`);
+        },
+      };
+
+      toolbox.describeMethod();
+      toolbox.describeArrow();
+
+      const callback = toolbox.describeMethod;
+
+      try {
+        callback();
+      } catch (error) {
+        print(`error:${error.name}`);
+      }
+    </script>
+  </body>
+</html>
+```
+
+Точный вывод:
 
 ```text
 method:save
@@ -114,44 +161,30 @@ arrow:missing
 error:TypeError
 ```
 
-Полный код не требует исправлений:
+### Почему это работает
 
-```js
-const toolbox = {
-  status: 'save',
-  describeMethod() {
-    console.log(`method:${this.status}`);
-  },
-  describeArrow: () => {
-    console.log(`arrow:${this?.status ?? 'missing'}`);
-  },
-};
-
-toolbox.describeMethod();
-toolbox.describeArrow();
-
-const callback = toolbox.describeMethod;
-
-try {
-  callback();
-} catch (error) {
-  console.log(`error:${error.name}`);
-}
-```
-
-### Сложность
-
-- Время: `O(1)`.
-- Память: `O(1)`.
-
-### Компромиссы и альтернативы
-
-Если callback действительно должен работать с `toolbox`, его можно передавать как `toolbox.describeMethod.bind(toolbox)`. Это фиксирует receiver, но создаёт новую функцию. Альтернатива — хранить состояние в замыкании стрелочной функции, если динамический `this` вообще не нужен.
+`toolbox.describeMethod()` передаёт методу receiver `toolbox`. Стрелка не создаёт собственный `this` и берёт верхнеуровневое значение browser ESM — `undefined`. Отделённая обычная функция вызывается без receiver; strict mode не подставляет глобальный объект, поэтому чтение `this.status` выбрасывает локально пойманный `TypeError`.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Самопроверка</summary>
 
-- Почему `toolbox.describeMethod()` и `callback()` дают разный `this`, хотя ссылаются на одну функцию?
+- Почему ссылка на одну функцию даёт разный `this` в `toolbox.describeMethod()` и `callback()`?
 - Почему стрелка не печатает `arrow:save`?
-- Как изменится третий вызов после `const callback = toolbox.describeMethod.bind(toolbox)`?
+- Как изменится третий вызов после `bind(toolbox)`?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: JavaScript
+- Подборка: `this` и замыкания
+- Формат: Разобрать код
+- Сложность: Средняя
+- Примерное время: 15 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).

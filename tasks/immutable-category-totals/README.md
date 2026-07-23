@@ -1,106 +1,96 @@
 # Итоги по категориям без мутаций
 
-**Учебная цель:** Преобразовывать и агрегировать коллекцию данных без изменения исходного массива.
+[← Все подборки](../../README.md)
 
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | JavaScript |
-| Тема | Коллекции |
-| Формат | Реализация |
-| Уровень | Базовый |
-| Время | 15 минут |
-| Навыки | `reduce`, валидация входных данных, неизменяемость входа |
-| Предварительные знания | Нет |
-| Среда выполнения | Node.js 26.4.0, ECMAScript modules |
-
-<details>
-<summary>Теория</summary>
-
-Агрегация не обязана изменять исходный массив. В `reduce` аккумулятор хранит новый результат: здесь это объект с суммой по каждой категории. Чтобы отличать отсутствие категории от суммы `0`, берите текущее значение через `?? 0`.
-
-</details>
+Откройте [Programiz JavaScript Online Compiler](https://www.programiz.com/javascript/online-compiler/), замените код в редакторе полным блоком ниже и нажмите **Run**. Код рассчитан на консольный JavaScript без browser API; исходное выполнение как Node.js ESM не влияло на результат этой задачи.
 
 ## Условие
 
-Реализуйте `sumByCategory(entries)`. Функция должна вернуть новый объект, где ключ — категория, а значение — сумма `amount` всех записей этой категории.
-
-### Входы
-
-`entries` — массив объектов `{ category, amount }`, где `category` — непустая строка, а `amount` — конечное неотрицательное число.
-
-### Выходы
-
-Новый объект с итогами по категориям. Для пустого массива верните пустой объект.
-
-### Ограничения и побочные эффекты
-
-- Если `entries` не массив либо хотя бы одна запись не соответствует контракту, выбросьте `TypeError`.
-- Не изменяйте массив `entries`, его элементы или вложенные в них значения.
-- Не выполняйте внешних побочных эффектов: функция ничего не печатает и не обращается к сети, файлам или глобальному состоянию.
-
-### Фикстуры
-
 ```js
+// Учебная цель: преобразовывать и агрегировать коллекцию данных
+// без изменения исходного массива.
+//
+// Реализуйте sumByCategory(entries).
+// Верните новый объект: ключ — непустая строка category,
+// значение — сумма всех конечных неотрицательных amount этой категории.
+// Для пустого массива верните пустой объект.
+// Если entries не массив или хотя бы одна запись некорректна,
+// выбросьте TypeError. Не изменяйте массив и его элементы.
+
+function sumByCategory(entries) {
+  // Ваш код здесь.
+}
+
 const entries = [
   { category: 'books', amount: 12 },
   { category: 'games', amount: 25 },
   { category: 'books', amount: 8 },
 ];
-```
+const sourceSnapshot = JSON.stringify(entries);
 
-### Стартовый код
+function verify() {
+  try {
+    const totals = sumByCategory(entries);
+    const regularPass =
+      totals?.books === 20 &&
+      totals?.games === 25;
+    const emptyPass =
+      JSON.stringify(sumByCategory([])) === '{}';
 
-```js
-export function sumByCategory(entries) {
-  // Проверьте вход и верните новый объект с суммами.
+    let invalidPass = false;
+    try {
+      sumByCategory([{ category: 'books', amount: -1 }]);
+    } catch (error) {
+      invalidPass = error instanceof TypeError;
+    }
+
+    const unchangedPass = JSON.stringify(entries) === sourceSnapshot;
+    console.log({
+      totals,
+      regularPass,
+      emptyPass,
+      invalidPass,
+      unchangedPass,
+    });
+  } catch (error) {
+    console.log(`Пока не готово: ${error.name}: ${error.message}`);
+  }
 }
+
+verify();
 ```
 
-### Примеры
+## Готово, когда
 
-#### Обычный сценарий
+- В консоли `totals` содержит `books: 20` и `games: 25`, а `regularPass` равен `true`.
+- Для пустого массива `emptyPass` равен `true`, а для отрицательного `amount` — `invalidPass: true`.
+- После всех вызовов `unchangedPass` равен `true`: исходный массив и его элементы не изменились.
 
-```js
-sumByCategory(entries);
-// { books: 20, games: 25 }
-```
-
-Две записи `books` суммируются, а `games` остаётся отдельной категорией.
-
-#### Граничный сценарий
-
-```js
-sumByCategory([]);
-// {}
-```
-
-#### Ошибка или пустой результат
-
-```js
-sumByCategory([{ category: 'books', amount: -1 }]);
-// throws TypeError
-```
-
-## Критерии готовности
-
-- Фикстура возвращает объект, эквивалентный `{ books: 20, games: 25 }`.
-- Пустой массив возвращает пустой объект.
-- Некорректный вход выбрасывает `TypeError`.
-- После вызова массив и его элементы остаются без изменений.
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
-<summary>Подсказка 1</summary>
+<summary>Подсказка 1 — куда смотреть</summary>
 
-Начните `reduce` с нового пустого объекта, а не с первого элемента массива.
+Отделите проверку входа от агрегации. Для каждой записи проверьте объект, непустую `category` и конечный неотрицательный `amount`.
+
+</details>
+
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
+
+Сначала отклоните весь вход одним условием с `Array.isArray` и `every`, затем запустите `reduce` с новым пустым аккумулятором.
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+На каждой итерации берите текущую сумму категории через `?? 0`, прибавляйте `amount` и возвращайте тот же новый аккумулятор. Входные записи при этом только читайте.
 
 </details>
 
 <details>
 <summary>Решение</summary>
-
-### Подход
-
-Сначала проверяем массив и каждую запись. Затем `reduce` накапливает суммы в новом объекте без прототипа: такой аккумулятор не конфликтует с унаследованными именами ключей. Входные записи только читаются.
 
 ```js
 function isValidEntry(entry) {
@@ -114,7 +104,7 @@ function isValidEntry(entry) {
   );
 }
 
-export function sumByCategory(entries) {
+function sumByCategory(entries) {
   if (!Array.isArray(entries) || !entries.every(isValidEntry)) {
     throw new TypeError('entries must contain valid category amounts');
   }
@@ -124,21 +114,70 @@ export function sumByCategory(entries) {
     return totals;
   }, Object.create(null));
 }
+
+const entries = [
+  { category: 'books', amount: 12 },
+  { category: 'games', amount: 25 },
+  { category: 'books', amount: 8 },
+];
+const sourceSnapshot = JSON.stringify(entries);
+
+function verify() {
+  try {
+    const totals = sumByCategory(entries);
+    const regularPass =
+      totals?.books === 20 &&
+      totals?.games === 25;
+    const emptyPass =
+      JSON.stringify(sumByCategory([])) === '{}';
+
+    let invalidPass = false;
+    try {
+      sumByCategory([{ category: 'books', amount: -1 }]);
+    } catch (error) {
+      invalidPass = error instanceof TypeError;
+    }
+
+    const unchangedPass = JSON.stringify(entries) === sourceSnapshot;
+    console.log({
+      totals,
+      regularPass,
+      emptyPass,
+      invalidPass,
+      unchangedPass,
+    });
+  } catch (error) {
+    console.log(`Пока не готово: ${error.name}: ${error.message}`);
+  }
+}
+
+verify();
 ```
 
-### Сложность
+### Почему это работает
 
-- Время: `O(n)`, где `n` — число записей.
-- Память: `O(k)`, где `k` — число разных категорий.
-
-### Компромиссы и альтернативы
-
-`Object.create(null)` безопаснее для произвольных строковых ключей, но у результата нет методов `Object.prototype`. Альтернатива — накапливать в `Map`, а затем при необходимости преобразовать его в объект; это удобно, если следующий этап тоже работает с `Map`.
+Проверка не пропускает значения вне контракта. `reduce` начинает с нового объекта без прототипа и только читает `entries`, поэтому результат не связан с исходным массивом. `?? 0` отличает отсутствующую категорию от уже накопленной суммы `0`.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Самопроверка</summary>
 
 - Почему аккумулятор не должен быть самим входным массивом?
-- Что вернёт функция для двух записей одной категории, если одна из сумм равна `0`?
-- Когда `Map` будет удобнее объекта для такой агрегации?
+- Что произойдёт с категорией, если первая сумма для неё равна `0`?
+- Когда для такой агрегации удобнее вернуть `Map`, а не объект?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: JavaScript
+- Подборка: Массивы и объекты
+- Формат: Написать код
+- Сложность: Базовая
+- Примерное время: 15 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).

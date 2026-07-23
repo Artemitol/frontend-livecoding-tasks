@@ -1,108 +1,111 @@
 # Стабильная сортировка товаров по двум ключам
 
-**Учебная цель:** Исправлять многокритериальную сортировку, сохраняя исходный массив и корректно обрабатывая равные ключи.
+[← Все подборки](../../README.md)
 
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | JavaScript |
-| Тема | Коллекции |
-| Формат | Отладка |
-| Уровень | Средний |
-| Время | 20 минут |
-| Навыки | компаратор сортировки, стабильность, неизменяемость массива |
-| Предварительные знания | Нет |
-| Среда выполнения | Node.js 26.4.0, ECMAScript modules |
-
-<details>
-<summary>Теория</summary>
-
-Компаратор возвращает отрицательное число, ноль или положительное число. Для нескольких ключей сравнивайте следующий ключ только при равенстве предыдущего. Метод `sort` меняет массив, поэтому для неизменяемого контракта сначала создайте копию. Равные по всем ключам элементы должны остаться в исходном взаимном порядке.
-
-</details>
+Откройте [Programiz JavaScript Online Compiler](https://www.programiz.com/javascript/online-compiler/), замените код в редакторе полным блоком ниже и нажмите **Run**. Код использует только консольный JavaScript; исходное выполнение как Node.js ESM не влияло на сортировку.
 
 ## Условие
 
-Исправьте `sortProducts(products)`. Она должна вернуть новый массив товаров: сначала по `price` по возрастанию, затем по `rating` по убыванию. Товары с равными `price` и `rating` сохраняют исходный порядок.
-
-### Входы
-
-`products` — массив объектов `{ id, price, rating }`, где `id` — непустая строка, `price` — конечное неотрицательное число, `rating` — конечное число.
-
-### Выходы
-
-Новый отсортированный массив тех же объектов. Для пустого массива верните новый пустой массив.
-
-### Ограничения и побочные эффекты
-
-- Если `products` не массив либо хотя бы один товар не соответствует контракту, выбросьте `TypeError`.
-- Не меняйте `products` и не меняйте сами объекты товаров.
-- Равенство обоих ключей обязано сохранять исходный относительный порядок.
-- Функция не имеет внешних побочных эффектов.
-
-### Фикстуры
-
 ```js
+// Учебная цель: исправлять многокритериальную сортировку, сохраняя
+// исходный массив и корректно обрабатывая равные ключи.
+//
+// Исправьте sortProducts(products).
+// Сортируйте по price по возрастанию, затем по rating по убыванию.
+// Товары с равными price и rating должны сохранить исходный порядок.
+// Верните новый массив, не меняйте products и его объекты.
+// Для пустого массива верните новый пустой массив.
+// Некорректный вход должен выбрасывать TypeError.
+
+function sortProducts(products) {
+  return products.sort((left, right) => left.price - right.price);
+}
+
 const products = [
   { id: 'p1', price: 20, rating: 4 },
   { id: 'p2', price: 20, rating: 4 },
   { id: 'p3', price: 10, rating: 3 },
   { id: 'p4', price: 20, rating: 2 },
 ];
-```
+const ratingProducts = [
+  { id: 'r1', price: 20, rating: 2 },
+  { id: 'r2', price: 20, rating: 5 },
+];
+const sourceOrder = products.map(({ id }) => id).join(',');
 
-### Стартовый код
+function verify() {
+  try {
+    const sorted = sortProducts(products);
+    const sortedOrder = sorted.map(({ id }) => id).join(',');
+    const orderPass = sortedOrder === 'p3,p1,p2,p4';
+    const ratingOrder = sortProducts(ratingProducts)
+      .map(({ id }) => id)
+      .join(',');
+    const bothKeysPass = ratingOrder === 'r2,r1';
+    const unchangedPass =
+      products.map(({ id }) => id).join(',') === sourceOrder;
+    const equalOrderPass =
+      sorted.findIndex(({ id }) => id === 'p1') <
+      sorted.findIndex(({ id }) => id === 'p2');
+    const empty = sortProducts([]);
+    const emptyPass = Array.isArray(empty) && empty.length === 0;
 
-```js
-export function sortProducts(products) {
-  return products.sort((left, right) => left.price - right.price);
+    let invalidPass = false;
+    try {
+      sortProducts([{ id: 'p1', price: Number.NaN, rating: 4 }]);
+    } catch (error) {
+      invalidPass = error instanceof TypeError;
+    }
+
+    console.log({
+      sortedOrder,
+      orderPass,
+      ratingOrder,
+      bothKeysPass,
+      unchangedPass,
+      equalOrderPass,
+      emptyPass,
+      invalidPass,
+    });
+  } catch (error) {
+    console.log(`Пока не готово: ${error.name}: ${error.message}`);
+  }
 }
+
+verify();
 ```
 
-Стартовый вариант меняет входной массив и игнорирует `rating` и стабильность равных ключей.
+## Готово, когда
 
-### Примеры
+- В консоли `sortedOrder` равен `p3,p1,p2,p4`, `ratingOrder` равен `r2,r1`, а `bothKeysPass` равен `true`: используются оба ключа.
+- `unchangedPass` и `equalOrderPass` равны `true`: вход не изменён, а `p1` остаётся раньше `p2`.
+- `emptyPass` и `invalidPass` равны `true`: пустой массив поддержан, некорректный товар отклонён.
 
-#### Обычный сценарий
-
-```js
-sortProducts(products).map((product) => product.id);
-// ['p3', 'p1', 'p2', 'p4']
-```
-
-#### Граничный сценарий
-
-```js
-sortProducts([]);
-// []
-```
-
-#### Ошибка или пустой результат
-
-```js
-sortProducts([{ id: 'p1', price: Number.NaN, rating: 4 }]);
-// throws TypeError
-```
-
-## Критерии готовности
-
-- Фикстура возвращает идентификаторы в порядке `p3,p1,p2,p4`.
-- Исходный `products` после вызова по-прежнему имеет порядок `p1,p2,p3,p4`.
-- Два товара с одинаковыми `price` и `rating` остаются в порядке `p1,p2`.
-- Пустой массив возвращает `[]`, а некорректный вход выбрасывает `TypeError`.
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
-<summary>Подсказка 1</summary>
+<summary>Подсказка 1 — куда смотреть</summary>
 
-Сначала сравните цену. Если цены совпали, сравните рейтинг в обратном направлении. Чтобы явно зафиксировать стабильность, сохраните исходный индекс.
+У исходного варианта две независимые проблемы: `sort` меняет массив и компаратор сравнивает только `price`.
+
+</details>
+
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
+
+Сначала проверьте все товары, затем создайте новую служебную коллекцию, в которой вместе с товаром хранится его исходный индекс.
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+Компаратор последовательно возвращает разницу цен, затем обратную разницу рейтингов, а при полном равенстве — разницу исходных индексов. После сортировки уберите служебные индексы.
 
 </details>
 
 <details>
 <summary>Решение</summary>
-
-### Подход
-
-Валидируем вход, добавляем каждому товару его исходный индекс и сортируем новую служебную коллекцию. Последний критерий — индекс — делает требование стабильности явным, а не зависящим от реализации сортировки.
 
 ```js
 function isValidProduct(product) {
@@ -117,7 +120,7 @@ function isValidProduct(product) {
   );
 }
 
-export function sortProducts(products) {
+function sortProducts(products) {
   if (!Array.isArray(products) || !products.every(isValidProduct)) {
     throw new TypeError('products must contain valid products');
   }
@@ -139,21 +142,85 @@ export function sortProducts(products) {
     })
     .map(({ product }) => product);
 }
+
+const products = [
+  { id: 'p1', price: 20, rating: 4 },
+  { id: 'p2', price: 20, rating: 4 },
+  { id: 'p3', price: 10, rating: 3 },
+  { id: 'p4', price: 20, rating: 2 },
+];
+const ratingProducts = [
+  { id: 'r1', price: 20, rating: 2 },
+  { id: 'r2', price: 20, rating: 5 },
+];
+const sourceOrder = products.map(({ id }) => id).join(',');
+
+function verify() {
+  try {
+    const sorted = sortProducts(products);
+    const sortedOrder = sorted.map(({ id }) => id).join(',');
+    const orderPass = sortedOrder === 'p3,p1,p2,p4';
+    const ratingOrder = sortProducts(ratingProducts)
+      .map(({ id }) => id)
+      .join(',');
+    const bothKeysPass = ratingOrder === 'r2,r1';
+    const unchangedPass =
+      products.map(({ id }) => id).join(',') === sourceOrder;
+    const equalOrderPass =
+      sorted.findIndex(({ id }) => id === 'p1') <
+      sorted.findIndex(({ id }) => id === 'p2');
+    const empty = sortProducts([]);
+    const emptyPass = Array.isArray(empty) && empty.length === 0;
+
+    let invalidPass = false;
+    try {
+      sortProducts([{ id: 'p1', price: Number.NaN, rating: 4 }]);
+    } catch (error) {
+      invalidPass = error instanceof TypeError;
+    }
+
+    console.log({
+      sortedOrder,
+      orderPass,
+      ratingOrder,
+      bothKeysPass,
+      unchangedPass,
+      equalOrderPass,
+      emptyPass,
+      invalidPass,
+    });
+  } catch (error) {
+    console.log(`Пока не готово: ${error.name}: ${error.message}`);
+  }
+}
+
+verify();
 ```
 
-### Сложность
+### Почему это работает
 
-- Время: `O(n log n)`.
-- Память: `O(n)` для служебной копии.
-
-### Компромиссы и альтернативы
-
-Современная стабильная `sort` позволяет вернуть `0` для равных ключей после копирования массива, и это короче. Декорирование исходным индексом чуть объёмнее, но делает стабильность переносимой и видимой в коде.
+Валидация сохраняет прежний входной контракт. Служебный массив отделяет сортировку от `products`, первый ненулевой критерий задаёт нужный порядок, а исходный индекс явно фиксирует стабильность элементов с равными ключами.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Самопроверка</summary>
 
 - Почему прямой вызов `products.sort(...)` нарушает контракт?
-- Почему рейтинг сравнивается как `right.rating - left.rating`?
-- Зачем сохранять индекс, если среда уже обещает стабильную сортировку?
+- Почему рейтинг сравнивается в обратном направлении?
+- Когда можно безопасно полагаться на стабильность встроенного `sort` без исходного индекса?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: JavaScript
+- Подборка: Массивы и объекты
+- Формат: Исправить код
+- Сложность: Средняя
+- Примерное время: 20 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).
