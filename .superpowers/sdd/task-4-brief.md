@@ -1,103 +1,79 @@
-### Task 4: Create the Student Catalog Entry Point and Empty State
+### Task 4: R4 — TypeScript Cards
 
 **Files:**
-- Create: `README.md`
-- Modify: `docs/development-plan.xml`
+
+- Modify: `tasks/discriminated-load-state/README.md`
+- Modify: `tasks/typed-object-property/README.md`
+- Modify: `tasks/response-union-narrowing/README.md`
+- Modify: `tasks/validate-unknown-profile/README.md`
+- Modify: `docs/verification-plan.xml`
 - Modify: `docs/knowledge-graph.xml`
-- Verify: `docs/verification-plan.xml` (`V-M-CATALOG`)
+- Track: `frontend-livecoding-tasks-kln-student-r4-typescript`
 
 **Interfaces:**
-- Consumes: canonical `TaskMetadataSet`, even when empty.
-- Produces: `studentIndex` with exactly one thematic projection per accepted task.
 
-- [ ] **Step 1: Claim B4 and create `README.md`**
+- Consumes: R1 card contract and TypeScript Playground profile.
+- Produces: four TypeScript cards and four preservation/evidence rows.
 
-Set `catalog_id='frontend-livecoding-tasks-kln-catalog'`, run `bd update "$catalog_id" --claim`, then create:
-
-```markdown
-# Frontend live-coding задачи
-
-GitHub-first база самостоятельных упражнений по frontend-разработке. Репозиторий можно читать без установки зависимостей: выберите задачу в каталоге, откройте её условие и критерии готовности, а теорию, подсказки и решение раскрывайте по необходимости.
-
-## Как выбрать задачу
-
-Каталог сгруппирован по одной основной теме. В строке задачи указаны технологии, формат, уровень, оценка времени, тренируемые навыки и предварительные знания. Пересекающиеся навыки не дублируют задачу в других темах.
-
-Уровень описывает сложность упражнения: `Базовый`, `Средний` или `Продвинутый`. Формат имеет одно из значений: `Реализация`, `Отладка`, `Разбор`, `Прогноз вывода`.
-
-## Каталог задач
-
-Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и принятия первой волны ментором.
-
-## Как устроена карточка
-
-Метаданные внутри `tasks/<stable-slug>/README.md` являются источником истины. Условие, критерии готовности и самопроверка видимы сразу; теория, каждая подсказка и решение закрыты независимо. Внешние материалы дополняют карточку, но не заменяют локальные условие, fixtures, стартовый код или решение.
-
-## Поддержка каталога
-
-ИИ-агент публикует только кандидатов со статусом `accepted` и в одном изменении синхронизирует карточку, эту тематическую проекцию, knowledge graph и Beads evidence. Каждая задача встречается в каталоге ровно один раз и сортируется внутри темы сначала по уровню, затем по названию.
-```
-
-- [ ] **Step 2: Verify the explicit empty state**
-
-Run:
+- [ ] **Step 1: Claim R4 and capture source contracts**
 
 ```bash
-rg -n '^# Frontend live-coding задачи$|^## (Как выбрать задачу|Каталог задач|Как устроена карточка|Поддержка каталога)$' README.md
-test "$(rg -c '^Принятых задач пока нет\.' README.md)" = 1
-test "$(rg -c '^\| .*tasks/.*/README\.md.*\|$' README.md || true)" = 0
+bd update frontend-livecoding-tasks-kln-student-r4-typescript --claim
+for slug in discriminated-load-state typed-object-property response-union-narrowing validate-unknown-profile; do
+  sed -n '1,16p' "tasks/$slug/README.md"
+done
 ```
 
-Expected: all landing-page sections exist, one empty state exists and no fake task row exists.
+Expected: learning goal, prerequisite and runtime assumptions are recorded before editing.
 
-- [ ] **Step 3: Push and render-review the empty catalog before changing GRACE status**
+- [ ] **Step 2: Migrate the exact four-card matrix**
 
-Run:
+| Slug | Mode | Technology | Collection | Format | Difficulty | Time |
+| --- | --- | --- | --- | --- | --- | --- |
+| `discriminated-load-state` | code-first | TypeScript | Моделирование типов | Написать код | Базовая | 20 минут |
+| `typed-object-property` | code-first | TypeScript | Моделирование типов | Исправить код | Средняя | 20 минут |
+| `response-union-narrowing` | code-first | TypeScript | Сужение и проверка данных | Исправить код | Средняя | 20 минут |
+| `validate-unknown-profile` | code-first | TypeScript | Сужение и проверка данных | Написать код | Продвинутая | 30 минут |
+
+All four use `https://www.typescriptlang.org/play/`, keep TypeScript 5.9 and strict assumptions visible, and follow the 12 card rules from R3 Step 2.
+
+Preserve these exact learning invariants:
+
+- discriminated union remains mutually exclusive and exhaustively checked;
+- generic key remains connected to `Preferences[Key]`;
+- successful/error response branches remain safely narrowed and empty success title remains explicit;
+- unknown JSON is runtime-validated without type assertion, including invalid JSON and invalid roles.
+
+Expected: each card is one copy-ready TypeScript unit unless its existing contract proves otherwise.
+
+- [ ] **Step 3: Verify in TypeScript Playground**
+
+For each card, record:
+
+- exact Playground settings needed for strict TypeScript 5.9 behavior;
+- expected type/runtime result;
+- observed result;
+- PASS/BLOCKED verdict.
+
+A local `tsc` or temporary harness may diagnose a problem but cannot replace the final Playground result.
+
+Expected: four target-editor PASS rows.
+
+- [ ] **Step 4: Run gates, commit, push and close R4**
+
+Use the structural loop from R3 with the four TypeScript slugs. Also run XML, GRACE lint and `git diff --check`. Update only Phase-11 implemented facts, then:
 
 ```bash
-git add README.md
-git commit -m "docs: add student catalog entry point"
-catalog_content_commit="$(git rev-parse HEAD)"
+git add tasks docs/verification-plan.xml docs/knowledge-graph.xml
+git commit -m "docs(tasks): redesign TypeScript task cards"
 git push origin feature/frontend-livecoding-tasks-kln
+R4_COMMIT="$(git rev-parse HEAD)"
+bd update frontend-livecoding-tasks-kln-student-r4-typescript \
+  --append-notes "PASS: 4 TypeScript cards; preservation ledger and TypeScript Playground evidence recorded; XML and GRACE gates pass. Commit ${R4_COMMIT} pushed."
+bd close frontend-livecoding-tasks-kln-student-r4-typescript --reason "TypeScript migration and Phase-11 gate verified"
 ```
 
-Inspect the pushed `README.md` in the existing draft PR. Confirm headings, inline code and paragraphs render correctly, the empty state is visible once, and there are no fake rows or broken navigation links. If GitHub rendering is unavailable or unexpected, record `BLOCKED` in B4 and stop.
-
-- [ ] **Step 4: Mark M-CATALOG and Phase 3 implemented after rendered PASS**
-
-Apply:
-
-```xml
-<!-- docs/development-plan.xml -->
-<M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="implemented">
-...
-<Phase-3 name="StudentEntryPoint" status="completed">
-...
-<step-1 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
-
-<!-- docs/knowledge-graph.xml -->
-<M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="implemented">
-```
-
-- [ ] **Step 5: Run, commit, push and close the Phase 3 gate**
-
-Run:
-
-```bash
-xmllint --noout docs/*.xml
-grace_bin="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
-"$grace_bin" lint --fail-on errors --path "$PWD"
-git diff --check
-catalog_content_commit="$(git rev-parse HEAD)"
-git add docs/development-plan.xml docs/knowledge-graph.xml
-git commit -m "docs: record student catalog verification"
-catalog_verification_commit="$(git rev-parse HEAD)"
-git push origin feature/frontend-livecoding-tasks-kln
-bd update "$catalog_id" --append-notes="PASS: explicit empty catalog, GitHub rendered navigation contract, xmllint, standard GRACE lint, whitespace. Content commit $catalog_content_commit; verification-status commit $catalog_verification_commit."
-bd close "$catalog_id" --reason='Student entry point and empty catalog implemented.' --suggest-next
-```
-
-Expected: B4 closes and B5 becomes ready.
+Expected: R4 closed; R5 ready.
 
 ---
 
