@@ -268,4 +268,7 @@ run the required independent post-commit review.
   `Student hub cutover and Phase-14 gate verified`.
 - R8 is open and unclaimed; no R8 execution or Phase-15 rendered audit was
   started.
-- The separate tracked report/progress/Beads evidence commit is pending below.
+- Separate evidence commit
+  `b51d763ef467791c9edce00bea8b7988d9b052ef`
+  (`chore: record R7 execution evidence`) contains the Beads interaction,
+  progress ledger, and full report and is pushed to the feature branch.
