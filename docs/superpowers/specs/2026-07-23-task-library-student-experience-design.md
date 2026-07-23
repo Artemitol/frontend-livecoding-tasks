@@ -200,6 +200,17 @@ React не смешивается с общими JavaScript-подборкам�
 
 Порядок ссылок является рекомендуемым порядком решения. Дополнительные фазы, отчёты и grading rubric не создаются.
 
+Каждый пункт собеседования использует ученическое название и относительную
+ссылку на карточку, затем точное время из `О задаче`:
+
+```md
+1. [Замыкания, созданные внутри цикла](../../../tasks/loop-closure-bindings/README.md) — 10 минут.
+```
+
+Slug остаётся идентификатором для синхронизации и проверок, но не показывается
+ученику вместо названия. Описание из thematic collection в interview README не
+дублируется.
+
 ### Собеседование №1 — примерно 80 минут
 
 1. `loop-closure-bindings` — 10 минут.
@@ -236,14 +247,40 @@ React не смешивается с общими JavaScript-подборкам�
 
 ## 10. Карта онлайн-редакторов
 
-| Тип задачи | Редактор | URL |
+Редактор определяется не одним полем `Технология`, а требуемым профилем
+выполнения. Это сохраняет browser, ESM, DOM и React semantics существующих задач
+и не заставляет запускать browser-код в console-only среде.
+
+| Профиль выполнения | Редактор | URL |
 | --- | --- | --- |
-| Чистый JavaScript | Programiz JavaScript Online Compiler | `https://www.programiz.com/javascript/online-compiler/` |
+| Console JavaScript без browser API | Programiz JavaScript Online Compiler | `https://www.programiz.com/javascript/online-compiler/` |
+| Browser JavaScript, DOM, HTML/CSS или ESM | CodePen | `https://pen.new` |
 | Чистый TypeScript | TypeScript Playground | `https://www.typescriptlang.org/play/` |
-| HTML/CSS с JavaScript | CodePen | `https://pen.new` |
 | React + TypeScript | Vite React TypeScript in StackBlitz | `https://vite.new/react-ts` |
 
 Все четыре ссылки перечисляются на главной. В каждой карточке одна подходящая ссылка находится рядом с инструкцией по переносу кода.
+
+Профили фиксированы для этой миграции:
+
+- Programiz: `immutable-category-totals`, `stable-product-sort`,
+  `loop-closure-bindings`;
+- CodePen browser ESM: `this-callback-binding`, `stale-search-response`,
+  `delegated-dynamic-list`, `idempotent-event-listeners`,
+  `accessible-keyboard-tabs`, `modal-focus-lifecycle`;
+- CodePen browser classic script: `browser-event-loop-order`;
+- CodePen HTML/CSS: `flex-long-text-overflow`,
+  `container-responsive-grid`;
+- TypeScript Playground: `discriminated-load-state`,
+  `typed-object-property`, `response-union-narrowing`,
+  `validate-unknown-profile`;
+- `vite.new/react-ts`: `react-derived-list`, `react-batched-counter`,
+  `react-effect-subscription`, `react-strictmode-cleanup`.
+
+Для `this-callback-binding` CodePen запускается как browser ESM. До изменения
+карточки агент обязан доказать, что три наблюдаемые строки и причины привязки
+`this` совпадают с исходным Node ESM-контрактом. Если эквивалентность не
+подтверждается, миграция останавливается для выбора другого редактора; учебная
+цель или ожидаемый результат не переписываются под ограничения редактора.
 
 Карта редакторов, ссылки на главной и ссылки в карточках образуют одну связанную систему. Замена редактора требует одного атомарного изменения:
 
@@ -274,6 +311,10 @@ React не смешивается с общими JavaScript-подборкам�
 11. Необязательное `Почитать по теме`.
 12. Закрытое `О задаче`.
 13. Инструкция возврата.
+
+Первый видимый абзац `Условия` сохраняет существующую учебную цель в
+ученической формулировке. Отдельный служебный заголовок `Учебная цель` не
+обязателен, но сама цель не удаляется и не подменяется новой.
 
 ### 11.2 Комплексная задача
 
@@ -330,9 +371,12 @@ import { useState } from 'react';
 
 ### 12.3 Контракт по редакторам
 
-- Programiz: один JavaScript-блок для `main.js`.
+- Programiz: один JavaScript-блок для `main.js`; browser API, DOM и
+  Node-specific semantics в этом профиле запрещены.
 - TypeScript Playground: один TypeScript-блок, если задача не требует нескольких файлов.
-- CodePen: базово один HTML-блок со встроенными `<style>` и `<script>`; другое разбиение допускается только после ручной проверки точной инструкции.
+- CodePen: базово один HTML-блок со встроенными `<style>` и `<script>`;
+  инструкция явно фиксирует classic script или `type="module"`; другое
+  разбиение допускается только после ручной проверки точной инструкции.
 - `vite.new/react-ts`: базово полная замена `src/App.tsx`; дополнительные файлы разрешены только при реальной учебной необходимости.
 
 ## 13. Работа с assets
@@ -411,11 +455,15 @@ import { useState } from 'react';
 
 Допустимые значения `Технология`:
 
-- `JavaScript` — Programiz;
-- `TypeScript` — TypeScript Playground;
-- `HTML/CSS` — CodePen;
-- `HTML/CSS/JavaScript` — CodePen;
-- `React/TypeScript` — `vite.new/react-ts`.
+- `JavaScript`;
+- `TypeScript`;
+- `HTML/CSS`;
+- `HTML/JavaScript`;
+- `HTML/CSS/JavaScript`;
+- `React/TypeScript`.
+
+`Технология` описывает предмет карточки, но не заменяет профиль выполнения.
+Точная связь task slug с редактором задана в разделе 10.
 
 Допустимые значения `Формат`:
 
@@ -432,13 +480,40 @@ import { useState } from 'react';
 
 `Примерное время` записывается как целое число минут: например, `12 минут`. То же число используется в thematic и interview README; слово `примерно` добавляется только в ученическую фразу collection-файла.
 
+Миграция существующих значений детерминирована:
+
+- `Реализация` → `Написать код`;
+- `Отладка` → `Исправить код`;
+- `Разбор` → `Разобрать код`;
+- `Прогноз вывода` → `Предсказать результат`;
+- `Базовый` → `Базовая`;
+- `Средний` → `Средняя`;
+- `Продвинутый` → `Продвинутая`;
+- числовая оценка времени сохраняется без изменения.
+
+Изменение формата, сложности или числа минут сверх этой таблицы считается
+изменением учебного контракта и требует отдельного решения ментора.
+
 Удаляются поля:
 
 - `Навыки`;
 - `Предварительные знания`;
 - `Среда выполнения`.
 
-Версии, режим выполнения и важные ограничения пишутся рядом с кодом только когда влияют на решение. Названия внутренних проверочных механизмов не показываются ученику.
+Удаление поля не означает удаление значимой информации:
+
+- наблюдаемые навыки переходят в `Готово, когда`, подсказки или вопросы
+  самопроверки;
+- prerequisite, отличный от `Нет`, кратко объясняется в видимом условии либо
+  рядом с первым местом применения;
+- версия, browser/ESM mode и другие runtime assumptions пишутся рядом с кодом,
+  когда влияют на решение или ожидаемый результат.
+
+Для каждой карточки migration evidence содержит preservation ledger:
+`исходная учебная цель / prerequisite / runtime assumption → новое место`.
+Допустимо отметить `not applicable` только с конкретным объяснением, почему
+исходное поле не влияло на попытку, решение или проверку. Названия внутренних
+проверочных механизмов ученику не показываются.
 
 ## 16. Ученический словарь
 
@@ -498,14 +573,15 @@ tasks/<slug>/README.md
 → Beads evidence
 ```
 
-Время в карточке, тематической подборке и собеседовании совпадает. Редактор определяется технологией и совпадает с корневой картой.
+Время в карточке, тематической подборке и собеседовании совпадает. Редактор
+определяется task profile из раздела 10 и совпадает с корневой картой.
 
 ### 17.3 Изменение редактора
 
 Агент сначала находит:
 
 - корневую ссылку;
-- все карточки соответствующей технологии;
+- все карточки соответствующего editor profile;
 - правила авторинга и verification expectations.
 
 Затем обновляет их атомарно, проверяет новый URL и доказывает отсутствие старого.
@@ -529,34 +605,69 @@ tasks/<slug>/README.md
 
 Новый GRACE module не требуется: существующие module IDs сохраняются, их контракты уточняются.
 
+Исторические completed phases не переписываются в pending. План реализации
+добавляет redesign phases и gates с новыми последовательными ID. Будущие
+контракты не помечаются implemented заранее: graph, verification и module
+annotations обновляются в той же волне, где соответствующий student-facing
+контракт становится фактом.
+
 ## 18. Миграционная стратегия
 
-Цель — полная миграция без смешанного финального состояния. Реализация может идти проверяемыми волнами:
+Цель — полная миграция без смешанного финального состояния. Реализация идёт
+проверяемыми волнами:
 
-1. новый task contract и authoring rules;
-2. корневая навигация и пустые collection shells;
+1. новый task contract, authoring rules, editor-profile proof и GRACE planning delta;
+2. заполненные collection pages без переключения корневого README;
 3. JavaScript-карточки;
 4. TypeScript-карточки;
 5. HTML/CSS и accessibility-карточки;
 6. React-карточки;
-7. interview composition и полная синхронизация;
+7. interview composition, полная синхронизация и атомарное переключение корневого README;
 8. финальный rendered audit.
 
 До финального gate допустимы промежуточные технические коммиты, но пользовательский результат считается готовым только когда все 20 карточек, 13 collection pages и корневой README соответствуют новому контракту.
 
 Волны выполняются последовательно: `README.md`, collection files и GRACE shared artifacts являются общими write surfaces. Параллельная подготовка отдельных карточек допустима только до интеграции и не разрешает конкурентные изменения общих файлов.
 
+Старый корневой каталог остаётся рабочим до волны 7. Новый root hub не ссылается
+на пустую или частично подготовленную collection. Ветка может содержать
+неподключённые collection pages во время миграции, но каждый опубликованный
+commit сохраняет рабочий путь от текущего корневого README ко всем доступным
+задачам.
+
+### 18.1 Beads decomposition contract
+
+Каждая волна становится одной дочерней Beads-задачей. ID создаются планом
+реализации; спецификация фиксирует границы, зависимости и сигнал закрытия:
+
+| Unit | Scope | Depends on | Completion evidence |
+| --- | --- | --- | --- |
+| `R1` | Task contract, authoring rules, editor-profile proof, pending GRACE redesign phases | Письменное одобрение этой спецификации | Четыре editor URL открываются; все 20 slugs имеют профиль; template/policy/GRACE plan согласованы |
+| `R2` | Десять thematic pages с финальным содержанием и три неподключённых interview shells, без root cutover | `R1` | Exact path set; thematic task links, titles, descriptions and times pass; interview pages содержат только общий контракт до `R7` |
+| `R3` | Восемь JavaScript/DOM-карточек и удаление текстового asset `stale-search-response` | `R2` | Per-card structure, copy/run, content and target-editor evidence pass before asset deletion |
+| `R4` | Четыре TypeScript-карточки | `R3` | Per-card structure, type-check/run and target-editor evidence pass |
+| `R5` | Четыре HTML/CSS/accessibility-карточки и удаление двух текстовых assets | `R4` | CodePen/browser/manual visual evidence pass before asset deletion |
+| `R6` | Четыре React-карточки | `R5` | `vite.new/react-ts` copy/run and browser evidence pass |
+| `R7` | Interview links, graph/verification sync and root cutover | `R6` | All 13 collections, all 20 cards, all duplicated fields and root negative checks pass atomically |
+| `R8` | Published GitHub rendered audit and final handoff | `R7` | Full URL inventory plus deep rendered-flow matrix pass; user-acceptance request recorded |
+
+Каждый unit имеет один primary scope, закрывается только по указанному evidence и
+трассируется к разделам 3, 8–19 и 22. Фактические `bd` issues не создаются до
+письменного одобрения спецификации и отдельного implementation plan.
+
 ## 19. Проверка
 
 ### 19.1 Структурная
 
-- существуют 10 thematic и 3 interview README;
+- существует ровно утверждённый set из 10 thematic и 3 interview README без дополнительных collection paths;
 - корневой README ссылается на все 13;
+- корневой README содержит ровно четыре блока из раздела 6 и не содержит старых task tables, agent-maintenance prose или Beads/GRACE terminology;
 - все относительные task links разрешаются;
 - каждая карточка встречается ровно в одной thematic collection;
 - interview collections содержат ровно 15 уникальных task slugs;
 - ни одна задача не встречается в двух interviews;
-- все 20 slugs сохранены;
+- task directory set равен утверждённым 20 slugs: ни один не потерян и новый не добавлен;
+- каждый interview entry показывает linked student title и exact time, а не slug как ученическое название;
 - закрытые blocks имеют парные `<details>` и `</details>`;
 - каждая карточка содержит три exact hint summaries;
 - `Решение`, `Самопроверка` и `О задаче` закрыты;
@@ -569,9 +680,12 @@ tasks/<slug>/README.md
 
 - title и time совпадают между карточкой и collections;
 - thematic metadata указывает на единственную фактическую collection;
-- editor link соответствует технологии;
+- editor link соответствует task profile из раздела 10;
 - корневая editor map и карточки используют одни URL;
 - старые editor URL отсутствуют после замены;
+- format, difficulty и time преобразованы только по таблице раздела 15;
+- каждая исходная учебная цель, prerequisite и значимая runtime assumption
+  имеют новое место либо обоснованный `not applicable` в preservation ledger;
 - graph annotations и verification refs соответствуют всем task paths и collection paths.
 
 ### 19.3 Содержательная
@@ -590,7 +704,11 @@ tasks/<slug>/README.md
 
 ### 19.4 Исполняемая и браузерная
 
-- JavaScript и TypeScript сверяются в заявленном онлайн-редакторе или эквивалентном временном harness;
+- каждая из 20 карточек получает отдельную строку evidence: slug, профиль,
+  target editor, инструкция, expected, actual и verdict;
+- временный harness разрешён только для предварительной диагностики и не
+  заменяет финальный PASS в заявленном онлайн-редакторе;
+- JavaScript и TypeScript сверяются в заявленном онлайн-редакторе;
 - React и DOM проходят минимальный browser scenario;
 - HTML/CSS/JS блоки вручную проверяются в CodePen;
 - React-инструкции вручную проверяются в `vite.new/react-ts`;
@@ -612,7 +730,13 @@ README
 → возврат
 ```
 
-Дополнительно открываются все три interview README и все карточки, ранее зависевшие от `assets/fixture.html`.
+URL inventory открывает root README, все 13 collection pages и все 20 task
+pages. Для каждой страницы фиксируются resolved URL, видимый title, отсутствие
+404 и корректность обязательных links/details.
+
+Глубокий flow выполняется минимум для одной collection каждого технологического
+раздела, всех трёх interviews, одной задачи каждого карточного режима, каждого
+editor profile и всех карточек, ранее зависевших от `assets/fixture.html`.
 
 ## 20. Stop conditions
 
@@ -622,6 +746,7 @@ README
 - код нельзя скопировать и запустить по инструкции;
 - для решения нужен неописанный файл;
 - технология или редактор неоднозначны;
+- task profile отсутствует в разделе 10 или не воспроизводит исходную среду;
 - несколько блоков созданы без реальной необходимости;
 - `FILE:` path не соответствует инструкции;
 - встроенный replacement не воспроизводит поведение удаляемого asset;
@@ -639,6 +764,7 @@ README
 | Упрощение удалит важные ограничения | Сохранить их коротко в условии, comments и `Готово, когда`; пройти content review |
 | Три подсказки станут формальными | Проверять различие направления, первого шага и почти-алгоритма |
 | CodePen/StackBlitz потребуют иной структуры | Ручной copy/run PASS до удаления assets |
+| Редактор изменит browser, ESM или Node semantics | Фиксированный task profile, equivalence proof и stop без переписывания ожидаемого результата |
 | Collection data разойдутся | Exact uniqueness, title, time и link checks |
 | Корневой README снова разрастётся | На главной только ссылки на collections, editors и три шага |
 | React смешается с общим JavaScript | Отдельный React namespace и ровно одна thematic membership |
@@ -656,7 +782,7 @@ README
 - существуют и проходят проверку 10 thematic collections;
 - существуют и проходят проверку 3 interviews по 5 уникальных задач;
 - тематические и interview duplicates отсутствуют по утверждённым правилам;
-- editor map и все карточки синхронизированы;
+- editor map, task profiles и все карточки синхронизированы;
 - ученический словарь не содержит запрещённого служебного жаргона;
 - GRACE shared artifacts отражают новую фактическую архитектуру;
 - Markdown, XML, links, whitespace и rendered GitHub gates проходят;
