@@ -332,16 +332,16 @@
         <evidence-3>No collection page, migrated-card fact, root cutover, or rendered-audit result is claimed implemented before its owning phase.</evidence-3>
       </required-evidence>
     </Gate-Phase-8>
-    <Gate-Phase-9 PHASE="Phase-9" status="pending">
+    <Gate-Phase-9 PHASE="Phase-9" status="implemented">
       <goal>The exact collection path set and final thematic content exist without prematurely changing or linking from the root README.</goal>
       <commands>
-        <command-1>Enumerate collections and compare with the approved ten thematic and three interview paths; reject extra technology-level README files.</command-1>
-        <command-2>Verify each thematic collection has its final title, two-to-three-sentence description, browser-back reminder, two tasks in approved order, linked student titles, plain-language sentences, exact times, and resolving links.</command-2>
-        <command-3>Verify the three interview files contain only the common timer contract and no task composition, and verify README.md is unchanged.</command-3>
+        <command-1>Enumerate the exact ten thematic and three interview README paths; reject extra technology-level README files.</command-1>
+        <command-2>Verify every thematic page has its final title, exact two-sentence introduction, browser-back reminder, exactly two tasks in approved order, relative task links, linked student titles, plain-language descriptions, and exact times.</command-2>
+        <command-3>Verify each relative thematic task link resolves to its card, the three interview files contain only the common timer contract with no task composition, and README.md is unchanged and contains no collection links.</command-3>
       </commands>
       <required-evidence>
-        <evidence-1>Exactly thirteen collection README files exist and all thematic links, titles, descriptions, order, and times pass.</evidence-1>
-        <evidence-2>Root cutover and interview composition remain pending.</evidence-2>
+        <evidence-1>Exactly thirteen collection README files exist: ten final thematic pages with two tasks each and three unlinked interview shells.</evidence-1>
+        <evidence-2>All thematic titles, introductions, descriptions, order, exact times, and relative task links pass; root cutover and interview composition remain pending.</evidence-2>
       </required-evidence>
     </Gate-Phase-9>
     <Gate-Phase-10 PHASE="Phase-10" status="pending">

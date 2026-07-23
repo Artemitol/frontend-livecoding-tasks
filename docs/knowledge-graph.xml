@@ -80,7 +80,20 @@
       <annotations>
         <type-CollectionEntry PURPOSE="Linked student title, one plain-language thematic sentence, and exact integer duration copied from the card" />
         <export-studentIndex PURPOSE="Expose the planned four-block root hub, ten thematic collections, and three interview collections without duplicating card content" />
-        <const-collectionMigrationState PURPOSE="Phase 8 contract implemented; collection files and root cutover remain pending until Phases 9 and 14" />
+        <collection-arrays-and-objects PATH="collections/javascript/arrays-and-objects/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-this-and-closures PATH="collections/javascript/this-and-closures/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-event-loop-and-async PATH="collections/javascript/event-loop-and-async/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-dom-and-events PATH="collections/javascript/dom-and-events/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-type-modeling PATH="collections/typescript/type-modeling/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-narrowing-and-validation PATH="collections/typescript/narrowing-and-validation/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-layout PATH="collections/html-css/layout/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-accessibility PATH="collections/html-css/accessibility/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-state-and-derived-data PATH="collections/react/state-and-derived-data/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-effects-and-lifecycle PATH="collections/react/effects-and-lifecycle/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-interview-01 PATH="collections/interviews/interview-01/README.md" STATUS="composition-pending" />
+        <collection-interview-02 PATH="collections/interviews/interview-02/README.md" STATUS="composition-pending" />
+        <collection-interview-03 PATH="collections/interviews/interview-03/README.md" STATUS="composition-pending" />
+        <const-collectionMigrationState PURPOSE="Phase 9 thematic pages are available; interview composition and root cutover remain pending until Phase 14" />
       </annotations>
     </M-CATALOG>
 
