@@ -1,7 +1,7 @@
 # Дизайн ученического интерфейса базы frontend-задач
 
 Дата: 2026-07-23
-Статус: дизайн одобрен в диалоге; письменная спецификация ожидает review
+Статус: дизайн и письменная спецификация одобрены; implementation planning разрешён
 Beads: `frontend-livecoding-tasks-kln-student-redesign-spec`
 Предыдущая спецификация: `docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md`
 
@@ -61,6 +61,42 @@ Beads: `frontend-livecoding-tasks-kln-student-redesign-spec`
 - переименование существующих task slugs.
 
 Будущий генератор документации должен подключаться отдельной спецификацией. Текущая структура не должна намеренно блокировать такой переход, но её реализация не является критерием этой работы.
+
+### 3.1 Контекст выполнения
+
+План этой миграции выполняется в локальном корневом checkout проекта:
+
+- путь: `/Users/artemiy/VsCode/mentor/frontend-livecoding-tasks`;
+- существующая story-ветка: `feature/frontend-livecoding-tasks-kln`;
+- существующая story: `frontend-livecoding-tasks-kln`;
+- существующий draft PR для этой ветки переиспользуется.
+
+Путь `.workspace/frontend-livecoding-tasks-kln` не является execution path.
+Новый linked worktree или вложенный worktree для R1–R8 не создаётся. Прямой
+запрос пользователя является task-scoped исключением из текущего правила
+`Worktree Isolation`; это исключение не отменяет запрет на commit или push в
+`main` и не меняет общую Git-политику для других задач.
+
+До начала R1 текущая story-ветка передаётся в корневой checkout через Codex
+`Hand off to local` или эквивалентный безопасный Git-handoff. После handoff
+обязательны четыре доказательства:
+
+```text
+git rev-parse --show-toplevel
+  → /Users/artemiy/VsCode/mentor/frontend-livecoding-tasks
+git branch --show-current
+  → feature/frontend-livecoding-tasks-kln
+git rev-parse --git-dir == git rev-parse --git-common-dir
+git status --short
+  → пустой вывод
+```
+
+Если feature-ветка всё ещё занята linked worktree, корневой checkout содержит
+неподтверждённые изменения или handoff потребует `reset`, force-remove,
+автоматического stash, rebase либо переписывания опубликованной истории,
+выполнение останавливается. Агент показывает точное состояние и получает
+отдельное решение пользователя; пользовательские файлы не удаляются и не
+переносятся молча.
 
 ## 4. Архитектура ученического контента
 
@@ -642,7 +678,7 @@ commit сохраняет рабочий путь от текущего корн
 
 | Unit | Scope | Depends on | Completion evidence |
 | --- | --- | --- | --- |
-| `R1` | Task contract, authoring rules, editor-profile proof, pending GRACE redesign phases | Письменное одобрение этой спецификации | Четыре editor URL открываются; все 20 slugs имеют профиль; template/policy/GRACE plan согласованы |
+| `R1` | Local-checkout proof, task contract, authoring rules, editor-profile proof, pending GRACE redesign phases | Письменное одобрение этой спецификации и implementation plan | Root checkout и story-ветка доказаны; четыре editor URL открываются; все 20 slugs имеют профиль; template/policy/GRACE plan согласованы |
 | `R2` | Десять thematic pages с финальным содержанием и три неподключённых interview shells, без root cutover | `R1` | Exact path set; thematic task links, titles, descriptions and times pass; interview pages содержат только общий контракт до `R7` |
 | `R3` | Восемь JavaScript/DOM-карточек и удаление текстового asset `stale-search-response` | `R2` | Per-card structure, copy/run, content and target-editor evidence pass before asset deletion |
 | `R4` | Четыре TypeScript-карточки | `R3` | Per-card structure, type-check/run and target-editor evidence pass |
@@ -787,4 +823,5 @@ editor profile и всех карточек, ранее зависевших о�
 - GRACE shared artifacts отражают новую фактическую архитектуру;
 - Markdown, XML, links, whitespace и rendered GitHub gates проходят;
 - Docusaurus и deployment не были добавлены;
+- R1–R8 выполнены из корневого checkout на `feature/frontend-livecoding-tasks-kln`, а не из `.workspace`;
 - пользователь отдельно принимает полностью мигрированную библиотеку после финального review.
