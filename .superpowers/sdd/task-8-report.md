@@ -2,7 +2,9 @@
 
 ## Status and evidence lifecycle
 
-`PASS` for the published student surface and Phase-15 candidate.
+`PASS` for the published student surface and Phase-15 candidate. R8 was
+reopened after final whole-branch review; that prior verdict does not cover the
+new forward hygiene commit.
 
 The immutable GitHub-rendered audit passed twice before this report was
 prepared:
@@ -20,6 +22,21 @@ content, which cannot self-reference its Git object ID.
 
 No student-facing README, collection, task card, editor instruction, or runtime
 artifact changed during R8.
+
+## Final-review hygiene follow-up
+
+The forward-only follow-up removes the tracked local runtime and machine files
+`.superpowers/brainstorm/.last-port`, `.superpowers/brainstorm/.last-token`,
+`.superpowers/brainstorm/578-1784781394/state/server-info`,
+`.superpowers/brainstorm/578-1784781394/state/server-instance-id`,
+`.superpowers/brainstorm/578-1784781394/state/server.pid`, and
+`docs/superpowers/.DS_Store`. Root ignore rules now cover `.DS_Store`, the two
+brainstorm marker files, and every `.superpowers/brainstorm/*/state/` directory.
+The legitimate `578-1784781394/content/*.html` artifacts remain tracked.
+
+R8 remains open and a new immutable audit of the hygiene-fix SHA is pending.
+Published history is not rewritten, so the former local token remains in
+published history until separately authorized remediation.
 
 ## Baseline and publication surface
 
@@ -195,14 +212,17 @@ timing; the final navigation run passed every exact Back and fallback target.
 - Editor availability is external state and may change after this audit.
 - The report/progress evidence commit changes no student surface, but still
   receives a complete immutable browser and deterministic rerun before closure.
+- The forward hygiene fix removes local runtime state from HEAD only; its new
+  immutable audit remains pending, and the former token persists in published
+  history because rewriting that history is not authorized.
 
 ## Final handoff contract
 
 - Focused Phase-15 commit:
   `7d158b3890ee6c64bb1e5998f0ede6c7144b94ec`
   (`docs: record student experience audit`).
-- R8 closes only after the evidence-only commit containing this report passes
-  the final immutable rerun.
+- R8 was reopened after final whole-branch review and closes only after the
+  hygiene-fix commit passes a new immutable rerun.
 - `frontend-livecoding-tasks-kln-final-acceptance` stays open and receives the
   exact final branch SHA and review scope.
 - The top-level story stays open.
