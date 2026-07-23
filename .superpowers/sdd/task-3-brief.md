@@ -1,152 +1,135 @@
-### Task 3: Define the Strict Candidate Validation Policy
+### Task 3: R3 — JavaScript and DOM Cards
 
 **Files:**
-- Create: `docs/task-validation-policy.md`
-- Modify: `docs/development-plan.xml`
+
+- Modify: `tasks/immutable-category-totals/README.md`
+- Modify: `tasks/stable-product-sort/README.md`
+- Modify: `tasks/loop-closure-bindings/README.md`
+- Modify: `tasks/this-callback-binding/README.md`
+- Modify: `tasks/browser-event-loop-order/README.md`
+- Modify: `tasks/stale-search-response/README.md`
+- Delete after replacement PASS: `tasks/stale-search-response/assets/fixture.html`
+- Modify: `tasks/delegated-dynamic-list/README.md`
+- Modify: `tasks/idempotent-event-listeners/README.md`
+- Modify: `docs/verification-plan.xml`
 - Modify: `docs/knowledge-graph.xml`
-- Verify: `docs/verification-plan.xml` (`V-M-TASK-VALIDATION`)
-- Verify: `docs/operational-packets.xml` (`CandidateValidationRecordTemplate`)
+- Track: `frontend-livecoding-tasks-kln-student-r3-javascript`
 
 **Interfaces:**
-- Consumes: `taskSchema`, `CandidateRegister`, accepted-library metadata and operational packet schemas.
-- Produces: `validateCandidate(candidate, register, acceptedLibrary, taskSchema) -> ValidationDecision + optional AcceptedTaskCard + BeadsValidationRecord`.
 
-- [ ] **Step 1: Claim B3 and create the policy**
+- Consumes: R1 card contract, R2 thematic links, and existing code/solution semantics.
+- Produces: eight migrated cards and eight `CardMigrationEvidence` rows.
 
-Set `validation_id='frontend-livecoding-tasks-kln-validation'`, run `bd update "$validation_id" --claim`, then create `docs/task-validation-policy.md` with:
-
-```markdown
-# Политика валидации frontend live-coding задач
-
-## Назначение
-
-Эта политика отделяет подготовку кандидата от публикации. Только решение `accepted` создаёт `AcceptedTaskCard`; остальные решения остаются нейтральными Beads records и не создают файлов в `tasks/`.
-
-## Candidate register
-
-До проверки агент создаёт конечный нейтральный список и фиксирует `candidateRegisterSize`. Каждая запись получает стабильный `candidateId`, самостоятельно сформулированную `learningGoal`, одну `proposedTopic` из controlled vocabulary и ссылку на story. В реестре не фиксируются внешнее происхождение или заимствованные формулировки.
-
-После freeze новый кандидат сначала получает новый ID и увеличивает `candidateRegisterSize`; неучтённый кандидат не может попасть в волну. Завершение аудита требует равенства числа terminal decisions размеру реестра и отсутствия `needs-rewrite`.
-
-## Gates
-
-Gates выполняются строго по порядку. При провале gate последующие gates не выдают кандидату `accepted`.
-
-1. `Identity` — сравнить учебную цель с accepted library и текущим register; семантический дубль получает `duplicate`, а полезные отличия переносятся в canonical candidate.
-2. `Learning value` — подтвердить конкретный frontend-навык и исключить случайный трюк без педагогической ценности.
-3. `Contract` — зафиксировать среду, входы/вопросы, выходы, ограничения, мутацию, ошибки, пустой результат и side effects.
-4. `Local completeness` — хранить условие, fixtures, starter code и solution локально; targeted external materials остаются дополнительными.
-5. `Examples` — сверить happy path, значимую границу и ошибку/пустой результат, когда они применимы.
-6. `Solution` — доказать соответствие contract; описать complexity, существенные trade-offs и альтернативы.
-7. `Verification` — получить evidence по матрице ниже; недоступное обязательное evidence означает `BLOCKED`, не `PASS`.
-8. `Editorial` — проверить русский task prose, exact labels, controlled vocabulary, Markdown, независимые закрытые details и оригинальность формулировок/кода.
-
-## Outcomes
-
-- `accepted` — все gates PASS; кандидат можно включить ровно в одну wave.
-- `needs-rewrite` — кандидат потенциально полезен, но contract/evidence/content пока не проходит; публикация запрещена, а конкретный failed gate фиксируется.
-- `rejected` — тема технически некорректна или педагогически слаба; публикация запрещена.
-- `duplicate` — учебная цель уже представлена; фиксируются `duplicateTarget` и перенесённые полезные отличия; отдельная карточка запрещена.
-
-## Evidence matrix
-
-| Task kind | Required evidence | PASS signal | Stop / failure signal |
-| --- | --- | --- | --- |
-| JavaScript | Temporary harness in the declared runtime/mode | Happy path, boundary and applicable error match the card | Runtime/output mismatch or undeclared mode |
-| TypeScript | Temporary runtime evidence plus type check in the declared TypeScript version | Expected runtime and type outcomes match | Type error outside the taught contract or version ambiguity |
-| React / DOM | Minimal temporary example or browser scenario in declared versions | Required state and interactions match | Hidden environment dependency or unverified lifecycle |
-| UI / CSS | Manual browser scenario at declared viewport/states | Interaction and visual criteria observed | Browser unavailable means `BLOCKED`; unit CSS assertions are not substitutes |
-| Разбор | Written step trace plus factual run/reproduction | Trace and observed behavior agree | Unsupported causal claim |
-| Прогноз вывода | Written execution trace plus actual output | Exact ordering/value match | Timing, environment or output ambiguity |
-| Markdown structure | Deterministic label, heading, details, fence and local-link checks | Canonical structure and links resolve | Missing section, malformed details/fence or broken link |
-| External material | HTTP success/valid redirect plus target-content review | Expected material opens without required paid/closed access | Broken, redirected to unrelated content, paywalled required reading |
-
-Temporary harnesses live outside the repository and are removed after evidence capture. They never justify adding a package manager, catalog generator, validator, site framework or CI pipeline to v1.
-
-Metadata values and task titles used in Markdown tables are single-line values without the `|` character; use comma-separated wording instead. This keeps the GitHub table valid and makes exact task-to-catalog projection deterministic.
-
-## Beads validation record
-
-Every candidate record contains: `candidateId`, `candidateRegisterSize`, `storyId`, `learningGoal`, `proposedTopic`, `decision`, `decisionReason`, `duplicateTarget`, `evidenceType`, `observedResult`, `waveId`, `remainingRisk`, and `waveAcceptanceStatus`.
-
-Allowed `waveAcceptanceStatus` values are `not-applicable`, `pending`, `accepted`, and `changes-requested`. Accepted candidates use `pending` after wave assignment; non-accepted outcomes use `not-applicable`.
-
-## Wave rules
-
-Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one Beads child issue, changes task cards/catalog/graph/evidence atomically, and remains open until mentor acceptance.
-
-## Stop conditions
-
-Stop without guessing for ambiguous vocabulary, environment or expected output; contradictory examples; happy-path-only solution; missing prerequisite/asset; nondeterministic network/time/state without a fixture/fake/adapter; unavailable browser-only evidence; broken supplementary material; unexpected GitHub rendering; task/catalog/graph drift; unapproved permanent tooling; or a slug migration without inbound-link evidence.
-
-## Updating a published task
-
-For content, metadata, prerequisite or asset changes, resolve all derived artifacts and inbound links first, rerun every affected validation gate, update the canonical card, catalog and graph in one change, and repeat projection/link/evidence checks. Deletion removes the card, its single catalog row and its single graph annotation in the same change. Reclassification requires mentor approval for any new or ambiguous vocabulary. Slug rename is a dedicated migration: verify every inbound link before removing the old path, update all derived references, and record before/after evidence in Beads.
-
-## Completion checks
-
-- Candidate terminal count equals frozen `candidateRegisterSize`.
-- No `needs-rewrite` remains at story completion.
-- Only accepted candidates have task paths or wave IDs.
-- Every accepted candidate belongs to exactly one valid wave.
-- Every decision has concise reason, evidence type, observed result and remaining risk.
-- A wave closes only after technical PASS, pushed commit, report and mentor acceptance.
-```
-
-- [ ] **Step 2: Review the policy against all specified gates and outcomes**
-
-Run:
+- [ ] **Step 1: Claim R3 and capture the preservation ledger before editing**
 
 ```bash
-for gate in Identity 'Learning value' Contract 'Local completeness' Examples Solution Verification Editorial; do rg -F "$gate" docs/task-validation-policy.md >/dev/null || exit 1; done
-for decision in accepted needs-rewrite rejected duplicate; do rg -F "\`$decision\`" docs/task-validation-policy.md >/dev/null || exit 1; done
-rg -n 'candidateRegisterSize|duplicateTarget|waveAcceptanceStatus|BLOCKED|Temporary harnesses|Updating a published task|Slug rename|1–7|8–10' docs/task-validation-policy.md
-! rg -n 'TBD|TODO|implement later|fill in details' docs/task-validation-policy.md
+bd update frontend-livecoding-tasks-kln-student-r3-javascript --claim
+for slug in immutable-category-totals stable-product-sort loop-closure-bindings this-callback-binding browser-event-loop-order stale-search-response delegated-dynamic-list idempotent-event-listeners; do
+  sed -n '1,16p' "tasks/$slug/README.md"
+done
 ```
 
-Expected: every gate/outcome/record/wave/stop anchor exists and no unresolved placeholder exists.
+Record each source learning goal, prerequisite and runtime assumption in the R3 notes before rewriting.
 
-- [ ] **Step 3: Mark validation and Phase 2 implemented**
+Expected: eight source contracts are durable; no content has changed yet.
 
-Apply:
+- [ ] **Step 2: Migrate the eight cards using the exact matrix**
 
-```xml
-<!-- docs/development-plan.xml -->
-<M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" LAYER="2" ORDER="1" STATUS="implemented">
-...
-<Phase-2 name="TaskContract" status="completed">
-...
-<step-2 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Create docs/task-validation-policy.md and prove all terminal decisions and hybrid evidence routes.</step-2>
+| Slug | Mode | Technology | Collection | Format | Difficulty | Time | Editor profile |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `immutable-category-totals` | code-first | JavaScript | Массивы и объекты | Написать код | Базовая | 15 минут | Programiz |
+| `stable-product-sort` | code-first | JavaScript | Массивы и объекты | Исправить код | Средняя | 20 минут | Programiz |
+| `loop-closure-bindings` | code-first | JavaScript | `this` и замыкания | Предсказать результат | Базовая | 10 минут | Programiz |
+| `this-callback-binding` | code-first | JavaScript | `this` и замыкания | Разобрать код | Средняя | 15 минут | CodePen browser ESM |
+| `browser-event-loop-order` | code-first | JavaScript | Event loop и асинхронность | Предсказать результат | Средняя | 12 минут | CodePen classic script |
+| `stale-search-response` | complex | HTML/JavaScript | Event loop и асинхронность | Исправить код | Продвинутая | 25 минут | CodePen browser ESM |
+| `delegated-dynamic-list` | complex | HTML/JavaScript | DOM и события | Написать код | Базовая | 18 минут | CodePen browser ESM |
+| `idempotent-event-listeners` | complex | HTML/JavaScript | DOM и события | Исправить код | Средняя | 20 минут | CodePen browser ESM |
 
-<!-- docs/knowledge-graph.xml -->
-<M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" STATUS="implemented">
-```
+For every card:
 
-- [ ] **Step 4: Run Phase 2 gates**
+1. Keep its current title.
+2. Put `[← Все подборки](../../README.md)` under the title.
+3. Use the matrix editor and URL in a concrete copy/run instruction.
+4. Move the existing learning goal into the first visible condition paragraph.
+5. Preserve prerequisites at the first use; omit only `Нет`.
+6. Preserve browser/ESM/classic-script assumptions beside the code.
+7. Reuse the existing starter behavior and solution behavior; reorganize, do not change the learning outcome.
+8. Make `Готово, когда` observable from existing outputs and edge cases.
+9. Write three distinct hints at direction, next-step and near-algorithm levels; the third contains no complete answer.
+10. Put the full solution and `Почему это работает` in one closed `Решение`.
+11. Put only reflection questions in closed `Самопроверка`.
+12. End with closed five-field `О задаче`, browser-back instruction and `[Потерялись? Открыть все подборки](../../README.md)`.
 
-Run:
+For `this-callback-binding`, compare its three visible outputs and binding explanations between current Node ESM behavior and CodePen browser ESM before accepting the editor conversion. If they differ, stop R3 without rewriting expected results.
+
+For `stale-search-response`, inline the complete fixture HTML and controlled response behavior in the card. Do not delete `assets/fixture.html` yet.
+
+Expected: all eight cards satisfy the new structure; no root README change.
+
+- [ ] **Step 3: Verify each card in its target editor and delete only the proven text fixture**
+
+Create eight evidence rows in Beads notes with exact `expected`, observed `actual` and `verdict`.
+
+Required scenarios:
+
+- aggregation keeps the input unchanged and handles invalid/empty data;
+- sort uses both keys, keeps the input unchanged and preserves equal order;
+- closures produce the current exact sequence;
+- three `this` observations and reasons match the original contract;
+- classic browser event loop produces the current exact order;
+- stale successful and stale failed responses cannot replace the newest state;
+- dynamically added rows are removable through the container handler;
+- repeated initialization leaves one active listener and correct cleanup.
+
+After `stale-search-response` passes in CodePen:
 
 ```bash
-xmllint --noout docs/*.xml
-grace_bin="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
-"$grace_bin" lint --fail-on errors --path "$PWD"
+git rm tasks/stale-search-response/assets/fixture.html
+test ! -e tasks/stale-search-response/assets/fixture.html
+rg -n "assets/fixture.html" tasks/stale-search-response/README.md
+```
+
+Expected: final `rg` has no output; the inline replacement has a PASS row before deletion.
+
+- [ ] **Step 4: Run structural and GRACE checks**
+
+```bash
+for slug in immutable-category-totals stable-product-sort loop-closure-bindings this-callback-binding browser-event-loop-order stale-search-response delegated-dynamic-list idempotent-event-listeners; do
+  file="tasks/$slug/README.md"
+  test "$(rg -c '<summary>Подсказка 1 — куда смотреть</summary>' "$file")" = "1"
+  test "$(rg -c '<summary>Подсказка 2 — с чего начать</summary>' "$file")" = "1"
+  test "$(rg -c '<summary>Подсказка 3 — почти решение</summary>' "$file")" = "1"
+  test "$(rg -c '<summary>Решение</summary>' "$file")" = "1"
+  test "$(rg -c '<summary>Самопроверка</summary>' "$file")" = "1"
+  test "$(rg -c '<summary>О задаче</summary>' "$file")" = "1"
+  test "$(rg -c '^<details>$' "$file")" = "$(rg -c '^</details>$' "$file")"
+done
+! rg -n '^#{2,3} (Теория|Входы|Выходы|Ограничения и побочные эффекты|Критерии готовности|Фикстуры|Локальный fixture|Стартовый код|Примеры)$' \
+  tasks/{immutable-category-totals,stable-product-sort,loop-closure-bindings,this-callback-binding,browser-event-loop-order,stale-search-response,delegated-dynamic-list,idempotent-event-listeners}/README.md
+for file in docs/*.xml; do xmllint --noout "$file"; done
+GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
+"$GRACE_BIN" lint --fail-on errors --path "$PWD"
 git diff --check
 ```
 
-Then repeat the Task 2 rendered template check. Expected: Phase 2 evidence is PASS; autonomous lint may still report missing `README.md` and task-library files until later phases.
+Expected: every check passes; old structural headings are absent.
 
-- [ ] **Step 5: Commit, push, record and close B3**
+- [ ] **Step 5: Commit, push and close R3**
 
-Run:
+Update `docs/verification-plan.xml` and `docs/knowledge-graph.xml` with only the eight implemented card facts and Phase-10 evidence, then:
 
 ```bash
-git add docs/task-validation-policy.md docs/development-plan.xml docs/knowledge-graph.xml
-git commit -m "docs: define strict task validation"
-validation_commit="$(git rev-parse HEAD)"
+git add tasks docs/verification-plan.xml docs/knowledge-graph.xml
+git commit -m "docs(tasks): redesign JavaScript task cards"
 git push origin feature/frontend-livecoding-tasks-kln
-bd update "$validation_id" --append-notes="PASS: ordered gates, four outcomes, evidence matrix, candidate accounting, stop conditions, xmllint, standard GRACE lint, whitespace. Commit $validation_commit."
-bd close "$validation_id" --reason='Strict candidate validation policy implemented and verified.' --suggest-next
+R3_COMMIT="$(git rev-parse HEAD)"
+bd update frontend-livecoding-tasks-kln-student-r3-javascript \
+  --append-notes "PASS: 8 JavaScript and DOM cards; preservation ledger and target-editor evidence recorded; stale-search fixture removed after PASS. Commit ${R3_COMMIT} pushed."
+bd close frontend-livecoding-tasks-kln-student-r3-javascript --reason "JavaScript migration and Phase-10 gate verified"
 ```
+
+Expected: R3 closed; R4 ready.
 
 ---
 

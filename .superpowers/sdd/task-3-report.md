@@ -1,43 +1,102 @@
-# Task 3 report: strict candidate validation policy
+# Task 3 report: R3 JavaScript and DOM cards
 
 ## Status
 
-`DONE` — the controller-provided repeated GitHub rendered-template review passed, the final policy/XML/GRACE/whitespace gates passed, and B3 is committed, pushed, and closed.
+`PASS` — all eight cards were migrated, the exact target-editor scenarios passed, the stale-search text fixture was removed only after its inline CodePen replacement passed, the R3-owned GRACE facts were synchronized, and commit `236fc077ed838ef13528e3eacde2164823ce694c` was pushed.
 
-## Changes prepared
+The Beads issue `frontend-livecoding-tasks-kln-student-r3-javascript` intentionally remains `in_progress`; the controller must close it only after independent review.
 
-- Added `docs/task-validation-policy.md` with the exact ordered gates, terminal outcomes, evidence matrix, Beads record fields, wave rules, stop conditions, published-task update rules, and completion checks from the task brief.
-- Changed only the requested status transitions:
-  - `M-TASK-VALIDATION` to `implemented` in `docs/development-plan.xml` and `docs/knowledge-graph.xml`.
-  - `Phase-2` and its `M-TASK-VALIDATION` step to `completed` in `docs/development-plan.xml`.
-- Verified `docs/verification-plan.xml` and `docs/operational-packets.xml` unchanged: `V-M-TASK-VALIDATION` and `CandidateValidationRecordTemplate` already match the policy, so no verification-surface delta was found.
+## Scope delivered
 
-## Completed policy and phase gates
+- Migrated the following code-first cards:
+  - `immutable-category-totals` — Programiz, JavaScript.
+  - `stable-product-sort` — Programiz, JavaScript.
+  - `loop-closure-bindings` — Programiz, JavaScript.
+  - `this-callback-binding` — CodePen browser ESM.
+  - `browser-event-loop-order` — CodePen classic script.
+- Migrated the following complex cards:
+  - `stale-search-response` — CodePen browser ESM.
+  - `delegated-dynamic-list` — CodePen browser ESM.
+  - `idempotent-event-listeners` — CodePen browser ESM.
+- Preserved every title, learning goal, prerequisite, runtime assumption, observable output and required edge case.
+- Added one complete copy-ready starter block and matching full solution to every card.
+- Added exactly three progressive closed hints, closed `Решение`, closed reflection-only `Самопроверка`, closed five-field `О задаче`, and both navigation links to every card.
+- Inlined the complete stale-search fixture and removed `tasks/stale-search-response/assets/fixture.html` only after the replacement's target-editor PASS row was durable in Beads.
+- Updated only the eight R3 migration records in `docs/knowledge-graph.xml` and `Gate-Phase-10` in `docs/verification-plan.xml`.
+- Preserved the root `README.md`.
 
-- The brief's ordered-gate and four-outcome scans passed.
-- The required anchors (`candidateRegisterSize`, `duplicateTarget`, `waveAcceptanceStatus`, `BLOCKED`, temporary harness, published-task update, slug rename, `1–7`, and `8–10`) resolved.
-- The unresolved-placeholder scan passed.
-- `xmllint --noout docs/*.xml` passed.
-- `grace lint --fail-on errors --path "$PWD"` passed with 0 issues.
-- `git diff --check` passed.
+## Durable preservation and migration evidence
 
-## Browser evidence needed
+Before editing, the R3 Beads notes recorded all eight source learning goals, prerequisites, runtime assumptions, expected outputs and edge cases, plus the complete stale-search fixture and its SHA-256.
 
-The prior Task 2 review confirms the template rendered correctly at its then-current commit. Task 3 requires repeating that review. I initialized the available browser runtime for `https://github.com/Artemitol/frontend-livecoding-tasks/blob/feature/frontend-livecoding-tasks-kln/templates/task-template.md`; selection returned `No browser is available`. After reading the prescribed bootstrap troubleshooting guidance, the one allowed availability check returned `[]`.
+After target-editor verification, exactly eight `CardMigrationEvidence` rows were appended. Each row contains:
 
-Controller evidence must confirm that the GitHub file preview still renders the metadata table, keeps the prompt/criteria/self-check visible, starts theory/hint/solution closed, and allows each disclosure to open independently. After that evidence is supplied, rerun the final gates if needed, commit with `docs: define strict task validation`, push, record the planned Beads PASS note, and close B3.
+- slug and card mode;
+- exact editor profile;
+- source learning goal, prerequisite and runtime assumption;
+- destination locations;
+- expected behavior;
+- observed target-editor behavior;
+- final `PASS` verdict.
 
-## Controller-provided rendered review (resolved evidence)
+The `this-callback-binding` source was also executed as Node ESM before migration. It produced:
 
-The controller repeated the GitHub File view Preview review on the current feature-branch template URL after the prepared Task 3 changes. The rendered table contained its header and all eight exact metadata rows. The visible H2 headings were `Условие`, `Критерии готовности`, `Самопроверка`, and `Дополнительные материалы`. Each unique summary (`Теория`, `Подсказка 1`, `Решение`) had count `1`; all details were initially closed (`[false, false, false]`). Opening theory, then the hint, then the solution yielded `[true, false, false]`, `[true, true, false]`, and `[true, true, true]`. This is PASS: the table and visible sections render correctly, all three disclosures start closed, and each opens independently.
+```text
+method:save
+arrow:missing
+error:TypeError
+```
 
-## Final commit, push, and Beads closure
+CodePen browser ESM produced the same trace. Receiver binding, lexical top-level ESM `this === undefined`, and detached strict-mode `this === undefined` also matched.
 
-- Commit: `4cddf5276748092cafe7bc4a6b10f0924b9ad124` — `docs: define strict task validation`.
-- Push: succeeded to `origin/feature/frontend-livecoding-tasks-kln`.
-- Beads: appended the planned PASS note and closed `frontend-livecoding-tasks-kln-validation` with reason `Strict candidate validation policy implemented and verified.`
-- `git show --check --stat --oneline HEAD` passed; the commit contains only `docs/task-validation-policy.md`, `docs/development-plan.xml`, and `docs/knowledge-graph.xml`.
+## Target-editor evidence
 
-## Final working tree
+### Programiz
 
-The feature branch is clean. This report remains outside the implementation commit as the requested handoff artifact.
+- `immutable-category-totals`: after the independent reviewer requested an uncontaminated rerun, the controller replaced the entire Programiz editor with the complete solution block and observed only the normal Programiz success wrapper plus `books=20`, `games=25`; `regularPass`, `emptyPass`, `invalidPass`, and `unchangedPass` were all `true`, with no default-editor suffix or unrelated output.
+- `stable-product-sort`: `sortedOrder=p3,p1,p2,p4`, `ratingOrder=r2,r1`; order, both-key, unchanged-input, equal-order, empty and invalid checks were all `true`.
+- `loop-closure-bindings`: exact output `0:0, 1:10, 2:20`.
+
+### CodePen
+
+- `this-callback-binding`: exact three-line ESM trace and binding reasons matched the Node ESM contract.
+- `browser-event-loop-order`: exact classic-script order `sync:start`, `sync:end`, `microtask:promise`, `timer:0`.
+- `stale-search-response`:
+  - first stale-success race passed with request IDs `#1/#2`;
+  - the repeated race passed without reload with IDs `#3/#4`;
+  - the stale-failure race passed with IDs `#5/#6`;
+  - the current error showed `Ошибка поиска: Локальная ошибка fixture`;
+  - a space-only query showed `Введите непустой запрос.` without a request ID.
+- `delegated-dynamic-list`: after adding IDs `1` and `2`, deleting the second row produced the exact PASS status; ID `1` remained, and a non-target container click changed nothing.
+- `idempotent-event-listeners`: two initialization/action runs without reload each produced count `1`, the exact PASS status, and exactly one new action log per run.
+
+## Verification
+
+Fresh final gates passed:
+
+- exact summary counts for all three hints, `Решение`, `Самопроверка`, and `О задаче`;
+- balanced closed `<details>` blocks for all eight cards;
+- absence of legacy structural headings;
+- exact five-field metadata and title preservation;
+- exactly eight Beads `CardMigrationEvidence` rows with eight `PASS` verdicts;
+- local diagnostic execution of all three Programiz solution blocks;
+- stale fixture absence and no remaining card reference to `assets/fixture.html`;
+- `xmllint --noout docs/*.xml`;
+- Grace CLI `3.11.0`: 5 XML files checked, 0 errors, 0 warnings;
+- `git diff --check`;
+- unchanged root `README.md`;
+- exactly eight `MIGRATION_STATUS="implemented"` graph records;
+- `Gate-Phase-10` status `implemented`;
+- focused staged scope excluding `.superpowers/sdd/task-3-brief.md` and this report.
+
+## Commit and push
+
+- Commit: `236fc077ed838ef13528e3eacde2164823ce694c`
+- Message: `docs(tasks): redesign JavaScript task cards`
+- Push: `origin/feature/frontend-livecoding-tasks-kln`
+- Final fetch and divergence: `HEAD...origin/feature/frontend-livecoding-tasks-kln = 0 0`
+- Beads: commit/push evidence appended; issue remains `in_progress` for independent review.
+
+## Remaining concern
+
+No implementation blocker remains. GitHub-rendered final-library evidence is intentionally not claimed by R3; it remains assigned to the later rendered-audit phase. The controller's independent R3 review and issue closure are still pending.
