@@ -380,13 +380,15 @@
         <evidence-3>The accessible-keyboard-tabs and modal-focus-lifecycle text fixtures were removed only after each complete inline CodePen replacement passed; only Phase 12 migration facts are implemented, while React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-12>
-    <Gate-Phase-13 PHASE="Phase-13" status="pending">
+    <Gate-Phase-13 PHASE="Phase-13" status="implemented">
       <goal>Four React TypeScript cards are complete src/App.tsx exercises that preserve React 19.2 behavior.</goal>
       <commands>
-        <command-1>Run per-card structure, preservation, content, collection-sync, vite.new/react-ts copy-run, browser state, interaction, effect, cleanup, and lifecycle checks for the approved four slugs.</command-1>
+        <command-1>Run per-card structure, preservation, content, collection-sync, exact TypeScript 5.9 type-check of starter and solution src/App.tsx blocks with React 19.2 declarations, vite.new/react-ts copy-run, browser state, interaction, effect, cleanup, and lifecycle checks for the approved four slugs.</command-1>
       </commands>
       <required-evidence>
-        <evidence-1>Four complete CardMigrationEvidence rows have React TypeScript and browser PASS with synchronized graph and verification facts.</evidence-1>
+        <evidence-1>Four complete CardMigrationEvidence rows have exact TypeScript 5.9 type-check PASS and React TypeScript/browser PASS in the current vite.new/react-ts template, with synchronized graph and verification facts.</evidence-1>
+        <evidence-2>The current vite.new/react-ts manifest observation (React ^19.2.7 and TypeScript ~6.0.2) is recorded as target-editor runtime evidence; TypeScript 5.9 compatibility is proven separately and is not misrepresented as the hosted-template version.</evidence-2>
+        <evidence-3>Only Phase 13 React migration facts are implemented; root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-13>
     <Gate-Phase-14 PHASE="Phase-14" status="pending">

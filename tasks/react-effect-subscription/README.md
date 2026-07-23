@@ -1,149 +1,242 @@
 # Подписка, которая следует за выбранным каналом
 
-**Учебная цель:** Исправлять React-эффект подписки, синхронизируя зависимости и cleanup с внешним ресурсом.
+[← Все подборки](../../README.md)
 
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | TypeScript, React |
-| Тема | Эффекты React |
-| Формат | Отладка |
-| Уровень | Средний |
-| Время | 25 минут |
-| Навыки | useEffect, зависимости, cleanup, внешняя подписка |
-| Предварительные знания | useState, useEffect |
-| Среда выполнения | React 19.2, TypeScript 5.9, Google Chrome 150.0.7871.101, development mode, local subscription fixture |
-
-<details>
-<summary>Теория</summary>
-
-Effect синхронизирует React с внешней системой. Если ресурс зависит от `channel`, это значение входит в зависимости. Перед новой установкой React вызывает cleanup старой подписки, поэтому одновременно активен только ресурс текущего канала.
-
-</details>
+Откройте [Vite React TypeScript в StackBlitz](https://vite.new/react-ts), дождитесь запуска проекта и полностью замените `src/App.tsx` кодом ниже. Сценарий рассчитан на React 19.2 в development mode и браузер Google Chrome 150.0.7871.101. Оставьте стандартный `src/main.tsx`: он оборачивает `<App />` в корневой `<StrictMode>`, который нужен для наблюдаемой начальной трассы. Другие файлы менять не нужно; fixture работает локально без сети.
 
 ## Условие
 
-Исправьте `SubscriptionPanel`. При смене `news` на `sports` старая подписка должна закрыться, новая — открыться, а сообщение и fixture должны показывать только `sports`.
-
-### Входы
-
-- Выбор `news` или `sports`.
-- Локальная функция `subscribe`, возвращающая `close`.
-
-### Выходы
-
-- Сообщение `Подписка: sports` после переключения.
-- Активное количество `1` и единственный активный канал `sports`.
-
-### Ограничения и побочные эффекты
-
-- Подписка создаётся только локальным fixture, без сети.
-- Effect возвращает cleanup `close`.
-- `channel` — зависимость effect.
-- Других активных подписок после переключения быть не должно.
-
-### Локальный fixture
-
 ```tsx
-type Subscription = { close: () => void };
-const activeSubscriptions = new Set<string>();
+// Учебная цель: синхронизировать effect с выбранным ресурсом
+// и освобождать предыдущую подписку до установки новой.
+// Перед началом нужны useState и useEffect.
+//
+// Исправьте effect в SubscriptionPanel:
+// 1. Подписка должна следовать за channel.
+// 2. Cleanup должен закрывать ресурс текущей установки.
+// 3. После news → sports активен только sports.
+// 4. Не меняйте локальный fixture и не отключайте StrictMode.
 
-const subscribe = (channel: string, onMessage: (message: string) => void): Subscription => {
-  activeSubscriptions.add(channel);
-  onMessage(`Подписка: ${channel}`);
-  return { close: () => activeSubscriptions.delete(channel) };
-};
-```
-
-### Стартовый код
-
-```tsx
 import { useEffect, useState } from 'react';
 
-export function SubscriptionPanel() {
+type Subscription = {
+  close: () => void;
+};
+
+const activeSubscriptions = new Set<string>();
+const events: string[] = [];
+
+const subscribe = (
+  channel: string,
+  onMessage: (message: string) => void,
+): Subscription => {
+  let closed = false;
+
+  activeSubscriptions.add(channel);
+  events.push(`setup:${channel}`);
+  console.log(`[subscription] setup:${channel}`);
+  onMessage(`Подписка: ${channel}`);
+
+  return {
+    close: () => {
+      if (closed) {
+        return;
+      }
+
+      closed = true;
+      activeSubscriptions.delete(channel);
+      events.push(`cleanup:${channel}`);
+      console.log(`[subscription] cleanup:${channel}`);
+    },
+  };
+};
+
+function SubscriptionPanel() {
   const [channel, setChannel] = useState('news');
   const [message, setMessage] = useState('');
+  const [, forceRender] = useState(0);
 
   useEffect(() => {
-    subscribe(channel, setMessage);
+    subscribe(channel, (nextMessage) => {
+      setMessage(nextMessage);
+      forceRender((revision) => revision + 1);
+    });
   }, []);
 
-  return <select value={channel} onChange={(event) => setChannel(event.target.value)} />;
+  return (
+    <section>
+      <label>
+        Канал
+        <select
+          value={channel}
+          onChange={(event) => setChannel(event.target.value)}
+        >
+          <option value="news">news</option>
+          <option value="sports">sports</option>
+        </select>
+      </label>
+
+      <p>{message}</p>
+      <p>Активных подписок: {activeSubscriptions.size}</p>
+      <p>
+        Активные каналы:{' '}
+        {Array.from(activeSubscriptions).join(',') || 'нет'}
+      </p>
+      <output aria-live="polite">{events.join(' → ')}</output>
+    </section>
+  );
+}
+
+export default function App() {
+  return (
+    <main>
+      <h1>Локальная подписка</h1>
+      <SubscriptionPanel />
+    </main>
+  );
 }
 ```
 
-### Примеры
+## Готово, когда
 
-#### Обычный сценарий
+- На чистом development-запуске показаны `Подписка: news`, `Активных подписок: 1` и канал `news`. Корневой StrictMode оставляет в трассе окончание `setup:news → cleanup:news → setup:news`.
+- После выбора `sports` трасса добавляет `cleanup:news → setup:sports`, сообщение меняется на `Подписка: sports`, а активен только один канал `sports`.
+- После возврата к `news` сначала записан `cleanup:sports`, затем `setup:news`; активная подписка по-прежнему одна.
+- Effect возвращает cleanup и зависит от `channel`; сети, таймеров и скрытых ресурсов нет.
 
-При первом render fixture сообщает `Подписка: news`, активен `news`.
-
-#### Граничный сценарий
-
-После `news → sports` активен только `sports`, количество равно `1`.
-
-#### Ошибка или пустой результат
-
-У fixture нет сетевой ошибки. Неправильный результат — сохранённый `news` после выбора `sports` или количество активных подписок больше `1`.
-
-## Критерии готовности
-
-- Effect зависит от `channel`.
-- Cleanup возвращён из effect.
-- После смены выбранный канал, сообщение и активная подписка согласованы.
-- Локальный fixture показывает одно активное значение.
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
-<summary>Подсказка 1</summary>
+<summary>Подсказка 1 — куда смотреть</summary>
 
-Подписка создаёт ресурс. Где React должен получить функцию его освобождения?
+Effect синхронизирует компонент с внешним ресурсом. Если выбор канала меняет ресурс, `channel` участвует и в setup, и в зависимостях effect.
+
+</details>
+
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
+
+`subscribe` уже возвращает объект с `close`. Сохраните этот объект внутри конкретного запуска effect и верните функцию, вызывающую `close`.
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+Внутри effect создайте `const subscription = subscribe(...)`, верните `() => subscription.close()`, а массив зависимостей замените на `[channel]`.
 
 </details>
 
 <details>
 <summary>Решение</summary>
 
-### Подход
-
-При изменении `channel` React сначала закрывает ресурс прошлого effect, затем запускает effect для нового значения.
-
 ```tsx
 import { useEffect, useState } from 'react';
 
-export function SubscriptionPanel() {
+type Subscription = {
+  close: () => void;
+};
+
+const activeSubscriptions = new Set<string>();
+const events: string[] = [];
+
+const subscribe = (
+  channel: string,
+  onMessage: (message: string) => void,
+): Subscription => {
+  let closed = false;
+
+  activeSubscriptions.add(channel);
+  events.push(`setup:${channel}`);
+  console.log(`[subscription] setup:${channel}`);
+  onMessage(`Подписка: ${channel}`);
+
+  return {
+    close: () => {
+      if (closed) {
+        return;
+      }
+
+      closed = true;
+      activeSubscriptions.delete(channel);
+      events.push(`cleanup:${channel}`);
+      console.log(`[subscription] cleanup:${channel}`);
+    },
+  };
+};
+
+function SubscriptionPanel() {
   const [channel, setChannel] = useState('news');
   const [message, setMessage] = useState('');
+  const [, forceRender] = useState(0);
 
   useEffect(() => {
-    const subscription = subscribe(channel, setMessage);
+    const subscription = subscribe(channel, (nextMessage) => {
+      setMessage(nextMessage);
+      forceRender((revision) => revision + 1);
+    });
+
     return () => subscription.close();
   }, [channel]);
 
   return (
     <section>
-      <select value={channel} onChange={(event) => setChannel(event.target.value)}>
-        <option value="news">news</option><option value="sports">sports</option>
-      </select>
-      <output>{message}</output>
-      <output>{activeSubscriptions.size}</output>
-      <output>{Array.from(activeSubscriptions).join(',')}</output>
+      <label>
+        Канал
+        <select
+          value={channel}
+          onChange={(event) => setChannel(event.target.value)}
+        >
+          <option value="news">news</option>
+          <option value="sports">sports</option>
+        </select>
+      </label>
+
+      <p>{message}</p>
+      <p>Активных подписок: {activeSubscriptions.size}</p>
+      <p>
+        Активные каналы:{' '}
+        {Array.from(activeSubscriptions).join(',') || 'нет'}
+      </p>
+      <output aria-live="polite">{events.join(' → ')}</output>
     </section>
+  );
+}
+
+export default function App() {
+  return (
+    <main>
+      <h1>Локальная подписка</h1>
+      <SubscriptionPanel />
+    </main>
   );
 }
 ```
 
-### Сложность
+### Почему это работает
 
-- Время: `O(1)` на переключение при fixture с константными операциями.
-- Память: `O(1)` для одной активной подписки.
-
-### Компромиссы и альтернативы
-
-Если внешний API не возвращает cleanup, нужен адаптер, который его предоставляет. Не следует подавлять зависимость: это создаёт устаревшую подписку. Для нескольких ресурсов можно разделить effects по ответственности.
+`channel` входит в зависимости, поэтому при смене значения React сначала вызывает cleanup предыдущего effect и только затем устанавливает новую подписку. Каждый `close` замыкает свой канал и свой флаг `closed`, поэтому повторный вызов безопасен. Дополнительный development-цикл StrictMode проверяет ту же симметрию и не оставляет лишний ресурс.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Самопроверка</summary>
 
-- Почему `[]` оставляет подписку на старом канале?
-- В каком порядке происходят cleanup и новая установка при смене `channel`?
-- Почему Set fixture помогает увидеть утечку подписки?
+- Почему пустой массив зависимостей оставляет сообщение и ресурс на `news`?
+- В каком порядке React вызывает cleanup и новый setup при смене `channel`?
+- Почему флаг `closed` должен принадлежать одной подписке, а не быть общим?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: React/TypeScript
+- Подборка: React: эффекты и жизненный цикл
+- Формат: Исправить код
+- Сложность: Средняя
+- Примерное время: 25 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).

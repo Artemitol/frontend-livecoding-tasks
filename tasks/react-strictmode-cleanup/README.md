@@ -1,144 +1,50 @@
 # Идемпотентный cleanup в корневом StrictMode
 
-**Учебная цель:** Объяснять повторную установку эффекта в StrictMode и проектировать идемпотентный cleanup.
+[← Все подборки](../../README.md)
 
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | TypeScript, React |
-| Тема | Эффекты React |
-| Формат | Разбор |
-| Уровень | Продвинутый |
-| Время | 30 минут |
-| Навыки | StrictMode, жизненный цикл effect, идемпотентный cleanup, причинная трассировка |
-| Предварительные знания | useEffect и cleanup |
-| Среда выполнения | React 19.2, TypeScript 5.9, Google Chrome 150.0.7871.101, development mode, StrictMode |
-
-<details>
-<summary>Теория</summary>
-
-В development root `StrictMode` намеренно делает дополнительный цикл setup/cleanup/setup для effect, чтобы обнаружить несимметричную работу с внешними ресурсами. Cleanup должен быть безопасен, если тот же ресурс пытаются освободить повторно: первый вызов освобождает, последующие ничего не делают.
-
-</details>
+Откройте [Vite React TypeScript в StackBlitz](https://vite.new/react-ts), дождитесь запуска проекта и полностью замените `src/App.tsx` кодом ниже. Сценарий рассчитан на React 19.2 в development mode и браузер Google Chrome 150.0.7871.101. Оставьте стандартный `src/main.tsx`: он оборачивает `<App />` в корневой `<StrictMode>`, который нужен для наблюдаемого development replay. Другие файлы менять не нужно; трасса работает локально без сети и таймеров.
 
 ## Условие
 
-Разберите стартовый код и исправьте cleanup. Опишите начальную трассу при корневом `StrictMode`, затем выполните controlled probe, который вызывает release текущего ресурса дважды. После этого объясните, почему второй вызов не должен увеличить число реальных освобождений.
-
-### Входы
-
-- Initial mount внутри корневого `<StrictMode>`.
-- Локальный ресурс с идентификатором.
-- Нажатие controlled button, дважды вызывающее release текущего ресурса.
-
-### Выходы
-
-- Начальная трасса начинается с `setup:1 → cleanup:1 → setup:2`.
-- До probe: setup count `2`, release count `1`.
-- После probe: добавлены `cleanup:2 → skip:2`, release count `2`, skipped-release count `1`.
-
-### Ограничения и побочные эффекты
-
-- StrictMode расположен на React root, не только вокруг вложенного leaf.
-- Каждый acquired resource освобождается реально не больше одного раза.
-- Локальный trace — единственный допустимый side effect; сети и таймеров нет.
-- Нельзя удалять StrictMode или скрывать cleanup.
-
-### Локальный fixture
-
 ```tsx
-const events: string[] = [];
-let setupCount = 0;
-let releaseCount = 0;
-let skippedReleaseCount = 0;
-```
+// Учебная цель: объяснить development replay эффекта в корневом
+// StrictMode и сделать cleanup одного ресурса идемпотентным.
+// Перед началом нужны useEffect и cleanup.
+//
+// Сначала предскажите чистую начальную трассу и счётчики.
+// Затем исправьте release так, чтобы повторный вызов для того же
+// resourceId записывал skip и не увеличивал releaseCount.
+// Не удаляйте StrictMode из стандартного src/main.tsx.
+// После исправления кнопка должна добавить cleanup:2 → skip:2,
+// а releaseCount должен остаться равным 2.
 
-### Стартовый код
-
-```tsx
-import { StrictMode, useEffect } from 'react';
-import { createRoot } from 'react-dom/client';
-
-function Probe() {
-  useEffect(() => {
-    const resourceId = ++setupCount;
-    events.push(`setup:${resourceId}`);
-    return () => {
-      releaseCount += 1;
-      events.push(`cleanup:${resourceId}`);
-    };
-  }, []);
-
-  return null;
-}
-
-createRoot(document.getElementById('root')!).render(<StrictMode><Probe /></StrictMode>);
-```
-
-### Примеры
-
-#### Обычный сценарий
-
-После загрузки development fixture видна начальная последовательность `setup:1 → cleanup:1 → setup:2`.
-
-#### Граничный сценарий
-
-Контролируемый double-release текущего ресурса добавляет один `cleanup:2` и один `skip:2`.
-
-#### Ошибка или пустой результат
-
-Неправильный cleanup добавляет два `cleanup:2`, увеличивая число реальных освобождений до `3` для двух acquired ресурсов.
-
-## Критерии готовности
-
-- В корне используется `<StrictMode><App /></StrictMode>`.
-- Трасса setup/cleanup/setup объяснена как development проверка симметрии effect.
-- Повторное освобождение одного resource id не увеличивает release count.
-- Результаты probe отображают стабильные setup, release и skipped-release counts.
-
-<details>
-<summary>Подсказка 1</summary>
-
-Сохраните `disposed` в замыкании конкретной установки effect, а не в общем флаге для всех ресурсов.
-
-</details>
-
-<details>
-<summary>Решение</summary>
-
-### Подход
-
-Каждая установка effect создаёт собственный `disposed`. Первый `release` конкретного ресурса меняет его на `true`; последующие вызовы фиксируются как `skip` и не освобождают ресурс второй раз. Корневой StrictMode даёт наблюдаемую начальную трассу.
-
-```tsx
-import { StrictMode, useEffect, useRef, useState } from 'react';
-import { createRoot } from 'react-dom/client';
+import { useEffect, useRef, useState } from 'react';
 
 const events: string[] = [];
 let setupCount = 0;
 let releaseCount = 0;
 let skippedReleaseCount = 0;
 
-function Probe() {
-  const [, setRevision] = useState(0);
+const record = (event: string): void => {
+  events.push(event);
+  console.log(`[strictmode] ${event}`);
+};
+
+export default function App() {
+  const [, forceRender] = useState(0);
   const releaseCurrentRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const resourceId = ++setupCount;
-    let disposed = false;
-    events.push(`setup:${resourceId}`);
-    setRevision((value) => value + 1);
+    record(`setup:${resourceId}`);
+    forceRender((revision) => revision + 1);
+
     const release = (): void => {
-      if (disposed) {
-        skippedReleaseCount += 1;
-        events.push(`skip:${resourceId}`);
-        setRevision((value) => value + 1);
-        return;
-      }
-      disposed = true;
       releaseCount += 1;
-      events.push(`cleanup:${resourceId}`);
-      setRevision((value) => value + 1);
+      record(`cleanup:${resourceId}`);
+      forceRender((revision) => revision + 1);
     };
+
     releaseCurrentRef.current = release;
     return release;
   }, []);
@@ -148,25 +54,140 @@ function Probe() {
     releaseCurrentRef.current?.();
   };
 
-  return <><button onClick={releaseTwice}>Повторить release дважды</button><output>{events.join(' → ')}</output></>;
+  return (
+    <main>
+      <h1>Трасса StrictMode</h1>
+      <button type="button" onClick={releaseTwice}>
+        Вызвать release дважды
+      </button>
+      <p>Setup: {setupCount}</p>
+      <p>Реальных cleanup: {releaseCount}</p>
+      <p>Пропущенных повторов: {skippedReleaseCount}</p>
+      <output aria-live="polite">{events.join(' → ')}</output>
+    </main>
+  );
 }
-
-createRoot(document.getElementById('root')!).render(<StrictMode><Probe /></StrictMode>);
 ```
 
-### Сложность
+## Готово, когда
 
-- Время: `O(1)` на setup, cleanup и probe-вызов.
-- Память: `O(1)` для одного активного ресурса, без учёта trace.
+- На чистом development-запуске корневой StrictMode даёт трассу `setup:1 → cleanup:1 → setup:2` и значения `Setup: 2`, `Реальных cleanup: 1`, `Пропущенных повторов: 0`.
+- Один клик по «Вызвать release дважды» добавляет `cleanup:2 → skip:2`; значения становятся `Setup: 2`, `Реальных cleanup: 2`, `Пропущенных повторов: 1`.
+- Консоль содержит `[strictmode] setup:1`, `cleanup:1`, `setup:2`, `cleanup:2`, `skip:2` в том же причинном порядке.
+- `disposed` принадлежит одной установке effect; StrictMode, cleanup, локальная трасса и controlled double-release сохранены.
 
-### Компромиссы и альтернативы
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
-В production дополнительный replay не является договором, поэтому корректность не должна зависеть от него. Для внешнего API, где `close` уже идемпотентен, guard всё равно документирует инвариант; для нескольких ресурсов полезен отдельный объект-адаптер с собственным lifecycle.
+<details>
+<summary>Подсказка 1 — куда смотреть</summary>
+
+Корневой StrictMode в development намеренно выполняет `setup → cleanup → setup`. Это проверка симметрии effect, а не production-жизненный цикл.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
 
-- Почему StrictMode должен быть у React root для этой проверки?
-- Какая часть трассы относится к первому ресурсу, а какая — ко второму?
-- Почему общий `disposed` вне effect был бы ошибкой?
+Идемпотентность нужна для каждого acquired resource отдельно. Храните флаг внутри замыкания `release`, созданного конкретным запуском effect.
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+Перед `releaseCount += 1` проверьте локальный `disposed`. Первый вызов меняет его на `true`, а следующий увеличивает `skippedReleaseCount` и записывает `skip:<id>`.
+
+</details>
+
+<details>
+<summary>Решение</summary>
+
+```tsx
+import { useEffect, useRef, useState } from 'react';
+
+const events: string[] = [];
+let setupCount = 0;
+let releaseCount = 0;
+let skippedReleaseCount = 0;
+
+const record = (event: string): void => {
+  events.push(event);
+  console.log(`[strictmode] ${event}`);
+};
+
+export default function App() {
+  const [, forceRender] = useState(0);
+  const releaseCurrentRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    const resourceId = ++setupCount;
+    let disposed = false;
+
+    record(`setup:${resourceId}`);
+    forceRender((revision) => revision + 1);
+
+    const release = (): void => {
+      if (disposed) {
+        skippedReleaseCount += 1;
+        record(`skip:${resourceId}`);
+        forceRender((revision) => revision + 1);
+        return;
+      }
+
+      disposed = true;
+      releaseCount += 1;
+      record(`cleanup:${resourceId}`);
+      forceRender((revision) => revision + 1);
+    };
+
+    releaseCurrentRef.current = release;
+    return release;
+  }, []);
+
+  const releaseTwice = (): void => {
+    releaseCurrentRef.current?.();
+    releaseCurrentRef.current?.();
+  };
+
+  return (
+    <main>
+      <h1>Трасса StrictMode</h1>
+      <button type="button" onClick={releaseTwice}>
+        Вызвать release дважды
+      </button>
+      <p>Setup: {setupCount}</p>
+      <p>Реальных cleanup: {releaseCount}</p>
+      <p>Пропущенных повторов: {skippedReleaseCount}</p>
+      <output aria-live="polite">{events.join(' → ')}</output>
+    </main>
+  );
+}
+```
+
+### Почему это работает
+
+Каждый запуск effect создаёт собственный `resourceId` и `disposed`. В development корневой StrictMode сразу проверяет первый ресурс последовательностью setup/cleanup и создаёт второй. Первый вызов `release` второго ресурса освобождает его, а повторный видит локальный `disposed` и только фиксирует `skip`. В production дополнительный replay не гарантирован, поэтому корректность опирается на симметричный и идемпотентный cleanup, а не на саму проверку.
+
+</details>
+
+<details>
+<summary>Самопроверка</summary>
+
+- Какая часть начальной трассы относится к первому ресурсу, а какая — ко второму?
+- Почему общий `disposed` вне effect смешал бы жизненные циклы разных ресурсов?
+- Почему development replay полезен, но не должен быть частью production-контракта?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: React/TypeScript
+- Подборка: React: эффекты и жизненный цикл
+- Формат: Разобрать код
+- Сложность: Продвинутая
+- Примерное время: 30 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).
