@@ -357,13 +357,15 @@
         <evidence-3>Only the eight JavaScript and DOM migration facts are implemented; TypeScript, HTML/CSS, accessibility, React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-10>
-    <Gate-Phase-11 PHASE="Phase-11" status="pending">
+    <Gate-Phase-11 PHASE="Phase-11" status="implemented">
       <goal>Four TypeScript cards conform to StudentTaskCard and preserve exact TypeScript 5.9 behavior in TypeScript Playground.</goal>
       <commands>
         <command-1>Run per-card structure, preservation, content, collection-sync, exact type/runtime outcome, and TypeScript Playground checks for the approved four slugs.</command-1>
       </commands>
       <required-evidence>
-        <evidence-1>Four complete CardMigrationEvidence rows have TypeScript Playground PASS and synchronized graph and verification facts.</evidence-1>
+        <evidence-1>Four complete CardMigrationEvidence rows in the R4 Beads notes record preservation, expected type and runtime behavior, observed TypeScript Playground 5.9.3 behavior, and final target-editor PASS.</evidence-1>
+        <evidence-2>Each complete solution block showed No errors with strict checked and produced the exact expected runtime values after a clean full-code replacement with noEmit off.</evidence-2>
+        <evidence-3>Only the four TypeScript migration facts are implemented in Phase 11; HTML/CSS, accessibility, React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-11>
     <Gate-Phase-12 PHASE="Phase-12" status="pending">

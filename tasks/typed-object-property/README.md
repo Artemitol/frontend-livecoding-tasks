@@ -1,53 +1,21 @@
 # Точный тип значения по ключу настройки
 
-**Учебная цель:** Сохранять связь между ключом объекта и типом возвращаемого значения в обобщённой функции.
+[← Все подборки](../../README.md)
 
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | TypeScript |
-| Тема | Моделирование типов |
-| Формат | Отладка |
-| Уровень | Средний |
-| Время | 20 минут |
-| Навыки | generic, keyof, indexed access type |
-| Предварительные знания | Обобщённые функции и `keyof` |
-| Среда выполнения | TypeScript 5.9, strict mode, noEmit |
-
-<details>
-<summary>Теория</summary>
-
-Тип `keyof Preferences` описывает все допустимые ключи, но сам по себе теряет связь между конкретным ключом и его значением: результат становится широким union-типом. Параметр типа `Key extends keyof Preferences` сохраняет конкретный литеральный ключ, а `Preferences[Key]` вычисляет связанный с ним тип значения.
-
-</details>
+Откройте [TypeScript Playground](https://www.typescriptlang.org/play/), выберите TypeScript 5.9, включите `strict` в **TS Config** и полностью замените код блоком ниже. Сначала исправьте diagnostics как в исходном режиме `noEmit`, затем оставьте `noEmit` выключенным и нажмите **Run**.
 
 ## Условие
 
-Исправьте сигнатуру и реализацию `getPreference`, чтобы вызов с каждым допустимым ключом возвращал его точный тип. Не добавляйте перегрузки: связь должна быть выражена одним обобщённым параметром.
-
-### Входы
-
-- `preferences` — объект типа `Preferences` с обязательными полями `theme`, `retryCount` и `isBeta`;
-- `key` — один из ключей этого объекта.
-
-### Выходы
-
-Функция возвращает:
-
-- `string` для ключа `theme`;
-- `number` для ключа `retryCount`;
-- `boolean` для ключа `isBeta`.
-
-### Ограничения и побочные эффекты
-
-- Сигнатура должна иметь вид `getPreference<Key extends keyof Preferences>(preferences: Preferences, key: Key): Preferences[Key]`.
-- Не добавляйте overloads, type assertion или runtime-проверки ошибок.
-- Все поля обязательны, поэтому пустого результата нет; недопустимый ключ — ошибка компиляции.
-- Не мутируйте объект и не выполняйте I/O.
-- Побочные эффекты отсутствуют.
-
-### Стартовый код
-
 ```ts
+// Учебная цель: сохранять связь между ключом объекта и типом
+// возвращаемого значения в обобщённой функции.
+// Перед началом нужны обобщённые функции и keyof.
+//
+// Исправьте getPreference одной generic-сигнатурой.
+// Key должен оставаться допустимым ключом Preferences,
+// а результат — иметь точный тип Preferences[Key].
+// Не используйте overloads, type assertion или runtime-проверки.
+
 type Preferences = {
   theme: string;
   retryCount: number;
@@ -67,48 +35,52 @@ const preferences: Preferences = {
   isBeta: false,
 };
 
-const theme = getPreference(preferences, 'theme');
-// Исправьте функцию так, чтобы theme имел тип string, а не string | number | boolean.
+const theme: string = getPreference(preferences, 'theme');
+const retryCount: number = getPreference(preferences, 'retryCount');
+const isBeta: boolean = getPreference(preferences, 'isBeta');
+
+// @ts-expect-error locale не является ключом Preferences.
+getPreference(preferences, 'locale');
+
+const runtimePass =
+  theme === 'dark' &&
+  retryCount === 3 &&
+  isBeta === false;
+
+console.log({ theme, retryCount, isBeta, runtimePass });
 ```
 
-### Примеры
+## Готово, когда
 
-#### Обычный сценарий
+- TypeScript Playground 5.9 в режиме `strict` принимает присваивания результата `theme` в `string`, `retryCount` в `number` и `isBeta` в `boolean`.
+- Вызов с `locale` остаётся ошибкой компиляции, которую подтверждает `@ts-expect-error`.
+- После **Run** видны `theme: "dark"`, `retryCount: 3`, `isBeta: false` и `runtimePass: true`.
 
-Вход: `getPreference(preferences, 'theme')` при `theme: 'dark'`.
-
-Результат: значение `'dark'` типа `string`.
-
-#### Граничный сценарий
-
-Вход: `getPreference(preferences, 'isBeta')` при `isBeta: false`.
-
-Результат: `false` типа `boolean`. Ложное Boolean-значение не является пустым результатом.
-
-#### Ошибка или пустой результат
-
-Вызов `getPreference(preferences, 'locale')` должен быть ошибкой компиляции. Пустого результата нет: все поля `Preferences` обязательны.
-
-## Критерии готовности
-
-- Тип `getPreference(preferences, 'theme')` — `string`.
-- Типы результатов для `retryCount` и `isBeta` — соответственно `number` и `boolean`.
-- Ключа `locale` нет среди допустимых ключей.
-- Решение не содержит перегрузок, assertion, мутации, I/O и runtime-обработки ошибок.
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
-<summary>Подсказка 1</summary>
+<summary>Подсказка 1 — куда смотреть</summary>
 
-Сделайте ключ параметром типа, а не просто значением типа `keyof Preferences`. Тип результата можно получить индексированием типа объекта этим параметром.
+`keyof Preferences` ограничивает допустимые ключи, но обычный параметр с таким типом не запоминает, какой именно ключ пришёл в конкретный вызов.
+
+</details>
+
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
+
+Добавьте функции один параметр типа `Key`, ограниченный ключами `Preferences`, и используйте `Key` как тип второго аргумента.
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+Свяжите выход с входом через indexed access type: подставьте generic-ключ в квадратные скобки после `Preferences`. Тело функции по-прежнему только читает `preferences[key]`.
 
 </details>
 
 <details>
 <summary>Решение</summary>
-
-### Подход
-
-`Key` сохраняет литерал, переданный вторым аргументом. Поэтому индексированный тип `Preferences[Key]` не расширяется до union всех свойств и точно соответствует `preferences[key]`.
 
 ```ts
 type Preferences = {
@@ -136,21 +108,39 @@ const isBeta: boolean = getPreference(preferences, 'isBeta');
 
 // @ts-expect-error locale не является ключом Preferences.
 getPreference(preferences, 'locale');
+
+const runtimePass =
+  theme === 'dark' &&
+  retryCount === 3 &&
+  isBeta === false;
+
+console.log({ theme, retryCount, isBeta, runtimePass });
 ```
 
-### Сложность
+### Почему это работает
 
-- Время: `O(1)`.
-- Память: `O(1)`.
-
-### Компромиссы и альтернативы
-
-Перегрузки могут описать небольшой фиксированный набор ключей, но дублируют контракт и плохо масштабируются. Широкий `keyof Preferences` корректно ограничивает ключ, но возвращает union. Обобщённый ключ одновременно ограничивает вход и сохраняет точный выходной тип.
+`Key` сохраняет литеральный ключ каждого вызова. Indexed access type `Preferences[Key]` вычисляет связанный тип свойства, поэтому один generic-контракт одновременно запрещает неизвестные ключи и не расширяет результат до union всех значений.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Самопроверка</summary>
 
-- Почему `keyof Preferences` без параметра типа даёт широкий результат?
-- Как тип `Key` связан с `Preferences[Key]`?
-- Почему `false` для `isBeta` — обычное значение, а не пустой результат?
+- Почему параметр `key: keyof Preferences` без generic даёт широкий тип результата?
+- Почему значение `false` для `isBeta` остаётся обычным результатом, а не признаком отсутствия значения?
+- Как эта сигнатура изменится, если функция должна работать с объектом произвольного типа?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: TypeScript
+- Подборка: Моделирование типов
+- Формат: Исправить код
+- Сложность: Средняя
+- Примерное время: 20 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).

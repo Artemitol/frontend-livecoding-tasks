@@ -1,55 +1,24 @@
 # Проверка JSON-профиля без assertion
 
-**Учебная цель:** Проверять unknown JSON во время выполнения и получать типизированный результат без type assertion.
+[← Все подборки](../../README.md)
 
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | TypeScript |
-| Тема | Сужение типов |
-| Формат | Реализация |
-| Уровень | Продвинутый |
-| Время | 30 минут |
-| Навыки | unknown, type guard, валидация массива, discriminated union |
-| Предварительные знания | `unknown`, union-типы и функции-предикаты типов |
-| Среда выполнения | TypeScript 5.9, strict mode, Node.js 26.4.0, ECMAScript modules |
-
-<details>
-<summary>Теория</summary>
-
-`JSON.parse` возвращает данные неизвестной формы. Безопасный контракт начинается с `unknown`, затем проверяет, что значение — объект, нужные поля имеют тип `string`, а `roles` — массив только строк. Функция-предикат `value is Profile` открывает тип `Profile` только после всех проверок. Ошибки парсинга и неверная форма данных должны стать явными результатами, а не утечь исключением наружу.
-
-</details>
+Откройте [TypeScript Playground](https://www.typescriptlang.org/play/), выберите TypeScript 5.9 и включите `strict` в **TS Config**. Полностью замените код блоком ниже и после реализации нажмите **Run**. Код сохраняет исходную семантику Node.js 26.4.0 ESM, но использует только стандартные `JSON` и JavaScript API.
 
 ## Условие
 
-Реализуйте `parseProfileJson(source: string): ParseResult<Profile>`. Она должна разобрать JSON, проверить его структуру во время выполнения и вернуть типизированный профиль только после успешной проверки.
-
-### Входы
-
-Строка `source`, которая может содержать:
-
-- JSON-представление профиля `{ id: string, displayName: string, roles: string[] }`;
-- синтаксически неверный JSON;
-- корректный JSON неверной формы.
-
-### Выходы
-
-`ParseResult<Profile>`:
-
-- `{ ok: true, data: Profile }` для корректного профиля;
-- `{ ok: false, error: 'INVALID_JSON' }` для ошибки синтаксического разбора;
-- `{ ok: false, error: 'INVALID_PROFILE' }` для неверной формы.
-
-### Ограничения и побочные эффекты
-
-- Присвойте результат `JSON.parse` переменной типа `unknown` и валидируйте объект, все обязательные поля и каждый элемент `roles` type guards.
-- Пустой массив `roles` допустим.
-- Не используйте `as`, аннотации `any`, мутацию, I/O или исключения, выходящие из `parseProfileJson`.
-- Побочные эффекты отсутствуют.
-
-### Стартовый код
-
 ```ts
+// Учебная цель: проверять unknown JSON во время выполнения
+// и получать типизированный результат без type assertion.
+// Перед началом нужны unknown, union-типы и функции-предикаты типов.
+//
+// Реализуйте guards и завершите parseProfileJson(source).
+// После JSON.parse проверьте, что значение — не null, не массив,
+// содержит string-поля id и displayName, а roles — массив строк.
+// Пустой roles допустим.
+// Неверный JSON должен дать INVALID_JSON, неверная форма
+// или нестроковая роль — INVALID_PROFILE.
+// Не используйте as, any, мутацию или I/O внутри функций.
+
 type Profile = {
   id: string;
   displayName: string;
@@ -61,52 +30,90 @@ type ParseResult<T> =
   | { ok: false; error: 'INVALID_JSON' | 'INVALID_PROFILE' };
 
 function parseProfileJson(source: string): ParseResult<Profile> {
-  const parsed: unknown = JSON.parse(source);
+  let parsed: unknown;
 
-  return { ok: true, data: parsed };
-  // Добавьте обработку синтаксической ошибки и проверки unknown-значения.
+  try {
+    parsed = JSON.parse(source);
+  } catch {
+    return { ok: false, error: 'INVALID_JSON' };
+  }
+
+  // Добавьте runtime-проверки parsed и верните Profile только после них.
+  return { ok: false, error: 'INVALID_PROFILE' };
 }
+
+const valid = parseProfileJson(
+  '{"id":"42","displayName":"Лена","roles":["author"]}',
+);
+const emptyRoles = parseProfileJson(
+  '{"id":"43","displayName":"Илья","roles":[]}',
+);
+const invalidJson = parseProfileJson('{"id":"42"');
+const invalidShape = parseProfileJson(
+  '{"id":42,"displayName":"Лена","roles":["author"]}',
+);
+const invalidRoles = parseProfileJson(
+  '{"id":"42","displayName":"Лена","roles":["author",7]}',
+);
+
+const validPass =
+  valid.ok &&
+  valid.data.id === '42' &&
+  valid.data.displayName === 'Лена' &&
+  valid.data.roles[0] === 'author';
+const emptyRolesPass =
+  emptyRoles.ok &&
+  emptyRoles.data.roles.length === 0;
+const invalidJsonPass =
+  !invalidJson.ok &&
+  invalidJson.error === 'INVALID_JSON';
+const invalidShapePass =
+  !invalidShape.ok &&
+  invalidShape.error === 'INVALID_PROFILE';
+const invalidRolesPass =
+  !invalidRoles.ok &&
+  invalidRoles.error === 'INVALID_PROFILE';
+
+console.log({
+  validPass,
+  emptyRolesPass,
+  invalidJsonPass,
+  invalidShapePass,
+  invalidRolesPass,
+});
 ```
 
-### Примеры
+## Готово, когда
 
-#### Обычный сценарий
+- TypeScript Playground 5.9 с `strict` принимает успешную ветвь как `Profile` без `as` и без аннотаций `any`.
+- После **Run** `validPass` и `emptyRolesPass` равны `true`: корректный профиль и пустой массив ролей проходят проверку.
+- `invalidJsonPass`, `invalidShapePass` и `invalidRolesPass` равны `true`: синтаксическая ошибка, неверное поле и нестроковая роль различаются и не выбрасывают исключение наружу.
 
-Вход: `'{"id":"42","displayName":"Лена","roles":["author"]}'`.
-
-Результат: `{ ok: true, data: { id: '42', displayName: 'Лена', roles: ['author'] } }`.
-
-#### Граничный сценарий
-
-Вход: `'{"id":"43","displayName":"Илья","roles":[]}'`.
-
-Результат: успешный профиль с пустым `roles`; пустой массив — допустимое значение.
-
-#### Ошибка или пустой результат
-
-- Вход `'{"id":42,"displayName":"Лена","roles":["author"]}'` возвращает `{ ok: false, error: 'INVALID_PROFILE' }`.
-- Вход `'{"id":"42"'` возвращает `{ ok: false, error: 'INVALID_JSON' }`.
-
-## Критерии готовности
-
-- Корректный профиль возвращается только в ветви `ok: true` с типом `Profile`.
-- Пустой массив ролей считается корректным.
-- Неверный JSON и неверная форма дают разные коды ошибки и не выбрасывают исключение наружу.
-- В решении нет `as`, аннотаций `any`, мутации или I/O; у ошибочной ветви нет `data`.
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
-<summary>Подсказка 1</summary>
+<summary>Подсказка 1 — куда смотреть</summary>
 
-Разделите задачу на два шага: ловля ошибки `JSON.parse` и предикат `isProfile(value: unknown): value is Profile`. Для объекта сначала исключите `null` и массив.
+Начинайте каждую проверку с параметра типа `unknown`. Для объекта нужно отдельно исключить `null` и массив, прежде чем TypeScript разрешит читать поля.
+
+</details>
+
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
+
+Разделите проверки на три predicates: обычная запись со строковыми ключами, массив строк и полный `Profile`. Тогда `parseProfileJson` будет только разбирать JSON и выбирать результат.
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+Сначала преобразуйте `unknown` в `Record<string, unknown>` через predicate, затем проверьте две строки и передайте `roles` в отдельный guard с `Array.isArray` и `every`. Успешную ветвь возвращайте только после общего predicate.
 
 </details>
 
 <details>
 <summary>Решение</summary>
-
-### Подход
-
-Сначала `try/catch` преобразует только синтаксическую ошибку в `INVALID_JSON`. Далее `isProfile` проверяет структуру `unknown` без assertion: объект, две строки и массив строк. После true-результата predicate переменная `parsed` имеет тип `Profile`, поэтому её можно положить в успешную ветвь.
 
 ```ts
 type Profile = {
@@ -120,18 +127,27 @@ type ParseResult<T> =
   | { ok: false; error: 'INVALID_JSON' | 'INVALID_PROFILE' };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value)
+  );
 }
 
 function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item): item is string => typeof item === 'string');
+  return (
+    Array.isArray(value) &&
+    value.every((item: unknown) => typeof item === 'string')
+  );
 }
 
 function isProfile(value: unknown): value is Profile {
-  return isRecord(value)
-    && typeof value.id === 'string'
-    && typeof value.displayName === 'string'
-    && isStringArray(value.roles);
+  return (
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.displayName === 'string' &&
+    isStringArray(value.roles)
+  );
 }
 
 function parseProfileJson(source: string): ParseResult<Profile> {
@@ -149,21 +165,72 @@ function parseProfileJson(source: string): ParseResult<Profile> {
 
   return { ok: true, data: parsed };
 }
+
+const valid = parseProfileJson(
+  '{"id":"42","displayName":"Лена","roles":["author"]}',
+);
+const emptyRoles = parseProfileJson(
+  '{"id":"43","displayName":"Илья","roles":[]}',
+);
+const invalidJson = parseProfileJson('{"id":"42"');
+const invalidShape = parseProfileJson(
+  '{"id":42,"displayName":"Лена","roles":["author"]}',
+);
+const invalidRoles = parseProfileJson(
+  '{"id":"42","displayName":"Лена","roles":["author",7]}',
+);
+
+const validPass =
+  valid.ok &&
+  valid.data.id === '42' &&
+  valid.data.displayName === 'Лена' &&
+  valid.data.roles[0] === 'author';
+const emptyRolesPass =
+  emptyRoles.ok &&
+  emptyRoles.data.roles.length === 0;
+const invalidJsonPass =
+  !invalidJson.ok &&
+  invalidJson.error === 'INVALID_JSON';
+const invalidShapePass =
+  !invalidShape.ok &&
+  invalidShape.error === 'INVALID_PROFILE';
+const invalidRolesPass =
+  !invalidRoles.ok &&
+  invalidRoles.error === 'INVALID_PROFILE';
+
+console.log({
+  validPass,
+  emptyRolesPass,
+  invalidJsonPass,
+  invalidShapePass,
+  invalidRolesPass,
+});
 ```
 
-### Сложность
+### Почему это работает
 
-- Время: `O(r)`, где `r` — число элементов `roles`.
-- Память: `O(1)` дополнительной памяти, не считая объекта, созданного `JSON.parse`.
-
-### Компромиссы и альтернативы
-
-`as Profile` короче, но обещает форму без проверки runtime-данных. Схемная библиотека могла бы дать более богатые сообщения об ошибках, однако для фиксированного маленького контракта локальные guards прозрачны, не требуют зависимости и сохраняют раздельные коды `INVALID_JSON` и `INVALID_PROFILE`.
+Каждый predicate превращает `unknown` в более узкий тип только после runtime-проверки. `parseProfileJson` отделяет синтаксическую ошибку от неверной формы, а в успешную ветвь попадает `parsed`, который компилятор уже знает как `Profile`.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Самопроверка</summary>
 
-- Почему результат `JSON.parse` сначала хранится как `unknown`?
-- Почему пустой `roles` проходит проверку, а `[1]` — нет?
-- Чем полезно различать `INVALID_JSON` и `INVALID_PROFILE` для вызывающего кода?
+- Почему результат `JSON.parse` нужно сразу ограничить типом `unknown`?
+- Почему пустой `roles` проходит `every`, а массив со значением `7` — нет?
+- Как расширить контракт, чтобы проверять допустимые значения ролей, а не только тип `string`?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: TypeScript
+- Подборка: Сужение и проверка данных
+- Формат: Написать код
+- Сложность: Продвинутая
+- Примерное время: 30 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).
