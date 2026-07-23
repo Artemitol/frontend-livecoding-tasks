@@ -45,7 +45,7 @@
       <required-signals>
         <artifact-marker>Beads validation decision and evidence type</artifact-marker>
         <artifact-marker>accepted card or neutral non-publication reason</artifact-marker>
-        <trace-sequence>IDENTITY -> LEARNING_VALUE -> CONTRACT -> LOCAL_COMPLETENESS -> EXAMPLES -> SOLUTION -> VERIFICATION -> EDITORIAL -> DECISION -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
+        <trace-sequence>StudentTaskCard -> local-completeness -> preservation -> structure -> solution-content -> target-editor -> synchronization -> rendered</trace-sequence>
       </required-signals>
     </VF-004>
     <VF-005 NAME="StudentNavigatesCollections" USE_CASES="UC-001, UC-006" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
