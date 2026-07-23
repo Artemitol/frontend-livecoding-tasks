@@ -25,7 +25,9 @@ browser-back instruction and fallback link
 
 Обычный code-first режим ставит editor instruction перед `Условие`, а само задание переносит в комментарии одного полного starter block. Комплексный режим начинает с короткого `Условие`, затем показывает editor instruction, заголовок `Код — вставьте его в редактор` и один или несколько полных starter blocks. Остальная последовательность одинакова.
 
-`CollectionEntry` содержит linked student title, одно plain-language предложение для thematic collection и точное целое время из карточки.
+`StudentHub` содержит ровно четыре блока второго уровня: `Как пользоваться базой`, `Подборки по направлениям`, `Симуляции собеседований` и `Где писать код`. Он ссылается на все десять thematic collections, три interviews и четыре утверждённых редактора, но не содержит task tables, metadata-source explanations или agent-maintenance prose.
+
+`CollectionEntry` имеет два варианта. Thematic entry содержит linked student title, одно plain-language предложение и точное целое время из карточки. Interview entry содержит linked student title и то же точное время без thematic description; перед списком остаётся общий timer paragraph.
 
 `CardMigrationEvidence` содержит:
 
@@ -140,6 +142,8 @@ tasks/<slug>/README.md
 
 Значение `Примерное время` в карточке и collections совпадает. Target-editor link соответствует task profile. Slug rename остаётся отдельной migration с inbound-link evidence. Удаление карточки удаляет все её student navigation и graph references атомарно.
 
+Текущая student navigation состоит ровно из root hub, десяти thematic README и трёх interview README. Каждая из двадцати карточек встречается ровно в одной thematic collection; пятнадцать interview entries уникальны, и ни одна карточка не входит в два interviews. Старые root task tables и объяснения служебных metadata не являются текущим student contract.
+
 ## Wave rules
 
 Accepted candidates упорядочиваются по stable candidate ID и группируются последовательно: полная wave содержит 8–10 cards, только final incomplete wave может содержать 1–7. Каждая wave закрывается после candidate recheck, deterministic и hybrid PASS, pushed commit, GitHub-rendered evidence и complete report. Per-wave human approval не требуется; top-level story остаётся открытой до final user acceptance.
@@ -156,5 +160,6 @@ Accepted candidates упорядочиваются по stable candidate ID и �
 - Only accepted candidates have task paths or wave IDs, and every accepted candidate belongs to exactly one valid wave.
 - Every migrated card has complete `CardMigrationEvidence` and final target-editor verdict.
 - Every task belongs to exactly one thematic collection and zero or one interview; title, time, editor profile, graph and verification facts agree.
+- Root README contains exactly the four StudentHub blocks, links all thirteen collections and four approved editors, and contains no old task table or agent-maintenance prose.
 - A text asset is removed only after its embedded replacement receives `PASS`.
 - The top-level story closes only after the final rendered audit and explicit user acceptance.

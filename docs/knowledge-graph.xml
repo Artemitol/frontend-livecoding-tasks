@@ -48,27 +48,27 @@
       <annotations>
         <type-TaskMetadataSet PURPOSE="Collection of five-field task metadata records exposed to thematic and interview collections" />
         <export-taskCard PURPOSE="Expose one complete copy-ready StudentTaskCard through GitHub" />
-        <const-cardMigrationState PURPOSE="Phases 10, 11, 12, and 13 implemented all twenty JavaScript, DOM, TypeScript, HTML/CSS, accessibility, and React card migrations; root cutover, interview composition, and rendered final audit remain pending" />
-        <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
-        <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
-        <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
-        <export-this-callback-binding PURPOSE="Expose the accepted student-facing task card at tasks/this-callback-binding/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="CodePen browser ESM" />
-        <export-browser-event-loop-order PURPOSE="Expose the accepted student-facing task card at tasks/browser-event-loop-order/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="CodePen classic script" />
-        <export-stale-search-response PURPOSE="Expose the accepted student-facing task card at tasks/stale-search-response/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
-        <export-discriminated-load-state PURPOSE="Expose the accepted student-facing task card at tasks/discriminated-load-state/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" />
-        <export-typed-object-property PURPOSE="Expose the accepted student-facing task card at tasks/typed-object-property/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" />
-        <export-response-union-narrowing PURPOSE="Expose the accepted student-facing task card at tasks/response-union-narrowing/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" />
-        <export-validate-unknown-profile PURPOSE="Expose the accepted student-facing task card at tasks/validate-unknown-profile/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" />
-        <export-delegated-dynamic-list PURPOSE="Expose the accepted student-facing task card at tasks/delegated-dynamic-list/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
-        <export-idempotent-event-listeners PURPOSE="Expose the accepted student-facing task card at tasks/idempotent-event-listeners/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
-        <export-accessible-keyboard-tabs PURPOSE="Expose the accepted student-facing task card at tasks/accessible-keyboard-tabs/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
-        <export-modal-focus-lifecycle PURPOSE="Expose the accepted student-facing task card at tasks/modal-focus-lifecycle/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
-        <export-react-derived-list PURPOSE="Expose the accepted student-facing task card at tasks/react-derived-list/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" />
-        <export-react-batched-counter PURPOSE="Expose the accepted student-facing task card at tasks/react-batched-counter/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" />
-        <export-react-effect-subscription PURPOSE="Expose the accepted student-facing task card at tasks/react-effect-subscription/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" />
-        <export-react-strictmode-cleanup PURPOSE="Expose the accepted student-facing task card at tasks/react-strictmode-cleanup/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" />
-        <export-flex-long-text-overflow PURPOSE="Expose the accepted student-facing task card at tasks/flex-long-text-overflow/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" />
-        <export-container-responsive-grid PURPOSE="Expose the accepted student-facing task card at tasks/container-responsive-grid/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" />
+        <const-cardMigrationState PURPOSE="Phases 10 through 14 implemented all twenty card migrations, thematic and optional interview membership, and root cutover; only the Phase 15 rendered final audit remains pending" />
+        <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-arrays-and-objects" INTERVIEW_COLLECTION="collection-interview-01" />
+        <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-arrays-and-objects" INTERVIEW_COLLECTION="collection-interview-02" />
+        <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-this-and-closures" INTERVIEW_COLLECTION="collection-interview-01" />
+        <export-this-callback-binding PURPOSE="Expose the accepted student-facing task card at tasks/this-callback-binding/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="CodePen browser ESM" THEMATIC_COLLECTION="collection-this-and-closures" INTERVIEW_COLLECTION="collection-interview-02" />
+        <export-browser-event-loop-order PURPOSE="Expose the accepted student-facing task card at tasks/browser-event-loop-order/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="CodePen classic script" THEMATIC_COLLECTION="collection-event-loop-and-async" INTERVIEW_COLLECTION="collection-interview-02" />
+        <export-stale-search-response PURPOSE="Expose the accepted student-facing task card at tasks/stale-search-response/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" THEMATIC_COLLECTION="collection-event-loop-and-async" INTERVIEW_COLLECTION="collection-interview-03" />
+        <export-discriminated-load-state PURPOSE="Expose the accepted student-facing task card at tasks/discriminated-load-state/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" THEMATIC_COLLECTION="collection-type-modeling" INTERVIEW_COLLECTION="collection-interview-01" />
+        <export-typed-object-property PURPOSE="Expose the accepted student-facing task card at tasks/typed-object-property/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" THEMATIC_COLLECTION="collection-type-modeling" INTERVIEW_COLLECTION="collection-interview-02" />
+        <export-response-union-narrowing PURPOSE="Expose the accepted student-facing task card at tasks/response-union-narrowing/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" THEMATIC_COLLECTION="collection-narrowing-and-validation" INTERVIEW_COLLECTION="collection-interview-03" />
+        <export-validate-unknown-profile PURPOSE="Expose the accepted student-facing task card at tasks/validate-unknown-profile/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" THEMATIC_COLLECTION="collection-narrowing-and-validation" />
+        <export-delegated-dynamic-list PURPOSE="Expose the accepted student-facing task card at tasks/delegated-dynamic-list/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" THEMATIC_COLLECTION="collection-dom-and-events" INTERVIEW_COLLECTION="collection-interview-01" />
+        <export-idempotent-event-listeners PURPOSE="Expose the accepted student-facing task card at tasks/idempotent-event-listeners/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" THEMATIC_COLLECTION="collection-dom-and-events" />
+        <export-accessible-keyboard-tabs PURPOSE="Expose the accepted student-facing task card at tasks/accessible-keyboard-tabs/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" THEMATIC_COLLECTION="collection-accessibility" INTERVIEW_COLLECTION="collection-interview-03" />
+        <export-modal-focus-lifecycle PURPOSE="Expose the accepted student-facing task card at tasks/modal-focus-lifecycle/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" THEMATIC_COLLECTION="collection-accessibility" />
+        <export-react-derived-list PURPOSE="Expose the accepted student-facing task card at tasks/react-derived-list/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" THEMATIC_COLLECTION="collection-state-and-derived-data" INTERVIEW_COLLECTION="collection-interview-03" />
+        <export-react-batched-counter PURPOSE="Expose the accepted student-facing task card at tasks/react-batched-counter/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" THEMATIC_COLLECTION="collection-state-and-derived-data" INTERVIEW_COLLECTION="collection-interview-01" />
+        <export-react-effect-subscription PURPOSE="Expose the accepted student-facing task card at tasks/react-effect-subscription/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" THEMATIC_COLLECTION="collection-effects-and-lifecycle" INTERVIEW_COLLECTION="collection-interview-03" />
+        <export-react-strictmode-cleanup PURPOSE="Expose the accepted student-facing task card at tasks/react-strictmode-cleanup/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" THEMATIC_COLLECTION="collection-effects-and-lifecycle" />
+        <export-flex-long-text-overflow PURPOSE="Expose the accepted student-facing task card at tasks/flex-long-text-overflow/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" THEMATIC_COLLECTION="collection-layout" INTERVIEW_COLLECTION="collection-interview-02" />
+        <export-container-responsive-grid PURPOSE="Expose the accepted student-facing task card at tasks/container-responsive-grid/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" THEMATIC_COLLECTION="collection-layout" />
       </annotations>
     </M-TASK-LIBRARY>
 
@@ -78,8 +78,8 @@
       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
       <verification-ref>V-M-CATALOG</verification-ref>
       <annotations>
-        <type-CollectionEntry PURPOSE="Linked student title, one plain-language thematic sentence, and exact integer duration copied from the card" />
-        <export-studentIndex PURPOSE="Expose the planned four-block root hub, ten thematic collections, and three interview collections without duplicating card content" />
+        <type-CollectionEntry PURPOSE="Linked student title and exact integer duration copied from the card, plus one plain-language sentence only for thematic collections" />
+        <export-studentIndex PURPOSE="Expose the current four-block root hub, ten thematic collections, and three interview collections without duplicating card content" />
         <collection-arrays-and-objects PATH="collections/javascript/arrays-and-objects/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-this-and-closures PATH="collections/javascript/this-and-closures/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-event-loop-and-async PATH="collections/javascript/event-loop-and-async/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
@@ -90,10 +90,10 @@
         <collection-accessibility PATH="collections/html-css/accessibility/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-state-and-derived-data PATH="collections/react/state-and-derived-data/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-effects-and-lifecycle PATH="collections/react/effects-and-lifecycle/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
-        <collection-interview-01 PATH="collections/interviews/interview-01/README.md" STATUS="composition-pending" />
-        <collection-interview-02 PATH="collections/interviews/interview-02/README.md" STATUS="composition-pending" />
-        <collection-interview-03 PATH="collections/interviews/interview-03/README.md" STATUS="composition-pending" />
-        <const-collectionMigrationState PURPOSE="Phase 9 thematic pages are available; interview composition and root cutover remain pending until Phase 14" />
+        <collection-interview-01 PATH="collections/interviews/interview-01/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-interview-02 PATH="collections/interviews/interview-02/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <collection-interview-03 PATH="collections/interviews/interview-03/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
+        <const-collectionMigrationState PURPOSE="Phases 9 and 14 implemented all thirteen collection pages, fifteen unique interview entries, and the current root hub; only the Phase 15 rendered audit remains pending" />
       </annotations>
     </M-CATALOG>
 

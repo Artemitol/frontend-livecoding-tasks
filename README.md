@@ -1,89 +1,44 @@
 # Frontend live-coding задачи
 
-GitHub-first база самостоятельных упражнений по frontend-разработке. Репозиторий можно читать без установки зависимостей: выберите задачу в каталоге, откройте её условие и критерии готовности, а теорию, подсказки и решение раскрывайте по необходимости.
+## Как пользоваться базой
 
-## Как выбрать задачу
+1. Выберите направление или симуляцию собеседования.
+2. Откройте подборку и начните с первой подходящей задачи.
+3. После задачи нажмите «Назад» в браузере, чтобы вернуться к тому же списку.
 
-Каталог сгруппирован по одной основной теме. В строке задачи указаны технологии, формат, уровень, оценка времени, тренируемые навыки и предварительные знания. Пересекающиеся навыки не дублируют задачу в других темах.
+## Подборки по направлениям
 
-Уровень описывает сложность упражнения: `Базовый`, `Средний` или `Продвинутый`. Формат имеет одно из значений: `Реализация`, `Отладка`, `Разбор`, `Прогноз вывода`.
+### JavaScript
 
-## Каталог задач
+- [Массивы и объекты](collections/javascript/arrays-and-objects/README.md)
+- [`this` и замыкания](collections/javascript/this-and-closures/README.md)
+- [Event loop и асинхронность](collections/javascript/event-loop-and-async/README.md)
+- [DOM и события](collections/javascript/dom-and-events/README.md)
 
-## Коллекции
+### TypeScript
 
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Итоги по категориям без мутаций](tasks/immutable-category-totals/README.md) | JavaScript | Реализация | Базовый | 15 минут | `reduce`, валидация входных данных, неизменяемость входа | Нет |
-| [Стабильная сортировка товаров по двум ключам](tasks/stable-product-sort/README.md) | JavaScript | Отладка | Средний | 20 минут | компаратор сортировки, стабильность, неизменяемость массива | Нет |
+- [Моделирование типов](collections/typescript/type-modeling/README.md)
+- [Сужение и проверка данных](collections/typescript/narrowing-and-validation/README.md)
 
-## Модель выполнения JavaScript
+### HTML/CSS
 
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Замыкания, созданные внутри цикла](tasks/loop-closure-bindings/README.md) | JavaScript | Прогноз вывода | Базовый | 10 минут | область видимости `let`, замыкания, пошаговый trace | Нет |
-| [`this` у метода, стрелки и отделённого callback](tasks/this-callback-binding/README.md) | JavaScript | Разбор | Средний | 15 минут | receiver метода, лексический `this` стрелки, strict mode | Нет |
+- [Вёрстка](collections/html-css/layout/README.md)
+- [Доступность интерфейсов](collections/html-css/accessibility/README.md)
 
-## Асинхронность
+### React
 
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Порядок синхронного кода, microtask и timer callback](tasks/browser-event-loop-order/README.md) | JavaScript | Прогноз вывода | Средний | 12 минут | Трассировка синхронного стека, очереди microtask, очереди timer callback | Нет |
-| [Актуальный результат поиска при гонке ответов](tasks/stale-search-response/README.md) | JavaScript, DOM API | Отладка | Продвинутый | 25 минут | Идентификация актуального запроса, обработка локальной ошибки, обработка пустого ввода | Promise и обработчик DOM-события |
+- [Состояние и производные данные](collections/react/state-and-derived-data/README.md)
+- [Эффекты и жизненный цикл](collections/react/effects-and-lifecycle/README.md)
 
-## Моделирование типов
+## Симуляции собеседований
 
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Взаимоисключающие состояния загрузки](tasks/discriminated-load-state/README.md) | TypeScript | Реализация | Базовый | 20 минут | discriminated union, исчерпывающий switch, readonly-массив | Базовые union-типы TypeScript |
-| [Точный тип значения по ключу настройки](tasks/typed-object-property/README.md) | TypeScript | Отладка | Средний | 20 минут | generic, keyof, indexed access type | Обобщённые функции и `keyof` |
+- [Собеседование №1](collections/interviews/interview-01/README.md) — 5 задач, примерно 80 минут.
+- [Собеседование №2](collections/interviews/interview-02/README.md) — 5 задач, примерно 90 минут.
+- [Собеседование №3](collections/interviews/interview-03/README.md) — 5 задач, примерно 120 минут.
 
-## Сужение типов
+## Где писать код
 
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Безопасная обработка результата запроса](tasks/response-union-narrowing/README.md) | TypeScript | Отладка | Средний | 20 минут | discriminated union, сужение по Boolean-дискриминанту, обработка пустой строки | Union-типы и условные ветви |
-| [Проверка JSON-профиля без assertion](tasks/validate-unknown-profile/README.md) | TypeScript | Реализация | Продвинутый | 30 минут | unknown, type guard, валидация массива, discriminated union | `unknown`, union-типы и функции-предикаты типов |
-
-## DOM-события
-
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Удаление динамической строки через делегирование событий](tasks/delegated-dynamic-list/README.md) | JavaScript, DOM API | Реализация | Базовый | 18 минут | Всплытие click, поиск целевого action, безопасная проверка DOM-контейнера | Обработчик click |
-| [Повторная инициализация без дублирования listener](tasks/idempotent-event-listeners/README.md) | JavaScript, DOM API | Отладка | Средний | 20 минут | Парный lifecycle listener, cleanup, идемпотентная инициализация | addEventListener и removeEventListener |
-
-## Доступность интерфейса
-
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Вкладки с ARIA и клавиатурной навигацией](tasks/accessible-keyboard-tabs/README.md) | HTML, JavaScript, DOM API | Реализация | Средний | 30 минут | ARIA selected и controls, roving tabindex, Arrow keys, Home и End | HTML button и обработчик keydown |
-| [Диалог с удержанием и восстановлением фокуса](tasks/modal-focus-lifecycle/README.md) | HTML, JavaScript, DOM API | Отладка | Продвинутый | 30 минут | Modal dialog lifecycle, keyboard focus trap, Escape, restoration focus | HTML dialog, keydown и focus |
-
-## Состояние React
-
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Производный список без копии состояния](tasks/react-derived-list/README.md) | TypeScript, React | Реализация | Базовый | 20 минут | props, локальное состояние фильтра, производные данные, useMemo | Базовые props и useState |
-| [Три обновления счётчика в одном событии](tasks/react-batched-counter/README.md) | TypeScript, React | Отладка | Средний | 15 минут | функциональное обновление state, batching, отладка замыканий | useState и обработчики событий |
-
-## Эффекты React
-
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Подписка, которая следует за выбранным каналом](tasks/react-effect-subscription/README.md) | TypeScript, React | Отладка | Средний | 25 минут | useEffect, зависимости, cleanup, внешняя подписка | useState, useEffect |
-| [Идемпотентный cleanup в корневом StrictMode](tasks/react-strictmode-cleanup/README.md) | TypeScript, React | Разбор | Продвинутый | 30 минут | StrictMode, жизненный цикл effect, идемпотентный cleanup, причинная трассировка | useEffect и cleanup |
-
-## CSS-раскладка
-
-| Задача | Технологии | Формат | Уровень | Время | Навыки | Предварительные знания |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Длинное слово во flex-строке](tasks/flex-long-text-overflow/README.md) | HTML, CSS | Отладка | Средний | 20 минут | Flexbox, min-width, overflow-wrap, ручная проверка раскладки | Базовая flex-раскладка |
-| [Сетка карточек от ширины контейнера](tasks/container-responsive-grid/README.md) | HTML, CSS | Реализация | Продвинутый | 30 минут | CSS Grid, auto-fit, minmax, container-driven layout, ручное измерение | CSS Grid и fr-единицы |
-
-## Как устроена карточка
-
-Метаданные внутри `tasks/<stable-slug>/README.md` являются источником истины. Условие, критерии готовности и самопроверка видимы сразу; теория, каждая подсказка и решение закрыты независимо. Внешние материалы дополняют карточку, но не заменяют локальные условие, fixtures, стартовый код или решение.
-
-## Поддержка каталога
-
-ИИ-агент публикует только кандидатов со статусом `accepted` и в одном изменении синхронизирует карточку, эту тематическую проекцию, knowledge graph и Beads evidence. Каждая задача встречается в каталоге ровно один раз и сортируется внутри темы сначала по уровню, затем по названию.
+- [Programiz JavaScript Online Compiler](https://www.programiz.com/javascript/online-compiler/) — JavaScript без browser API.
+- [CodePen](https://pen.new) — browser JavaScript, DOM, HTML/CSS и ESM.
+- [TypeScript Playground](https://www.typescriptlang.org/play/) — чистый TypeScript.
+- [Vite React TypeScript in StackBlitz](https://vite.new/react-ts) — React с TypeScript.

@@ -1,4 +1,4 @@
-<OperationalPackets VERSION="0.3.0">
+<OperationalPackets VERSION="0.4.0">
   <ExecutionPacketTemplate>
     <!-- Canonical controller-to-worker execution packet. -->
     <ExecutionPacket>
@@ -75,7 +75,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <candidate-register-size>finite frozen count</candidate-register-size>
       <story-id>frontend-livecoding-tasks-story-id</story-id>
       <learning-goal>Independently authored one-sentence observable learning goal.</learning-goal>
-      <proposed-topic>Controlled topic value</proposed-topic>
+      <proposed-collection>One controlled thematic collection value.</proposed-collection>
       <decision>accepted | needs-rewrite | rejected | duplicate</decision>
       <decision-reason>Concise contract, quality, or duplication reason.</decision-reason>
       <duplicate-target>Stable candidate ID or none</duplicate-target>
@@ -115,6 +115,22 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <remaining-risk>Known residual risk or none.</remaining-risk>
     </CardMigrationEvidence>
   </CardMigrationEvidenceTemplate>
+
+  <StudentHubCutoverEvidenceTemplate>
+    <!-- Canonical Phase 14 evidence recorded after the atomic root and interview cutover. -->
+    <StudentHubCutoverEvidence>
+      <root-blocks>Exactly Как пользоваться базой, Подборки по направлениям, Симуляции собеседований, and Где писать код.</root-blocks>
+      <root-negative-checks>No old task table, metadata-source explanation, or agent-maintenance prose.</root-negative-checks>
+      <collection-inventory>Exactly ten thematic and three interview README paths, all linked from the root hub.</collection-inventory>
+      <task-inventory>Exactly twenty StudentTaskCards.</task-inventory>
+      <thematic-membership>Twenty unique task links; every task belongs to exactly one thematic collection.</thematic-membership>
+      <interview-membership>Fifteen unique task links; no task belongs to two interviews.</interview-membership>
+      <editor-map>All four root URLs agree with the twenty fixed card profiles.</editor-map>
+      <graph-verification-sync>Every task export annotation names one thematic and zero-or-one interview collection; Phase 14 and Gate-Phase-14 are implemented.</graph-verification-sync>
+      <phase-14-verdict>PASS | BLOCKED | FAIL</phase-14-verdict>
+      <phase-15-state>pending until the published GitHub-rendered audit passes.</phase-15-state>
+    </StudentHubCutoverEvidence>
+  </StudentHubCutoverEvidenceTemplate>
 
   <GraphDeltaTemplate>
     <!-- Canonical worker-to-controller graph delta. -->

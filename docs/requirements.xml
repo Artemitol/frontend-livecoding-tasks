@@ -18,7 +18,7 @@
       <Action>Chooses a thematic direction or interview from the root student hub, then chooses a task from that collection.</Action>
       <Goal>Start an exercise appropriate to the current learning need without scanning one long table or cloning the repository.</Goal>
       <Preconditions>The root student hub, selected collection, and at least one task card exist on GitHub.</Preconditions>
-      <AcceptanceCriteria>The hub links to the selected collection; each thematic entry exposes linked student title, one plain-language sentence, and exact card duration; the task link resolves.</AcceptanceCriteria>
+      <AcceptanceCriteria>The hub exposes exactly the four approved student blocks, links all ten thematic and three interview collections plus four editor profiles, and contains no old task table or agent-maintenance prose; each thematic entry exposes linked student title, one plain-language sentence, and exact card duration; the task link resolves.</AcceptanceCriteria>
       <Priority>high</Priority>
       <RelatedFlows>DF-STUDY-TASK</RelatedFlows>
     </UC-001>
@@ -116,7 +116,7 @@
     <constraint-28>A temporary harness is diagnostic only; every migrated card needs final target-editor expected, actual, and verdict evidence.</constraint-28>
     <constraint-29>CardMigrationEvidence preserves source learning goal, prerequisite, and runtime assumption by mapping each to a destination or a concrete not-applicable rationale.</constraint-29>
     <constraint-30>Text code, HTML, test data, and scenarios are embedded in the card; assets are reserved for media or other binary material that cannot reasonably be embedded.</constraint-30>
-    <constraint-31>The root README remains the current working catalog until Phase-14 atomically cuts over to the four-block student hub; pending collections are not linked early.</constraint-31>
+    <constraint-31>The root README is the current four-block student hub and links exactly ten thematic collections, three interview collections, and four approved editors; old task tables, metadata-source explanations, and agent-maintenance prose are excluded.</constraint-31>
     <constraint-32>CSS and visual behavior use manual browser evidence rather than unit assertions; unavailable mandatory browser or editor evidence is BLOCKED, never PASS.</constraint-32>
   </Constraints>
 

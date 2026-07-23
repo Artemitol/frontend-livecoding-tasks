@@ -81,8 +81,8 @@
         <check-4>Verify that every accepted task slug has exactly one export-&lt;task-slug&gt; annotation under M-TASK-LIBRARY.</check-4>
         <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires fetch plus isolated worktree creation from current origin/main, keeps one feature/&lt;story-id&gt; branch per story, and that .gitignore excludes .worktrees/ without excluding written specifications.</check-5>
         <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
-        <check-7>Verify Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs across governance, technology, validation, root map when implemented, and affected cards; verify all twenty stable slugs appear exactly once in the fixed TaskEditorProfileMap.</check-7>
-        <check-8>Verify Phase 8 contract facts are implemented while collection pages, migrated cards, root cutover, and rendered-audit facts in Phases 9 through 15 remain pending until their owning units pass.</check-8>
+        <check-7>Verify Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs across governance, technology, validation, the current root map, and affected cards; verify all twenty stable slugs appear exactly once in the fixed TaskEditorProfileMap.</check-7>
+        <check-8>Verify Phases 8 through 14 are implemented with the current root hub, thirteen collections, twenty migrated cards, and synchronized graph facts, while Phase 15 and Gate-Phase-15 remain pending.</check-8>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>
@@ -181,7 +181,7 @@
         <file>tasks/&lt;task-slug&gt;/assets/*</file>
       </test-files>
       <module-checks>
-        <check-1>Enumerate task cards; for each card declared migrated in Phases 10 through 13, verify one exact StudentTaskCard mode with visible editor instruction, condition, complete code, readiness criteria, navigation, and exactly three hint summaries. At Phase 14 every card must be migrated.</check-1>
+        <check-1>Enumerate exactly twenty task cards and verify every card has one exact StudentTaskCard mode with visible editor instruction, condition, complete code, readiness criteria, navigation, and exactly three hint summaries.</check-1>
         <check-2>Verify one complete starter block or justified real files; every multi-file starter and solution block has matching FILE paths and complete content.</check-2>
         <check-3>Resolve navigation, prerequisite, media asset, and supplementary links; reject text code, HTML, test data, or scenarios left in assets after their inline replacement passes.</check-3>
         <check-4>Verify five-field vocabulary, stable slug, preserved source learning goal, prerequisite and runtime assumptions, solution completeness, and fixed editor profile.</check-4>
@@ -212,15 +212,15 @@
         <file>tasks/*/README.md</file>
       </test-files>
       <module-checks>
-        <check-1>When Phase 9 is implemented, verify exactly ten thematic and three interview README paths with no technology-level intermediate README.</check-1>
+        <check-1>Verify exactly ten thematic and three interview README paths with no technology-level intermediate README.</check-1>
         <check-2>Resolve every root, collection, task, and fallback link; compare linked student title and exact duration with the card.</check-2>
-        <check-3>At Phase 9 verify final thematic ordering and entries; at Phase 14 verify every task belongs to exactly one thematic collection, interviews contain fifteen unique entries total, and no task belongs to two interviews.</check-3>
-        <check-4>Before Phase 14, verify the current root catalog remains unchanged and does not link pending collections; at Phase 14 verify exactly four student blocks and no old task tables or agent-maintenance prose.</check-4>
+        <check-3>Verify every task belongs to exactly one thematic collection, interviews contain fifteen unique entries total, and no task belongs to two interviews.</check-3>
+        <check-4>Verify the current root README has exactly four student blocks, links all thirteen collections, and contains no old task tables, metadata-source explanations, or agent-maintenance prose.</check-4>
         <check-5>Verify the root editor map and all card profiles use the same four exact URLs.</check-5>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">A student can choose a collection, open a task using its title, description, and duration, and return to the same collection.</scenario-1>
-        <scenario-2 kind="failure">A missing or extra collection, duplicate membership, stale title or duration, broken link, premature root cutover, or editor-map drift blocks completion.</scenario-2>
+        <scenario-2 kind="failure">A missing or extra collection, duplicate membership, stale title or duration, broken link, old root table, agent-maintenance prose, or editor-map drift blocks completion.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
         <marker-1>unique thematic task slug</marker-1>
@@ -232,7 +232,7 @@
         <assertion-1>Collection synchronization must use the card title and metadata plus approved collection order as source data and must not silently rewrite the card to match stale navigation.</assertion-1>
       </required-trace-assertions>
       <wave-follow-up>Run full thematic, optional interview, graph, verification, link, title, duration, and editor-profile synchronization checks after every redesign unit.</wave-follow-up>
-      <phase-follow-up>Review collection-first usability, membership uniqueness, controlled vocabulary, and root cutover state.</phase-follow-up>
+      <phase-follow-up>Review collection-first usability, membership uniqueness, controlled vocabulary, the current four-block hub, and the pending rendered audit.</phase-follow-up>
     </V-M-CATALOG>
   </ModuleVerification>
 
@@ -324,12 +324,12 @@
         <command-2>Run xmllint --noout for every docs/*.xml file.</command-2>
         <command-3>Resolve GRACE_BIN from PATH with $HOME/.bun/bin/grace as fallback, verify it is executable, print its version, and run lint --fail-on errors --path "$PWD".</command-3>
         <command-4>Scan AGENTS.md, templates/task-template.md, and docs/task-validation-policy.md for legacy mandatory labels and verify they appear only in explicit migration or forbidden-label prose.</command-4>
-        <command-5>Verify both complete card modes, exactly three hint summaries, four editor URLs, exactly one editor-profile assignment for each of twenty stable slugs, CardMigrationEvidence fields, pending Phases and Gates 9 through 15, and git diff --check.</command-5>
+        <command-5>Verify both complete card modes, exactly three hint summaries, four editor URLs, exactly one editor-profile assignment for each of twenty stable slugs, CardMigrationEvidence fields, the Phase 8 baseline that left Phases and Gates 9 through 15 pending, and git diff --check.</command-5>
       </commands>
       <required-evidence>
         <evidence-1>Phase 8 authoring, template, validation, GRACE, and operational packet facts are implemented with no new module or tooling.</evidence-1>
         <evidence-2>Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs and partition all twenty stable slugs without duplication.</evidence-2>
-        <evidence-3>No collection page, migrated-card fact, root cutover, or rendered-audit result is claimed implemented before its owning phase.</evidence-3>
+        <evidence-3>At Phase 8 completion no collection page, migrated-card fact, root cutover, or rendered-audit result was claimed implemented before its owning phase.</evidence-3>
       </required-evidence>
     </Gate-Phase-8>
     <Gate-Phase-9 PHASE="Phase-9" status="implemented">
@@ -337,11 +337,11 @@
       <commands>
         <command-1>Enumerate the exact ten thematic and three interview README paths; reject extra technology-level README files.</command-1>
         <command-2>Verify every thematic page has its final title, exact two-sentence introduction, browser-back reminder, exactly two tasks in approved order, relative task links, linked student titles, plain-language descriptions, and exact times.</command-2>
-        <command-3>Verify each relative thematic task link resolves to its card, the three interview files contain only the common timer contract with no task composition, and README.md is unchanged and contains no collection links.</command-3>
+        <command-3>Capture Phase 9 evidence that each relative thematic task link resolves, the three interview files contain only the common timer contract with no task composition, and README.md remains unchanged; Phase 14 supersedes only the shell and root states.</command-3>
       </commands>
       <required-evidence>
         <evidence-1>Exactly thirteen collection README files exist: ten final thematic pages with two tasks each and three unlinked interview shells.</evidence-1>
-        <evidence-2>All thematic titles, introductions, descriptions, order, exact times, and relative task links pass; root cutover and interview composition remain pending.</evidence-2>
+        <evidence-2>At Phase 9 completion all thematic titles, introductions, descriptions, order, exact times, and relative task links passed while root cutover and interview composition remained pending for Phase 14.</evidence-2>
       </required-evidence>
     </Gate-Phase-9>
     <Gate-Phase-10 PHASE="Phase-10" status="implemented">
@@ -354,7 +354,7 @@
       <required-evidence>
         <evidence-1>Eight complete CardMigrationEvidence rows in the R3 Beads notes record preservation, expected behavior, observed Programiz or CodePen behavior, and final target-editor PASS.</evidence-1>
         <evidence-2>The this-callback-binding browser ESM trace and binding reasons match the source Node ESM contract, and stale-search-response/assets/fixture.html was removed only after the complete inline replacement passed both stale-success and stale-failure scenarios in CodePen.</evidence-2>
-        <evidence-3>Only the eight JavaScript and DOM migration facts are implemented; TypeScript, HTML/CSS, accessibility, React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
+        <evidence-3>At Phase 10 completion only the eight JavaScript and DOM migration facts were implemented; the later migrations and cutover remained owned by Phases 11 through 14.</evidence-3>
       </required-evidence>
     </Gate-Phase-10>
     <Gate-Phase-11 PHASE="Phase-11" status="implemented">
@@ -365,7 +365,7 @@
       <required-evidence>
         <evidence-1>Four complete CardMigrationEvidence rows in the R4 Beads notes record preservation, expected type and runtime behavior, observed TypeScript Playground 5.9.3 behavior, and final target-editor PASS.</evidence-1>
         <evidence-2>Each complete solution block showed No errors with strict checked and produced the exact expected runtime values after a clean full-code replacement with noEmit off.</evidence-2>
-        <evidence-3>Only the four TypeScript migration facts are implemented in Phase 11; HTML/CSS, accessibility, React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
+        <evidence-3>At Phase 11 completion the four TypeScript migration facts were implemented; the later migrations and cutover remained owned by Phases 12 through 14.</evidence-3>
       </required-evidence>
     </Gate-Phase-11>
     <Gate-Phase-12 PHASE="Phase-12" status="implemented">
@@ -377,7 +377,7 @@
       <required-evidence>
         <evidence-1>Four complete CardMigrationEvidence rows in the R5 Beads notes record preservation, expected behavior, observed CodePen and browser behavior, exact viewport or keyboard state, manual visual observations, and final target-editor PASS.</evidence-1>
         <evidence-2>The 640 CSS px flex scenario and simultaneous 360/768 CSS px container scenarios passed manual visual checks without CSS unit-test substitution; the ARIA tabs and modal focus lifecycle passed their complete real-keyboard interactions.</evidence-2>
-        <evidence-3>The accessible-keyboard-tabs and modal-focus-lifecycle text fixtures were removed only after each complete inline CodePen replacement passed; only Phase 12 migration facts are implemented, while React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
+        <evidence-3>The accessible-keyboard-tabs and modal-focus-lifecycle text fixtures were removed only after each complete inline CodePen replacement passed; at Phase 12 completion React migration and cutover remained owned by Phases 13 and 14.</evidence-3>
       </required-evidence>
     </Gate-Phase-12>
     <Gate-Phase-13 PHASE="Phase-13" status="implemented">
@@ -388,10 +388,10 @@
       <required-evidence>
         <evidence-1>Four complete CardMigrationEvidence rows have exact TypeScript 5.9 type-check PASS and React TypeScript/browser PASS in the current vite.new/react-ts template, with synchronized graph and verification facts.</evidence-1>
         <evidence-2>The current vite.new/react-ts manifest observation (React ^19.2.7 and TypeScript ~6.0.2) is recorded as target-editor runtime evidence; TypeScript 5.9 compatibility is proven separately and is not misrepresented as the hosted-template version.</evidence-2>
-        <evidence-3>Only Phase 13 React migration facts are implemented; root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
+        <evidence-3>At Phase 13 completion all twenty card migrations were implemented; root cutover and interview composition remained owned by Phase 14.</evidence-3>
       </required-evidence>
     </Gate-Phase-13>
-    <Gate-Phase-14 PHASE="Phase-14" status="pending">
+    <Gate-Phase-14 PHASE="Phase-14" status="implemented">
       <goal>All student content is synchronized and the root README atomically cuts over to the final four-block hub.</goal>
       <commands>
         <command-1>Populate three interviews with five unique linked student titles and exact times each; prove no task belongs to two interviews.</command-1>
@@ -400,8 +400,9 @@
         <command-4>Reject old task tables, metadata-source prose, AI-agent maintenance prose, Beads, GRACE, knowledge graph, and technical synchronization terminology from the root student hub.</command-4>
       </commands>
       <required-evidence>
-        <evidence-1>Root, thirteen collections, and twenty cards form one synchronized student path with no duplicate thematic or interview membership.</evidence-1>
-        <evidence-2>Phase 15 rendered audit remains pending.</evidence-2>
+        <evidence-1>The root has exactly four student blocks and four editor links; all thirteen collection and twenty task paths resolve; thematic collections contain twenty unique links and interviews contain fifteen unique links.</evidence-1>
+        <evidence-2>Every card has exactly one thematic and zero-or-one interview membership, and title, time, editor profile, relative links, graph annotations, and verification facts agree.</evidence-2>
+        <evidence-3>Old root task tables and agent-maintenance prose are absent; Phase 15 rendered audit remains pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-14>
     <Gate-Phase-15 PHASE="Phase-15" status="pending">
