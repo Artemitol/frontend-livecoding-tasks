@@ -1,130 +1,212 @@
 # Сетка карточек от ширины контейнера
 
-**Учебная цель:** Строить адаптивную сетку карточек по ширине контейнера без фиксированных viewport breakpoints.
-
-| Метаданные | Значение |
-| --- | --- |
-| Технологии | HTML, CSS |
-| Тема | CSS-раскладка |
-| Формат | Реализация |
-| Уровень | Продвинутый |
-| Время | 30 минут |
-| Навыки | CSS Grid, auto-fit, minmax, container-driven layout, ручное измерение |
-| Предварительные знания | CSS Grid и fr-единицы |
-| Среда выполнения | Google Chrome 150.0.7871.101, container widths 360 and 768 CSS px, manual visual scenario |
-
-<details>
-<summary>Теория</summary>
-
-Карточки могут жить в sidebar, modal или широкой странице при одинаковом viewport. Поэтому количество колонок должно следовать доступной ширине самого контейнера. `repeat(auto-fit, minmax(min(100%, 16rem), 1fr))` добавляет равные колонки, когда контейнер вмещает минимальную ширину карточки, без viewport media query.
-
-</details>
+[← Все подборки](../../README.md)
 
 ## Условие
 
-Постройте CSS Grid для шести карточек. При контейнере 360 CSS px должна быть одна колонка; при контейнере ровно 768 CSS px — две или больше равных колонок. До проверки 768 установите viewport не уже 1024 CSS px и измерьте именно контейнер, чтобы viewport не ограничил fixture.
+Постройте сетку шести карточек, количество колонок которой зависит от ширины самого контейнера, а не от viewport breakpoint. Учебная цель — использовать возможности CSS Grid для container-driven layout без JavaScript и фиксированного числа колонок. Перед началом нужны CSS Grid и `fr`-единицы.
 
-### Входы
+Откройте [CodePen](https://pen.new), очистите панели HTML, CSS и JS, вставьте весь блок ниже в панель **HTML** и нажмите **Run**. Код не обращается к сети. Исходный ручной сценарий рассчитан на Google Chrome 150.0.7871.101: для одновременной проверки контейнеров `360` и `768 CSS px` сделайте viewport результата не уже `1024 CSS px` и измеряйте именно `.grid-container`, а не окно.
 
-- Шесть карточек.
-- Parent container шириной 360 или 768 CSS px.
-- Viewport минимум 1024 CSS px при проверке контейнера 768 CSS px.
-
-### Выходы
-
-- Одна колонка при 360 CSS px.
-- Две или более равных колонок при измеренной ширине контейнера ровно 768 CSS px.
-- Видимый текст каждой карточки.
-
-### Ограничения и побочные эффекты
-
-- Не используйте viewport media query и `ResizeObserver`.
-- Не фиксируйте число колонок JavaScript-кодом.
-- Перед оценкой 768 вручную подтвердите `grid.getBoundingClientRect().width === 768`.
-- Проверка раскладки остаётся ручной браузерной.
-
-### Локальный fixture
+## Код — вставьте его в редактор
 
 ```html
-<div class="grid-container" style="width: 360px">
-  <article class="card">Один</article><article class="card">Два</article>
-  <article class="card">Три</article><article class="card">Четыре</article>
-  <article class="card">Пять</article><article class="card">Шесть</article>
-</div>
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Сетка от ширины контейнера</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 2rem;
+        font: 16px/1.5 system-ui;
+      }
+
+      /*
+       * Учебная цель: менять число колонок по ширине контейнера,
+       * а не по ширине viewport.
+       * Перед началом нужны CSS Grid и fr-единицы.
+       *
+       * Замените viewport media query одним grid-template-columns.
+       * При 360 px нужна одна колонка, при 768 px — минимум две
+       * равные колонки. Не используйте JavaScript или @media.
+       */
+      .grid-container {
+        display: grid;
+        gap: 12px;
+        width: var(--container-width);
+        max-width: 100%;
+        margin-bottom: 2rem;
+        padding: 12px;
+        border: 2px dashed #777;
+      }
+
+      @media (min-width: 700px) {
+        .grid-container {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .card {
+        min-height: 72px;
+        padding: 12px;
+        border: 1px solid #444;
+        background: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Сетка карточек</h1>
+
+      <h2>Контейнер 360 CSS px</h2>
+      <div class="grid-container" style="--container-width: 360px">
+        <article class="card">Один</article>
+        <article class="card">Два</article>
+        <article class="card">Три</article>
+        <article class="card">Четыре</article>
+        <article class="card">Пять</article>
+        <article class="card">Шесть</article>
+      </div>
+
+      <h2>Контейнер 768 CSS px</h2>
+      <div class="grid-container" style="--container-width: 768px">
+        <article class="card">Один</article>
+        <article class="card">Два</article>
+        <article class="card">Три</article>
+        <article class="card">Четыре</article>
+        <article class="card">Пять</article>
+        <article class="card">Шесть</article>
+      </div>
+    </main>
+  </body>
+</html>
 ```
 
-### Стартовый код
+## Готово, когда
 
-```css
-.grid-container { display: grid; gap: 12px; }
-@media (min-width: 700px) {
-  .grid-container { grid-template-columns: repeat(3, 1fr); }
-}
-```
+- При viewport результата не уже `1024 CSS px` DevTools показывает ширину первого `.grid-container` ровно `360px` и одну колонку из шести карточек.
+- Второй `.grid-container` имеет измеренную ширину `768px`, минимум две равные колонки и видимый текст всех карточек.
+- В стилях нет viewport `@media`, `ResizeObserver` или JavaScript-вычисления числа колонок: одинаковое Grid-правило следует ширине каждого контейнера.
 
-### Примеры
-
-#### Обычный сценарий
-
-При ширине контейнера 360 CSS px шесть карточек идут одной колонкой.
-
-#### Граничный сценарий
-
-При viewport не уже 1024 CSS px выставьте 768 CSS px и проверьте в DevTools или console, что `getBoundingClientRect().width` равно `768`; после этого есть минимум две равные колонки.
-
-#### Ошибка или пустой результат
-
-Если 768 выбрано при viewport 640 CSS px и контейнер фактически уже 768, результат не является evidence для задачи. Если количество колонок меняется только из-за viewport media query, контракт нарушен.
-
-## Критерии готовности
-
-- В стилях нет `@media` для выбора числа колонок.
-- 360 CSS px даёт ровно одну колонку.
-- При фактически измеренных 768 CSS px есть минимум две равные колонки.
-- Текст карточек остаётся видимым.
+Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
-<summary>Подсказка 1</summary>
+<summary>Подсказка 1 — куда смотреть</summary>
 
-Используйте `auto-fit` и ограничьте минимальную ширину карточки так, чтобы один элемент никогда не оказался шире контейнера.
+CSS Grid умеет сам добавлять столько дорожек, сколько помещается в доступную ширину. Для этого не нужно знать ширину viewport.
+
+</details>
+
+<details>
+<summary>Подсказка 2 — с чего начать</summary>
+
+Используйте `repeat` с автоматическим количеством колонок и задайте каждой дорожке минимальную и максимальную ширину через `minmax`.
+
+</details>
+
+<details>
+<summary>Подсказка 3 — почти решение</summary>
+
+Схема `repeat(auto-fit, minmax(..., 1fr))` создаёт равные колонки. Внутренняя минимальная ширина должна учитывать `100%`, чтобы одна карточка никогда не оказалась шире узкого контейнера.
 
 </details>
 
 <details>
 <summary>Решение</summary>
 
-### Подход
+```html
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Сетка от ширины контейнера</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
 
-Grid сам вычисляет количество дорожек по ширине `.grid-container`. `min(100%, 16rem)` не даёт минимальной ширине превысить узкий контейнер, а `1fr` делает все созданные колонки равными.
+      body {
+        margin: 2rem;
+        font: 16px/1.5 system-ui;
+      }
 
-```css
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  gap: 12px;
-  max-width: 100%;
-}
+      .grid-container {
+        display: grid;
+        grid-template-columns:
+          repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+        gap: 12px;
+        width: var(--container-width);
+        max-width: 100%;
+        margin-bottom: 2rem;
+        padding: 12px;
+        border: 2px dashed #777;
+      }
 
-.card {
-  min-height: 72px;
-  padding: 12px;
-  border: 1px solid #444;
-}
+      .card {
+        min-height: 72px;
+        padding: 12px;
+        border: 1px solid #444;
+        background: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Сетка карточек</h1>
+
+      <h2>Контейнер 360 CSS px</h2>
+      <div class="grid-container" style="--container-width: 360px">
+        <article class="card">Один</article>
+        <article class="card">Два</article>
+        <article class="card">Три</article>
+        <article class="card">Четыре</article>
+        <article class="card">Пять</article>
+        <article class="card">Шесть</article>
+      </div>
+
+      <h2>Контейнер 768 CSS px</h2>
+      <div class="grid-container" style="--container-width: 768px">
+        <article class="card">Один</article>
+        <article class="card">Два</article>
+        <article class="card">Три</article>
+        <article class="card">Четыре</article>
+        <article class="card">Пять</article>
+        <article class="card">Шесть</article>
+      </div>
+    </main>
+  </body>
+</html>
 ```
 
-### Сложность
+### Почему это работает
 
-- Время: browser-managed layout; прикладного JavaScript-алгоритма нет.
-- Память: дополнительная прикладная память не требуется.
-
-### Компромиссы и альтернативы
-
-`auto-fill` сохраняет пустые дорожки, а `auto-fit` схлопывает их; для заполнения доступной ширины карточками выбран `auto-fit`. Container queries тоже могут быть уместны для сложных правил компонента, но здесь не нужны: само Grid-правило уже следует ширине контейнера.
+`auto-fit` создаёт только помещающиеся дорожки и растягивает их на доступное место. `minmax(min(100%, 16rem), 1fr)` не даёт минимальной ширине карточки превысить узкий контейнер, а `1fr` делает созданные колонки равными. При `360px` помещается одна дорожка, при `768px` — несколько, независимо от ширины viewport.
 
 </details>
 
-## Самопроверка
+<details>
+<summary>Самопроверка</summary>
 
-- Почему viewport 640 CSS px не может доказать сценарий контейнера 768 CSS px?
-- Что делает `min(100%, 16rem)` на узком контейнере?
-- Чем `auto-fit` отличается от `auto-fill` для неполной последней строки?
+- Почему viewport `640 CSS px` не может доказать сценарий контейнера шириной `768 CSS px`?
+- Что делает `min(100%, 16rem)` в узком контейнере?
+- Чем `auto-fit` отличается от `auto-fill`, если карточек не хватает на последнюю строку?
+
+</details>
+
+<details>
+<summary>О задаче</summary>
+
+- Технология: HTML/CSS
+- Подборка: Вёрстка
+- Формат: Написать код
+- Сложность: Продвинутая
+- Примерное время: 30 минут
+
+</details>
+
+Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).

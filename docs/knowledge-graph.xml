@@ -48,7 +48,7 @@
       <annotations>
         <type-TaskMetadataSet PURPOSE="Collection of five-field task metadata records exposed to thematic and interview collections" />
         <export-taskCard PURPOSE="Expose one complete copy-ready StudentTaskCard through GitHub" />
-        <const-cardMigrationState PURPOSE="Phases 10 and 11 implemented twelve JavaScript, DOM, and TypeScript card migrations; eight HTML/CSS, accessibility, and React migrations remain pending in Phases 12 and 13" />
+        <const-cardMigrationState PURPOSE="Phases 10, 11, and 12 implemented sixteen JavaScript, DOM, TypeScript, HTML/CSS, and accessibility card migrations; four React migrations remain pending in Phase 13" />
         <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
         <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
         <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" />
@@ -61,14 +61,14 @@
         <export-validate-unknown-profile PURPOSE="Expose the accepted student-facing task card at tasks/validate-unknown-profile/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="TypeScript Playground" />
         <export-delegated-dynamic-list PURPOSE="Expose the accepted student-facing task card at tasks/delegated-dynamic-list/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
         <export-idempotent-event-listeners PURPOSE="Expose the accepted student-facing task card at tasks/idempotent-event-listeners/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
-        <export-accessible-keyboard-tabs PURPOSE="Expose the accepted student-facing task card at tasks/accessible-keyboard-tabs/README.md" />
-        <export-modal-focus-lifecycle PURPOSE="Expose the accepted student-facing task card at tasks/modal-focus-lifecycle/README.md" />
+        <export-accessible-keyboard-tabs PURPOSE="Expose the accepted student-facing task card at tasks/accessible-keyboard-tabs/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
+        <export-modal-focus-lifecycle PURPOSE="Expose the accepted student-facing task card at tasks/modal-focus-lifecycle/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen browser ESM" />
         <export-react-derived-list PURPOSE="Expose the accepted student-facing task card at tasks/react-derived-list/README.md" />
         <export-react-batched-counter PURPOSE="Expose the accepted student-facing task card at tasks/react-batched-counter/README.md" />
         <export-react-effect-subscription PURPOSE="Expose the accepted student-facing task card at tasks/react-effect-subscription/README.md" />
         <export-react-strictmode-cleanup PURPOSE="Expose the accepted student-facing task card at tasks/react-strictmode-cleanup/README.md" />
-        <export-flex-long-text-overflow PURPOSE="Expose the accepted student-facing task card at tasks/flex-long-text-overflow/README.md" />
-        <export-container-responsive-grid PURPOSE="Expose the accepted student-facing task card at tasks/container-responsive-grid/README.md" />
+        <export-flex-long-text-overflow PURPOSE="Expose the accepted student-facing task card at tasks/flex-long-text-overflow/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" />
+        <export-container-responsive-grid PURPOSE="Expose the accepted student-facing task card at tasks/container-responsive-grid/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" />
       </annotations>
     </M-TASK-LIBRARY>
 

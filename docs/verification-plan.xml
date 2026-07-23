@@ -368,14 +368,16 @@
         <evidence-3>Only the four TypeScript migration facts are implemented in Phase 11; HTML/CSS, accessibility, React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-11>
-    <Gate-Phase-12 PHASE="Phase-12" status="pending">
+    <Gate-Phase-12 PHASE="Phase-12" status="implemented">
       <goal>Four HTML, CSS, and accessibility cards conform to StudentTaskCard with CodePen, browser, accessibility, and manual visual evidence.</goal>
       <commands>
         <command-1>Run per-card structure, preservation, content, collection-sync, CodePen copy-run, browser interaction, accessibility, and manual visual checks for the approved four slugs.</command-1>
         <command-2>Delete accessible-keyboard-tabs and modal-focus-lifecycle text fixtures only after each embedded replacement passes.</command-2>
       </commands>
       <required-evidence>
-        <evidence-1>Four complete CardMigrationEvidence rows have target-editor and browser PASS; CSS and visual claims use manual evidence rather than unit tests.</evidence-1>
+        <evidence-1>Four complete CardMigrationEvidence rows in the R5 Beads notes record preservation, expected behavior, observed CodePen and browser behavior, exact viewport or keyboard state, manual visual observations, and final target-editor PASS.</evidence-1>
+        <evidence-2>The 640 CSS px flex scenario and simultaneous 360/768 CSS px container scenarios passed manual visual checks without CSS unit-test substitution; the ARIA tabs and modal focus lifecycle passed their complete real-keyboard interactions.</evidence-2>
+        <evidence-3>The accessible-keyboard-tabs and modal-focus-lifecycle text fixtures were removed only after each complete inline CodePen replacement passed; only Phase 12 migration facts are implemented, while React, root cutover, interview composition, and GitHub-rendered final audit remain pending.</evidence-3>
       </required-evidence>
     </Gate-Phase-12>
     <Gate-Phase-13 PHASE="Phase-13" status="pending">
