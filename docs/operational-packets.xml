@@ -1,35 +1,38 @@
-<OperationalPackets VERSION="0.2.0">
+<OperationalPackets VERSION="0.3.0">
   <ExecutionPacketTemplate>
     <!-- Canonical controller-to-worker execution packet. -->
     <ExecutionPacket>
       <module-id>M-TASK-LIBRARY</module-id>
       <module-name>TaskLibrary</module-name>
-      <purpose>Add or update one approved task card without catalog, graph, or verification drift.</purpose>
+      <purpose>Add or migrate one approved StudentTaskCard without source-contract, collection, graph, verification, or editor-evidence drift.</purpose>
       <write-scope>
         <file-1>tasks/&lt;task-slug&gt;/README.md</file-1>
-        <file-2>tasks/&lt;task-slug&gt;/assets/*</file-2>
-        <file-3>README.md</file-3>
+        <file-2>optional media-only tasks/&lt;task-slug&gt;/assets/*</file-2>
+        <file-3>collections/&lt;technology&gt;/&lt;thematic-collection&gt;/README.md</file-3>
+        <file-4>optional collections/interviews/&lt;interview-id&gt;/README.md</file-4>
+        <file-5>docs/knowledge-graph.xml</file-5>
+        <file-6>docs/verification-plan.xml</file-6>
       </write-scope>
       <contract-excerpt><![CDATA[
-Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. The task card is canonical for metadata, while README.md and knowledge-graph annotations are derived and must change atomically.
+Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. A StudentTaskCard uses the ordinary or complex mode, one fixed editor profile, complete copy-ready starter code, exactly three hints, closed solution, self-check and five-field metadata. A changed card synchronizes exactly one thematic collection, zero or one interview, graph, verification and Beads evidence.
       ]]></contract-excerpt>
       <graph-entry-excerpt><![CDATA[
 M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLATE, is governed by M-GOVERNANCE, and is projected into M-CATALOG.
       ]]></graph-entry-excerpt>
       <dependency-contract-summaries>
         <dependency-1 module="M-GOVERNANCE">Authoring, synchronization, stop-condition, and Beads evidence rules.</dependency-1>
-        <dependency-2 module="M-TASK-TEMPLATE">Canonical metadata labels, visible sections, and progressive-disclosure structure.</dependency-2>
-        <dependency-3 module="M-TASK-VALIDATION">Strict validation decisions and hybrid evidence; only accepted can be published.</dependency-3>
+        <dependency-2 module="M-TASK-TEMPLATE">Two card modes, five metadata labels, editor profiles, copy-ready and FILE rules, exact hints, navigation, and progressive disclosure.</dependency-2>
+        <dependency-3 module="M-TASK-VALIDATION">Strict candidate or migration decisions, preservation ledger, target-editor verdict, collection sync, and rendered evidence.</dependency-3>
       </dependency-contract-summaries>
       <verification-excerpt><![CDATA[
-Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify candidate recheck, hybrid task evidence, local and supplementary links, unique thematic catalog projection, one graph annotation, pushed commit, GitHub-rendered evidence, complete wave report, and technical publication status.
+Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify mode, editor profile, CardMigrationEvidence, complete copy-ready code, exact hints, target-editor expected/actual/verdict, local and supplementary links, exactly one thematic and zero-or-one interview membership, graph and verification sync, pushed commit, GitHub-rendered evidence, complete report, and technical publication status.
       ]]></verification-excerpt>
       <assumptions>
         <assumption-1>The task has an accepted validation decision with task-appropriate evidence.</assumption-1>
-        <assumption-2>The stable task slug, controlled metadata, execution environment, prerequisites, assets, and supplementary links can be resolved before editing.</assumption-2>
+        <assumption-2>The stable task slug, source learning goal, source prerequisite, source runtime assumption, selected mode, editor profile, five metadata fields, collection membership, assets, and supplementary links can be resolved before editing.</assumption-2>
       </assumptions>
       <stop-conditions>
-        <condition-1>Stop for non-accepted validation, ambiguous metadata or environment, duplicate goal, missing prerequisite or asset, broken supplementary link, unavailable mandatory evidence, unexpected GitHub rendering, slug migration, or new permanent tooling.</condition-1>
+        <condition-1>Stop when three useful hints are unavailable; code is not copy-runnable; a file is undescribed; technology, editor, or profile is ambiguous; multiple files are unnecessary; FILE paths mismatch; an embedded asset replacement fails; metadata and collections drift; membership duplicates; a required link fails; GitHub renders unexpectedly; mandatory evidence is unavailable; or permanent tooling would be required.</condition-1>
       </stop-conditions>
       <retry-budget>2</retry-budget>
       <checkpoint-fields>
@@ -39,6 +42,13 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <field-4>next-action</field-4>
         <field-5>validation-decision</field-5>
         <field-6>wave-acceptance-status</field-6>
+        <field-7>mode</field-7>
+        <field-8>editor-profile</field-8>
+        <field-9>preservation-ledger</field-9>
+        <field-10>target-editor-expected</field-10>
+        <field-11>target-editor-actual</field-11>
+        <field-12>target-editor-verdict</field-12>
+        <field-13>collection-sync</field-13>
       </checkpoint-fields>
       <expected-graph-delta-fields>
         <field-1>imports</field-1>
@@ -78,6 +88,34 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
     </CandidateValidationRecord>
   </CandidateValidationRecordTemplate>
 
+  <CardMigrationEvidenceTemplate>
+    <!-- Canonical per-card migration record stored in Beads before a migrated card can pass. -->
+    <CardMigrationEvidence>
+      <slug>stable-task-slug</slug>
+      <mode>ordinary-code-first | complex</mode>
+      <editor-profile>Programiz | CodePen | TypeScript Playground | React TypeScript</editor-profile>
+      <source-learning-goal>Exact source learning goal.</source-learning-goal>
+      <source-prerequisite>Exact source prerequisite or none.</source-prerequisite>
+      <source-runtime-assumption>Exact source runtime, browser, classic or ESM, language, and framework assumption.</source-runtime-assumption>
+      <preservation-ledger>
+        <learning-goal-destination>Visible condition, code comments, readiness criteria, hints, solution explanation, or self-check.</learning-goal-destination>
+        <prerequisite-destination>Visible condition or first place of use; concrete not-applicable rationale only when it never affected attempt, solution, or verification.</prerequisite-destination>
+        <runtime-assumption-destination>Editor instruction or adjacent code context; concrete not-applicable rationale only when behavior is unaffected.</runtime-assumption-destination>
+      </preservation-ledger>
+      <destination-locations>Exact card headings, comments, metadata, collection entries, graph, and verification references.</destination-locations>
+      <target-editor-instruction>Exact copy/run steps performed by the student.</target-editor-instruction>
+      <target-editor-expected>Observable expected output, interaction, type result, or visual state.</target-editor-expected>
+      <target-editor-actual>Observed target-editor output, interaction, type result, or visual state.</target-editor-actual>
+      <target-editor-verdict>PASS | BLOCKED | FAIL</target-editor-verdict>
+      <collection-sync>
+        <thematic-collection>Exactly one path and matching linked title, sentence, and duration.</thematic-collection>
+        <interview-collection>Zero or one path and matching linked title and duration.</interview-collection>
+        <graph-verification-beads>Matching graph annotation, verification fact, and Beads evidence.</graph-verification-beads>
+      </collection-sync>
+      <remaining-risk>Known residual risk or none.</remaining-risk>
+    </CardMigrationEvidence>
+  </CardMigrationEvidenceTemplate>
+
   <GraphDeltaTemplate>
     <!-- Canonical worker-to-controller graph delta. -->
     <GraphDelta module="M-TASK-LIBRARY">
@@ -104,28 +142,30 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
     <VerificationDelta module="M-TASK-LIBRARY">
       <test-files-added>
         <file-1>tasks/&lt;task-slug&gt;/README.md</file-1>
-        <file-2>README.md</file-2>
+        <file-2>collections/&lt;technology&gt;/&lt;thematic-collection&gt;/README.md</file-2>
+        <file-3>optional collections/interviews/&lt;interview-id&gt;/README.md</file-3>
       </test-files-added>
       <test-files-removed />
       <module-checks>
-        <command-1>Verify accepted validation status, exact metadata labels, controlled values, execution environment, and mandatory document anchors.</command-1>
-        <command-2>Resolve prerequisite, asset, catalog, and supplementary links.</command-2>
-        <command-3>Verify task-appropriate execution, type-check, trace, browser, or manual evidence.</command-3>
-        <command-4>Prove that the task slug appears exactly once in thematic catalog tables and graph annotations.</command-4>
+        <command-1>Verify accepted validation status or migration PASS, selected mode, five metadata labels, controlled values, editor profile, exact hints, navigation, and mandatory document anchors.</command-1>
+        <command-2>Verify one complete copy-ready block or justified real files with matching FILE paths; resolve navigation, prerequisite, media asset, collection, and supplementary links.</command-2>
+        <command-3>Verify preservation ledger and final target-editor expected, actual, and verdict plus applicable browser or manual visual evidence.</command-3>
+        <command-4>Prove that the task slug appears in exactly one thematic collection, zero or one interview, one graph annotation, and matching verification and Beads facts.</command-4>
       </module-checks>
       <required-evidence-anchors>
-        <marker-1>canonical metadata table</marker-1>
-        <marker-2>Условие / Критерии готовности / Теория / Подсказка N / Решение / Самопроверка</marker-2>
-        <marker-3>Beads validation decision and wave technical-publication status</marker-3>
+        <marker-1>closed five-field О задаче block</marker-1>
+        <marker-2>Условие / Код — вставьте его в редактор / Готово, когда / three exact hints / Решение / Самопроверка</marker-2>
+        <marker-3>CardMigrationEvidence and target-editor verdict</marker-3>
+        <marker-4>thematic, optional interview, graph, verification, and Beads sync</marker-4>
       </required-evidence-anchors>
       <required-trace-assertions>
-        <assertion-1>A task change must not complete before catalog and graph synchronization is verified.</assertion-1>
+        <assertion-1>A task change must not complete before target-editor evidence and collection, graph, verification, and Beads synchronization are verified.</assertion-1>
       </required-trace-assertions>
       <wave-follow-up>
-        <item-1>Compare canonical task metadata with the catalog row and graph annotation.</item-1>
+        <item-1>Compare card title, duration, editor profile, mode, thematic and optional interview entries, graph annotation, verification fact, and Beads evidence.</item-1>
       </wave-follow-up>
       <phase-follow-up>
-        <item-1>Run the full candidate-status, catalog projection, vocabulary, XML, link, evidence, technical-publication, and sampled GitHub-rendering review; prepare the complete library for final user acceptance.</item-1>
+        <item-1>Run the full candidate and migration status, collection membership, vocabulary, XML, link, editor evidence, technical-publication, and GitHub-rendering review; prepare the complete library for final user acceptance.</item-1>
       </phase-follow-up>
     </VerificationDelta>
   </VerificationDeltaTemplate>
@@ -133,18 +173,25 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
   <FailurePacketTemplate>
     <!-- Canonical verification-to-fixer failure handoff. -->
     <FailurePacket>
-      <scenario>Task metadata and the student catalog disagree after an update.</scenario>
+      <scenario>A migrated card, its target-editor evidence, and student collections disagree.</scenario>
       <contract-ref>M-TASK-LIBRARY / V-M-TASK-LIBRARY / V-M-CATALOG</contract-ref>
+      <mode>ordinary-code-first | complex</mode>
+      <editor-profile>Declared fixed profile</editor-profile>
+      <preservation-ledger>Source learning goal, prerequisite, runtime assumption, and destination status.</preservation-ledger>
+      <target-editor-expected>Declared observable result.</target-editor-expected>
+      <target-editor-actual>Observed result or unavailable evidence.</target-editor-actual>
+      <target-editor-verdict>PASS | BLOCKED | FAIL</target-editor-verdict>
+      <collection-sync>Expected thematic, optional interview, graph, verification, and Beads facts.</collection-sync>
       <expected-evidence>
-        <marker-1>Canonical task metadata and one matching README.md catalog row.</marker-1>
-        <assertion-1>The task slug and all projected metadata must match exactly.</assertion-1>
+        <marker-1>One complete StudentTaskCard, one thematic CollectionEntry, zero or one interview entry, and matching graph and verification facts.</marker-1>
+        <assertion-1>The task slug, student title, duration, editor profile, preserved source facts, and target-editor result must match exactly.</assertion-1>
       </expected-evidence>
       <observed-evidence>
-        <artifact-1>The task card contains one metadata value.</artifact-1>
-        <artifact-2>The catalog row contains a different value or is missing.</artifact-2>
+        <artifact-1>The card or evidence record contains one fact.</artifact-1>
+        <artifact-2>A collection, graph, verification, editor result, or Beads record contains a different fact or is missing.</artifact-2>
       </observed-evidence>
-      <first-divergent-block>README.md catalog projection</first-divergent-block>
-      <suggested-next-action>Keep task metadata canonical, repair the derived catalog and graph facts, and rerun the full projection checks.</suggested-next-action>
+      <first-divergent-block>First card, editor, collection, graph, verification, or Beads fact that diverges.</first-divergent-block>
+      <suggested-next-action>Preserve the source learning contract, repair the first divergent fact, and rerun target-editor plus full synchronization checks without claiming PASS while evidence is unavailable.</suggested-next-action>
     </FailurePacket>
   </FailurePacketTemplate>
 
@@ -159,8 +206,15 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <command-1>V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE checks.</command-1>
       </commands-run>
       <evidence-captured>
-        <item-1>Task, catalog, graph annotation, resolved links, technical publication evidence, and status agree.</item-1>
+        <item-1>Card mode, editor profile, preservation ledger, target-editor expected/actual/verdict, thematic and optional interview entries, graph, verification, links, and Beads status agree.</item-1>
       </evidence-captured>
+      <mode>ordinary-code-first | complex</mode>
+      <editor-profile>Programiz | CodePen | TypeScript Playground | React TypeScript</editor-profile>
+      <preservation-ledger>Complete source-to-destination mapping.</preservation-ledger>
+      <target-editor-expected>Observable expected result.</target-editor-expected>
+      <target-editor-actual>Observed result.</target-editor-actual>
+      <target-editor-verdict>PASS</target-editor-verdict>
+      <collection-sync>Exactly one thematic, zero-or-one interview, graph, verification, and Beads facts synchronized.</collection-sync>
       <retry-budget-used>0</retry-budget-used>
       <next-action>Ready for shared-artifact sync.</next-action>
       <validation-decision>accepted</validation-decision>

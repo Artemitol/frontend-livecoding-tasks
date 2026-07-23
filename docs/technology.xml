@@ -1,4 +1,4 @@
-<TechnologyStack VERSION="0.3.0">
+<TechnologyStack VERSION="0.4.0">
   <Runtime>None required for repository readers or Markdown-only task authoring</Runtime>
   <Language>GitHub Flavored Markdown; embedded JavaScript, TypeScript, JSX, and TSX use task-specific versions</Language>
   <Framework>GitHub repository rendering; React examples use task-specific versions</Framework>
@@ -9,6 +9,8 @@
 
   <VersionConstraints>
     <constraint lib="task-examples" min="task-declared" max="task-declared" reason="Each task must state any language, React, or browser API version assumptions that affect its solution" />
+    <constraint lib="typescript" min="5.9" max="5.9" reason="Migrated pure TypeScript cards preserve the approved TypeScript 5.9 behavior" />
+    <constraint lib="react" min="19.2" max="19.2" reason="Migrated React cards preserve the approved React 19.2 behavior" />
   </VersionConstraints>
 
   <Tooling>
@@ -20,62 +22,115 @@
     <tool name="issue-tracker" value="bd/Beads" version="repository-configured" />
     <tool name="worktree" value="native facility or git worktree" version="system" />
     <tool name="temporary-validation" value="task-appropriate JavaScript, TypeScript, React, DOM, or browser harness" version="task-declared" />
+    <tool name="target-editor-programiz" value="https://www.programiz.com/javascript/online-compiler/" version="hosted" />
+    <tool name="target-editor-codepen" value="https://pen.new" version="hosted" />
+    <tool name="target-editor-typescript" value="https://www.typescriptlang.org/play/" version="hosted" />
+    <tool name="target-editor-react-typescript" value="https://vite.new/react-ts" version="React 19.2 template" />
     <tool name="test-runner" value="no permanent repository runner" version="not-applicable" />
   </Tooling>
 
   <ContentVocabulary>
     <language-policy>Russian task prose and stable section labels by default; task-specific exceptions require mentor direction.</language-policy>
-    <metadata-labels>Технологии; Тема; Формат; Уровень; Время; Навыки; Предварительные знания; Среда выполнения</metadata-labels>
-    <technology-policy>Use an existing catalog value such as JavaScript, TypeScript, or React; a new value requires mentor approval.</technology-policy>
-    <topic-policy>Use one existing human-readable catalog topic; a new topic requires mentor approval to prevent synonyms.</topic-policy>
-    <format-policy>Use exactly Реализация, Отладка, Разбор, or Прогноз вывода.</format-policy>
-    <level-policy>Use Базовый for one direct concept, Средний for combined concepts or meaningful approach choice, and Продвинутый for nontrivial execution models, architecture, state, asynchrony, or competing-solution tradeoffs.</level-policy>
-    <duration-policy>Use a human-readable estimated duration or range in minutes.</duration-policy>
-    <skills-policy>Use a concise list of observable skills exercised by the task.</skills-policy>
-    <prerequisites-policy>Use none, relative links to existing task cards, or explicit targeted reading; external materials never replace the local prompt, fixtures, starter code, or solution.</prerequisites-policy>
-    <environment-policy>Declare every runtime mode, platform, language, framework, or browser-version assumption that can change the expected result.</environment-policy>
+    <metadata-labels>Технология; Подборка; Формат; Сложность; Примерное время</metadata-labels>
+    <technology-policy>Use exactly JavaScript, TypeScript, HTML/CSS, HTML/JavaScript, HTML/CSS/JavaScript, or React/TypeScript.</technology-policy>
+    <collection-policy>Use the one approved thematic collection that owns the card; introducing a collection requires mentor approval.</collection-policy>
+    <format-policy>Use exactly Написать код, Исправить код, Разобрать код, or Предсказать результат.</format-policy>
+    <difficulty-policy>Use Базовая for one direct concept, Средняя for combined concepts or meaningful approach choice, and Продвинутая for nontrivial execution models, architecture, state, asynchrony, or competing-solution tradeoffs.</difficulty-policy>
+    <duration-policy>Use an integer number of minutes and synchronize it with the thematic and optional interview collection entries.</duration-policy>
+    <preservation-policy>Move every source learning goal, prerequisite, and runtime assumption to a visible destination or record a concrete not-applicable reason in CardMigrationEvidence.</preservation-policy>
+    <environment-policy>Choose one fixed editor profile and declare browser, classic or ESM mode, language, framework, or browser-version assumptions next to the copy/run instruction when they affect behavior.</environment-policy>
   </ContentVocabulary>
+
+  <EditorProfiles>
+    <profile-Programiz>
+      <scope>Console JavaScript without browser API, DOM, or Node-specific semantics</scope>
+      <editor>Programiz JavaScript Online Compiler</editor>
+      <url>https://www.programiz.com/javascript/online-compiler/</url>
+      <copy-run-contract>One complete JavaScript block for main.js.</copy-run-contract>
+    </profile-Programiz>
+    <profile-CodePen>
+      <scope>Browser JavaScript, DOM, HTML/CSS, classic script, or ESM</scope>
+      <editor>CodePen</editor>
+      <url>https://pen.new</url>
+      <copy-run-contract>Prefer one complete HTML block with embedded style and script; state classic script or type=module explicitly.</copy-run-contract>
+    </profile-CodePen>
+    <profile-TypeScriptPlayground>
+      <scope>Pure TypeScript with TypeScript 5.9 behavior</scope>
+      <editor>TypeScript Playground</editor>
+      <url>https://www.typescriptlang.org/play/</url>
+      <copy-run-contract>One complete TypeScript block unless several files are essential to the learning goal.</copy-run-contract>
+    </profile-TypeScriptPlayground>
+    <profile-ReactTypeScript>
+      <scope>React and TypeScript with React 19.2 behavior</scope>
+      <editor>Vite React TypeScript in StackBlitz</editor>
+      <url>https://vite.new/react-ts</url>
+      <copy-run-contract>Replace src/App.tsx completely; add files only when the task genuinely needs them.</copy-run-contract>
+    </profile-ReactTypeScript>
+  </EditorProfiles>
+
+  <TaskEditorProfileMap STATUS="implemented-contract">
+    <mapping-state>Phase 8 fixes the profile assignment; target-editor evidence for each card remains pending in its owning migration phase.</mapping-state>
+    <profile-assignment-Programiz>
+      <task-slugs>immutable-category-totals, stable-product-sort, loop-closure-bindings</task-slugs>
+    </profile-assignment-Programiz>
+    <profile-assignment-CodePenBrowserESM>
+      <task-slugs>this-callback-binding, stale-search-response, delegated-dynamic-list, idempotent-event-listeners, accessible-keyboard-tabs, modal-focus-lifecycle</task-slugs>
+    </profile-assignment-CodePenBrowserESM>
+    <profile-assignment-CodePenBrowserClassic>
+      <task-slugs>browser-event-loop-order</task-slugs>
+    </profile-assignment-CodePenBrowserClassic>
+    <profile-assignment-CodePenHTMLCSS>
+      <task-slugs>flex-long-text-overflow, container-responsive-grid</task-slugs>
+    </profile-assignment-CodePenHTMLCSS>
+    <profile-assignment-TypeScriptPlayground>
+      <task-slugs>discriminated-load-state, typed-object-property, response-union-narrowing, validate-unknown-profile</task-slugs>
+    </profile-assignment-TypeScriptPlayground>
+    <profile-assignment-ReactTypeScript>
+      <task-slugs>react-derived-list, react-batched-counter, react-effect-subscription, react-strictmode-cleanup</task-slugs>
+    </profile-assignment-ReactTypeScript>
+  </TaskEditorProfileMap>
 
   <PreferredAgentStack>
     <preferred-content-format>GitHub Flavored Markdown with relative repository links</preferred-content-format>
-    <preferred-progressive-disclosure>One details block for theory, one per hint, and one for the solution</preferred-progressive-disclosure>
-    <preferred-verification>Strict candidate gates plus task-appropriate temporary execution, type checking, trace review, browser evidence, link resolution, XML validation, and sampled GitHub rendered-view review</preferred-verification>
+    <preferred-progressive-disclosure>Exactly three independent hint details blocks, then closed solution, self-check, optional reading, and five-field metadata</preferred-progressive-disclosure>
+    <preferred-verification>Strict structural, preservation, content, synchronization, target-editor, browser, link, XML, and GitHub rendered-view evidence; temporary harnesses are diagnostic only</preferred-verification>
     <preferred-grace-resolution>Resolve grace from PATH, then fall back to $HOME/.bun/bin/grace before treating the CLI as unavailable.</preferred-grace-resolution>
     <discouraged-surface reason="The initial project intentionally has no repository runtime.">catalog generators, site frameworks, and package-manager-based Markdown pipelines</discouraged-surface>
   </PreferredAgentStack>
 
   <Testing>
     <module-level>
-      <command>Verify the exact task contract, then obtain task-appropriate evidence through temporary execution, type checking, trace comparison, or browser review.</command>
-      <focus>Prove both document structure and solution correctness without adding a permanent repository runtime.</focus>
+      <command>Verify the selected StudentTaskCard mode, preservation ledger, copy-ready code, FILE parity, three exact hints, five metadata fields, collection membership, and final target-editor expected, actual, and verdict.</command>
+      <focus>Prove document structure, source-contract preservation, and solution behavior in the named online editor without adding a permanent repository runtime.</focus>
     </module-level>
     <wave-level>
-      <command>Validate 8-10 accepted cards, or 1-7 in the final incomplete wave; compare canonical metadata with thematic README.md tables, resolve local and external links, push the focused commit, capture GitHub-rendered evidence, and record validation decisions, the complete report, and technical publication status in Beads.</command>
-      <focus>Prove candidate quality and atomic synchronization across task, catalog, knowledge graph, and evidence changes.</focus>
+      <command>Validate the serialized redesign unit; compare each changed card with exactly one thematic and zero or one interview entry, graph and verification facts, resolve links, record CardMigrationEvidence, push the focused commit, and capture required rendered evidence.</command>
+      <focus>Prove migration quality and atomic synchronization across card, collections, knowledge graph, verification plan, and Beads evidence.</focus>
     </wave-level>
     <phase-level>
       <command>Run xmllint on docs/*.xml, scan changed files for whitespace and placeholder defects, review the full catalog projection, and inspect GitHub rendering when template or HTML markup changes.</command>
       <focus>Repository-wide structural integrity and student-visible GitHub behavior.</focus>
     </phase-level>
-    <mocking-policy>Use local fixtures, deterministic adapters, or fake clocks when network, time, or external state would otherwise make the task non-repeatable; do not mock away the behavior being taught.</mocking-policy>
+    <mocking-policy>Use embedded fixtures, deterministic adapters, or fake clocks when network, time, or external state would otherwise make the task non-repeatable; do not mock away the behavior being taught or substitute a harness for final target-editor evidence.</mocking-policy>
   </Testing>
 
   <Observability>
     <logger>not-applicable for Markdown-only modules</logger>
-    <evidence-format>module-id, verification-ref, artifact-path, check, observed-result</evidence-format>
-    <required-fields>moduleId, verificationRef, candidateId, candidateRegisterSize, artifactPath, validationDecision, duplicateTarget, evidenceType, checkResult, beadsIssueId, waveId, waveAcceptanceStatus</required-fields>
-    <stable-anchors>metadata table; Условие; Критерии готовности; Теория; Подсказка N; Решение; Самопроверка</stable-anchors>
+    <evidence-format>module-id, verification-ref, artifact-path, mode, editor-profile, preservation-ledger, expected, actual, verdict, collection-sync</evidence-format>
+    <required-fields>moduleId, verificationRef, candidateId, artifactPath, validationDecision, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, expected, actual, verdict, thematicCollection, interviewCollection, graphVerificationSync, beadsIssueId</required-fields>
+    <stable-anchors>← Все подборки; Условие; Код — вставьте его в редактор; Готово, когда; Подсказка 1 — куда смотреть; Подсказка 2 — с чего начать; Подсказка 3 — почти решение; Решение; Самопроверка; О задаче</stable-anchors>
     <redaction>Never place secrets, credentials, private student data, or proprietary source material in task cards or evidence.</redaction>
   </Observability>
 
   <AutonomyPolicy>
     <default-execution-profile>balanced</default-execution-profile>
     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
-    <replan-trigger>Ambiguous metadata or environment, duplicate learning goal, missing prerequisite or asset, task/catalog contradiction, unexpected GitHub rendering, unavailable mandatory evidence, or a solution requiring undeclared knowledge.</replan-trigger>
-    <checkpoint-requirement>Every task change must report assumptions, validation decision, artifacts changed, checks run, evidence captured, wave technical-publication status, and next action.</checkpoint-requirement>
+    <replan-trigger>Ambiguous metadata, collection, editor, or task profile; duplicate learning goal; missing prerequisite or asset; unnecessary multi-file split; card/collection contradiction; unexpected GitHub rendering; unavailable mandatory evidence; or a solution requiring undeclared knowledge.</replan-trigger>
+    <checkpoint-requirement>Every task change reports mode, editor profile, preservation ledger, artifacts changed, checks run, target-editor expected/actual/verdict, collection sync, remaining risk, and next action.</checkpoint-requirement>
   </AutonomyPolicy>
 
   <DeliveryShape>
-    <shape>GitHub repository whose root README is the student entry point and whose task directories render self-contained Markdown cards.</shape>
+    <shape>GitHub repository whose root README is a short student hub, whose collections are the primary selection surface, and whose task directories render copy-ready self-contained Markdown cards.</shape>
+    <implementation-state>Phase 8 implements the contract only; collections, card migrations, root cutover, and rendered audit remain pending in Phases 9 through 15.</implementation-state>
   </DeliveryShape>
 </TechnologyStack>

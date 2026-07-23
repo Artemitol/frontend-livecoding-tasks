@@ -1,42 +1,42 @@
-<VerificationPlan VERSION="0.3.0">
+<VerificationPlan VERSION="0.4.0">
   <GlobalPolicy>
-    <evidence-format>module-id, verification-ref, artifact-path, check, observed-result</evidence-format>
+    <evidence-format>module-id, verification-ref, artifact-path, mode, editor-profile, preservation-ledger, expected, actual, verdict, collection-sync</evidence-format>
     <deterministic-first>true</deterministic-first>
     <module-level-focus>Check mandatory document structure, stable anchors, and local references close to the changed artifact.</module-level-focus>
-    <wave-level-focus>Prove strict validation and atomic synchronization across 8-10 accepted task cards, thematic catalog tables, knowledge graph, evidence, pushed commit, GitHub-rendered review, complete report, and technical publication status.</wave-level-focus>
-    <phase-level-focus>Validate all GRACE XML, catalog projection integrity, controlled vocabulary use, and GitHub rendering when shared Markdown structure changes.</phase-level-focus>
+    <wave-level-focus>Prove the serialized redesign unit and atomic synchronization across cards, thematic and optional interview collections, knowledge graph, verification plan, target-editor evidence, pushed commit, rendered review, complete report, and Beads status.</wave-level-focus>
+    <phase-level-focus>Validate all GRACE XML, collection membership and data integrity, editor-profile URLs, controlled vocabulary, and GitHub rendering when shared Markdown structure changes.</phase-level-focus>
     <autonomy-gate>Every module requires executable or manual checks, observable artifact evidence, stop conditions, and wave or phase follow-up before autonomous edits.</autonomy-gate>
     <final-user-review-gate>Per-wave human approval is not required. After the technical final audit, the top-level story remains open until the user reviews and accepts the complete library.</final-user-review-gate>
     <redaction>Never include secrets, credentials, private student data, or proprietary source material in repository content or evidence.</redaction>
   </GlobalPolicy>
 
   <CriticalFlows>
-    <VF-001 NAME="StudentStudiesTask" USE_CASES="UC-001, UC-002" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
-      <scenario>A student selects a suitable task and controls theory, hint, and solution disclosure on GitHub.</scenario>
-      <expected-outcome>The catalog link works, metadata matches, required prompt content is visible, and every guidance block is independently collapsed.</expected-outcome>
+    <VF-001 NAME="StudentStudiesTask" USE_CASES="UC-001, UC-002, UC-006" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
+      <scenario>A student selects a thematic or interview collection, opens a suitable task, copies complete code to the named editor, controls hint and solution disclosure, and returns to the collection.</scenario>
+      <expected-outcome>Root, collection, task, editor, and return links work; title and duration match; condition, code, and readiness criteria are visible; exactly three hints, the solution, self-check, and metadata are independently collapsed.</expected-outcome>
       <required-signals>
-        <artifact-marker>README.md catalog row and relative task link</artifact-marker>
-        <artifact-marker>task metadata table and required headings</artifact-marker>
-        <trace-sequence>CATALOG_SELECTED -> TASK_OPENED -> THEORY_OPTIONAL -> HINT_N_OPTIONAL -> SOLUTION_OPTIONAL -> SELF_CHECK</trace-sequence>
+        <artifact-marker>README.md collection link and CollectionEntry relative task link</artifact-marker>
+        <artifact-marker>target-editor instruction, complete starter code, three exact hints, and five-field metadata</artifact-marker>
+        <trace-sequence>HUB_OPENED -> COLLECTION_SELECTED -> TASK_OPENED -> EDITOR_OPENED -> CODE_COPIED -> HINT_1_OPTIONAL -> HINT_2_OPTIONAL -> HINT_3_OPTIONAL -> SOLUTION_OPTIONAL -> SELF_CHECK -> BROWSER_BACK</trace-sequence>
       </required-signals>
     </VF-001>
     <VF-002 NAME="AgentAddsTask" USE_CASES="UC-003" DATA_FLOW="DF-ADD-TASK" PRIORITY="high">
       <scenario>An AI agent adds one task from a mentor request.</scenario>
-      <expected-outcome>An accepted task card, catalog projection, graph entry, and hybrid verification evidence change atomically; the serialized wave closes after push, GitHub-rendered evidence, and complete report pass.</expected-outcome>
+      <expected-outcome>An accepted task card, exactly one thematic collection, zero or one interview, graph and verification entries, and target-editor evidence change atomically; the serialized wave closes after push, GitHub-rendered evidence, and complete report pass.</expected-outcome>
       <required-signals>
         <artifact-marker>tasks/&lt;task-slug&gt;/README.md</artifact-marker>
-        <artifact-marker>README.md unique catalog entry</artifact-marker>
+        <artifact-marker>unique thematic CollectionEntry and optional interview entry</artifact-marker>
         <artifact-marker>docs/knowledge-graph.xml task-library context</artifact-marker>
-        <trace-sequence>CONTRACT_READ -> METADATA_RESOLVED -> CANDIDATE_VALIDATED -> TASK_WRITTEN -> CATALOG_SYNCED -> GRAPH_SYNCED -> CHECKED -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
+        <trace-sequence>CONTRACT_READ -> MODE_AND_PROFILE_RESOLVED -> CANDIDATE_VALIDATED -> TASK_WRITTEN -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> TARGET_EDITOR_PASSED -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
       </required-signals>
     </VF-002>
-    <VF-003 NAME="AgentUpdatesTask" USE_CASES="UC-004" DATA_FLOW="DF-UPDATE-TASK" PRIORITY="high">
-      <scenario>An AI agent changes task content or metadata without leaving stale derived references.</scenario>
-      <expected-outcome>Catalog placement, graph facts, prerequisites, assets, and inbound links remain consistent; ambiguous edits stop before drift is introduced.</expected-outcome>
+    <VF-003 NAME="AgentUpdatesTask" USE_CASES="UC-004, UC-007" DATA_FLOW="DF-UPDATE-TASK" PRIORITY="high">
+      <scenario>An AI agent changes or migrates task content without losing the source learning goal, prerequisite, runtime assumptions, or student navigation.</scenario>
+      <expected-outcome>CardMigrationEvidence is complete; target-editor evidence passes; thematic and optional interview data, graph and verification facts, assets, and links remain consistent; ambiguity stops before drift.</expected-outcome>
       <required-signals>
-        <artifact-marker>before and after canonical metadata</artifact-marker>
-        <artifact-marker>unique matching catalog projection</artifact-marker>
-        <trace-sequence>CHANGE_CLASSIFIED -> DERIVED_ARTIFACTS_IDENTIFIED -> SYNCHRONIZED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
+        <artifact-marker>mode, editor profile, source facts, destination locations, expected, actual, and verdict</artifact-marker>
+        <artifact-marker>unique thematic and zero-or-one interview synchronization</artifact-marker>
+        <trace-sequence>CHANGE_CLASSIFIED -> SOURCE_CONTRACT_CAPTURED -> MODE_AND_PROFILE_SELECTED -> CARD_MIGRATED -> TARGET_EDITOR_PASSED -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
       </required-signals>
     </VF-003>
     <VF-004 NAME="AgentValidatesCandidate" USE_CASES="UC-005" DATA_FLOW="DF-VALIDATE-TASK, DF-PUBLISH-TASK-WAVE" PRIORITY="high">
@@ -48,6 +48,15 @@
         <trace-sequence>IDENTITY -> LEARNING_VALUE -> CONTRACT -> LOCAL_COMPLETENESS -> EXAMPLES -> SOLUTION -> VERIFICATION -> EDITORIAL -> DECISION -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
       </required-signals>
     </VF-004>
+    <VF-005 NAME="StudentNavigatesCollections" USE_CASES="UC-001, UC-006" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
+      <scenario>A student follows the collection-first path and returns to the same learning context after a task.</scenario>
+      <expected-outcome>The root hub links to the chosen collection, its task entry resolves with the correct title and duration, browser Back returns to that collection, and both task fallback links resolve to the root hub.</expected-outcome>
+      <required-signals>
+        <artifact-marker>README.md collection link, collection README, and task navigation links</artifact-marker>
+        <artifact-marker>linked student title, plain-language thematic description, and exact integer duration</artifact-marker>
+        <trace-sequence>ROOT_HUB -> COLLECTION -> TASK -> BROWSER_BACK -> SAME_COLLECTION</trace-sequence>
+      </required-signals>
+    </VF-005>
   </CriticalFlows>
 
   <ModuleVerification>
@@ -63,6 +72,7 @@
         <file>docs/knowledge-graph.xml</file>
         <file>docs/operational-packets.xml</file>
         <file>docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md</file>
+        <file>docs/superpowers/specs/2026-07-23-task-library-student-experience-design.md</file>
       </test-files>
       <module-checks>
         <check-1>xmllint --noout docs/*.xml</check-1>
@@ -71,6 +81,8 @@
         <check-4>Verify that every accepted task slug has exactly one export-&lt;task-slug&gt; annotation under M-TASK-LIBRARY.</check-4>
         <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires fetch plus isolated worktree creation from current origin/main, keeps one feature/&lt;story-id&gt; branch per story, and that .gitignore excludes .worktrees/ without excluding written specifications.</check-5>
         <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
+        <check-7>Verify Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs across governance, technology, validation, root map when implemented, and affected cards; verify all twenty stable slugs appear exactly once in the fixed TaskEditorProfileMap.</check-7>
+        <check-8>Verify Phase 8 contract facts are implemented while collection pages, migrated cards, root cutover, and rendered-audit facts in Phases 9 through 15 remain pending until their owning units pass.</check-8>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>
@@ -98,29 +110,32 @@
         <file>templates/task-template.md</file>
       </test-files>
       <module-checks>
-        <check-1>Verify exact mandatory metadata labels: Технологии, Тема, Формат, Уровень, Время, Навыки, Предварительные знания, and Среда выполнения.</check-1>
-        <check-2>Verify controlled formats Реализация, Отладка, Разбор, Прогноз вывода and levels Базовый, Средний, Продвинутый.</check-2>
-        <check-3>Verify visible goal, prompt, inputs or analysis questions, constraints, starter-code guidance, examples, readiness criteria, self-check, and optional targeted additional materials.</check-3>
-        <check-4>Verify separate closed details blocks for theory, each hint, and the solution; reject the open attribute.</check-4>
-        <check-5>Review the rendered GitHub view whenever the template or its HTML structure changes.</check-5>
+        <check-1>Verify exactly five metadata labels in each complete mode: Технология, Подборка, Формат, Сложность, and Примерное время.</check-1>
+        <check-2>Verify controlled technologies JavaScript, TypeScript, HTML/CSS, HTML/JavaScript, HTML/CSS/JavaScript, React/TypeScript; formats Написать код, Исправить код, Разобрать код, Предсказать результат; and difficulties Базовая, Средняя, Продвинутая.</check-2>
+        <check-3>Verify ordinary mode order starts with title, back link, editor instruction, Условие, one complete code block; complex mode starts with title, back link, short Условие, editor instruction, Код — вставьте его в редактор, and complete blocks.</check-3>
+        <check-4>Verify one complete copy-ready starter block unless several real files are necessary; every multi-file starter and solution block has a matching FILE path and complete content.</check-4>
+        <check-5>Verify exactly three closed details blocks with summaries Подсказка 1 — куда смотреть, Подсказка 2 — с чего начать, and Подсказка 3 — почти решение.</check-5>
+        <check-6>Verify closed Решение, Самопроверка, О задаче, optional Почитать по теме, browser-back instruction, and root fallback link; reject the open attribute.</check-6>
+        <check-7>Review the rendered GitHub view whenever the template or its HTML structure changes.</check-7>
       </module-checks>
       <scenarios>
-        <scenario-1 kind="success">The template renders compactly and allows theory, one hint at a time, and the solution to be opened independently.</scenario-1>
-        <scenario-2 kind="failure">Missing metadata, combined hints, an open details block, or malformed nested Markdown blocks completion.</scenario-2>
+        <scenario-1 kind="success">Both template modes are independently complete, copy-ready after sentinel replacement, and allow exactly three hints, solution, and self-check to open independently.</scenario-1>
+        <scenario-2 kind="failure">Wrong mode order, old metadata, incomplete code, unjustified file split, FILE mismatch, repeated or missing hint, open details, or malformed Markdown blocks completion.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
         <marker-1>Условие</marker-1>
-        <marker-2>Критерии готовности</marker-2>
-        <marker-3>Теория</marker-3>
-        <marker-4>Подсказка N</marker-4>
+        <marker-2>Готово, когда</marker-2>
+        <marker-3>Код — вставьте его в редактор</marker-3>
+        <marker-4>three exact hint summaries</marker-4>
         <marker-5>Решение</marker-5>
         <marker-6>Самопроверка</marker-6>
+        <marker-7>О задаче</marker-7>
       </required-evidence-anchors>
       <required-trace-assertions>
-        <assertion-1>The initial rendered page must not expose theory, hint bodies, or solution content.</assertion-1>
+        <assertion-1>The initial rendered page must not expose hint, solution, self-check, optional reading, or metadata bodies.</assertion-1>
       </required-trace-assertions>
       <wave-follow-up>Use the current template contract for every added task.</wave-follow-up>
-      <phase-follow-up>Sample the GitHub-rendered template and first conforming task.</phase-follow-up>
+      <phase-follow-up>Sample both GitHub-rendered modes and the first conforming task of each mode.</phase-follow-up>
     </V-M-TASK-TEMPLATE>
 
     <V-M-TASK-VALIDATION MODULE="M-TASK-VALIDATION" PRIORITY="high">
@@ -129,15 +144,17 @@
         <file>Beads candidate and wave records</file>
       </test-files>
       <module-checks>
-        <check-1>Apply identity, learning-value, contract, local-completeness, examples, solution, verification, and editorial gates in order.</check-1>
+        <check-1>Apply identity, learning-value, StudentTaskCard, local-completeness, preservation, structure, solution-content, target-editor, synchronization, and rendered gates in order.</check-1>
         <check-2>Freeze a finite Beads candidate register with stable IDs, then verify every candidate decision is accepted, needs-rewrite, rejected, or duplicate with a concise reason and evidence type.</check-2>
-        <check-3>Run JavaScript, type-check TypeScript, exercise React or DOM in a temporary harness, use browser evidence for UI, or compare a written trace with actual output as appropriate.</check-3>
-        <check-4>Verify external materials are targeted and reachable directly or through a valid redirect while prompt, starter code, fixtures, and solution remain local; required reading must not require a paid subscription or closed account.</check-4>
-        <check-5>Reject publication when mandatory browser evidence is unavailable; record BLOCKED rather than PASS.</check-5>
+        <check-3>For every migrated card, verify CardMigrationEvidence records slug, mode, editor profile, source learning goal, source prerequisite, source runtime assumption, destination locations, expected, actual, and verdict.</check-3>
+        <check-4>Obtain final copy-run, type-check, DOM, React, CSS, trace, or browser evidence in the named target editor; treat temporary harnesses as diagnostic only.</check-4>
+        <check-5>Verify external materials are targeted and reachable while condition, complete starter code, text fixtures, solution, and required verification context remain local.</check-5>
+        <check-6>Verify title, duration, editor profile, exactly one thematic collection, zero or one interview, graph, verification, and Beads evidence are synchronized.</check-6>
+        <check-7>Reject publication or migration PASS when mandatory browser or editor evidence is unavailable; record BLOCKED rather than PASS.</check-7>
       </module-checks>
       <scenarios>
-        <scenario-1 kind="success">An independently authored candidate has a unique learning goal, explicit environment, correct examples and solution, and matching hybrid evidence, so it becomes accepted.</scenario-1>
-        <scenario-2 kind="failure">An ambiguous, duplicated, incorrect, externally incomplete, or unverifiable candidate cannot enter tasks/.</scenario-2>
+        <scenario-1 kind="success">A unique candidate or migrated card has an exact mode and profile, complete local code, preserved source facts, correct solution, synchronized collections, and matching target-editor evidence.</scenario-1>
+        <scenario-2 kind="failure">An ambiguous, duplicated, incorrect, externally incomplete, preservation-losing, collection-drifting, or target-editor-unverifiable card cannot pass.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
         <marker-1>ValidationDecision</marker-1>
@@ -145,10 +162,14 @@
         <marker-3>duplicate merge or rejection reason</marker-3>
         <marker-4>wave technical-publication status</marker-4>
         <marker-5>candidate register size and stable candidate ID</marker-5>
+        <marker-6>CardMigrationEvidence</marker-6>
+        <marker-7>target-editor expected, actual, and verdict</marker-7>
+        <marker-8>collection synchronization</marker-8>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>Only accepted produces an AcceptedTaskCard.</assertion-1>
         <assertion-2>Temporary harnesses do not introduce permanent repository runtime tooling.</assertion-2>
+        <assertion-3>Temporary harnesses never replace final evidence in the declared target editor.</assertion-3>
       </required-trace-assertions>
       <wave-follow-up>Group 8-10 accepted cards, or 1-7 in the final incomplete wave; recheck candidates, commit and push the technically passing wave, capture GitHub-rendered evidence, publish the complete report, record technical status, close the child Beads issue, and continue.</wave-follow-up>
       <phase-follow-up>Prove terminal-decision count equals frozen candidate-register size and no needs-rewrite remains at story completion.</phase-follow-up>
@@ -160,51 +181,58 @@
         <file>tasks/&lt;task-slug&gt;/assets/*</file>
       </test-files>
       <module-checks>
-        <check-1>Enumerate task cards and verify each conforms to the current template contract.</check-1>
-        <check-2>Resolve every prerequisite and asset link against the repository filesystem and verify every supplementary external link is reachable.</check-2>
-        <check-3>Verify controlled metadata vocabulary, stable slug, local prompt and solution completeness, incremental hints, and task-specific environment assumptions.</check-3>
-        <check-4>Verify an accepted validation decision, candidate recheck, required evidence, pushed commit, GitHub-rendered review, complete wave report, and technical publication status before closing the child issue.</check-4>
+        <check-1>Enumerate task cards; for each card declared migrated in Phases 10 through 13, verify one exact StudentTaskCard mode with visible editor instruction, condition, complete code, readiness criteria, navigation, and exactly three hint summaries. At Phase 14 every card must be migrated.</check-1>
+        <check-2>Verify one complete starter block or justified real files; every multi-file starter and solution block has matching FILE paths and complete content.</check-2>
+        <check-3>Resolve navigation, prerequisite, media asset, and supplementary links; reject text code, HTML, test data, or scenarios left in assets after their inline replacement passes.</check-3>
+        <check-4>Verify five-field vocabulary, stable slug, preserved source learning goal, prerequisite and runtime assumptions, solution completeness, and fixed editor profile.</check-4>
+        <check-5>Verify target-editor expected, actual, and verdict plus applicable browser/manual visual evidence; diagnostic harness evidence alone cannot pass.</check-5>
+        <check-6>Verify collection, graph, verification, Beads, pushed commit, GitHub-rendered review, complete report, and technical publication status before closing the child issue.</check-6>
       </module-checks>
       <scenarios>
-        <scenario-1 kind="success">A student can understand and attempt the task using only the GitHub-rendered card.</scenario-1>
-        <scenario-2 kind="failure">A non-accepted decision, missing prerequisite or asset, broken required or supplementary link, undeclared environment dependency, ambiguous classification, or incomplete technical publication gate blocks completion.</scenario-2>
+        <scenario-1 kind="success">A student can understand, copy, run, and attempt the task in its named editor using only the GitHub-rendered card.</scenario-1>
+        <scenario-2 kind="failure">A missing source fact, incomplete code, FILE mismatch, repeated hint, missing prerequisite or media, broken link, editor mismatch, collection drift, or incomplete publication gate blocks completion.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
-        <marker-1>canonical metadata table</marker-1>
-        <marker-2>relative prerequisite links</marker-2>
-        <marker-3>validation decision and wave technical-publication status</marker-3>
+        <marker-1>closed five-field О задаче block</marker-1>
+        <marker-2>CardMigrationEvidence and target-editor verdict</marker-2>
+        <marker-3>relative navigation and supplementary links</marker-3>
+        <marker-4>validation decision and wave technical-publication status</marker-4>
       </required-evidence-anchors>
       <required-trace-assertions>
-        <assertion-1>A task edit must not complete before dependent catalog and graph updates are verified.</assertion-1>
+        <assertion-1>A task edit must not complete before exactly one thematic, zero or one interview, graph, verification, and Beads updates are verified.</assertion-1>
       </required-trace-assertions>
-      <wave-follow-up>Compare changed task metadata with its catalog projection and graph delta.</wave-follow-up>
-      <phase-follow-up>Review vocabulary consistency and sample student-facing task rendering.</phase-follow-up>
+      <wave-follow-up>Compare changed card title, duration, editor profile, membership, graph and verification facts with its collection projections and Beads evidence.</wave-follow-up>
+      <phase-follow-up>Review five-field vocabulary, preservation coverage, target-editor results, and sample both student-facing task modes.</phase-follow-up>
     </V-M-TASK-LIBRARY>
 
     <V-M-CATALOG MODULE="M-CATALOG" PRIORITY="high">
       <test-files>
         <file>README.md</file>
+        <file>collections/**/README.md</file>
         <file>tasks/*/README.md</file>
       </test-files>
       <module-checks>
-        <check-1>Enumerate all task cards and prove that each stable slug appears exactly once in the catalog.</check-1>
-        <check-2>Resolve every catalog link and compare projected metadata with the canonical task metadata.</check-2>
-        <check-3>Verify thematic tables, exactly one row per task across all themes, all catalog metadata columns, controlled topic names, level-then-name ordering, and an explicit empty state before the first task exists.</check-3>
+        <check-1>When Phase 9 is implemented, verify exactly ten thematic and three interview README paths with no technology-level intermediate README.</check-1>
+        <check-2>Resolve every root, collection, task, and fallback link; compare linked student title and exact duration with the card.</check-2>
+        <check-3>At Phase 9 verify final thematic ordering and entries; at Phase 14 verify every task belongs to exactly one thematic collection, interviews contain fifteen unique entries total, and no task belongs to two interviews.</check-3>
+        <check-4>Before Phase 14, verify the current root catalog remains unchanged and does not link pending collections; at Phase 14 verify exactly four student blocks and no old task tables or agent-maintenance prose.</check-4>
+        <check-5>Verify the root editor map and all card profiles use the same four exact URLs.</check-5>
       </module-checks>
       <scenarios>
-        <scenario-1 kind="success">A student can choose and open a task using compact, accurate metadata.</scenario-1>
-        <scenario-2 kind="failure">A missing, duplicate, broken, or misclassified catalog entry blocks completion.</scenario-2>
+        <scenario-1 kind="success">A student can choose a collection, open a task using its title, description, and duration, and return to the same collection.</scenario-1>
+        <scenario-2 kind="failure">A missing or extra collection, duplicate membership, stale title or duration, broken link, premature root cutover, or editor-map drift blocks completion.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
-        <marker-1>unique task slug</marker-1>
-        <marker-2>relative task link</marker-2>
-        <marker-3>projected metadata</marker-3>
+        <marker-1>unique thematic task slug</marker-1>
+        <marker-2>linked student title and relative task link</marker-2>
+        <marker-3>plain-language thematic sentence and exact duration</marker-3>
+        <marker-4>zero-or-one interview membership</marker-4>
       </required-evidence-anchors>
       <required-trace-assertions>
-        <assertion-1>Catalog synchronization must use task metadata as source of truth and must not silently rewrite the task to match a stale catalog row.</assertion-1>
+        <assertion-1>Collection synchronization must use the card title and metadata plus approved collection order as source data and must not silently rewrite the card to match stale navigation.</assertion-1>
       </required-trace-assertions>
-      <wave-follow-up>Run full projection checks after every task wave.</wave-follow-up>
-      <phase-follow-up>Review catalog usability and controlled vocabulary consistency.</phase-follow-up>
+      <wave-follow-up>Run full thematic, optional interview, graph, verification, link, title, duration, and editor-profile synchronization checks after every redesign unit.</wave-follow-up>
+      <phase-follow-up>Review collection-first usability, membership uniqueness, controlled vocabulary, and root cutover state.</phase-follow-up>
     </V-M-CATALOG>
   </ModuleVerification>
 
@@ -289,13 +317,105 @@
         <evidence-2>No generator, validator, CI, or runtime tooling is added without explicit approval.</evidence-2>
       </required-evidence>
     </Gate-Phase-7>
+    <Gate-Phase-8 PHASE="Phase-8" status="completed">
+      <goal>The local story checkout and approved student redesign contract are synchronized before any collection page or card migration begins.</goal>
+      <commands>
+        <command-1>Prove root checkout, feature/frontend-livecoding-tasks-kln branch, common git directory, clean pre-handoff state, origin/main ancestry, and zero left divergence.</command-1>
+        <command-2>Run xmllint --noout for every docs/*.xml file.</command-2>
+        <command-3>Resolve GRACE_BIN from PATH with $HOME/.bun/bin/grace as fallback, verify it is executable, print its version, and run lint --fail-on errors --path "$PWD".</command-3>
+        <command-4>Scan AGENTS.md, templates/task-template.md, and docs/task-validation-policy.md for legacy mandatory labels and verify they appear only in explicit migration or forbidden-label prose.</command-4>
+        <command-5>Verify both complete card modes, exactly three hint summaries, four editor URLs, exactly one editor-profile assignment for each of twenty stable slugs, CardMigrationEvidence fields, pending Phases and Gates 9 through 15, and git diff --check.</command-5>
+      </commands>
+      <required-evidence>
+        <evidence-1>Phase 8 authoring, template, validation, GRACE, and operational packet facts are implemented with no new module or tooling.</evidence-1>
+        <evidence-2>Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs and partition all twenty stable slugs without duplication.</evidence-2>
+        <evidence-3>No collection page, migrated-card fact, root cutover, or rendered-audit result is claimed implemented before its owning phase.</evidence-3>
+      </required-evidence>
+    </Gate-Phase-8>
+    <Gate-Phase-9 PHASE="Phase-9" status="pending">
+      <goal>The exact collection path set and final thematic content exist without prematurely changing or linking from the root README.</goal>
+      <commands>
+        <command-1>Enumerate collections and compare with the approved ten thematic and three interview paths; reject extra technology-level README files.</command-1>
+        <command-2>Verify each thematic collection has its final title, two-to-three-sentence description, browser-back reminder, two tasks in approved order, linked student titles, plain-language sentences, exact times, and resolving links.</command-2>
+        <command-3>Verify the three interview files contain only the common timer contract and no task composition, and verify README.md is unchanged.</command-3>
+      </commands>
+      <required-evidence>
+        <evidence-1>Exactly thirteen collection README files exist and all thematic links, titles, descriptions, order, and times pass.</evidence-1>
+        <evidence-2>Root cutover and interview composition remain pending.</evidence-2>
+      </required-evidence>
+    </Gate-Phase-9>
+    <Gate-Phase-10 PHASE="Phase-10" status="pending">
+      <goal>Eight JavaScript and DOM cards conform to StudentTaskCard and preserve behavior in Programiz or the exact CodePen mode.</goal>
+      <commands>
+        <command-1>Run per-card structure, five-field metadata, exactly-three-hints, copy-ready, FILE, preservation, content, collection-sync, and target-editor checks for the approved eight slugs.</command-1>
+        <command-2>Prove this-callback-binding browser ESM behavior matches the source Node ESM observations before passing.</command-2>
+        <command-3>Delete stale-search-response/assets/fixture.html only after its embedded replacement passes CodePen and browser evidence.</command-3>
+      </commands>
+      <required-evidence>
+        <evidence-1>Eight complete CardMigrationEvidence rows have final target-editor PASS and synchronized graph and verification facts.</evidence-1>
+        <evidence-2>No TypeScript, HTML/CSS, accessibility, or React migration fact is claimed implemented.</evidence-2>
+      </required-evidence>
+    </Gate-Phase-10>
+    <Gate-Phase-11 PHASE="Phase-11" status="pending">
+      <goal>Four TypeScript cards conform to StudentTaskCard and preserve exact TypeScript 5.9 behavior in TypeScript Playground.</goal>
+      <commands>
+        <command-1>Run per-card structure, preservation, content, collection-sync, exact type/runtime outcome, and TypeScript Playground checks for the approved four slugs.</command-1>
+      </commands>
+      <required-evidence>
+        <evidence-1>Four complete CardMigrationEvidence rows have TypeScript Playground PASS and synchronized graph and verification facts.</evidence-1>
+      </required-evidence>
+    </Gate-Phase-11>
+    <Gate-Phase-12 PHASE="Phase-12" status="pending">
+      <goal>Four HTML, CSS, and accessibility cards conform to StudentTaskCard with CodePen, browser, accessibility, and manual visual evidence.</goal>
+      <commands>
+        <command-1>Run per-card structure, preservation, content, collection-sync, CodePen copy-run, browser interaction, accessibility, and manual visual checks for the approved four slugs.</command-1>
+        <command-2>Delete accessible-keyboard-tabs and modal-focus-lifecycle text fixtures only after each embedded replacement passes.</command-2>
+      </commands>
+      <required-evidence>
+        <evidence-1>Four complete CardMigrationEvidence rows have target-editor and browser PASS; CSS and visual claims use manual evidence rather than unit tests.</evidence-1>
+      </required-evidence>
+    </Gate-Phase-12>
+    <Gate-Phase-13 PHASE="Phase-13" status="pending">
+      <goal>Four React TypeScript cards are complete src/App.tsx exercises that preserve React 19.2 behavior.</goal>
+      <commands>
+        <command-1>Run per-card structure, preservation, content, collection-sync, vite.new/react-ts copy-run, browser state, interaction, effect, cleanup, and lifecycle checks for the approved four slugs.</command-1>
+      </commands>
+      <required-evidence>
+        <evidence-1>Four complete CardMigrationEvidence rows have React TypeScript and browser PASS with synchronized graph and verification facts.</evidence-1>
+      </required-evidence>
+    </Gate-Phase-13>
+    <Gate-Phase-14 PHASE="Phase-14" status="pending">
+      <goal>All student content is synchronized and the root README atomically cuts over to the final four-block hub.</goal>
+      <commands>
+        <command-1>Populate three interviews with five unique linked student titles and exact times each; prove no task belongs to two interviews.</command-1>
+        <command-2>Verify all twenty cards belong to exactly one thematic collection, no unexpected task or collection path exists, and every title, time, editor profile, relative link, graph annotation, and verification fact agrees.</command-2>
+        <command-3>Replace README.md atomically and verify exactly Как пользоваться базой, Подборки по направлениям, Симуляции собеседований, and Где писать код blocks with all thirteen collection and four editor links.</command-3>
+        <command-4>Reject old task tables, metadata-source prose, AI-agent maintenance prose, Beads, GRACE, knowledge graph, and technical synchronization terminology from the root student hub.</command-4>
+      </commands>
+      <required-evidence>
+        <evidence-1>Root, thirteen collections, and twenty cards form one synchronized student path with no duplicate thematic or interview membership.</evidence-1>
+        <evidence-2>Phase 15 rendered audit remains pending.</evidence-2>
+      </required-evidence>
+    </Gate-Phase-14>
+    <Gate-Phase-15 PHASE="Phase-15" status="pending">
+      <goal>The published branch or pull request renders the complete student experience without missing pages, broken navigation, malformed details, or hidden editor defects.</goal>
+      <commands>
+        <command-1>Open the root README, all thirteen collection pages, and all twenty task pages; record resolved URL, visible title, no-404 result, required links, and details behavior.</command-1>
+        <command-2>Run deep rendered flows for every technology, all three interviews, both card modes, all four editor profiles, and every former fixture card.</command-2>
+        <command-3>Record all results, remaining risks, pushed commit, pull request state, and final user-acceptance request in Beads.</command-3>
+      </commands>
+      <required-evidence>
+        <evidence-1>Complete URL inventory and deep flow matrix pass on the published student experience.</evidence-1>
+        <evidence-2>The top-level story remains open until the user explicitly accepts the complete migrated library.</evidence-2>
+      </required-evidence>
+    </Gate-Phase-15>
   </PhaseGates>
 
   <FailurePackets>
     <packet-template>
       <canonical-schema>docs/operational-packets.xml</canonical-schema>
-      <expected-fields>scenario, contract-ref, expected-evidence, observed-evidence, first-divergent-artifact-or-anchor, next-action</expected-fields>
-      <stop-conditions>ambiguous metadata or environment; duplicate learning goal; missing prerequisite or asset; broken supplementary link; unexpected GitHub rendering; catalog drift; unresolved inbound link; unavailable mandatory evidence; incomplete wave technical publication</stop-conditions>
+      <expected-fields>scenario, contract-ref, mode, editor-profile, preservation-ledger, target-editor-expected, target-editor-actual, target-editor-verdict, collection-sync, expected-evidence, observed-evidence, first-divergent-artifact-or-anchor, next-action</expected-fields>
+      <stop-conditions>three distinct hints unavailable; code not copy-runnable; undescribed file; ambiguous technology, editor, or profile; unnecessary multi-file split; FILE mismatch; embedded asset replacement mismatch; metadata and collection drift; duplicate thematic or interview membership; broken required link; unexpected GitHub rendering; unavailable mandatory evidence; incomplete technical publication</stop-conditions>
     </packet-template>
   </FailurePackets>
 </VerificationPlan>

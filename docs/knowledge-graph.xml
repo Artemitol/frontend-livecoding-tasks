@@ -1,50 +1,54 @@
 <KnowledgeGraph>
-  <Project NAME="frontend-livecoding-tasks" VERSION="0.3.0">
+  <Project NAME="frontend-livecoding-tasks" VERSION="0.4.0">
     <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
 
     <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" STATUS="implemented">
-      <purpose>Define authoring, delivery, synchronization, verification, and stop-condition rules for the repository.</purpose>
+      <purpose>Define authoring, delivery, student-card, collection synchronization, editor evidence, verification, and stop-condition rules for the repository.</purpose>
       <path>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml; docs/superpowers/specs/*.md</path>
       <depends>none</depends>
       <verification-ref>V-M-GOVERNANCE</verification-ref>
       <annotations>
-        <export-authoringRules PURPOSE="Expose task authoring, worktree isolation, delivery, tool-resolution, and synchronization requirements" />
+        <export-authoringRules PURPOSE="Expose two-mode task authoring, worktree isolation, delivery, editor-profile, preservation, and collection synchronization requirements" />
         <export-verificationContracts PURPOSE="Expose shared completion evidence and phase gates" />
       </annotations>
     </M-GOVERNANCE>
 
     <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" STATUS="implemented">
-      <purpose>Define the canonical GitHub-rendered structure for self-contained frontend task cards.</purpose>
+      <purpose>Define ordinary code-first and complex GitHub-rendered structures for copy-ready self-contained frontend task cards.</purpose>
       <path>templates/task-template.md</path>
       <depends>M-GOVERNANCE</depends>
       <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
       <annotations>
-        <type-TaskMetadata PURPOSE="Exact labels and controlled values for technologies, topic, format, level, duration, skills, prerequisites, and execution environment" />
-        <export-taskSchema PURPOSE="Expose mandatory metadata, visible sections, progressive disclosure, and self-check structure" />
+        <type-TaskMetadata PURPOSE="Exact five fields and controlled values for technology, thematic collection, format, difficulty, and integer duration" />
+        <type-StudentTaskCard PURPOSE="Title, navigation, editor instruction, visible condition, complete starter code, readiness criteria, three hints, solution, self-check, optional reading, five-field metadata, and return instruction" />
+        <type-EditorProfile PURPOSE="Programiz, CodePen, TypeScript Playground, or React TypeScript copy-run contract" />
+        <export-taskSchema PURPOSE="Expose both exact card orders, copy-ready and FILE rules, progressive disclosure, navigation, and self-check structure" />
       </annotations>
     </M-TASK-TEMPLATE>
 
     <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" STATUS="implemented">
-      <purpose>Deduplicate and strictly validate independently authored candidates before publication.</purpose>
+      <purpose>Deduplicate candidates and validate new or migrated cards for structure, source-contract preservation, content, target-editor behavior, collection synchronization, and rendering.</purpose>
       <path>docs/task-validation-policy.md; Beads validation and technical wave-publication records</path>
       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
       <verification-ref>V-M-TASK-VALIDATION</verification-ref>
       <annotations>
         <type-ValidationDecision PURPOSE="accepted, needs-rewrite, rejected, or duplicate" />
         <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and one validation decision per entry" />
-        <export-validateCandidate PURPOSE="Apply strict content, solution, evidence, and editorial gates" />
+        <type-CardMigrationEvidence PURPOSE="Slug, mode, editor profile, source learning goal, prerequisite, runtime assumption, destination locations, expected, actual, and verdict" />
+        <export-validateCandidate PURPOSE="Apply preservation, structure, content, target-editor, synchronization, and rendered gates in addition to candidate validation" />
       </annotations>
     </M-TASK-VALIDATION>
 
     <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="implemented">
-      <purpose>Store accepted, locally complete task cards and their canonical metadata.</purpose>
-      <path>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</path>
+      <purpose>Store accepted, locally complete StudentTaskCards with copy-ready code, fixed editor profiles, exact navigation, and five-field metadata.</purpose>
+      <path>tasks/&lt;task-slug&gt;/README.md; optional media-only tasks/&lt;task-slug&gt;/assets/*</path>
       <depends>M-TASK-VALIDATION, M-TASK-TEMPLATE, M-GOVERNANCE</depends>
       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
       <annotations>
-        <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
-        <export-taskCard PURPOSE="Expose the complete student-facing exercise through GitHub" />
+        <type-TaskMetadataSet PURPOSE="Collection of five-field task metadata records exposed to thematic and interview collections" />
+        <export-taskCard PURPOSE="Expose one complete copy-ready StudentTaskCard through GitHub" />
+        <const-cardMigrationState PURPOSE="Phase 8 contract implemented; all twenty existing card migrations remain pending in Phases 10 through 13" />
         <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" />
         <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" />
         <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" />
@@ -69,12 +73,14 @@
     </M-TASK-LIBRARY>
 
     <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="implemented">
-      <purpose>Provide the student entry point and thematic, agent-synchronized projections of canonical task metadata.</purpose>
-      <path>README.md</path>
+      <purpose>Own the root student hub plus thematic and interview collection pages that lead students to task cards.</purpose>
+      <path>README.md; collections/**/README.md</path>
       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
       <verification-ref>V-M-CATALOG</verification-ref>
       <annotations>
-        <export-studentIndex PURPOSE="Expose thematic tables with exactly one row per task and all catalog metadata" />
+        <type-CollectionEntry PURPOSE="Linked student title, one plain-language thematic sentence, and exact integer duration copied from the card" />
+        <export-studentIndex PURPOSE="Expose the planned four-block root hub, ten thematic collections, and three interview collections without duplicating card content" />
+        <const-collectionMigrationState PURPOSE="Phase 8 contract implemented; collection files and root cutover remain pending until Phases 9 and 14" />
       </annotations>
     </M-CATALOG>
 

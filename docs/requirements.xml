@@ -1,4 +1,4 @@
-<RequirementsAnalysis VERSION="0.3.0">
+<RequirementsAnalysis VERSION="0.4.0">
   <Project>
     <name>frontend-livecoding-tasks</name>
     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
@@ -15,19 +15,19 @@
   <UseCases>
     <UC-001>
       <Actor>Student</Actor>
-      <Action>Chooses a task from the repository catalog using technology, topic, format, level, duration, skills, and prerequisites.</Action>
-      <Goal>Start an exercise appropriate to the current learning need without cloning or running the repository.</Goal>
-      <Preconditions>The catalog and at least one task card exist on GitHub.</Preconditions>
-      <AcceptanceCriteria>Every catalog entry exposes the required metadata, links to exactly one existing task card, and matches that card's canonical metadata.</AcceptanceCriteria>
+      <Action>Chooses a thematic direction or interview from the root student hub, then chooses a task from that collection.</Action>
+      <Goal>Start an exercise appropriate to the current learning need without scanning one long table or cloning the repository.</Goal>
+      <Preconditions>The root student hub, selected collection, and at least one task card exist on GitHub.</Preconditions>
+      <AcceptanceCriteria>The hub links to the selected collection; each thematic entry exposes linked student title, one plain-language sentence, and exact card duration; the task link resolves.</AcceptanceCriteria>
       <Priority>high</Priority>
       <RelatedFlows>DF-STUDY-TASK</RelatedFlows>
     </UC-001>
     <UC-002>
       <Actor>Student</Actor>
-      <Action>Reads a self-contained task, optionally opens theory, reveals hints one at a time, and opens the solution only after attempting the exercise.</Action>
-      <Goal>Practice independently while controlling the amount of guidance and avoiding accidental spoilers.</Goal>
-      <Preconditions>The task conforms to the canonical task template and is rendered by GitHub.</Preconditions>
-      <AcceptanceCriteria>The prompt and readiness criteria are visible; theory, every hint, and the solution are separate collapsed details blocks; the execution environment is explicit; the card includes starter code when needed and ends with self-check questions.</AcceptanceCriteria>
+      <Action>Copies one complete starter block into the named online editor, attempts the task, reveals three hints one at a time, and opens the solution and self-check only when needed.</Action>
+      <Goal>Practice independently with reproducible setup, progressive guidance, and no accidental solution spoiler.</Goal>
+      <Preconditions>The task conforms to one StudentTaskCard mode, names one target editor, and is rendered by GitHub.</Preconditions>
+      <AcceptanceCriteria>The editor instruction, condition, complete starter code, and observable readiness criteria are visible; exactly three hints, the solution, self-check, and five-field metadata are independently collapsed; target-editor evidence proves the instruction.</AcceptanceCriteria>
       <Priority>high</Priority>
       <RelatedFlows>DF-STUDY-TASK</RelatedFlows>
     </UC-002>
@@ -36,16 +36,16 @@
       <Action>Requests an AI agent to add a frontend task.</Action>
       <Goal>Grow the knowledge base without manually coordinating task, catalog, and GRACE navigation files.</Goal>
       <Preconditions>The agent can read project governance and the canonical task template.</Preconditions>
-      <AcceptanceCriteria>The agent publishes only an accepted original task card, synchronizes the catalog and knowledge graph in the same change, records hybrid verification evidence in Beads, and closes the serialized wave after every technical publication gate and its complete report pass.</AcceptanceCriteria>
+      <AcceptanceCriteria>The agent publishes only an accepted original StudentTaskCard, synchronizes exactly one thematic collection, zero or one interview, knowledge graph, verification plan, and Beads evidence in the same change, and closes the serialized wave after every technical publication gate and its complete report pass.</AcceptanceCriteria>
       <Priority>high</Priority>
       <RelatedFlows>DF-ADD-TASK</RelatedFlows>
     </UC-003>
     <UC-004>
       <Actor>Agent</Actor>
-      <Action>Updates task content or metadata while preserving repository-wide consistency.</Action>
-      <Goal>Prevent stale catalog entries, broken prerequisites, missing assets, and graph drift.</Goal>
-      <Preconditions>The existing task slug and all derived references can be resolved.</Preconditions>
-      <AcceptanceCriteria>The agent treats the task metadata as canonical, updates every derived reference, verifies uniqueness and link resolution, and stops for clarification when classification is ambiguous.</AcceptanceCriteria>
+      <Action>Updates or migrates task content while preserving the source learning goal, prerequisite, runtime assumptions, and repository-wide student navigation.</Action>
+      <Goal>Prevent lost learning intent, stale collections, broken assets, editor drift, and graph or verification drift.</Goal>
+      <Preconditions>The existing task slug, source contract, editor profile, and all collection and graph references can be resolved.</Preconditions>
+      <AcceptanceCriteria>CardMigrationEvidence maps every source fact to its destination, the target editor passes, exactly one thematic and zero or one interview projection agree, and ambiguity stops the change.</AcceptanceCriteria>
       <Priority>high</Priority>
       <RelatedFlows>DF-UPDATE-TASK</RelatedFlows>
     </UC-004>
@@ -58,6 +58,24 @@
       <Priority>high</Priority>
       <RelatedFlows>DF-VALIDATE-TASK, DF-PUBLISH-TASK-WAVE</RelatedFlows>
     </UC-005>
+    <UC-006>
+      <Actor>Student</Actor>
+      <Action>Returns from a task to the exact collection context using browser Back, with the root hub as a fallback.</Action>
+      <Goal>Continue a thematic or interview path without reconstructing navigation from the repository tree.</Goal>
+      <Preconditions>The student opened the task from a collection and the task contains the required navigation links and instruction.</Preconditions>
+      <AcceptanceCriteria>Browser Back returns to the selected collection; the top and bottom fallback links resolve to README.md.</AcceptanceCriteria>
+      <Priority>high</Priority>
+      <RelatedFlows>DF-STUDY-TASK</RelatedFlows>
+    </UC-006>
+    <UC-007>
+      <Actor>Agent</Actor>
+      <Action>Migrates an existing card to one StudentTaskCard mode and its fixed target-editor profile.</Action>
+      <Goal>Improve the student experience without changing the task's learning goal or observable behavior.</Goal>
+      <Preconditions>The source card, task profile, target editor, and preservation inputs are unambiguous.</Preconditions>
+      <AcceptanceCriteria>Complete CardMigrationEvidence records mode, profile, source facts, destination locations, expected, actual, and verdict; a diagnostic harness is never the final PASS source.</AcceptanceCriteria>
+      <Priority>high</Priority>
+      <RelatedFlows>DF-UPDATE-TASK</RelatedFlows>
+    </UC-007>
   </UseCases>
 
   <NonGoals>
@@ -71,27 +89,35 @@
     <constraint-1>GitHub's rendered repository view is the primary student interface.</constraint-1>
     <constraint-2>Markdown is the primary artifact; JavaScript, TypeScript, JSX, and TSX appear mainly as fenced examples.</constraint-2>
     <constraint-3>Each task lives at tasks/&lt;task-slug&gt;/README.md with optional colocated assets.</constraint-3>
-    <constraint-4>Technology, topic, format, level, estimated duration, skills, prerequisites, and execution environment are mandatory task metadata.</constraint-4>
-    <constraint-5>Theory, each individual hint, and the solution must be separate details blocks without the open attribute.</constraint-5>
-    <constraint-6>Task metadata is canonical; the root catalog and knowledge graph are agent-maintained derived artifacts.</constraint-6>
-    <constraint-7>Adding, deleting, renaming, or reclassifying a task is incomplete until all derived artifacts and links are synchronized.</constraint-7>
+    <constraint-4>Every card ends with exactly five student-facing metadata fields: Технология, Подборка, Формат, Сложность, and Примерное время.</constraint-4>
+    <constraint-5>Exactly three distinct hints, the full solution, self-check, and metadata use separate details blocks without the open attribute.</constraint-5>
+    <constraint-6>The card title and five-field metadata, thematic collection order and description, interview composition, root editor map, knowledge graph, verification plan, and Beads evidence have explicit synchronized ownership.</constraint-6>
+    <constraint-7>Adding, deleting, renaming, reclassifying, or migrating a task is incomplete until exactly one thematic collection, zero or one interview, graph, verification, Beads evidence, and all links are synchronized.</constraint-7>
     <constraint-8>New or materially changed solutions require strict agent validation and wave-level technical publication evidence; per-wave human approval is not required, while explicit user acceptance of the complete library after the final audit gates top-level story closure.</constraint-8>
     <constraint-9>A task slug is a stable identifier; changing it is an explicit migration rather than a routine metadata edit.</constraint-9>
     <constraint-10>Task prose and stable section labels are Russian unless the mentor explicitly requests another language for a task.</constraint-10>
-    <constraint-11>Metadata values reuse the current catalog vocabulary; introducing a new technology or topic requires explicit mentor approval rather than an agent-created synonym.</constraint-11>
-    <constraint-12>The canonical metadata table uses the exact labels Технологии, Тема, Формат, Уровень, Время, Навыки, Предварительные знания, and Среда выполнения.</constraint-12>
+    <constraint-11>Collection membership and five-field values reuse the approved vocabulary; introducing a technology or collection requires explicit mentor approval rather than an agent-created synonym.</constraint-11>
+    <constraint-12>Formats use exactly Написать код, Исправить код, Разобрать код, or Предсказать результат; difficulties use exactly Базовая, Средняя, or Продвинутая.</constraint-12>
     <constraint-13>Each task card is represented in the M-TASK-LIBRARY knowledge-graph annotations by one export-&lt;task-slug&gt; entry.</constraint-13>
     <constraint-14>Agents never commit or push directly to main; they deliver changes from feature/* branches through pull requests targeting main.</constraint-14>
     <constraint-15>Agents resolve the Grace CLI from PATH first and then $HOME/.bun/bin/grace before declaring it unavailable in a non-interactive shell.</constraint-15>
     <constraint-16>Before project changes, agents detect existing isolation, fetch origin, and create or reuse a worktree and feature/&lt;story-id&gt; branch based on current origin/main.</constraint-16>
     <constraint-17>All child issues for one Beads story use the same worktree and branch; .worktrees/ remains ignored.</constraint-17>
-    <constraint-18>Task levels use exactly Базовый, Средний, or Продвинутый; formats use exactly Реализация, Отладка, Разбор, or Прогноз вывода.</constraint-18>
-    <constraint-19>Official documentation, articles, and videos may supplement theory, but the prompt, starter code, fixtures, and solution remain local.</constraint-19>
+    <constraint-18>Technology uses exactly JavaScript, TypeScript, HTML/CSS, HTML/JavaScript, HTML/CSS/JavaScript, or React/TypeScript; estimated time is an integer number of minutes shared by the card and collections.</constraint-18>
+    <constraint-19>Official documentation, articles, and videos may supplement the card, but the condition, complete starter code, text fixtures, solution, and required verification context remain local.</constraint-19>
     <constraint-20>Only accepted candidates enter tasks/; needs-rewrite, rejected, and duplicate remain neutral Beads decisions.</constraint-20>
     <constraint-21>Task prose, examples, and solutions are independently authored.</constraint-21>
     <constraint-22>Before the initial audit, the agent freezes a finite Beads candidate register with stable candidate IDs and no external provenance; story completion requires one terminal decision per registered candidate and no remaining needs-rewrite.</constraint-22>
     <constraint-23>Task waves contain 8-10 accepted cards except the final incomplete wave, which may contain 1-7.</constraint-23>
     <constraint-24>Supplementary links must resolve directly or through a valid redirect; required reading cannot depend on a paid subscription or closed account.</constraint-24>
+    <constraint-25>Ordinary cards place the target-editor instruction before Условие; complex cards place a short Условие before the editor instruction and Код — вставьте его в редактор.</constraint-25>
+    <constraint-26>Starter code is one complete copy-ready block unless several real files are necessary; every starter and solution block then contains a matching FILE path and complete file.</constraint-26>
+    <constraint-27>Target editor profiles are fixed to Programiz for console JavaScript, CodePen for browser JavaScript, DOM, HTML/CSS, or ESM, TypeScript Playground for pure TypeScript, and vite.new/react-ts for React with TypeScript.</constraint-27>
+    <constraint-28>A temporary harness is diagnostic only; every migrated card needs final target-editor expected, actual, and verdict evidence.</constraint-28>
+    <constraint-29>CardMigrationEvidence preserves source learning goal, prerequisite, and runtime assumption by mapping each to a destination or a concrete not-applicable rationale.</constraint-29>
+    <constraint-30>Text code, HTML, test data, and scenarios are embedded in the card; assets are reserved for media or other binary material that cannot reasonably be embedded.</constraint-30>
+    <constraint-31>The root README remains the current working catalog until Phase-14 atomically cuts over to the four-block student hub; pending collections are not linked early.</constraint-31>
+    <constraint-32>CSS and visual behavior use manual browser evidence rather than unit assertions; unavailable mandatory browser or editor evidence is BLOCKED, never PASS.</constraint-32>
   </Constraints>
 
   <Risks>
@@ -104,6 +130,9 @@
     <risk-7>Near-duplicate candidates can inflate the catalog without increasing learning value.</risk-7>
     <risk-8>External learning links can rot even when the local task contract remains valid.</risk-8>
     <risk-9>A long-running story can diverge from origin/main after worktree creation.</risk-9>
+    <risk-10>Copy-ready code can silently change runtime semantics when moved to an online editor.</risk-10>
+    <risk-11>Collection title, duration, membership, or editor links can drift across student navigation surfaces.</risk-11>
+    <risk-12>Simplifying metadata can lose prerequisites or runtime assumptions unless preservation evidence is explicit.</risk-12>
   </Risks>
 
   <OpenQuestions>
