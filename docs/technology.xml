@@ -1,4 +1,4 @@
-<TechnologyStack VERSION="0.4.0">
+<TechnologyStack VERSION="0.5.0">
   <Runtime>None required for repository readers or Markdown-only task authoring</Runtime>
   <Language>GitHub Flavored Markdown; embedded JavaScript, TypeScript, JSX, and TSX use task-specific versions</Language>
   <Framework>GitHub repository rendering; React examples use task-specific versions</Framework>
@@ -34,11 +34,14 @@
     <metadata-labels>Технология; Подборка; Формат; Сложность; Примерное время</metadata-labels>
     <technology-policy>Use exactly JavaScript, TypeScript, HTML/CSS, HTML/JavaScript, HTML/CSS/JavaScript, or React/TypeScript.</technology-policy>
     <collection-policy>Use the one approved thematic collection that owns the card; introducing a collection requires mentor approval.</collection-policy>
-    <format-policy>Use exactly Написать код, Исправить код, Разобрать код, or Предсказать результат.</format-policy>
+    <format-policy>Use exactly Написать код, Исправить код, Разобрать код, Предсказать результат, or Приближённая к реальной работе.</format-policy>
     <difficulty-policy>Use Базовая for one direct concept, Средняя for combined concepts or meaningful approach choice, and Продвинутая for nontrivial execution models, architecture, state, asynchrony, or competing-solution tradeoffs.</difficulty-policy>
     <duration-policy>Use an integer number of minutes and synchronize it with the thematic and optional interview collection entries.</duration-policy>
     <preservation-policy>Move every source learning goal, prerequisite, and runtime assumption to a visible destination or record a concrete not-applicable reason in CardMigrationEvidence.</preservation-policy>
     <environment-policy>Choose one fixed editor profile and declare browser, classic or ESM mode, language, framework, or browser-version assumptions next to the copy/run instruction when they affect behavior.</environment-policy>
+    <card-shape-policy>ConciseStudentTaskCard orders title, editor instruction, Условие, one minimal starter or minimum HTML fragment plus JavaScript, three closed hints, closed concise Решение, and closed five-field О задаче.</card-shape-policy>
+    <javascript-markup-policy>JavaScript cards do not publish full HTML documents, style wrappers, or script wrappers; DOM cards may declare only the minimum semantically necessary HTML fragment before JavaScript.</javascript-markup-policy>
+    <task-class-policy>Focused tasks have one central action and normally take 10–30 minutes; real-work tasks expose sequential related requirements, normally take 45–60 minutes, and additionally project into collections/real-work/README.md.</task-class-policy>
   </ContentVocabulary>
 
   <EditorProfiles>
@@ -52,7 +55,7 @@
       <scope>Browser JavaScript, DOM, HTML/CSS, classic script, or ESM</scope>
       <editor>CodePen</editor>
       <url>https://pen.new</url>
-      <copy-run-contract>Prefer one complete HTML block with embedded style and script; state classic script or type=module explicitly.</copy-run-contract>
+      <copy-run-contract>Use only the minimum required HTML fragment, editable CSS when applicable, and a separate JavaScript block; state classic script or ESM explicitly without publishing script wrappers.</copy-run-contract>
     </profile-CodePen>
     <profile-TypeScriptPlayground>
       <scope>Pure TypeScript with TypeScript 5.9 behavior</scope>
@@ -88,11 +91,15 @@
     <profile-assignment-ReactTypeScript>
       <task-slugs>react-derived-list, react-batched-counter, react-effect-subscription, react-strictmode-cleanup</task-slugs>
     </profile-assignment-ReactTypeScript>
+    <profile-assignment-ReactTypeScriptPlanned STATUS="planned" PHASE="Phase-19">
+      <task-slugs>users-api-list</task-slugs>
+    </profile-assignment-ReactTypeScriptPlanned>
+    <migration-compatibility STATUS="temporary" EXPIRES="Phase-19">Only the twenty implemented profile-map slugs may retain legacy StudentTaskCard structure while Phases 16 through 19 are incomplete; this state is not concise migration PASS.</migration-compatibility>
   </TaskEditorProfileMap>
 
   <PreferredAgentStack>
     <preferred-content-format>GitHub Flavored Markdown with relative repository links</preferred-content-format>
-    <preferred-progressive-disclosure>Exactly three independent hint details blocks, then closed solution, self-check, optional reading, and five-field metadata</preferred-progressive-disclosure>
+    <preferred-progressive-disclosure>Exactly three independent closed hint details blocks, then closed concise solution and closed five-field metadata</preferred-progressive-disclosure>
     <preferred-verification>Strict structural, preservation, content, synchronization, target-editor, browser, link, XML, and GitHub rendered-view evidence; temporary harnesses are diagnostic only</preferred-verification>
     <preferred-grace-resolution>Resolve grace from PATH, then fall back to $HOME/.bun/bin/grace before treating the CLI as unavailable.</preferred-grace-resolution>
     <discouraged-surface reason="The initial project intentionally has no repository runtime.">catalog generators, site frameworks, and package-manager-based Markdown pipelines</discouraged-surface>
@@ -100,11 +107,11 @@
 
   <Testing>
     <module-level>
-      <command>Verify the selected StudentTaskCard mode, preservation ledger, copy-ready code, FILE parity, three exact hints, five metadata fields, collection membership, and final target-editor expected, actual, and verdict.</command>
-      <focus>Prove document structure, source-contract preservation, and solution behavior in the named online editor without adding a permanent repository runtime.</focus>
+      <command>Verify ConciseStudentTaskCard order, task class, preservation ledger, minimal copy-ready code, FILE parity where justified, three exact hints, five metadata fields, thematic and optional real-work membership, and final target-editor expected, actual, and verdict.</command>
+      <focus>Prove concise document structure, source-contract preservation, and solution behavior in the named online editor without adding a permanent repository runtime.</focus>
     </module-level>
     <wave-level>
-      <command>Validate the serialized redesign unit; compare each changed card with exactly one thematic and zero or one interview entry, graph and verification facts, resolve links, record CardMigrationEvidence, push the focused commit, and capture required rendered evidence.</command>
+      <command>Validate the serialized 8 + 8 + 5 concise redesign units; compare each changed card with exactly one thematic, zero or one interview, and supported real-work entry, graph and verification facts, resolve links, record CardMigrationEvidence, push the focused commit, and capture required rendered evidence.</command>
       <focus>Prove migration quality and atomic synchronization across card, collections, knowledge graph, verification plan, and Beads evidence.</focus>
     </wave-level>
     <phase-level>
@@ -117,20 +124,20 @@
   <Observability>
     <logger>not-applicable for Markdown-only modules</logger>
     <evidence-format>module-id, verification-ref, artifact-path, mode, editor-profile, preservation-ledger, expected, actual, verdict, collection-sync</evidence-format>
-    <required-fields>moduleId, verificationRef, candidateId, artifactPath, validationDecision, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, expected, actual, verdict, thematicCollection, interviewCollection, graphVerificationSync, beadsIssueId</required-fields>
-    <stable-anchors>← Все подборки; Условие; Код — вставьте его в редактор; Готово, когда; Подсказка 1 — куда смотреть; Подсказка 2 — с чего начать; Подсказка 3 — почти решение; Решение; Самопроверка; О задаче</stable-anchors>
+    <required-fields>moduleId, verificationRef, candidateId, artifactPath, validationDecision, slug, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, targetEditorExpectedResult, targetEditorActualResult, verdict, thematicCollection, interviewCollection, realWorkCollection, graphVerificationSync, beadsIssueId</required-fields>
+    <stable-anchors>Условие; Подсказка 1 — куда смотреть; Подсказка 2 — с чего начать; Подсказка 3 — почти решение; Решение; О задаче</stable-anchors>
     <redaction>Never place secrets, credentials, private student data, or proprietary source material in task cards or evidence.</redaction>
   </Observability>
 
   <AutonomyPolicy>
     <default-execution-profile>balanced</default-execution-profile>
     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
-    <replan-trigger>Ambiguous metadata, collection, editor, or task profile; duplicate learning goal; missing prerequisite or asset; unnecessary multi-file split; card/collection contradiction; unexpected GitHub rendering; unavailable mandatory evidence; or a solution requiring undeclared knowledge.</replan-trigger>
+    <replan-trigger>Ambiguous metadata, collection, editor, task class, or profile; duplicate learning goal; missing prerequisite or asset; unnecessary multi-file split; full-document JavaScript wrapper; card/collection or real-work contradiction; unexpected GitHub rendering; unavailable mandatory evidence; or a solution requiring undeclared knowledge.</replan-trigger>
     <checkpoint-requirement>Every task change reports mode, editor profile, preservation ledger, artifacts changed, checks run, target-editor expected/actual/verdict, collection sync, remaining risk, and next action.</checkpoint-requirement>
   </AutonomyPolicy>
 
   <DeliveryShape>
-    <shape>GitHub repository whose root README is a short student hub, whose collections are the primary selection surface, and whose task directories render copy-ready self-contained Markdown cards.</shape>
-    <implementation-state>Phase 8 implements the contract only; collections, card migrations, root cutover, and rendered audit remain pending in Phases 9 through 15.</implementation-state>
+    <shape>GitHub repository whose root README is a short student hub, whose fourteen target collections are the primary selection surface, and whose twenty-one target task directories render concise copy-ready self-contained Markdown cards.</shape>
+    <implementation-state>The prior twenty-card, thirteen-collection catalog remains implemented. ConciseStudentTaskCard, the twenty-slug temporary compatibility state, three serialized 8 + 8 + 5 waves, the twenty-one-card and fourteen-collection cutover, and the rendered audit are staged as planned Phases 16 through 20; no future card or collection is claimed implemented.</implementation-state>
   </DeliveryShape>
 </TechnologyStack>

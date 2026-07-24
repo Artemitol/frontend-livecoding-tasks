@@ -1,10 +1,10 @@
-<OperationalPackets VERSION="0.4.0">
+<OperationalPackets VERSION="0.5.0">
   <ExecutionPacketTemplate>
     <!-- Canonical controller-to-worker execution packet. -->
     <ExecutionPacket>
       <module-id>M-TASK-LIBRARY</module-id>
       <module-name>TaskLibrary</module-name>
-      <purpose>Add or migrate one approved StudentTaskCard without source-contract, collection, graph, verification, or editor-evidence drift.</purpose>
+      <purpose>Add or migrate one approved ConciseStudentTaskCard without source-contract, collection, graph, verification, or editor-evidence drift.</purpose>
       <write-scope>
         <file-1>tasks/&lt;task-slug&gt;/README.md</file-1>
         <file-2>optional media-only tasks/&lt;task-slug&gt;/assets/*</file-2>
@@ -12,27 +12,28 @@
         <file-4>optional collections/interviews/&lt;interview-id&gt;/README.md</file-4>
         <file-5>docs/knowledge-graph.xml</file-5>
         <file-6>docs/verification-plan.xml</file-6>
+        <file-7>optional collections/real-work/README.md for a confirmed real-work card</file-7>
       </write-scope>
       <contract-excerpt><![CDATA[
-Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. A StudentTaskCard uses the ordinary or complex mode, one fixed editor profile, complete copy-ready starter code, exactly three hints, closed solution, self-check and five-field metadata. A changed card synchronizes exactly one thematic collection, zero or one interview, graph, verification and Beads evidence.
+Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. A ConciseStudentTaskCard uses the focused or real-work class, one fixed editor profile, one minimal copy-ready starter by default, exactly three closed hints, concise closed solution, and closed five-field metadata. A changed card synchronizes exactly one thematic collection, zero or one interview, supported real-work membership, graph, verification and Beads evidence. Until Phase 19, only the exact twenty named compatibility slugs may retain legacy structure, and compatibility is never concise migration PASS.
       ]]></contract-excerpt>
       <graph-entry-excerpt><![CDATA[
 M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLATE, is governed by M-GOVERNANCE, and is projected into M-CATALOG.
       ]]></graph-entry-excerpt>
       <dependency-contract-summaries>
         <dependency-1 module="M-GOVERNANCE">Authoring, synchronization, stop-condition, and Beads evidence rules.</dependency-1>
-        <dependency-2 module="M-TASK-TEMPLATE">Two card modes, five metadata labels, editor profiles, copy-ready and FILE rules, exact hints, navigation, and progressive disclosure.</dependency-2>
-        <dependency-3 module="M-TASK-VALIDATION">Strict candidate or migration decisions, preservation ledger, target-editor verdict, collection sync, and rendered evidence.</dependency-3>
+        <dependency-2 module="M-TASK-TEMPLATE">Focused and real-work concise shapes, five metadata labels and formats, editor profiles, minimal copy-ready and real-work FILE rules, exact hints, solution boundaries, and progressive disclosure.</dependency-2>
+        <dependency-3 module="M-TASK-VALIDATION">Strict candidate or migration decisions, exact compatibility inventory, CardMigrationEvidence, target-editor verdict, thematic/interview/real-work sync, and rendered evidence.</dependency-3>
       </dependency-contract-summaries>
       <verification-excerpt><![CDATA[
-Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify mode, editor profile, CardMigrationEvidence, complete copy-ready code, exact hints, target-editor expected/actual/verdict, local and supplementary links, exactly one thematic and zero-or-one interview membership, graph and verification sync, pushed commit, GitHub-rendered evidence, complete report, and technical publication status.
+Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify task class, editor profile, exact CardMigrationEvidence fields, minimal copy-ready code, exact hints, no legacy or full-document marker, target-editor expected/actual/verdict, local and supplementary links, exactly one thematic, zero-or-one interview, supported real-work membership, graph and verification sync, pushed commit, GitHub-rendered evidence, complete report, and technical publication status.
       ]]></verification-excerpt>
       <assumptions>
         <assumption-1>The task has an accepted validation decision with task-appropriate evidence.</assumption-1>
-        <assumption-2>The stable task slug, source learning goal, source prerequisite, source runtime assumption, selected mode, editor profile, five metadata fields, collection membership, assets, and supplementary links can be resolved before editing.</assumption-2>
+        <assumption-2>The stable task slug, source learning goal, source prerequisite, source runtime assumption, selected task class, editor profile, five metadata fields, thematic/interview/real-work membership, assets, and supplementary links can be resolved before editing.</assumption-2>
       </assumptions>
       <stop-conditions>
-        <condition-1>Stop when three useful hints are unavailable; code is not copy-runnable; a file is undescribed; technology, editor, or profile is ambiguous; multiple files are unnecessary; FILE paths mismatch; an embedded asset replacement fails; metadata and collections drift; membership duplicates; a required link fails; GitHub renders unexpectedly; mandatory evidence is unavailable; or permanent tooling would be required.</condition-1>
+        <condition-1>Stop when three useful hints are unavailable; code is not minimally copy-runnable; a file is undescribed; technology, editor, task class, or profile is ambiguous; multiple files are unnecessary or not real-work boundaries; FILE paths mismatch; a full-document JavaScript wrapper remains; an embedded asset replacement fails; metadata and collections drift; thematic, interview, or real-work membership is unsupported; a required link fails; GitHub renders unexpectedly; mandatory evidence is unavailable; or permanent tooling would be required.</condition-1>
       </stop-conditions>
       <retry-budget>2</retry-budget>
       <checkpoint-fields>
@@ -42,13 +43,14 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <field-4>next-action</field-4>
         <field-5>validation-decision</field-5>
         <field-6>wave-acceptance-status</field-6>
-        <field-7>mode</field-7>
+        <field-7>task-class</field-7>
         <field-8>editor-profile</field-8>
         <field-9>preservation-ledger</field-9>
         <field-10>target-editor-expected</field-10>
         <field-11>target-editor-actual</field-11>
         <field-12>target-editor-verdict</field-12>
         <field-13>collection-sync</field-13>
+        <field-14>real-work-sync</field-14>
       </checkpoint-fields>
       <expected-graph-delta-fields>
         <field-1>imports</field-1>
@@ -92,28 +94,17 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
     <!-- Canonical per-card migration record stored in Beads before a migrated card can pass. -->
     <CardMigrationEvidence>
       <slug>stable-task-slug</slug>
-      <mode>ordinary-code-first | complex</mode>
-      <editor-profile>Programiz | CodePen | TypeScript Playground | React TypeScript</editor-profile>
-      <source-learning-goal>Exact source learning goal.</source-learning-goal>
-      <source-prerequisite>Exact source prerequisite or none.</source-prerequisite>
-      <source-runtime-assumption>Exact source runtime, browser, classic or ESM, language, and framework assumption.</source-runtime-assumption>
-      <preservation-ledger>
-        <learning-goal-destination>Visible condition, code comments, readiness criteria, hints, solution explanation, or self-check.</learning-goal-destination>
-        <prerequisite-destination>Visible condition or first place of use; concrete not-applicable rationale only when it never affected attempt, solution, or verification.</prerequisite-destination>
-        <runtime-assumption-destination>Editor instruction or adjacent code context; concrete not-applicable rationale only when behavior is unaffected.</runtime-assumption-destination>
-      </preservation-ledger>
-      <destination-locations>Exact card headings, comments, metadata, collection entries, graph, and verification references.</destination-locations>
-      <target-editor-instruction>Exact copy/run steps performed by the student.</target-editor-instruction>
-      <target-editor-expected>Observable expected output, interaction, type result, or visual state.</target-editor-expected>
-      <target-editor-actual>Observed target-editor output, interaction, type result, or visual state.</target-editor-actual>
-      <target-editor-verdict>PASS | BLOCKED | FAIL</target-editor-verdict>
-      <collection-sync>
-        <thematic-collection>Exactly one path and matching linked title, sentence, and duration.</thematic-collection>
-        <interview-collection>Zero or one path and matching linked title and duration.</interview-collection>
-        <graph-verification-beads>Matching graph annotation, verification fact, and Beads evidence.</graph-verification-beads>
-      </collection-sync>
-      <remaining-risk>Known residual risk or none.</remaining-risk>
+      <mode>focused | real-work</mode>
+      <editorProfile>Programiz | CodePen | TypeScript Playground | React TypeScript</editorProfile>
+      <sourceLearningGoal>Exact source learning goal.</sourceLearningGoal>
+      <sourcePrerequisite>Exact source prerequisite or none.</sourcePrerequisite>
+      <sourceRuntimeAssumption>Exact source runtime, browser, classic or ESM, language, and framework assumption.</sourceRuntimeAssumption>
+      <destinationLocations>Exact concise condition, editor instruction, starter, hints, solution, metadata, thematic, optional interview and real-work collection, graph, and verification references.</destinationLocations>
+      <targetEditorExpectedResult>Observable expected output, interaction, type result, visual state, or real-work requirement set.</targetEditorExpectedResult>
+      <targetEditorActualResult>Observed target-editor output, interaction, type result, visual state, or real-work requirement set.</targetEditorActualResult>
+      <verdict>PASS | BLOCKED | FAIL</verdict>
     </CardMigrationEvidence>
+    <record-rule>Store exactly these ten fields in the matching card Beads issue before PASS; missing or unavailable mandatory evidence keeps the card and wave open as BLOCKED.</record-rule>
   </CardMigrationEvidenceTemplate>
 
   <StudentHubCutoverEvidenceTemplate>
@@ -131,6 +122,28 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <phase-15-state>pending until the published GitHub-rendered audit passes.</phase-15-state>
     </StudentHubCutoverEvidence>
   </StudentHubCutoverEvidenceTemplate>
+
+  <ConciseMigrationTransition STATUS="planned">
+    <!-- Target redesign facts only; none of these records assert current card migration. -->
+    <compatibility-state>
+      <allowed-slugs>accessible-keyboard-tabs, browser-event-loop-order, container-responsive-grid, delegated-dynamic-list, discriminated-load-state, flex-long-text-overflow, idempotent-event-listeners, immutable-category-totals, loop-closure-bindings, modal-focus-lifecycle, react-batched-counter, react-derived-list, react-effect-subscription, react-strictmode-cleanup, response-union-narrowing, stable-product-sort, stale-search-response, this-callback-binding, typed-object-property, validate-unknown-profile</allowed-slugs>
+      <permission>Legacy structure only; no concise structural, target-editor, wave, or rendered PASS.</permission>
+      <expiry>Remove atomically in Phase 19 only after all twenty-one concise cards pass.</expiry>
+    </compatibility-state>
+    <Phase-16 STATUS="planned" GATE="Gate-Phase-16">Stage M-GOVERNANCE, M-TASK-TEMPLATE, M-TASK-VALIDATION, M-TASK-LIBRARY, and M-CATALOG target facts while observing twenty current legacy cards and thirteen current collections.</Phase-16>
+    <Phase-17 STATUS="planned" GATE="Gate-Phase-17">Migrate the exact eight-card focused Wave A with complete CardMigrationEvidence.</Phase-17>
+    <Phase-18 STATUS="planned" GATE="Gate-Phase-18">Migrate the exact eight-card focused Wave B with required browser, accessibility, and manual visual evidence.</Phase-18>
+    <Phase-19 STATUS="planned" GATE="Gate-Phase-19">Migrate four React cards, add users-api-list, cut over to twenty-one cards and fourteen collections, and then remove compatibility.</Phase-19>
+    <Phase-20 STATUS="planned" GATE="Gate-Phase-20">Audit the published thirty-six-page inventory and leave final user acceptance open.</Phase-20>
+    <target-inventory>
+      <task-cards>Exactly twenty-one.</task-cards>
+      <collections>Exactly ten thematic, three interview, and one real-work page.</collections>
+      <real-work-membership>Exactly users-api-list at the initial cutover, also present in one thematic collection and at most one interview.</real-work-membership>
+      <formats>Написать код | Исправить код | Разобрать код | Предсказать результат | Приближённая к реальной работе</formats>
+    </target-inventory>
+    <cutover-rejections>Reject legacy markers, a fourth hint, open details, a full JavaScript HTML document, invalid metadata, duplicate thematic membership, unsupported real-work membership, unavailable editor/browser evidence, or any mismatched graph, verification, and Beads fact.</cutover-rejections>
+    <blocked-when>BLOCKED whenever a required structural, editor, browser, DummyJSON, rendered, pushed-commit, or synchronization result is unavailable; never substitute compatibility or a diagnostic harness for PASS.</blocked-when>
+  </ConciseMigrationTransition>
 
   <GraphDeltaTemplate>
     <!-- Canonical worker-to-controller graph delta. -->
@@ -163,14 +176,14 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       </test-files-added>
       <test-files-removed />
       <module-checks>
-        <command-1>Verify accepted validation status or migration PASS, selected mode, five metadata labels, controlled values, editor profile, exact hints, navigation, and mandatory document anchors.</command-1>
-        <command-2>Verify one complete copy-ready block or justified real files with matching FILE paths; resolve navigation, prerequisite, media asset, collection, and supplementary links.</command-2>
-        <command-3>Verify preservation ledger and final target-editor expected, actual, and verdict plus applicable browser or manual visual evidence.</command-3>
-        <command-4>Prove that the task slug appears in exactly one thematic collection, zero or one interview, one graph annotation, and matching verification and Beads facts.</command-4>
+        <command-1>Verify accepted validation status or migration PASS, selected task class, five metadata labels and controlled values, editor profile, exact hints, closed details, absence of legacy markers, and mandatory concise anchors.</command-1>
+        <command-2>Verify one minimal complete copy-ready block or justified real-work files with matching FILE paths; reject full-document JavaScript markup and resolve prerequisite, media asset, collection, and supplementary links.</command-2>
+        <command-3>Verify exact CardMigrationEvidence fields and final target-editor expected result, actual result, and verdict plus applicable browser or manual visual evidence.</command-3>
+        <command-4>Prove that the task slug appears in exactly one thematic collection, zero or one interview, supported real-work membership, one graph annotation, and matching verification and Beads facts.</command-4>
       </module-checks>
       <required-evidence-anchors>
         <marker-1>closed five-field О задаче block</marker-1>
-        <marker-2>Условие / Код — вставьте его в редактор / Готово, когда / three exact hints / Решение / Самопроверка</marker-2>
+        <marker-2>editor instruction / Условие / three exact hints / concise Решение / О задаче</marker-2>
         <marker-3>CardMigrationEvidence and target-editor verdict</marker-3>
         <marker-4>thematic, optional interview, graph, verification, and Beads sync</marker-4>
       </required-evidence-anchors>
@@ -178,7 +191,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <assertion-1>A task change must not complete before target-editor evidence and collection, graph, verification, and Beads synchronization are verified.</assertion-1>
       </required-trace-assertions>
       <wave-follow-up>
-        <item-1>Compare card title, duration, editor profile, mode, thematic and optional interview entries, graph annotation, verification fact, and Beads evidence.</item-1>
+        <item-1>Compare card title, duration, format, editor profile, task class, thematic, optional interview and real-work entries, graph annotation, verification fact, and Beads evidence.</item-1>
       </wave-follow-up>
       <phase-follow-up>
         <item-1>Run the full candidate and migration status, collection membership, vocabulary, XML, link, editor evidence, technical-publication, and GitHub-rendering review; prepare the complete library for final user acceptance.</item-1>
@@ -189,17 +202,17 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
   <FailurePacketTemplate>
     <!-- Canonical verification-to-fixer failure handoff. -->
     <FailurePacket>
-      <scenario>A migrated card, its target-editor evidence, and student collections disagree.</scenario>
+      <scenario>A concise migrated card, its target-editor evidence, and student collections disagree.</scenario>
       <contract-ref>M-TASK-LIBRARY / V-M-TASK-LIBRARY / V-M-CATALOG</contract-ref>
-      <mode>ordinary-code-first | complex</mode>
+      <mode>focused | real-work</mode>
       <editor-profile>Declared fixed profile</editor-profile>
-      <preservation-ledger>Source learning goal, prerequisite, runtime assumption, and destination status.</preservation-ledger>
+      <preservation-ledger>Source learning goal, prerequisite, runtime assumption, and concise destination status.</preservation-ledger>
       <target-editor-expected>Declared observable result.</target-editor-expected>
       <target-editor-actual>Observed result or unavailable evidence.</target-editor-actual>
       <target-editor-verdict>PASS | BLOCKED | FAIL</target-editor-verdict>
-      <collection-sync>Expected thematic, optional interview, graph, verification, and Beads facts.</collection-sync>
+      <collection-sync>Expected thematic, optional interview, supported real-work, graph, verification, and Beads facts.</collection-sync>
       <expected-evidence>
-        <marker-1>One complete StudentTaskCard, one thematic CollectionEntry, zero or one interview entry, and matching graph and verification facts.</marker-1>
+        <marker-1>One complete ConciseStudentTaskCard, one thematic CollectionEntry, zero or one interview entry, supported real-work membership, and matching graph and verification facts.</marker-1>
         <assertion-1>The task slug, student title, duration, editor profile, preserved source facts, and target-editor result must match exactly.</assertion-1>
       </expected-evidence>
       <observed-evidence>
@@ -224,13 +237,13 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <evidence-captured>
         <item-1>Card mode, editor profile, preservation ledger, target-editor expected/actual/verdict, thematic and optional interview entries, graph, verification, links, and Beads status agree.</item-1>
       </evidence-captured>
-      <mode>ordinary-code-first | complex</mode>
+      <mode>focused | real-work</mode>
       <editor-profile>Programiz | CodePen | TypeScript Playground | React TypeScript</editor-profile>
       <preservation-ledger>Complete source-to-destination mapping.</preservation-ledger>
       <target-editor-expected>Observable expected result.</target-editor-expected>
       <target-editor-actual>Observed result.</target-editor-actual>
       <target-editor-verdict>PASS</target-editor-verdict>
-      <collection-sync>Exactly one thematic, zero-or-one interview, graph, verification, and Beads facts synchronized.</collection-sync>
+      <collection-sync>Exactly one thematic, zero-or-one interview, supported real-work, graph, verification, and Beads facts synchronized.</collection-sync>
       <retry-budget-used>0</retry-budget-used>
       <next-action>Ready for shared-artifact sync.</next-action>
       <validation-decision>accepted</validation-decision>

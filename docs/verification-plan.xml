@@ -1,10 +1,10 @@
-<VerificationPlan VERSION="0.4.0">
+<VerificationPlan VERSION="0.5.0">
   <GlobalPolicy>
     <evidence-format>module-id, verification-ref, artifact-path, mode, editor-profile, preservation-ledger, expected, actual, verdict, collection-sync</evidence-format>
     <deterministic-first>true</deterministic-first>
-    <module-level-focus>Check mandatory document structure, stable anchors, and local references close to the changed artifact.</module-level-focus>
-    <wave-level-focus>Prove the serialized redesign unit and atomic synchronization across cards, thematic and optional interview collections, knowledge graph, verification plan, target-editor evidence, pushed commit, rendered review, complete report, and Beads status.</wave-level-focus>
-    <phase-level-focus>Validate all GRACE XML, collection membership and data integrity, editor-profile URLs, controlled vocabulary, and GitHub rendering when shared Markdown structure changes.</phase-level-focus>
+    <module-level-focus>Check ConciseStudentTaskCard order, exact hints and metadata, minimal code, absence of legacy or full-document markers, and local references close to the changed artifact.</module-level-focus>
+    <wave-level-focus>Prove each serialized 8 + 8 + 5 redesign unit and atomic synchronization across cards, thematic, optional interview, and supported real-work collections, knowledge graph, verification plan, target-editor evidence, pushed commit, rendered review, complete report, and Beads status.</wave-level-focus>
+    <phase-level-focus>Validate all GRACE XML, the explicit temporary twenty-slug compatibility state, twenty-one-card and fourteen-collection target integrity, editor-profile URLs, controlled vocabulary, and GitHub rendering when shared Markdown structure changes.</phase-level-focus>
     <autonomy-gate>Every module requires executable or manual checks, observable artifact evidence, stop conditions, and wave or phase follow-up before autonomous edits.</autonomy-gate>
     <final-user-review-gate>Per-wave human approval is not required. After the technical final audit, the top-level story remains open until the user reviews and accepts the complete library.</final-user-review-gate>
     <redaction>Never include secrets, credentials, private student data, or proprietary source material in repository content or evidence.</redaction>
@@ -12,12 +12,12 @@
 
   <CriticalFlows>
     <VF-001 NAME="StudentStudiesTask" USE_CASES="UC-001, UC-002, UC-006" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
-      <scenario>A student selects a thematic or interview collection, opens a suitable task, copies complete code to the named editor, controls hint and solution disclosure, and returns to the collection.</scenario>
-      <expected-outcome>Root, collection, task, editor, and return links work; title and duration match; condition, code, and readiness criteria are visible; exactly three hints, the solution, self-check, and metadata are independently collapsed.</expected-outcome>
+      <scenario>A student selects a thematic, interview, or real-work collection, opens a suitable task, copies minimal complete code to the named editor, controls hint and solution disclosure, and returns with browser Back.</scenario>
+      <expected-outcome>Root, collection, task, and editor links work; title and duration match; condition and minimal starter are visible; exactly three hints, the concise solution, and metadata are independently collapsed; legacy navigation, readiness, self-check, theory, and harness sections are absent after cutover.</expected-outcome>
       <required-signals>
         <artifact-marker>README.md collection link and CollectionEntry relative task link</artifact-marker>
         <artifact-marker>target-editor instruction, complete starter code, three exact hints, and five-field metadata</artifact-marker>
-        <trace-sequence>HUB_OPENED -> COLLECTION_SELECTED -> TASK_OPENED -> EDITOR_OPENED -> CODE_COPIED -> HINT_1_OPTIONAL -> HINT_2_OPTIONAL -> HINT_3_OPTIONAL -> SOLUTION_OPTIONAL -> SELF_CHECK -> BROWSER_BACK</trace-sequence>
+        <trace-sequence>HUB_OPENED -> COLLECTION_SELECTED -> TASK_OPENED -> EDITOR_OPENED -> CODE_COPIED -> HINT_1_OPTIONAL -> HINT_2_OPTIONAL -> HINT_3_OPTIONAL -> SOLUTION_OPTIONAL -> BROWSER_BACK</trace-sequence>
       </required-signals>
     </VF-001>
     <VF-002 NAME="AgentAddsTask" USE_CASES="UC-003" DATA_FLOW="DF-ADD-TASK" PRIORITY="high">
@@ -27,7 +27,7 @@
         <artifact-marker>tasks/&lt;task-slug&gt;/README.md</artifact-marker>
         <artifact-marker>unique thematic CollectionEntry and optional interview entry</artifact-marker>
         <artifact-marker>docs/knowledge-graph.xml task-library context</artifact-marker>
-        <trace-sequence>CONTRACT_READ -> MODE_AND_PROFILE_RESOLVED -> CANDIDATE_VALIDATED -> TASK_WRITTEN -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> TARGET_EDITOR_PASSED -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
+        <trace-sequence>CONTRACT_READ -> TASK_CLASS_AND_PROFILE_RESOLVED -> CANDIDATE_VALIDATED -> CONCISE_TASK_WRITTEN -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> TARGET_EDITOR_PASSED -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
       </required-signals>
     </VF-002>
     <VF-003 NAME="AgentUpdatesTask" USE_CASES="UC-004, UC-007" DATA_FLOW="DF-UPDATE-TASK" PRIORITY="high">
@@ -36,7 +36,7 @@
       <required-signals>
         <artifact-marker>mode, editor profile, source facts, destination locations, expected, actual, and verdict</artifact-marker>
         <artifact-marker>unique thematic and zero-or-one interview synchronization</artifact-marker>
-        <trace-sequence>CHANGE_CLASSIFIED -> SOURCE_CONTRACT_CAPTURED -> MODE_AND_PROFILE_SELECTED -> CARD_MIGRATED -> TARGET_EDITOR_PASSED -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
+        <trace-sequence>CHANGE_CLASSIFIED -> SOURCE_CONTRACT_CAPTURED -> TASK_CLASS_AND_PROFILE_SELECTED -> CONCISE_CARD_MIGRATED -> TARGET_EDITOR_PASSED -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
       </required-signals>
     </VF-003>
     <VF-004 NAME="AgentValidatesCandidate" USE_CASES="UC-005" DATA_FLOW="DF-VALIDATE-TASK, DF-PUBLISH-TASK-WAVE" PRIORITY="high">
@@ -45,12 +45,12 @@
       <required-signals>
         <artifact-marker>Beads validation decision and evidence type</artifact-marker>
         <artifact-marker>accepted card or neutral non-publication reason</artifact-marker>
-        <trace-sequence>StudentTaskCard -> local-completeness -> preservation -> structure -> solution-content -> target-editor -> synchronization -> rendered</trace-sequence>
+        <trace-sequence>ConciseStudentTaskCard -> task-class -> local-completeness -> preservation -> structure -> solution-content -> target-editor -> synchronization -> rendered</trace-sequence>
       </required-signals>
     </VF-004>
     <VF-005 NAME="StudentNavigatesCollections" USE_CASES="UC-001, UC-006" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
       <scenario>A student follows the collection-first path and returns to the same learning context after a task.</scenario>
-      <expected-outcome>The root hub links to the chosen collection, its task entry resolves with the correct title and duration, browser Back returns to that collection, and both task fallback links resolve to the root hub.</expected-outcome>
+      <expected-outcome>The root hub links to the chosen collection, its task entry resolves with the correct title and duration, browser Back returns to that collection, and the card contains no duplicated fallback navigation after cutover.</expected-outcome>
       <required-signals>
         <artifact-marker>README.md collection link, collection README, and task navigation links</artifact-marker>
         <artifact-marker>linked student title, plain-language thematic description, and exact integer duration</artifact-marker>
@@ -83,6 +83,8 @@
         <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
         <check-7>Verify Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs across governance, technology, validation, the current root map, and affected cards; verify all twenty stable slugs appear exactly once in the fixed TaskEditorProfileMap.</check-7>
         <check-8>Verify Phases 8 through 15 are completed with the current root hub, thirteen collections, twenty migrated cards, synchronized graph facts, and Gate-Phase-15 implemented with PASS evidence.</check-8>
+        <check-9>Verify Phases and Gates 16 through 20 exist only as planned or in-progress records, link the five existing modules, include observable artifact checks and BLOCKED conditions, and never claim the current legacy catalog is concise.</check-9>
+        <check-10>Verify AGENTS.md and docs/task-validation-policy.md contain the same exact twenty-slug compatibility inventory, five format values, twenty-one-card and fourteen-collection target, and Phase 19 expiry.</check-10>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>
@@ -110,32 +112,29 @@
         <file>templates/task-template.md</file>
       </test-files>
       <module-checks>
-        <check-1>Verify exactly five metadata labels in each complete mode: Технология, Подборка, Формат, Сложность, and Примерное время.</check-1>
-        <check-2>Verify controlled technologies JavaScript, TypeScript, HTML/CSS, HTML/JavaScript, HTML/CSS/JavaScript, React/TypeScript; formats Написать код, Исправить код, Разобрать код, Предсказать результат; and difficulties Базовая, Средняя, Продвинутая.</check-2>
-        <check-3>Verify ordinary mode order starts with title, back link, editor instruction, Условие, one complete code block; complex mode starts with title, back link, short Условие, editor instruction, Код — вставьте его в редактор, and complete blocks.</check-3>
-        <check-4>Verify one complete copy-ready starter block unless several real files are necessary; every multi-file starter and solution block has a matching FILE path and complete content.</check-4>
+        <check-1>Verify exactly five metadata labels in each complete task-class variant: Технология, Подборка, Формат, Сложность, and Примерное время.</check-1>
+        <check-2>Verify controlled technologies JavaScript, TypeScript, HTML/CSS, HTML/JavaScript, HTML/CSS/JavaScript, React/TypeScript; formats Написать код, Исправить код, Разобрать код, Предсказать результат, Приближённая к реальной работе; and difficulties Базовая, Средняя, Продвинутая.</check-2>
+        <check-3>Verify both variants order title, editor instruction, Условие, minimal starter, three hints, concise Решение, and О задаче; real-work uses sequential visible requirements.</check-3>
+        <check-4>Verify one minimal complete copy-ready starter block; several real files are allowed only for real-work and every multi-file starter and solution block has a matching FILE path and complete content.</check-4>
         <check-5>Verify exactly three closed details blocks with summaries Подсказка 1 — куда смотреть, Подсказка 2 — с чего начать, and Подсказка 3 — почти решение.</check-5>
-        <check-6>Verify closed Решение, Самопроверка, О задаче, optional Почитать по теме, browser-back instruction, and root fallback link; reject the open attribute.</check-6>
+        <check-6>Verify closed Решение and О задаче; reject open attributes, legacy navigation, readiness, self-check, theory, harness, full-document JavaScript markup, or duplicated unchanged starter code.</check-6>
         <check-7>Review the rendered GitHub view whenever the template or its HTML structure changes.</check-7>
       </module-checks>
       <scenarios>
-        <scenario-1 kind="success">Both template modes are independently complete, copy-ready after sentinel replacement, and allow exactly three hints, solution, and self-check to open independently.</scenario-1>
-        <scenario-2 kind="failure">Wrong mode order, old metadata, incomplete code, unjustified file split, FILE mismatch, repeated or missing hint, open details, or malformed Markdown blocks completion.</scenario-2>
+        <scenario-1 kind="success">Both task-class variants are independently complete, concise, copy-ready after sentinel replacement, and allow exactly three hints plus solution and metadata to open independently.</scenario-1>
+        <scenario-2 kind="failure">Wrong order, legacy section, invalid metadata, full-document wrapper, incomplete code, unjustified file split, FILE mismatch, repeated or missing hint, open details, or malformed Markdown blocks completion.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
         <marker-1>Условие</marker-1>
-        <marker-2>Готово, когда</marker-2>
-        <marker-3>Код — вставьте его в редактор</marker-3>
-        <marker-4>three exact hint summaries</marker-4>
-        <marker-5>Решение</marker-5>
-        <marker-6>Самопроверка</marker-6>
-        <marker-7>О задаче</marker-7>
+        <marker-2>three exact hint summaries</marker-2>
+        <marker-3>Решение</marker-3>
+        <marker-4>О задаче</marker-4>
       </required-evidence-anchors>
       <required-trace-assertions>
-        <assertion-1>The initial rendered page must not expose hint, solution, self-check, optional reading, or metadata bodies.</assertion-1>
+        <assertion-1>The initial rendered page must not expose hint, solution, or metadata bodies.</assertion-1>
       </required-trace-assertions>
       <wave-follow-up>Use the current template contract for every added task.</wave-follow-up>
-      <phase-follow-up>Sample both GitHub-rendered modes and the first conforming task of each mode.</phase-follow-up>
+      <phase-follow-up>Sample both GitHub-rendered task classes and the first conforming task of each class.</phase-follow-up>
     </V-M-TASK-TEMPLATE>
 
     <V-M-TASK-VALIDATION MODULE="M-TASK-VALIDATION" PRIORITY="high">
@@ -144,16 +143,18 @@
         <file>Beads candidate and wave records</file>
       </test-files>
       <module-checks>
-        <check-1>Apply identity, learning-value, StudentTaskCard, local-completeness, preservation, structure, solution-content, target-editor, synchronization, and rendered gates in order.</check-1>
+        <check-1>Apply identity, task-class, ConciseStudentTaskCard, local-completeness, preservation, structure, solution-content, target-editor, synchronization, and rendered gates in order.</check-1>
         <check-2>Freeze a finite Beads candidate register with stable IDs, then verify every candidate decision is accepted, needs-rewrite, rejected, or duplicate with a concise reason and evidence type.</check-2>
-        <check-3>For every migrated card, verify CardMigrationEvidence records slug, mode, editor profile, source learning goal, source prerequisite, source runtime assumption, destination locations, expected, actual, and verdict.</check-3>
+        <check-3>For every migrated card, verify its Beads issue records exactly CardMigrationEvidence fields slug, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, targetEditorExpectedResult, targetEditorActualResult, and verdict.</check-3>
         <check-4>Obtain final copy-run, type-check, DOM, React, CSS, trace, or browser evidence in the named target editor; treat temporary harnesses as diagnostic only.</check-4>
         <check-5>Verify external materials are targeted and reachable while condition, complete starter code, text fixtures, solution, and required verification context remain local.</check-5>
-        <check-6>Verify title, duration, editor profile, exactly one thematic collection, zero or one interview, graph, verification, and Beads evidence are synchronized.</check-6>
+        <check-6>Verify title, duration, format, editor profile, exactly one thematic collection, zero or one interview, supported real-work membership, graph, verification, and Beads evidence are synchronized.</check-6>
         <check-7>Reject publication or migration PASS when mandatory browser or editor evidence is unavailable; record BLOCKED rather than PASS.</check-7>
+        <check-8>Before Phase 19 cutover, verify only the exact twenty named legacy slugs may use compatibility and that compatibility never substitutes for concise structural or target-editor PASS.</check-8>
+        <check-9>After cutover, run the policy commands that reject legacy markers, a fourth hint, open details, full HTML documents, invalid metadata, duplicate thematic membership, and unsupported real-work membership.</check-9>
       </module-checks>
       <scenarios>
-        <scenario-1 kind="success">A unique candidate or migrated card has an exact mode and profile, complete local code, preserved source facts, correct solution, synchronized collections, and matching target-editor evidence.</scenario-1>
+        <scenario-1 kind="success">A unique candidate or migrated card has an exact task class and profile, minimal complete local code, preserved source facts, concise correct solution, synchronized collections, and matching target-editor evidence.</scenario-1>
         <scenario-2 kind="failure">An ambiguous, duplicated, incorrect, externally incomplete, preservation-losing, collection-drifting, or target-editor-unverifiable card cannot pass.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
@@ -181,10 +182,10 @@
         <file>tasks/&lt;task-slug&gt;/assets/*</file>
       </test-files>
       <module-checks>
-        <check-1>Enumerate exactly twenty task cards and verify every card has one exact StudentTaskCard mode with visible editor instruction, condition, complete code, readiness criteria, navigation, and exactly three hint summaries.</check-1>
-        <check-2>Verify one complete starter block or justified real files; every multi-file starter and solution block has matching FILE paths and complete content.</check-2>
-        <check-3>Resolve navigation, prerequisite, media asset, and supplementary links; reject text code, HTML, test data, or scenarios left in assets after their inline replacement passes.</check-3>
-        <check-4>Verify five-field vocabulary, stable slug, preserved source learning goal, prerequisite and runtime assumptions, solution completeness, and fixed editor profile.</check-4>
+        <check-1>During transition enumerate exactly twenty legacy-compatible cards without concise PASS; after Phase 19 enumerate exactly twenty-one ConciseStudentTaskCards with visible editor instruction, condition, minimal code, and exactly three hint summaries.</check-1>
+        <check-2>Verify one minimal starter block or justified real-work files; every multi-file starter and solution block has matching FILE paths and complete content.</check-2>
+        <check-3>Resolve prerequisite, media asset, collection, and supplementary links; reject legacy navigation, full-document JavaScript markup, or text code, HTML, test data, and scenarios left in assets after inline replacement passes.</check-3>
+        <check-4>Verify five-field vocabulary including the fifth real-work format, stable slug, preserved source learning goal, prerequisite and runtime assumptions, concise solution boundaries, and fixed editor profile.</check-4>
         <check-5>Verify target-editor expected, actual, and verdict plus applicable browser/manual visual evidence; diagnostic harness evidence alone cannot pass.</check-5>
         <check-6>Verify collection, graph, verification, Beads, pushed commit, GitHub-rendered review, complete report, and technical publication status before closing the child issue.</check-6>
       </module-checks>
@@ -199,10 +200,10 @@
         <marker-4>validation decision and wave technical-publication status</marker-4>
       </required-evidence-anchors>
       <required-trace-assertions>
-        <assertion-1>A task edit must not complete before exactly one thematic, zero or one interview, graph, verification, and Beads updates are verified.</assertion-1>
+        <assertion-1>A task edit must not complete before exactly one thematic, zero or one interview, supported real-work membership, graph, verification, and Beads updates are verified.</assertion-1>
       </required-trace-assertions>
       <wave-follow-up>Compare changed card title, duration, editor profile, membership, graph and verification facts with its collection projections and Beads evidence.</wave-follow-up>
-      <phase-follow-up>Review five-field vocabulary, preservation coverage, target-editor results, and sample both student-facing task modes.</phase-follow-up>
+      <phase-follow-up>Review five-field vocabulary, preservation coverage, target-editor results, absence of legacy markers, and sample both student-facing task classes.</phase-follow-up>
     </V-M-TASK-LIBRARY>
 
     <V-M-CATALOG MODULE="M-CATALOG" PRIORITY="high">
@@ -212,27 +213,28 @@
         <file>tasks/*/README.md</file>
       </test-files>
       <module-checks>
-        <check-1>Verify exactly ten thematic and three interview README paths with no technology-level intermediate README.</check-1>
-        <check-2>Resolve every root, collection, task, and fallback link; compare linked student title and exact duration with the card.</check-2>
-        <check-3>Verify every task belongs to exactly one thematic collection, interviews contain fifteen unique entries total, and no task belongs to two interviews.</check-3>
-        <check-4>Verify the current root README has exactly four student blocks, links all thirteen collections, and contains no old task tables, metadata-source explanations, or agent-maintenance prose.</check-4>
+        <check-1>Verify the transition truthfully retains ten thematic and three interview pages; after Phase 19 verify those thirteen plus exactly one real-work README and no technology-level intermediate README.</check-1>
+        <check-2>Resolve every root, collection, and task link; compare linked student title and exact duration with the card.</check-2>
+        <check-3>Verify every task belongs to exactly one thematic collection, no task belongs to two interviews, and the real-work membership set exactly equals the cards using the real-work format.</check-3>
+        <check-4>Verify the root README has exactly four student blocks; before cutover it truthfully links thirteen current collections, and after Phase 19 it links all fourteen without old task tables, metadata-source explanations, or agent-maintenance prose.</check-4>
         <check-5>Verify the root editor map and all card profiles use the same four exact URLs.</check-5>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">A student can choose a collection, open a task using its title, description, and duration, and return to the same collection.</scenario-1>
-        <scenario-2 kind="failure">A missing or extra collection, duplicate membership, stale title or duration, broken link, old root table, agent-maintenance prose, or editor-map drift blocks completion.</scenario-2>
+        <scenario-2 kind="failure">A missing or extra collection, unsupported real-work entry, duplicate membership, stale title, format or duration, broken link, old root table, agent-maintenance prose, or editor-map drift blocks completion.</scenario-2>
       </scenarios>
       <required-evidence-anchors>
         <marker-1>unique thematic task slug</marker-1>
         <marker-2>linked student title and relative task link</marker-2>
         <marker-3>plain-language thematic sentence and exact duration</marker-3>
         <marker-4>zero-or-one interview membership</marker-4>
+        <marker-5>supported real-work membership</marker-5>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>Collection synchronization must use the card title and metadata plus approved collection order as source data and must not silently rewrite the card to match stale navigation.</assertion-1>
       </required-trace-assertions>
-      <wave-follow-up>Run full thematic, optional interview, graph, verification, link, title, duration, and editor-profile synchronization checks after every redesign unit.</wave-follow-up>
-      <phase-follow-up>Review collection-first usability, membership uniqueness, controlled vocabulary, the current four-block hub, and the completed rendered audit.</phase-follow-up>
+      <wave-follow-up>Run full thematic, optional interview and real-work, graph, verification, link, title, format, duration, and editor-profile synchronization checks after every redesign unit.</wave-follow-up>
+      <phase-follow-up>Review collection-first usability, membership uniqueness, controlled vocabulary, the four-block hub, the twenty-one-card/fourteen-collection cutover, and the planned rendered audit.</phase-follow-up>
     </V-M-CATALOG>
   </ModuleVerification>
 
@@ -418,13 +420,104 @@
         <evidence-3>All four external editor surfaces opened, all six editor-profile instructions rendered, and the three former fixture cards passed the deep flow without hidden asset dependencies.</evidence-3>
       </required-evidence>
     </Gate-Phase-15>
+    <Gate-Phase-16 PHASE="Phase-16" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+      <goal>The concise target contract is staged consistently while the observable current state remains exactly twenty legacy-marker cards and thirteen collection pages.</goal>
+      <commands>
+        <command-1>test "$(rg -l 'Готово, когда|Самопроверка|← Все подборки|Потерялись\?' tasks/*/README.md | wc -l | tr -d ' ')" -eq 20</command-1>
+        <command-2>test "$(find collections -mindepth 3 -maxdepth 3 -name README.md | sort | wc -l | tr -d ' ')" -eq 13</command-2>
+        <command-3>xmllint --noout docs/requirements.xml docs/technology.xml docs/development-plan.xml docs/verification-plan.xml docs/knowledge-graph.xml docs/operational-packets.xml</command-3>
+        <command-4>rg -n '[T]ODO|[T]BD|implement[[:space:]]later|fill[[:space:]]in[[:space:]]details' AGENTS.md templates/task-template.md docs/*.xml docs/task-validation-policy.md</command-4>
+        <command-5>git diff --check</command-5>
+      </commands>
+      <artifact-checks>
+        <artifact-check-16-1>Template contains only focused and real-work concise variants; governance and validation name the same twenty compatibility slugs and Phase 19 expiry.</artifact-check-16-1>
+        <artifact-check-16-2>Requirements, technology, development, verification, graph, and packets all distinguish the implemented twenty-card/thirteen-collection catalog from the planned twenty-one-card/fourteen-collection target.</artifact-check-16-2>
+      </artifact-checks>
+      <required-evidence>
+        <evidence-1>Baseline output is exactly twenty and thirteen; XML and whitespace gates exit zero; the placeholder scan has no matches.</evidence-1>
+        <evidence-2>No task, collection, root hub, or future migration evidence is changed or marked implemented.</evidence-2>
+      </required-evidence>
+      <blocked-when>BLOCKED if the baseline count, compatibility inventory, XML, placeholder, diff, cross-reference, or planned-status check fails.</blocked-when>
+    </Gate-Phase-16>
+    <Gate-Phase-17 PHASE="Phase-17" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+      <goal>Exactly eight named Wave A cards become focused concise cards with synchronized target-editor, graph, verification, collection, and Beads evidence.</goal>
+      <commands>
+        <command-1>Enumerate the changed task paths and compare them exactly with immutable-category-totals, stable-product-sort, loop-closure-bindings, browser-event-loop-order, discriminated-load-state, typed-object-property, response-union-narrowing, and validate-unknown-profile.</command-1>
+        <command-2>Run the deterministic per-card structure, three-hint, closed-details, no-legacy, no-full-document, five-field metadata, and unique thematic membership checks from docs/task-validation-policy.md.</command-2>
+        <command-3>Run each card's Programiz, CodePen, or TypeScript Playground instruction and record complete CardMigrationEvidence in the owning Beads issue.</command-3>
+      </commands>
+      <artifact-checks>
+        <artifact-check-17-1>Eight task paths, eight graph exports, eight verification facts, their thematic and optional interview projections, and eight Beads records agree.</artifact-check-17-1>
+        <artifact-check-17-2>No Wave B, Wave C, real-work, root, or collection-inventory cutover fact changes.</artifact-check-17-2>
+      </artifact-checks>
+      <required-evidence>
+        <evidence-1>Eight final target-editor verdicts and complete CardMigrationEvidence records are PASS.</evidence-1>
+        <evidence-2>The focused wave commit is pushed and its complete rendered report is recorded before closure.</evidence-2>
+      </required-evidence>
+      <blocked-when>BLOCKED if any central action, structure, metadata, membership, target-editor, graph, verification, Beads, pushed-commit, or rendered evidence is missing or unavailable.</blocked-when>
+    </Gate-Phase-17>
+    <Gate-Phase-18 PHASE="Phase-18" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+      <goal>Exactly eight named Wave B cards become focused concise cards with minimal markup and required CodePen, keyboard, accessibility, and manual visual evidence.</goal>
+      <commands>
+        <command-1>Enumerate the changed task paths and compare them exactly with this-callback-binding, stale-search-response, delegated-dynamic-list, idempotent-event-listeners, accessible-keyboard-tabs, modal-focus-lifecycle, flex-long-text-overflow, and container-responsive-grid.</command-1>
+        <command-2>Run the deterministic concise per-card checks plus CodePen mode, browser interaction, real keyboard, accessibility, and manual visual checks where applicable.</command-2>
+        <command-3>Record complete CardMigrationEvidence and synchronized graph, verification, thematic, optional interview, and Beads facts for all eight cards.</command-3>
+      </commands>
+      <artifact-checks>
+        <artifact-check-18-1>Eight task paths and only their necessary catalog, graph, verification, and Beads facts change.</artifact-check-18-1>
+        <artifact-check-18-2>JavaScript cards contain no full HTML document; CSS and visual verdicts cite manual browser observation rather than unit assertions.</artifact-check-18-2>
+      </artifact-checks>
+      <required-evidence>
+        <evidence-1>Eight complete target-editor/browser records pass with exact expected and actual results.</evidence-1>
+        <evidence-2>The focused wave commit is pushed and its complete rendered report is recorded before closure.</evidence-2>
+      </required-evidence>
+      <blocked-when>BLOCKED if minimal markup changes required behavior, a hidden environment remains, CSS or accessibility evidence is substituted, membership drifts, or mandatory editor/browser evidence is unavailable.</blocked-when>
+    </Gate-Phase-18>
+    <Gate-Phase-19 PHASE="Phase-19" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+      <goal>Wave C and the catalog cut over atomically to twenty-one concise cards, fourteen collections, five formats, and one supported users-api-list real-work projection before compatibility is removed.</goal>
+      <commands>
+        <command-1>test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md | wc -l | tr -d ' ')" -eq 21</command-1>
+        <command-2>test "$(find collections -mindepth 3 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14</command-2>
+        <command-3>test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md -print0 | xargs -0 rg -l 'Готово, когда|Самопроверка|← Все подборки|Потерялись\?|&lt;details open' | wc -l | tr -d ' ')" -eq 0</command-3>
+        <command-4>For every sorted task path, run the exact hint, open-details, full-document, five-field controlled metadata, and unique thematic membership commands in docs/task-validation-policy.md.</command-4>
+        <command-5>test "$(rg -o 'tasks/[a-z0-9-]+/README\.md' collections/real-work/README.md | sort -u)" = 'tasks/users-api-list/README.md' and compare that set with every card whose format is Приближённая к реальной работе.</command-5>
+        <command-6>Verify README.md has exactly four second-level headings, fourteen collection links, and four approved editor links; run xmllint on the six GRACE XML artifacts and git diff --check.</command-6>
+      </commands>
+      <artifact-checks>
+        <artifact-check-19-1>The four React migrations, users-api-list, collections/real-work/README.md, its thematic projection, root link, graph export, verification facts, and Beads records change atomically.</artifact-check-19-1>
+        <artifact-check-19-2>The exact twenty-slug compatibility text is removed only after every structural and target-editor check passes.</artifact-check-19-2>
+      </artifact-checks>
+      <required-evidence>
+        <evidence-1>All twenty-one cards have exactly three hints, five controlled metadata fields, one thematic membership, and no legacy, open-details, or full-document marker.</evidence-1>
+        <evidence-2>users-api-list alone has the real-work format and collection membership; all required React/DummyJSON states have target-editor and browser PASS.</evidence-2>
+        <evidence-3>The focused cutover commit is pushed with complete wave evidence; Phase 20 remains planned.</evidence-3>
+      </required-evidence>
+      <blocked-when>BLOCKED if any count, marker, metadata, membership, editor, DummyJSON, root, graph, verification, Beads, or atomicity check fails; compatibility must not be removed while a failure remains.</blocked-when>
+    </Gate-Phase-19>
+    <Gate-Phase-20 PHASE="Phase-20" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+      <goal>The published thirty-six-page student experience renders correctly and is handed to the user without inferring final acceptance.</goal>
+      <commands>
+        <command-1>Open the published root, all fourteen collection pages, and all twenty-one task pages; record resolved URL, visible title, links, code fences, and closed details state.</command-1>
+        <command-2>Run deep rendered flows for each technology, all interviews, both task classes, all editor profiles, the real-work projection, and users-api-list required states.</command-2>
+        <command-3>Fetch origin, report branch divergence, pushed commit and pull-request state, and reconcile the rendered inventory with graph, verification, and Beads evidence.</command-3>
+      </commands>
+      <artifact-checks>
+        <artifact-check-20-1>One root plus fourteen collections plus twenty-one cards equals thirty-six recorded rendered pages with no missing URL.</artifact-check-20-1>
+        <artifact-check-20-2>The final report records remaining risk and leaves the top-level story and user-acceptance decision open.</artifact-check-20-2>
+      </artifact-checks>
+      <required-evidence>
+        <evidence-1>Every URL, title, link, details state, fence, editor profile, and collection membership has a current actual result.</evidence-1>
+        <evidence-2>No rendered PASS is inferred while GitHub, an editor, DummyJSON, or required published state is unavailable.</evidence-2>
+      </required-evidence>
+      <blocked-when>BLOCKED if any required published URL, rendering surface, editor, DummyJSON, branch-divergence, or evidence record is unavailable.</blocked-when>
+    </Gate-Phase-20>
   </PhaseGates>
 
   <FailurePackets>
     <packet-template>
       <canonical-schema>docs/operational-packets.xml</canonical-schema>
       <expected-fields>scenario, contract-ref, mode, editor-profile, preservation-ledger, target-editor-expected, target-editor-actual, target-editor-verdict, collection-sync, expected-evidence, observed-evidence, first-divergent-artifact-or-anchor, next-action</expected-fields>
-      <stop-conditions>three distinct hints unavailable; code not copy-runnable; undescribed file; ambiguous technology, editor, or profile; unnecessary multi-file split; FILE mismatch; embedded asset replacement mismatch; metadata and collection drift; duplicate thematic or interview membership; broken required link; unexpected GitHub rendering; unavailable mandatory evidence; incomplete technical publication</stop-conditions>
+      <stop-conditions>three distinct hints unavailable; code not minimally copy-runnable; undescribed file; ambiguous technology, editor, task class, or profile; unnecessary multi-file split; FILE mismatch; full-document JavaScript wrapper; embedded asset replacement mismatch; metadata and collection drift; duplicate thematic or interview membership; unsupported real-work membership; broken required link; unexpected GitHub rendering; unavailable mandatory evidence; incomplete technical publication</stop-conditions>
     </packet-template>
   </FailurePackets>
 </VerificationPlan>

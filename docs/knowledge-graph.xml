@@ -1,5 +1,5 @@
 <KnowledgeGraph>
-  <Project NAME="frontend-livecoding-tasks" VERSION="0.4.0">
+  <Project NAME="frontend-livecoding-tasks" VERSION="0.5.0">
     <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
 
@@ -9,21 +9,23 @@
       <depends>none</depends>
       <verification-ref>V-M-GOVERNANCE</verification-ref>
       <annotations>
-        <export-authoringRules PURPOSE="Expose two-mode task authoring, worktree isolation, delivery, editor-profile, preservation, and collection synchronization requirements" />
-        <export-verificationContracts PURPOSE="Expose shared completion evidence and phase gates" />
+        <export-authoringRules PURPOSE="Expose concise focused and real-work authoring, temporary twenty-slug compatibility, worktree isolation, delivery, editor-profile, preservation, and collection synchronization requirements" />
+        <export-verificationContracts PURPOSE="Expose shared completion evidence and planned Phase and Gate 16 through 20 records without inferring implementation" />
+        <const-conciseRoadmap PURPOSE="Link the five existing modules through planned contract, 8 + 8 + 5 migration, catalog cutover, and rendered-audit phases" PHASES="Phase-16,Phase-17,Phase-18,Phase-19,Phase-20" STATUS="planned" />
       </annotations>
     </M-GOVERNANCE>
 
     <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" STATUS="implemented">
-      <purpose>Define ordinary code-first and complex GitHub-rendered structures for copy-ready self-contained frontend task cards.</purpose>
+      <purpose>Define focused and real-work ConciseStudentTaskCard structures for copy-ready self-contained frontend task cards.</purpose>
       <path>templates/task-template.md</path>
       <depends>M-GOVERNANCE</depends>
       <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
       <annotations>
-        <type-TaskMetadata PURPOSE="Exact five fields and controlled values for technology, thematic collection, format, difficulty, and integer duration" />
-        <type-StudentTaskCard PURPOSE="Title, navigation, editor instruction, visible condition, complete starter code, readiness criteria, three hints, solution, self-check, optional reading, five-field metadata, and return instruction" />
+        <type-TaskMetadata PURPOSE="Exact five fields and controlled values for technology, thematic collection, one of five formats, difficulty, and integer duration" />
+        <type-ConciseStudentTaskCard PURPOSE="Title, editor instruction, Условие, minimal starter or minimum HTML fragment plus JavaScript, three closed hints, concise solution, and closed five-field metadata" />
+        <type-TaskClass PURPOSE="Focused one-action 10–30 minute task or sequential real-work 45–60 minute task" />
         <type-EditorProfile PURPOSE="Programiz, CodePen, TypeScript Playground, or React TypeScript copy-run contract" />
-        <export-taskSchema PURPOSE="Expose both exact card orders, copy-ready and FILE rules, progressive disclosure, navigation, and self-check structure" />
+        <export-taskSchema PURPOSE="Expose both concise task-class orders, minimal-code and FILE rules, progressive disclosure, solution boundaries, and metadata" />
       </annotations>
     </M-TASK-TEMPLATE>
 
@@ -35,20 +37,22 @@
       <annotations>
         <type-ValidationDecision PURPOSE="accepted, needs-rewrite, rejected, or duplicate" />
         <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and one validation decision per entry" />
-        <type-CardMigrationEvidence PURPOSE="Slug, mode, editor profile, source learning goal, prerequisite, runtime assumption, destination locations, expected, actual, and verdict" />
-        <export-validateCandidate PURPOSE="Apply preservation, structure, content, target-editor, synchronization, and rendered gates in addition to candidate validation" />
+        <type-CardMigrationEvidence PURPOSE="Exactly slug, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, targetEditorExpectedResult, targetEditorActualResult, and verdict in the matching card Beads issue" />
+        <export-validateCandidate PURPOSE="Apply task-class, concise structure, preservation, content, target-editor, synchronization, and rendered gates in addition to candidate validation" />
+        <const-legacyCompatibility PURPOSE="Permit legacy structure only for the exact twenty pre-existing task exports while Phases 16 through 19 are incomplete; compatibility is not concise migration PASS" SLUGS="accessible-keyboard-tabs,browser-event-loop-order,container-responsive-grid,delegated-dynamic-list,discriminated-load-state,flex-long-text-overflow,idempotent-event-listeners,immutable-category-totals,loop-closure-bindings,modal-focus-lifecycle,react-batched-counter,react-derived-list,react-effect-subscription,react-strictmode-cleanup,response-union-narrowing,stable-product-sort,stale-search-response,this-callback-binding,typed-object-property,validate-unknown-profile" EXPIRES="Phase-19" STATUS="temporary" />
       </annotations>
     </M-TASK-VALIDATION>
 
     <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="implemented">
-      <purpose>Store accepted, locally complete StudentTaskCards with copy-ready code, fixed editor profiles, exact navigation, and five-field metadata.</purpose>
+      <purpose>Store the current twenty legacy-compatible cards while migrating them to concise focused cards and adding one concise real-work card.</purpose>
       <path>tasks/&lt;task-slug&gt;/README.md; optional media-only tasks/&lt;task-slug&gt;/assets/*</path>
       <depends>M-TASK-VALIDATION, M-TASK-TEMPLATE, M-GOVERNANCE</depends>
       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
       <annotations>
         <type-TaskMetadataSet PURPOSE="Collection of five-field task metadata records exposed to thematic and interview collections" />
-        <export-taskCard PURPOSE="Expose one complete copy-ready StudentTaskCard through GitHub" />
-        <const-cardMigrationState PURPOSE="Phases 10 through 15 implemented all twenty card migrations, thematic and optional interview membership, root cutover, and the published rendered final audit" RENDERED_AUDIT_STATUS="PASS" />
+        <export-taskCard PURPOSE="Expose one complete copy-ready task card through GitHub; Phase 19 requires all twenty-one exports to conform to ConciseStudentTaskCard" />
+        <const-cardMigrationState PURPOSE="Historical Phases 10 through 15 implemented the prior verbose twenty-card redesign, thematic and optional interview membership, root cutover, and rendered audit" RENDERED_AUDIT_STATUS="PASS" />
+        <const-conciseMigrationState PURPOSE="Track the new concise redesign as planned 8 + 8 + 5 waves; current task exports remain legacy-compatible until independently evidenced" STATUS="planned" TARGET_TASKS="21" />
         <export-immutable-category-totals PURPOSE="Expose the accepted student-facing task card at tasks/immutable-category-totals/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-arrays-and-objects" INTERVIEW_COLLECTION="collection-interview-01" />
         <export-stable-product-sort PURPOSE="Expose the accepted student-facing task card at tasks/stable-product-sort/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-arrays-and-objects" INTERVIEW_COLLECTION="collection-interview-02" />
         <export-loop-closure-bindings PURPOSE="Expose the accepted student-facing task card at tasks/loop-closure-bindings/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="Programiz" THEMATIC_COLLECTION="collection-this-and-closures" INTERVIEW_COLLECTION="collection-interview-01" />
@@ -69,17 +73,18 @@
         <export-react-strictmode-cleanup PURPOSE="Expose the accepted student-facing task card at tasks/react-strictmode-cleanup/README.md" MIGRATION_STATUS="implemented" MODE="code-first" EDITOR_PROFILE="React TypeScript" THEMATIC_COLLECTION="collection-effects-and-lifecycle" />
         <export-flex-long-text-overflow PURPOSE="Expose the accepted student-facing task card at tasks/flex-long-text-overflow/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" THEMATIC_COLLECTION="collection-layout" INTERVIEW_COLLECTION="collection-interview-02" />
         <export-container-responsive-grid PURPOSE="Expose the accepted student-facing task card at tasks/container-responsive-grid/README.md" MIGRATION_STATUS="implemented" MODE="complex" EDITOR_PROFILE="CodePen HTML/CSS" THEMATIC_COLLECTION="collection-layout" />
+        <export-users-api-list PURPOSE="Expose the planned concise real-work task at tasks/users-api-list/README.md only after Phase 19 evidence exists" MIGRATION_STATUS="planned" MODE="real-work" EDITOR_PROFILE="React TypeScript" THEMATIC_COLLECTION="collection-effects-and-lifecycle" REAL_WORK_COLLECTION="collection-real-work" />
       </annotations>
     </M-TASK-LIBRARY>
 
     <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="implemented">
-      <purpose>Own the root student hub plus thematic and interview collection pages that lead students to task cards.</purpose>
+      <purpose>Own the root student hub plus thematic, interview, and planned real-work collection pages that lead students to task cards.</purpose>
       <path>README.md; collections/**/README.md</path>
       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
       <verification-ref>V-M-CATALOG</verification-ref>
       <annotations>
         <type-CollectionEntry PURPOSE="Linked student title and exact integer duration copied from the card, plus one plain-language sentence only for thematic collections" />
-        <export-studentIndex PURPOSE="Expose the current four-block root hub, ten thematic collections, and three interview collections without duplicating card content" />
+        <export-studentIndex PURPOSE="Expose the current four-block thirteen-collection hub and the Phase 19 target of ten thematic, three interview, and one real-work collection without duplicating card content" />
         <collection-arrays-and-objects PATH="collections/javascript/arrays-and-objects/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-this-and-closures PATH="collections/javascript/this-and-closures/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-event-loop-and-async PATH="collections/javascript/event-loop-and-async/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
@@ -93,7 +98,9 @@
         <collection-interview-01 PATH="collections/interviews/interview-01/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-interview-02 PATH="collections/interviews/interview-02/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
         <collection-interview-03 PATH="collections/interviews/interview-03/README.md" STATUS="available" LINKS="M-TASK-LIBRARY" />
-        <const-collectionMigrationState PURPOSE="Phases 9 through 15 implemented all thirteen collection pages, fifteen unique interview entries, the current root hub, and the published rendered audit" RENDERED_AUDIT_STATUS="PASS" />
+        <collection-real-work PATH="collections/real-work/README.md" STATUS="planned" PHASE="Phase-19" LINKS="M-TASK-LIBRARY" />
+        <const-collectionMigrationState PURPOSE="Phases 9 through 15 implemented all thirteen current collection pages, fifteen unique interview entries, the current root hub, and the published rendered audit" RENDERED_AUDIT_STATUS="PASS" />
+        <const-conciseCatalogTarget PURPOSE="Phase 19 atomically targets twenty-one cards, fourteen collections, one supported users-api-list real-work projection, and four unchanged root headings" STATUS="planned" />
       </annotations>
     </M-CATALOG>
 
