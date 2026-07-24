@@ -22,7 +22,7 @@ M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLAT
       ]]></graph-entry-excerpt>
       <dependency-contract-summaries>
         <dependency-1 module="M-GOVERNANCE">Authoring, synchronization, stop-condition, and Beads evidence rules.</dependency-1>
-        <dependency-2 module="M-TASK-TEMPLATE">Focused and real-work concise shapes, five metadata labels and formats, editor profiles, minimal copy-ready and real-work FILE rules, exact hints, solution boundaries, and progressive disclosure.</dependency-2>
+        <dependency-2 module="M-TASK-TEMPLATE">Focused and real-work concise shapes, technology-dependent fences, five metadata labels and formats, editor profiles, minimal copy-ready code, real-work-only multi-file rules with complete changed solution files and matching FILE paths, exact hints, solution boundaries, and progressive disclosure.</dependency-2>
         <dependency-3 module="M-TASK-VALIDATION">Strict candidate or migration decisions, exact compatibility inventory, CardMigrationEvidence, target-editor verdict, thematic/interview/real-work sync, and rendered evidence.</dependency-3>
       </dependency-contract-summaries>
       <verification-excerpt><![CDATA[
@@ -128,7 +128,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
     <compatibility-state>
       <allowed-slugs>accessible-keyboard-tabs, browser-event-loop-order, container-responsive-grid, delegated-dynamic-list, discriminated-load-state, flex-long-text-overflow, idempotent-event-listeners, immutable-category-totals, loop-closure-bindings, modal-focus-lifecycle, react-batched-counter, react-derived-list, react-effect-subscription, react-strictmode-cleanup, response-union-narrowing, stable-product-sort, stale-search-response, this-callback-binding, typed-object-property, validate-unknown-profile</allowed-slugs>
       <permission>Legacy structure only; no concise structural, target-editor, wave, or rendered PASS.</permission>
-      <expiry>Remove atomically in Phase 19 only after all twenty-one concise cards pass.</expiry>
+      <expiry>In Phase 19 run the full scan with compatibility present, remove only after PASS, then rerun the identical scan without compatibility; only the second PASS completes cutover.</expiry>
     </compatibility-state>
     <Phase-16 STATUS="planned" GATE="Gate-Phase-16">Stage M-GOVERNANCE, M-TASK-TEMPLATE, M-TASK-VALIDATION, M-TASK-LIBRARY, and M-CATALOG target facts while observing twenty current legacy cards and thirteen current collections.</Phase-16>
     <Phase-17 STATUS="planned" GATE="Gate-Phase-17">Migrate the exact eight-card focused Wave A with complete CardMigrationEvidence.</Phase-17>
@@ -177,7 +177,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <test-files-removed />
       <module-checks>
         <command-1>Verify accepted validation status or migration PASS, selected task class, five metadata labels and controlled values, editor profile, exact hints, closed details, absence of legacy markers, and mandatory concise anchors.</command-1>
-        <command-2>Verify one minimal complete copy-ready block or justified real-work files with matching FILE paths; reject full-document JavaScript markup and resolve prerequisite, media asset, collection, and supplementary links.</command-2>
+        <command-2>Verify one technology-dependent minimal complete copy-ready block or justified real-work files; every starter file is complete with a FILE path and every included changed solution file is complete with the matching starter FILE path. Reject full-document JavaScript markup and resolve prerequisite, media asset, collection, and supplementary links.</command-2>
         <command-3>Verify exact CardMigrationEvidence fields and final target-editor expected result, actual result, and verdict plus applicable browser or manual visual evidence.</command-3>
         <command-4>Prove that the task slug appears in exactly one thematic collection, zero or one interview, supported real-work membership, one graph annotation, and matching verification and Beads facts.</command-4>
       </module-checks>
@@ -185,7 +185,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <marker-1>closed five-field О задаче block</marker-1>
         <marker-2>editor instruction / Условие / three exact hints / concise Решение / О задаче</marker-2>
         <marker-3>CardMigrationEvidence and target-editor verdict</marker-3>
-        <marker-4>thematic, optional interview, graph, verification, and Beads sync</marker-4>
+        <marker-4>thematic, optional interview, supported real-work, graph, verification, and Beads sync</marker-4>
       </required-evidence-anchors>
       <required-trace-assertions>
         <assertion-1>A task change must not complete before target-editor evidence and collection, graph, verification, and Beads synchronization are verified.</assertion-1>
@@ -235,7 +235,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
         <command-1>V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE checks.</command-1>
       </commands-run>
       <evidence-captured>
-        <item-1>Card mode, editor profile, preservation ledger, target-editor expected/actual/verdict, thematic and optional interview entries, graph, verification, links, and Beads status agree.</item-1>
+        <item-1>Card mode, editor profile, preservation ledger, target-editor expected/actual/verdict, thematic, optional interview and supported real-work entries, graph, verification, links, and Beads status agree.</item-1>
       </evidence-captured>
       <mode>focused | real-work</mode>
       <editor-profile>Programiz | CodePen | TypeScript Playground | React TypeScript</editor-profile>

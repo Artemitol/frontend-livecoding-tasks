@@ -22,21 +22,21 @@
     </VF-001>
     <VF-002 NAME="AgentAddsTask" USE_CASES="UC-003" DATA_FLOW="DF-ADD-TASK" PRIORITY="high">
       <scenario>An AI agent adds one task from a mentor request.</scenario>
-      <expected-outcome>An accepted task card, exactly one thematic collection, zero or one interview, graph and verification entries, and target-editor evidence change atomically; the serialized wave closes after push, GitHub-rendered evidence, and complete report pass.</expected-outcome>
+      <expected-outcome>An accepted task card, exactly one thematic collection, zero or one interview, supported real-work membership when applicable, graph and verification entries, and target-editor evidence change atomically; the serialized wave closes after push, GitHub-rendered evidence, and complete report pass.</expected-outcome>
       <required-signals>
         <artifact-marker>tasks/&lt;task-slug&gt;/README.md</artifact-marker>
-        <artifact-marker>unique thematic CollectionEntry and optional interview entry</artifact-marker>
+        <artifact-marker>unique thematic CollectionEntry, optional interview entry, and supported real-work entry when applicable</artifact-marker>
         <artifact-marker>docs/knowledge-graph.xml task-library context</artifact-marker>
-        <trace-sequence>CONTRACT_READ -> TASK_CLASS_AND_PROFILE_RESOLVED -> CANDIDATE_VALIDATED -> CONCISE_TASK_WRITTEN -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> TARGET_EDITOR_PASSED -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
+        <trace-sequence>CONTRACT_READ -> TASK_CLASS_AND_PROFILE_RESOLVED -> CANDIDATE_VALIDATED -> CONCISE_TASK_WRITTEN -> THEMATIC_AND_INTERVIEW_SYNCED -> REAL_WORK_SYNCED_IF_APPLICABLE -> GRAPH_AND_VERIFICATION_SYNCED -> TARGET_EDITOR_PASSED -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
       </required-signals>
     </VF-002>
     <VF-003 NAME="AgentUpdatesTask" USE_CASES="UC-004, UC-007" DATA_FLOW="DF-UPDATE-TASK" PRIORITY="high">
       <scenario>An AI agent changes or migrates task content without losing the source learning goal, prerequisite, runtime assumptions, or student navigation.</scenario>
-      <expected-outcome>CardMigrationEvidence is complete; target-editor evidence passes; thematic and optional interview data, graph and verification facts, assets, and links remain consistent; ambiguity stops before drift.</expected-outcome>
+      <expected-outcome>CardMigrationEvidence is complete; target-editor evidence passes; thematic, optional interview, and supported real-work data when applicable, graph and verification facts, assets, and links remain consistent; ambiguity stops before drift.</expected-outcome>
       <required-signals>
         <artifact-marker>mode, editor profile, source facts, destination locations, expected, actual, and verdict</artifact-marker>
-        <artifact-marker>unique thematic and zero-or-one interview synchronization</artifact-marker>
-        <trace-sequence>CHANGE_CLASSIFIED -> SOURCE_CONTRACT_CAPTURED -> TASK_CLASS_AND_PROFILE_SELECTED -> CONCISE_CARD_MIGRATED -> TARGET_EDITOR_PASSED -> COLLECTIONS_SYNCED -> GRAPH_AND_VERIFICATION_SYNCED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
+        <artifact-marker>unique thematic, zero-or-one interview, and supported real-work synchronization when applicable</artifact-marker>
+        <trace-sequence>CHANGE_CLASSIFIED -> SOURCE_CONTRACT_CAPTURED -> TASK_CLASS_AND_PROFILE_SELECTED -> CONCISE_CARD_MIGRATED -> TARGET_EDITOR_PASSED -> THEMATIC_AND_INTERVIEW_SYNCED -> REAL_WORK_SYNCED_IF_APPLICABLE -> GRAPH_AND_VERIFICATION_SYNCED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
       </required-signals>
     </VF-003>
     <VF-004 NAME="AgentValidatesCandidate" USE_CASES="UC-005" DATA_FLOW="DF-VALIDATE-TASK, DF-PUBLISH-TASK-WAVE" PRIORITY="high">
@@ -115,9 +115,9 @@
         <check-1>Verify exactly five metadata labels in each complete task-class variant: Технология, Подборка, Формат, Сложность, and Примерное время.</check-1>
         <check-2>Verify controlled technologies JavaScript, TypeScript, HTML/CSS, HTML/JavaScript, HTML/CSS/JavaScript, React/TypeScript; formats Написать код, Исправить код, Разобрать код, Предсказать результат, Приближённая к реальной работе; and difficulties Базовая, Средняя, Продвинутая.</check-2>
         <check-3>Verify both variants order title, editor instruction, Условие, minimal starter, three hints, concise Решение, and О задаче; real-work uses sequential visible requirements.</check-3>
-        <check-4>Verify one minimal complete copy-ready starter block; several real files are allowed only for real-work and every multi-file starter and solution block has a matching FILE path and complete content.</check-4>
-        <check-5>Verify exactly three closed details blocks with summaries Подсказка 1 — куда смотреть, Подсказка 2 — с чего начать, and Подсказка 3 — почти решение.</check-5>
-        <check-6>Verify closed Решение and О задаче; reject open attributes, legacy navigation, readiness, self-check, theory, harness, full-document JavaScript markup, or duplicated unchanged starter code.</check-6>
+        <check-4>Verify one minimal complete copy-ready starter block; several real files are allowed only for real-work, every starter file is complete with a FILE path, and every included changed solution file is complete with the matching starter FILE path.</check-4>
+        <check-5>Verify each exact summary Подсказка 1 — куда смотреть, Подсказка 2 — с чего начать, and Подсказка 3 — почти решение occurs once and the total hint-summary count is three.</check-5>
+        <check-6>Verify closed Решение and О задаче; reject open attributes, legacy navigation, readiness, self-check, theory, harness, full-document JavaScript markup including style wrappers, or duplicated unchanged starter code.</check-6>
         <check-7>Review the rendered GitHub view whenever the template or its HTML structure changes.</check-7>
       </module-checks>
       <scenarios>
@@ -183,7 +183,7 @@
       </test-files>
       <module-checks>
         <check-1>During transition enumerate exactly twenty legacy-compatible cards without concise PASS; after Phase 19 enumerate exactly twenty-one ConciseStudentTaskCards with visible editor instruction, condition, minimal code, and exactly three hint summaries.</check-1>
-        <check-2>Verify one minimal starter block or justified real-work files; every multi-file starter and solution block has matching FILE paths and complete content.</check-2>
+        <check-2>Verify one minimal starter block or justified real-work files; every starter file is complete with a FILE path, and every included changed solution file is complete with the matching starter FILE path.</check-2>
         <check-3>Resolve prerequisite, media asset, collection, and supplementary links; reject legacy navigation, full-document JavaScript markup, or text code, HTML, test data, and scenarios left in assets after inline replacement passes.</check-3>
         <check-4>Verify five-field vocabulary including the fifth real-work format, stable slug, preserved source learning goal, prerequisite and runtime assumptions, concise solution boundaries, and fixed editor profile.</check-4>
         <check-5>Verify target-editor expected, actual, and verdict plus applicable browser/manual visual evidence; diagnostic harness evidence alone cannot pass.</check-5>
@@ -475,9 +475,10 @@
     </Gate-Phase-18>
     <Gate-Phase-19 PHASE="Phase-19" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
       <goal>Wave C and the catalog cut over atomically to twenty-one concise cards, fourteen collections, five formats, and one supported users-api-list real-work projection before compatibility is removed.</goal>
+      <sequence>Run every command with compatibility still present; only after complete PASS remove the exact compatibility exception, then rerun the same commands unchanged and require a second complete PASS before Phase 19 can complete.</sequence>
       <commands>
         <command-1>test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md | wc -l | tr -d ' ')" -eq 21</command-1>
-        <command-2>test "$(find collections -mindepth 3 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14</command-2>
+        <command-2>test "$(find collections -mindepth 2 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14</command-2>
         <command-3>test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md -print0 | xargs -0 rg -l 'Готово, когда|Самопроверка|← Все подборки|Потерялись\?|&lt;details open' | wc -l | tr -d ' ')" -eq 0</command-3>
         <command-4>For every sorted task path, run the exact hint, open-details, full-document, five-field controlled metadata, and unique thematic membership commands in docs/task-validation-policy.md.</command-4>
         <command-5>test "$(rg -o 'tasks/[a-z0-9-]+/README\.md' collections/real-work/README.md | sort -u)" = 'tasks/users-api-list/README.md' and compare that set with every card whose format is Приближённая к реальной работе.</command-5>
@@ -485,7 +486,7 @@
       </commands>
       <artifact-checks>
         <artifact-check-19-1>The four React migrations, users-api-list, collections/real-work/README.md, its thematic projection, root link, graph export, verification facts, and Beads records change atomically.</artifact-check-19-1>
-        <artifact-check-19-2>The exact twenty-slug compatibility text is removed only after every structural and target-editor check passes.</artifact-check-19-2>
+        <artifact-check-19-2>The exact twenty-slug compatibility text is removed only after the first complete structural and target-editor PASS; the identical scan passes again after removal.</artifact-check-19-2>
       </artifact-checks>
       <required-evidence>
         <evidence-1>All twenty-one cards have exactly three hints, five controlled metadata fields, one thematic membership, and no legacy, open-details, or full-document marker.</evidence-1>

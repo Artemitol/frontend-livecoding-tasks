@@ -45,7 +45,7 @@
       <Action>Updates or migrates task content while preserving the source learning goal, prerequisite, runtime assumptions, and repository-wide student navigation.</Action>
       <Goal>Prevent lost learning intent, stale collections, broken assets, editor drift, and graph or verification drift.</Goal>
       <Preconditions>The existing task slug, source contract, editor profile, and all collection and graph references can be resolved.</Preconditions>
-      <AcceptanceCriteria>CardMigrationEvidence maps every source fact to its destination, the target editor passes, exactly one thematic and zero or one interview projection agree, and ambiguity stops the change.</AcceptanceCriteria>
+      <AcceptanceCriteria>CardMigrationEvidence maps every source fact to its destination, the target editor passes, exactly one thematic, zero or one interview, and supported real-work projection when applicable agree, and ambiguity stops the change.</AcceptanceCriteria>
       <Priority>high</Priority>
       <RelatedFlows>DF-UPDATE-TASK</RelatedFlows>
     </UC-004>
@@ -100,8 +100,8 @@
     <constraint-3>Each task lives at tasks/&lt;task-slug&gt;/README.md with optional colocated assets.</constraint-3>
     <constraint-4>Every card ends with exactly five student-facing metadata fields: Технология, Подборка, Формат, Сложность, and Примерное время.</constraint-4>
     <constraint-5>Exactly three distinct hints, the concise solution, and metadata use separate details blocks without the open attribute.</constraint-5>
-    <constraint-6>The card title and five-field metadata, thematic collection order and description, interview composition, root editor map, knowledge graph, verification plan, and Beads evidence have explicit synchronized ownership.</constraint-6>
-    <constraint-7>Adding, deleting, renaming, reclassifying, or migrating a task is incomplete until exactly one thematic collection, zero or one interview, graph, verification, Beads evidence, and all links are synchronized.</constraint-7>
+    <constraint-6>The card title and five-field metadata, thematic collection order and description, interview composition, supported real-work membership, root editor map, knowledge graph, verification plan, and Beads evidence have explicit synchronized ownership.</constraint-6>
+    <constraint-7>Adding, deleting, renaming, reclassifying, or migrating a task is incomplete until exactly one thematic collection, zero or one interview, supported real-work membership when applicable, graph, verification, Beads evidence, and all links are synchronized.</constraint-7>
     <constraint-8>New or materially changed solutions require strict agent validation and wave-level technical publication evidence; per-wave human approval is not required, while explicit user acceptance of the complete library after the final audit gates top-level story closure.</constraint-8>
     <constraint-9>A task slug is a stable identifier; changing it is an explicit migration rather than a routine metadata edit.</constraint-9>
     <constraint-10>Task prose and stable section labels are Russian unless the mentor explicitly requests another language for a task.</constraint-10>
@@ -120,7 +120,7 @@
     <constraint-23>Task waves contain 8-10 accepted cards except the final incomplete wave, which may contain 1-7.</constraint-23>
     <constraint-24>Supplementary links must resolve directly or through a valid redirect; required reading cannot depend on a paid subscription or closed account.</constraint-24>
     <constraint-25>ConciseStudentTaskCard orders title, target-editor instruction, Условие, minimal starter, three closed hints, closed concise Решение, and closed five-field О задаче; a real-work card may split Условие into sequential visible requirements.</constraint-25>
-    <constraint-26>Starter code is one minimal complete copy-ready block; several real files are permitted only for a real-work mini-project, and every starter and solution block then contains a matching FILE path and complete file.</constraint-26>
+    <constraint-26>Starter code is one minimal complete copy-ready block; several real files are permitted only for a real-work mini-project. Every starter file is complete and has a FILE path; the solution includes only changed files, each complete and using the matching starter FILE path.</constraint-26>
     <constraint-27>Target editor profiles are fixed to Programiz for console JavaScript, CodePen for browser JavaScript, DOM, HTML/CSS, or ESM, TypeScript Playground for pure TypeScript, and vite.new/react-ts for React with TypeScript.</constraint-27>
     <constraint-28>A temporary harness is diagnostic only; every migrated card needs final target-editor expected, actual, and verdict evidence.</constraint-28>
     <constraint-29>CardMigrationEvidence preserves source learning goal, prerequisite, and runtime assumption by mapping each to a destination or a concrete not-applicable rationale.</constraint-29>
@@ -128,9 +128,10 @@
     <constraint-31>The root README retains exactly four student blocks and, after Phase 19, links ten thematic collections, three interview collections, one real-work collection, and four approved editors; old task tables, metadata-source explanations, and agent-maintenance prose are excluded.</constraint-31>
     <constraint-32>CSS and visual behavior use manual browser evidence rather than unit assertions; unavailable mandatory browser or editor evidence is BLOCKED, never PASS.</constraint-32>
     <constraint-33>While Phases 16 through 19 are incomplete, legacy structure is permitted only for these twenty existing slugs and does not count as concise migration PASS: accessible-keyboard-tabs, browser-event-loop-order, container-responsive-grid, delegated-dynamic-list, discriminated-load-state, flex-long-text-overflow, idempotent-event-listeners, immutable-category-totals, loop-closure-bindings, modal-focus-lifecycle, react-batched-counter, react-derived-list, react-effect-subscription, react-strictmode-cleanup, response-union-narrowing, stable-product-sort, stale-search-response, this-callback-binding, typed-object-property, validate-unknown-profile.</constraint-33>
-    <constraint-34>Phase 19 removes the compatibility exception only after deterministic checks prove exactly twenty-one ConciseStudentTaskCards, fourteen collection pages, exact metadata, unique thematic membership, and supported real-work membership.</constraint-34>
+    <constraint-34>Phase 19 first runs the deterministic cutover scan with compatibility present, removes the exception only after PASS, then reruns the identical scan without compatibility; only the second PASS proves exactly twenty-one ConciseStudentTaskCards, fourteen collection pages, exact metadata, unique thematic membership, and supported real-work membership.</constraint-34>
     <constraint-35>JavaScript cards use one JavaScript block by default; only the minimum necessary HTML fragment may precede it, while full HTML documents and script wrappers are prohibited.</constraint-35>
     <constraint-36>A focused task has one central action and normally takes 10–30 minutes; a real-work task has related sequential product requirements, normally takes 45–60 minutes, belongs to one thematic collection, and additionally appears in the real-work collection.</constraint-36>
+    <constraint-37>Every starter and solution fence uses the language identifier required by the card technology; the template must not force JavaScript or TSX on TypeScript, React, or HTML/CSS cards.</constraint-37>
   </Constraints>
 
   <Risks>

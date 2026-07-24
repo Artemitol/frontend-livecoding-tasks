@@ -82,8 +82,10 @@ validate-unknown-profile
 
 Исключение разрешает только старую структуру. Оно не доказывает миграцию,
 target-editor PASS или новый catalog cutover. Новый `users-api-list` сразу
-создаётся как `ConciseStudentTaskCard` и в список не входит. Исключение удаляется
-целиком в Task 6 / Phase 19 только после structural PASS всех 21 карточек.
+создаётся как `ConciseStudentTaskCard` и в список не входит. В Task 6 /
+Phase 19 полный cutover scan сначала выполняется при сохранённом исключении.
+Исключение удаляется только после этого PASS, затем тот же полный scan сразу
+повторяется без исключения. Только повторный PASS разрешает завершить cutover.
 
 ## Контракт карточки
 
@@ -102,9 +104,11 @@ target-editor PASS или новый catalog cutover. Новый `users-api-list
   куда смотреть`, `Подсказка 2 — с чего начать`, `Подсказка 3 — почти решение`.
 - `Решение` и `О задаче` находятся в независимых `<details>` без атрибута
   `open`.
-- Solution показывает только изменённую функцию, обработчик, CSS-фрагмент,
-  компонент или изменённые реальные файлы, затем короткое объяснение,
-  ожидаемый результат и ручную проверку.
+- Solution показывает только изменённую функцию, обработчик, CSS-фрагмент или
+  компонент. Для multi-file real-work задачи solution включает только
+  изменённые файлы; каждый включённый файл полный и использует matching starter
+  `FILE: <path>`. Затем следуют короткое объяснение, ожидаемый результат и
+  ручная проверка.
 
 ## Starter и редакторы
 
@@ -123,9 +127,10 @@ HTML/CSS-задача также публикует только необход�
 
 Starter использует один минимальный copy-ready block. Несколько файлов
 разрешены только real-work задаче с настоящими file boundaries; каждый starter
-и solution block тогда начинается с matching `FILE: <path>` comment и содержит
-полный файл. Временный harness разрешён только как диагностический инструмент
-агента и не публикуется.
+file полный и начинается с language-appropriate `FILE: <path>` comment.
+Solution публикует только изменённые файлы, но каждый включённый solution file
+остаётся полным и использует matching starter `FILE: <path>`. Временный harness
+разрешён только как диагностический инструмент агента и не публикуется.
 
 ## Gates
 
@@ -186,17 +191,21 @@ Slug rename остаётся отдельной migration с inbound-link eviden
 
 ## Детерминированный cutover gate
 
-Эти команды являются обязательным Phase 19 gate после удаления временного
-исключения:
+Весь блок ниже запускается дважды. Первый запуск выполняется при сохранённом
+временном исключении. Только после полного первого PASS удаляется исключение из
+`AGENTS.md` и этой политики. Затем без изменений команд выполняется второй
+запуск уже после удаления. Только второй PASS завершает Phase 19:
 
 ```bash
 test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md | wc -l | tr -d ' ')" -eq 21
-test "$(find collections -mindepth 3 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14
+test "$(find collections -mindepth 2 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14
 test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md -print0 | xargs -0 rg -l 'Готово, когда|Самопроверка|← Все подборки|Потерялись\?' | wc -l | tr -d ' ')" -eq 0
 ! rg -n '<details[^>]*[[:space:]]open([[:space:]=]|>)' tasks/*/README.md
-! rg -n '<!doctype[[:space:]]+html|<html([[:space:]>])|<head([[:space:]>])|<body([[:space:]>])|<script([[:space:]>])' tasks/*/README.md
+! rg -n '<!doctype[[:space:]]+html|<html([[:space:]>])|<head([[:space:]>])|<body([[:space:]>])|<style([[:space:]>])|<script([[:space:]>])' tasks/*/README.md
 while IFS= read -r cardFile; do
-  test "$(rg -c '<summary>Подсказка [123] — ' "$cardFile")" -eq 3
+  test "$(rg -c '^<summary>Подсказка 1 — куда смотреть</summary>$' "$cardFile")" -eq 1
+  test "$(rg -c '^<summary>Подсказка 2 — с чего начать</summary>$' "$cardFile")" -eq 1
+  test "$(rg -c '^<summary>Подсказка 3 — почти решение</summary>$' "$cardFile")" -eq 1
   test "$(rg -c '<summary>Подсказка ' "$cardFile")" -eq 3
   test "$(rg -c '^- Технология:|^- Подборка:|^- Формат:|^- Сложность:|^- Примерное время:' "$cardFile")" -eq 5
   rg -q '^- Технология: (JavaScript|TypeScript|HTML/CSS|HTML/JavaScript|HTML/CSS/JavaScript|React/TypeScript)$' "$cardFile"
@@ -212,7 +221,8 @@ test "$(rg -o 'tasks/[a-z0-9-]+/README\.md' collections/real-work/README.md | so
 test -z "$(comm -3 <(rg -l '^- Формат: Приближённая к реальной работе$' tasks/*/README.md | sort) <(rg -o 'tasks/[a-z0-9-]+/README\.md' collections/real-work/README.md | sort -u))"
 ```
 
-Ровно три hint summaries отклоняют четвёртую подсказку независимо от её номера.
+Каждая exact hint summary обязана встретиться ровно один раз, а общий count
+остаётся равен трём; это отклоняет missing, duplicate и четвёртую подсказку.
 Metadata checks отклоняют missing, duplicate и controlled-vocabulary drift.
 Thematic loop отклоняет нулевую или duplicate membership. Сравнение множеств
 real-work формата и collection membership отклоняет focused entry в

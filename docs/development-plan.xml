@@ -67,7 +67,7 @@
       </contract>
       <interface>
         <type-TaskMetadata PURPOSE="Exact five fields and controlled values for technology, thematic collection, one of five formats, difficulty, and integer duration" />
-        <type-ConciseStudentTaskCard PURPOSE="Title, target-editor instruction, visible condition, one minimal starter or minimum HTML fragment plus JavaScript, three closed hints, concise solution, and closed five-field metadata" />
+        <type-ConciseStudentTaskCard PURPOSE="Title, target-editor instruction, visible condition, one technology-dependent minimal starter or minimum HTML fragment plus JavaScript, three closed hints, concise solution, and closed five-field metadata; multi-file is real-work only and every included changed solution file is complete with its matching starter FILE path" />
         <type-TaskClass PURPOSE="Focused one-action 10–30 minute card or sequential real-work 45–60 minute card" />
         <type-EditorProfile PURPOSE="Programiz, CodePen, TypeScript Playground, or React TypeScript copy-run contract" />
         <export-taskSchema PURPOSE="Expose focused and real-work concise orders, minimal-code and FILE rules, progressive disclosure, solution boundaries, and metadata" />
@@ -79,7 +79,7 @@
       </target>
       <observability>
         <evidence-anchor>editor instruction; Условие; three exact hint summaries; Решение; О задаче</evidence-anchor>
-        <critical-check>The selected task-class order is exact, code is minimal and copy-ready, JavaScript has no full-document wrapper, real-work multi-file starter and solution blocks have matching FILE paths, and every details block is closed by default.</critical-check>
+        <critical-check>The selected task-class order and technology-dependent fences are exact, code is minimal and copy-ready, JavaScript has no full-document wrapper, real-work starter files are complete, every included changed solution file is complete with its matching starter FILE path, and every details block is closed by default.</critical-check>
       </observability>
       <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
       <notes>
@@ -231,17 +231,17 @@
       <step-3>The agent applies identity, task-class, concise-card, local-completeness, preservation, structure, solution-content, target-editor, synchronization, and rendered gates.</step-3>
       <step-4>The agent obtains final evidence in the fixed online-editor profile; temporary harness evidence remains diagnostic only.</step-4>
       <step-5>The agent records accepted, needs-rewrite, rejected, or duplicate in Beads; only accepted yields an AcceptedTaskCard.</step-5>
-      <evidence>Validation decision, CardMigrationEvidence when applicable, target-editor expected, actual, and verdict, duplicate or rejection reason, collection sync, and unresolved risk.</evidence>
+      <evidence>Validation decision, CardMigrationEvidence when applicable, target-editor expected, actual, and verdict, duplicate or rejection reason, thematic/interview/supported-real-work sync, and unresolved risk.</evidence>
     </DF-VALIDATE-TASK>
 
     <DF-PUBLISH-TASK-WAVE NAME="PublishTaskWave" TRIGGER="Eight to ten accepted task cards are ready">
       <step-1>The agent creates accepted task cards and optional colocated assets.</step-1>
-      <step-2>The agent synchronizes exactly one thematic collection, zero or one interview collection, and one export-&lt;task-slug&gt; annotation per task.</step-2>
+      <step-2>The agent synchronizes exactly one thematic collection, zero or one interview collection, supported real-work membership when applicable, and one export-&lt;task-slug&gt; annotation per task.</step-2>
       <step-3>The agent runs V-M-TASK-LIBRARY, V-M-CATALOG, V-M-TASK-VALIDATION, and V-M-GOVERNANCE.</step-3>
       <step-4>The agent pushes the focused wave commit and captures GitHub-rendered evidence for the changed student-facing artifacts.</step-4>
       <step-5>The agent publishes a complete wave report containing decisions, evidence, merges, checks, and remaining risks, then records the technical publication status.</step-5>
       <step-6>The agent closes the child Beads issue after every technical gate passes and continues to the next serialized wave without per-wave human approval.</step-6>
-      <evidence>Accepted paths, CollectionEntry facts, graph annotations, validation or migration evidence, target-editor output, pushed commit, GitHub-rendered evidence, complete report, and wave technical-publication status.</evidence>
+      <evidence>Accepted paths, thematic, optional interview and supported real-work CollectionEntry facts, graph annotations, validation or migration evidence, target-editor output, pushed commit, GitHub-rendered evidence, complete report, and wave technical-publication status.</evidence>
     </DF-PUBLISH-TASK-WAVE>
 
     <DF-ADD-TASK NAME="AddTask" TRIGGER="Mentor asks an AI agent to add a task">
@@ -263,13 +263,13 @@
     </DF-STUDY-TASK>
 
     <DF-UPDATE-TASK NAME="UpdateTask" TRIGGER="Agent changes or migrates task content, metadata, path, prerequisites, editor profile, or assets">
-      <step-1>The agent resolves the stable slug, source learning goal, source prerequisite, source runtime assumption, current thematic collection, optional interview, and editor profile.</step-1>
+      <step-1>The agent resolves the stable slug, source learning goal, source prerequisite, source runtime assumption, current thematic collection, optional interview, supported real-work membership when applicable, and editor profile.</step-1>
       <step-2>The agent selects the focused ConciseStudentTaskCard class for an existing card and records destination locations in CardMigrationEvidence before removing source information or text assets.</step-2>
       <step-3>The agent updates complete copy-ready code and reruns every affected M-TASK-VALIDATION gate, including final target-editor expected, actual, and verdict.</step-3>
-      <step-4>The agent synchronizes exactly one thematic collection, zero or one interview, knowledge graph, verification plan, and Beads evidence.</step-4>
-      <step-5>The agent checks title, duration, editor profile, membership uniqueness, FILE parity, assets, supplementary links, and relative links.</step-5>
+      <step-4>The agent synchronizes exactly one thematic collection, zero or one interview, supported real-work membership when applicable, knowledge graph, verification plan, and Beads evidence.</step-4>
+      <step-5>The agent checks title, duration, format, editor profile, thematic/interview/real-work membership uniqueness, multi-file completeness and FILE parity, assets, supplementary links, and relative links.</step-5>
       <step-6>A text asset is deleted only after the embedded replacement passes; a slug change uses a dedicated migration path and verifies all inbound references.</step-6>
-      <evidence>CardMigrationEvidence, target-editor verdict, before/after student data, thematic and interview sync, resolved links, graph delta, verification delta, and Beads record.</evidence>
+      <evidence>CardMigrationEvidence, target-editor verdict, before/after student data, thematic, interview and supported real-work sync, resolved links, graph delta, verification delta, and Beads record.</evidence>
     </DF-UPDATE-TASK>
   </DataFlow>
 
@@ -372,10 +372,10 @@
       <goal>Migrate four React cards, add users-api-list as the only real-work card, atomically cut over the root to fourteen collections and twenty-one cards, then remove the compatibility exception.</goal>
       <step-1 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Migrate react-derived-list, react-batched-counter, react-effect-subscription, and react-strictmode-cleanup, then add concise users-api-list.</step-1>
       <step-2 module="M-CATALOG" status="planned" verification="V-M-CATALOG">Add collections/real-work/README.md, its one users-api-list entry, the thematic entry, and the root link atomically.</step-2>
-      <step-3 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Run the full twenty-one-card and fourteen-collection cutover commands before removing the exact legacy compatibility list.</step-3>
+      <step-3 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Run the full twenty-one-card and fourteen-collection cutover commands with compatibility present, remove the exact list only after PASS, then rerun the identical commands without compatibility.</step-3>
       <step-4 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Synchronize all shared contracts, graph facts, verification facts, Beads evidence, and the focused cutover commit.</step-4>
       <artifact-check-19-1>Twenty-one concise cards, fourteen collection pages, five exact metadata rows per card, one thematic membership per card, and one supported users-api-list real-work membership pass.</artifact-check-19-1>
-      <artifact-check-19-2>M-TASK-TEMPLATE has no legacy shape; M-GOVERNANCE and M-TASK-VALIDATION contain no compatibility exception after the successful scan.</artifact-check-19-2>
+      <artifact-check-19-2>M-TASK-TEMPLATE has no legacy shape; the scan passes with compatibility present, M-GOVERNANCE and M-TASK-VALIDATION remove the exception, and the identical scan passes again after removal.</artifact-check-19-2>
       <blocked-when>BLOCKED if any concise scan fails, users-api-list runtime states or DummyJSON evidence are unavailable, root and real-work collection cannot change atomically, or compatibility would be removed before all cards pass.</blocked-when>
     </Phase-19>
     <Phase-20 name="ConciseRenderedAudit" status="planned">

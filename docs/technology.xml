@@ -39,7 +39,7 @@
     <duration-policy>Use an integer number of minutes and synchronize it with the thematic and optional interview collection entries.</duration-policy>
     <preservation-policy>Move every source learning goal, prerequisite, and runtime assumption to a visible destination or record a concrete not-applicable reason in CardMigrationEvidence.</preservation-policy>
     <environment-policy>Choose one fixed editor profile and declare browser, classic or ESM mode, language, framework, or browser-version assumptions next to the copy/run instruction when they affect behavior.</environment-policy>
-    <card-shape-policy>ConciseStudentTaskCard orders title, editor instruction, Условие, one minimal starter or minimum HTML fragment plus JavaScript, three closed hints, closed concise Решение, and closed five-field О задаче.</card-shape-policy>
+    <card-shape-policy>ConciseStudentTaskCard orders title, editor instruction, Условие, one technology-dependent minimal starter or minimum HTML fragment plus JavaScript, three closed hints, closed concise Решение, and closed five-field О задаче; multi-file is real-work only and each included changed solution file is complete with its matching starter FILE path.</card-shape-policy>
     <javascript-markup-policy>JavaScript cards do not publish full HTML documents, style wrappers, or script wrappers; DOM cards may declare only the minimum semantically necessary HTML fragment before JavaScript.</javascript-markup-policy>
     <task-class-policy>Focused tasks have one central action and normally take 10–30 minutes; real-work tasks expose sequential related requirements, normally take 45–60 minutes, and additionally project into collections/real-work/README.md.</task-class-policy>
   </ContentVocabulary>
@@ -61,13 +61,13 @@
       <scope>Pure TypeScript with TypeScript 5.9 behavior</scope>
       <editor>TypeScript Playground</editor>
       <url>https://www.typescriptlang.org/play/</url>
-      <copy-run-contract>One complete TypeScript block unless several files are essential to the learning goal.</copy-run-contract>
+      <copy-run-contract>One complete TypeScript block; multiple files are permitted only for a real-work task whose target editor can reproduce the declared file boundaries.</copy-run-contract>
     </profile-TypeScriptPlayground>
     <profile-ReactTypeScript>
       <scope>React and TypeScript with React 19.2 behavior</scope>
       <editor>Vite React TypeScript in StackBlitz</editor>
       <url>https://vite.new/react-ts</url>
-      <copy-run-contract>Replace src/App.tsx completely; add files only when the task genuinely needs them.</copy-run-contract>
+      <copy-run-contract>Replace src/App.tsx completely; add files only for a real-work task with genuine file boundaries, and include only complete changed files with matching FILE paths in its solution.</copy-run-contract>
     </profile-ReactTypeScript>
   </EditorProfiles>
 
@@ -94,7 +94,7 @@
     <profile-assignment-ReactTypeScriptPlanned STATUS="planned" PHASE="Phase-19">
       <task-slugs>users-api-list</task-slugs>
     </profile-assignment-ReactTypeScriptPlanned>
-    <migration-compatibility STATUS="temporary" EXPIRES="Phase-19">Only the twenty implemented profile-map slugs may retain legacy StudentTaskCard structure while Phases 16 through 19 are incomplete; this state is not concise migration PASS.</migration-compatibility>
+    <migration-compatibility STATUS="temporary" EXPIRES="Phase-19">Only the twenty implemented profile-map slugs may retain legacy StudentTaskCard structure while Phases 16 through 19 are incomplete; this state is not concise migration PASS. Phase 19 scans before removal, removes only after PASS, and repeats the identical scan without compatibility before completion.</migration-compatibility>
   </TaskEditorProfileMap>
 
   <PreferredAgentStack>

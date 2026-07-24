@@ -22,7 +22,7 @@
       <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
       <annotations>
         <type-TaskMetadata PURPOSE="Exact five fields and controlled values for technology, thematic collection, one of five formats, difficulty, and integer duration" />
-        <type-ConciseStudentTaskCard PURPOSE="Title, editor instruction, Условие, minimal starter or minimum HTML fragment plus JavaScript, three closed hints, concise solution, and closed five-field metadata" />
+        <type-ConciseStudentTaskCard PURPOSE="Title, editor instruction, Условие, technology-dependent minimal starter or minimum HTML fragment plus JavaScript, three closed hints, concise solution, and closed five-field metadata; multi-file is real-work only and every included changed solution file is complete with its matching starter FILE path" />
         <type-TaskClass PURPOSE="Focused one-action 10–30 minute task or sequential real-work 45–60 minute task" />
         <type-EditorProfile PURPOSE="Programiz, CodePen, TypeScript Playground, or React TypeScript copy-run contract" />
         <export-taskSchema PURPOSE="Expose both concise task-class orders, minimal-code and FILE rules, progressive disclosure, solution boundaries, and metadata" />
@@ -39,7 +39,7 @@
         <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and one validation decision per entry" />
         <type-CardMigrationEvidence PURPOSE="Exactly slug, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, targetEditorExpectedResult, targetEditorActualResult, and verdict in the matching card Beads issue" />
         <export-validateCandidate PURPOSE="Apply task-class, concise structure, preservation, content, target-editor, synchronization, and rendered gates in addition to candidate validation" />
-        <const-legacyCompatibility PURPOSE="Permit legacy structure only for the exact twenty pre-existing task exports while Phases 16 through 19 are incomplete; compatibility is not concise migration PASS" SLUGS="accessible-keyboard-tabs,browser-event-loop-order,container-responsive-grid,delegated-dynamic-list,discriminated-load-state,flex-long-text-overflow,idempotent-event-listeners,immutable-category-totals,loop-closure-bindings,modal-focus-lifecycle,react-batched-counter,react-derived-list,react-effect-subscription,react-strictmode-cleanup,response-union-narrowing,stable-product-sort,stale-search-response,this-callback-binding,typed-object-property,validate-unknown-profile" EXPIRES="Phase-19" STATUS="temporary" />
+        <const-legacyCompatibility PURPOSE="Permit legacy structure only for the exact twenty pre-existing task exports while Phases 16 through 19 are incomplete; compatibility is not concise migration PASS; Phase 19 scans before removal and repeats the identical scan after removal" SLUGS="accessible-keyboard-tabs,browser-event-loop-order,container-responsive-grid,delegated-dynamic-list,discriminated-load-state,flex-long-text-overflow,idempotent-event-listeners,immutable-category-totals,loop-closure-bindings,modal-focus-lifecycle,react-batched-counter,react-derived-list,react-effect-subscription,react-strictmode-cleanup,response-union-narrowing,stable-product-sort,stale-search-response,this-callback-binding,typed-object-property,validate-unknown-profile" EXPIRES="Phase-19" STATUS="temporary" />
       </annotations>
     </M-TASK-VALIDATION>
 
