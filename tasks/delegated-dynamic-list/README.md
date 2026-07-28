@@ -1,88 +1,42 @@
 # Удаление динамической строки через делегирование событий
 
-[← Все подборки](../../README.md)
+Откройте [CodePen](https://pen.new), вставьте HTML-фрагмент в панель **HTML**, JavaScript — в панель **JS** и запустите в режиме browser ESM без препроцессора. Код не обращается к сети.
 
 ## Условие
 
-Учебная цель — обрабатывать действия динамически добавленных элементов через делегирование событий. Нужны базовые знания обработчика `click`: назначьте один обработчик удаления постоянному контейнеру `#todos`, а не каждой новой кнопке.
-
-Откройте [CodePen](https://pen.new), очистите панели HTML, CSS и JS, вставьте весь блок ниже в панель **HTML** и нажмите **Run**. Fixture выполняется в браузере как `<script type="module">` и не обращается к сети.
-
-## Код — вставьте его в редактор
+Добавьте ровно один обработчик `click` постоянному контейнеру `#todos`. Если клик пришёл от кнопки с `data-action="remove"` внутри списка, удалите принадлежащий ей `li` и выведите ID удалённой строки и число оставшихся строк. Любой другой клик безопасно игнорируйте; отдельные listeners новым кнопкам не назначайте.
 
 ```html
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <title>Делегирование событий</title>
-    <style>
-      body {
-        font: 16px/1.5 system-ui;
-        margin: 2rem;
-      }
-
-      li {
-        margin: 0.5rem 0;
-      }
-
-      .pass {
-        color: #087f23;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Динамический список</h1>
-    <button id="add" type="button">Добавить строку</button>
-    <ul id="todos" aria-label="Список задач"></ul>
-    <p id="status" aria-live="polite">Добавьте строку.</p>
-
-    <script type="module">
-      // Реализуйте один click handler на #todos.
-      // Если click пришёл от кнопки data-action="remove" внутри списка,
-      // удалите принадлежащий ей li.
-      // Покажите PASS с ID удалённой строки и запишите в console
-      // ID и число оставшихся строк.
-      // Любой другой click безопасно игнорируйте.
-
-      const addButton = document.querySelector('#add');
-      const todos = document.querySelector('#todos');
-      const status = document.querySelector('#status');
-      let nextId = 1;
-
-      function addTodo() {
-        const id = nextId;
-        nextId += 1;
-        todos.insertAdjacentHTML(
-          'beforeend',
-          `<li data-id="${id}">
-            Задача ${id}
-            <button type="button" data-action="remove">Удалить</button>
-          </li>`,
-        );
-        console.log('[delegated-list] added', { id });
-      }
-
-      addButton.addEventListener('click', addTodo);
-
-      // Добавьте здесь один delegated click handler на todos.
-    </script>
-  </body>
-</html>
+<button id="add" type="button">Добавить строку</button>
+<ul id="todos" aria-label="Список задач"></ul>
 ```
 
-## Готово, когда
+```javascript
+const addButton = document.querySelector('#add');
+const todos = document.querySelector('#todos');
+let nextId = 1;
 
-- После «Добавить строку» новая кнопка «Удалить» работает без назначения ей отдельного listener, а status начинается с `PASS`.
-- После добавления двух строк можно удалить вторую: первая остаётся, а status содержит ID второй строки.
-- Click по пустому месту списка или элементу без `data-action="remove"` не меняет список и не показывает новый PASS.
+function addTodo() {
+  const id = nextId;
+  nextId += 1;
+  todos.insertAdjacentHTML(
+    'beforeend',
+    `<li data-id="${id}">
+      Задача ${id}
+      <button type="button" data-action="remove">Удалить</button>
+    </li>`,
+  );
+}
 
-Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
+addButton.addEventListener('click', addTodo);
+
+// Добавьте здесь один delegated click handler на todos.
+```
 
 <details>
 <summary>Подсказка 1 — куда смотреть</summary>
 
-`click` кнопки всплывает до `#todos`. В обработчике контейнера начните с поиска ближайшей кнопки удаления от `event.target`.
+Клик кнопки всплывает до `#todos`. Начните с поиска ближайшей кнопки удаления от `event.target`.
 
 </details>
 
@@ -96,98 +50,30 @@
 <details>
 <summary>Подсказка 3 — почти решение</summary>
 
-После поиска кнопки проверьте, что она существует и всё ещё принадлежит `todos`. Затем найдите ближайший `li`, сохраните его `data-id`, удалите строку и обновите status и console.
+Проверьте, что найденная кнопка принадлежит `todos`, затем найдите ближайший `li`, сохраните его `data-id`, удалите строку и выведите результат.
 
 </details>
 
 <details>
 <summary>Решение</summary>
 
-```html
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <title>Делегирование событий</title>
-    <style>
-      body {
-        font: 16px/1.5 system-ui;
-        margin: 2rem;
-      }
+```javascript
+todos.addEventListener('click', (event) => {
+  const button = event.target.closest(
+    'button[data-action="remove"]',
+  );
+  if (!button || !todos.contains(button)) {
+    return;
+  }
 
-      li {
-        margin: 0.5rem 0;
-      }
-
-      .pass {
-        color: #087f23;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Динамический список</h1>
-    <button id="add" type="button">Добавить строку</button>
-    <ul id="todos" aria-label="Список задач"></ul>
-    <p id="status" aria-live="polite">Добавьте строку.</p>
-
-    <script type="module">
-      const addButton = document.querySelector('#add');
-      const todos = document.querySelector('#todos');
-      const status = document.querySelector('#status');
-      let nextId = 1;
-
-      function addTodo() {
-        const id = nextId;
-        nextId += 1;
-        todos.insertAdjacentHTML(
-          'beforeend',
-          `<li data-id="${id}">
-            Задача ${id}
-            <button type="button" data-action="remove">Удалить</button>
-          </li>`,
-        );
-        console.log('[delegated-list] added', { id });
-      }
-
-      addButton.addEventListener('click', addTodo);
-
-      todos.addEventListener('click', (event) => {
-        const button = event.target.closest(
-          'button[data-action="remove"]',
-        );
-        if (!button || !todos.contains(button)) {
-          return;
-        }
-
-        const item = button.closest('li');
-        const id = item.dataset.id;
-        item.remove();
-        status.textContent =
-          `PASS: динамически добавленная задача ${id} ` +
-          'удалена делегированным обработчиком.';
-        status.className = 'pass';
-        console.log('[delegated-list] removed', {
-          id,
-          remaining: todos.children.length,
-        });
-      });
-    </script>
-  </body>
-</html>
+  const item = button.closest('li');
+  const id = item.dataset.id;
+  item.remove();
+  console.log({ id, remaining: todos.children.length });
+});
 ```
 
-### Почему это работает
-
-Обработчик живёт на постоянном `ul`, поэтому получает всплывающие клики и от кнопок, созданных после инициализации. `closest` находит действие, а `todos.contains` ограничивает обработку текущим fixture. Один listener обслуживает любое число строк.
-
-</details>
-
-<details>
-<summary>Самопроверка</summary>
-
-- Почему listener остаётся рабочим для кнопок, добавленных позже?
-- Зачем после `closest` дополнительно проверять принадлежность контейнеру?
-- Когда делегирование событий удобнее отдельных listeners на каждом элементе?
+Обработчик живёт на постоянном `ul`, поэтому получает всплывающие клики и от кнопок, созданных после инициализации. Для ручной проверки добавьте две строки, удалите вторую и убедитесь, что первая остаётся, а консоль показывает ID второй строки и `remaining: 1`. Клик по пустому месту списка не должен ничего менять.
 
 </details>
 
@@ -201,5 +87,3 @@
 - Примерное время: 18 минут
 
 </details>
-
-Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).
