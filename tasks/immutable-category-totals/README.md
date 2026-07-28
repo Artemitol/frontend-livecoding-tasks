@@ -1,24 +1,14 @@
 # Итоги по категориям без мутаций
 
-[← Все подборки](../../README.md)
-
-Откройте [Programiz JavaScript Online Compiler](https://www.programiz.com/javascript/online-compiler/), замените код в редакторе полным блоком ниже и нажмите **Run**. Код рассчитан на консольный JavaScript без browser API; исходное выполнение как Node.js ESM не влияло на результат этой задачи.
+Откройте [Programiz JavaScript Online Compiler](https://www.programiz.com/javascript/online-compiler/), полностью замените код блоком ниже и нажмите **Run**. Используйте консольный JavaScript без browser API; режим ESM для этой задачи не нужен.
 
 ## Условие
 
-```js
-// Учебная цель: преобразовывать и агрегировать коллекцию данных
-// без изменения исходного массива.
-//
-// Реализуйте sumByCategory(entries).
-// Верните новый объект: ключ — непустая строка category,
-// значение — сумма всех конечных неотрицательных amount этой категории.
-// Для пустого массива верните пустой объект.
-// Если entries не массив или хотя бы одна запись некорректна,
-// выбросьте TypeError. Не изменяйте массив и его элементы.
+Реализуйте `sumByCategory(entries)`: верните новый объект с суммой `amount` для каждой непустой строковой `category`, не изменяя входной массив и его элементы. Для пустого массива верните пустой объект. Если `entries` не массив или хотя бы одна запись содержит некорректные `category` либо `amount`, выбросьте `TypeError`; корректный `amount` — конечное неотрицательное число.
 
+```javascript
 function sumByCategory(entries) {
-  // Ваш код здесь.
+  // Верните новый объект с суммами по категориям.
 }
 
 const entries = [
@@ -26,73 +16,36 @@ const entries = [
   { category: 'games', amount: 25 },
   { category: 'books', amount: 8 },
 ];
-const sourceSnapshot = JSON.stringify(entries);
 
-function verify() {
-  try {
-    const totals = sumByCategory(entries);
-    const regularPass =
-      totals?.books === 20 &&
-      totals?.games === 25;
-    const emptyPass =
-      JSON.stringify(sumByCategory([])) === '{}';
-
-    let invalidPass = false;
-    try {
-      sumByCategory([{ category: 'books', amount: -1 }]);
-    } catch (error) {
-      invalidPass = error instanceof TypeError;
-    }
-
-    const unchangedPass = JSON.stringify(entries) === sourceSnapshot;
-    console.log({
-      totals,
-      regularPass,
-      emptyPass,
-      invalidPass,
-      unchangedPass,
-    });
-  } catch (error) {
-    console.log(`Пока не готово: ${error.name}: ${error.message}`);
-  }
-}
-
-verify();
+console.log(JSON.stringify(sumByCategory(entries)));
+console.log(JSON.stringify(entries));
 ```
-
-## Готово, когда
-
-- В консоли `totals` содержит `books: 20` и `games: 25`, а `regularPass` равен `true`.
-- Для пустого массива `emptyPass` равен `true`, а для отрицательного `amount` — `invalidPass: true`.
-- После всех вызовов `unchangedPass` равен `true`: исходный массив и его элементы не изменились.
-
-Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
 <summary>Подсказка 1 — куда смотреть</summary>
 
-Отделите проверку входа от агрегации. Для каждой записи проверьте объект, непустую `category` и конечный неотрицательный `amount`.
+Сначала отделите проверку всего массива от накопления результата: у каждой записи должны быть подходящие `category` и `amount`.
 
 </details>
 
 <details>
 <summary>Подсказка 2 — с чего начать</summary>
 
-Сначала отклоните весь вход одним условием с `Array.isArray` и `every`, затем запустите `reduce` с новым пустым аккумулятором.
+Проверьте массив через `Array.isArray` и `every`, затем запустите `reduce` с новым пустым аккумулятором.
 
 </details>
 
 <details>
 <summary>Подсказка 3 — почти решение</summary>
 
-На каждой итерации берите текущую сумму категории через `?? 0`, прибавляйте `amount` и возвращайте тот же новый аккумулятор. Входные записи при этом только читайте.
+На каждой итерации берите текущую сумму через `totals[category] ?? 0`, прибавляйте `amount` и возвращайте аккумулятор.
 
 </details>
 
 <details>
 <summary>Решение</summary>
 
-```js
+```javascript
 function isValidEntry(entry) {
   return (
     typeof entry === 'object' &&
@@ -114,58 +67,9 @@ function sumByCategory(entries) {
     return totals;
   }, Object.create(null));
 }
-
-const entries = [
-  { category: 'books', amount: 12 },
-  { category: 'games', amount: 25 },
-  { category: 'books', amount: 8 },
-];
-const sourceSnapshot = JSON.stringify(entries);
-
-function verify() {
-  try {
-    const totals = sumByCategory(entries);
-    const regularPass =
-      totals?.books === 20 &&
-      totals?.games === 25;
-    const emptyPass =
-      JSON.stringify(sumByCategory([])) === '{}';
-
-    let invalidPass = false;
-    try {
-      sumByCategory([{ category: 'books', amount: -1 }]);
-    } catch (error) {
-      invalidPass = error instanceof TypeError;
-    }
-
-    const unchangedPass = JSON.stringify(entries) === sourceSnapshot;
-    console.log({
-      totals,
-      regularPass,
-      emptyPass,
-      invalidPass,
-      unchangedPass,
-    });
-  } catch (error) {
-    console.log(`Пока не готово: ${error.name}: ${error.message}`);
-  }
-}
-
-verify();
 ```
 
-### Почему это работает
-
-Проверка не пропускает значения вне контракта. `reduce` начинает с нового объекта без прототипа и только читает `entries`, поэтому результат не связан с исходным массивом. `?? 0` отличает отсутствующую категорию от уже накопленной суммы `0`.
-
-</details>
-
-<details>
-<summary>Самопроверка</summary>
-
-- Почему аккумулятор не должен быть самим входным массивом?
-- Что произойдёт с категорией, если первая сумма для неё равна `0`?
-- Когда для такой агрегации удобнее вернуть `Map`, а не объект?
+Проверка входа не пропускает значения вне контракта, а `reduce` читает записи и накапливает суммы в новом объекте. После запуска первая строка должна быть `{"books":20,"games":25}`, а вторая — неизменённый массив. Для ручной проверки также вызовите функцию с `[]` и с записью, где `amount` равен `-1`: получите `{}` и `TypeError`.
 
 </details>
 
@@ -179,5 +83,3 @@ verify();
 - Примерное время: 15 минут
 
 </details>
-
-Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).

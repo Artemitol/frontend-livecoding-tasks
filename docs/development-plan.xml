@@ -1,9 +1,9 @@
-<DevelopmentPlan VERSION="0.5.0">
+<DevelopmentPlan VERSION="0.6.0">
   <ArchitectureNotes>
     <objective>Provide a GitHub-first, collection-led frontend task knowledge base whose target ConciseStudentTaskCards copy into fixed online-editor profiles without collection, verification, or graph drift.</objective>
     <non-goal>Do not build an executable learning platform, catalog generator, or mandatory repository runtime.</non-goal>
     <risk-1>Card title and metadata, thematic and interview collections, editor links, verification facts, and graph facts have different owners, so every affected surface must change atomically.</risk-1>
-    <risk-2>Structural verification cannot prove solution correctness; strict hybrid validation, pushed commits, GitHub-rendered evidence, and complete wave reports remain separate technical gates, while final complete-library user acceptance gates only top-level story closure.</risk-2>
+    <risk-2>Markdown review cannot prove execution in every student environment; local deterministic Markdown, collection, XML, and Beads synchronization checks are the publication gates, while final complete-library user acceptance gates only top-level story closure.</risk-2>
     <risk-3>Collapsed details prevent accidental spoilers but do not conceal solutions from raw Markdown or repository search.</risk-3>
     <risk-4>Publishing before deduplication can create several cards for the same learning goal.</risk-4>
     <risk-5>The concise target contract can be mistaken for completed migration while the current twenty cards still use legacy structure, so the exact compatibility inventory remains explicit until Phase 19.</risk-5>
@@ -89,7 +89,7 @@
 
     <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" LAYER="2" ORDER="1" STATUS="implemented">
       <contract>
-        <purpose>Deduplicate candidates and validate new or migrated cards for student structure, source-contract preservation, content, synchronization, and target-editor behavior.</purpose>
+        <purpose>Deduplicate candidates and validate new or migrated cards for student structure, source-contract preservation, content, and local Markdown, collection, XML, and Beads synchronization.</purpose>
         <inputs>
           <param name="candidate" type="TaskCardDraft" />
           <param name="candidate-register" type="CandidateRegister" />
@@ -107,17 +107,17 @@
           <error code="DUPLICATE_LEARNING_GOAL" />
           <error code="AMBIGUOUS_TASK_CONTRACT" />
           <error code="INVALID_SOLUTION" />
-          <error code="MANDATORY_EVIDENCE_UNAVAILABLE" />
+          <error code="LOCAL_EVIDENCE_UNAVAILABLE" />
           <error code="PRESERVATION_LEDGER_INCOMPLETE" />
-          <error code="TARGET_EDITOR_MISMATCH" />
+          <error code="EDITOR_INSTRUCTION_MISMATCH" />
           <error code="COLLECTION_SYNC_DRIFT" />
         </errors>
       </contract>
       <interface>
         <type-ValidationDecision PURPOSE="accepted, needs-rewrite, rejected, or duplicate" />
         <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and terminal-decision accounting" />
-        <type-CardMigrationEvidence PURPOSE="Exactly slug, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, targetEditorExpectedResult, targetEditorActualResult, and verdict in the matching card Beads issue" />
-        <export-validateCandidate PURPOSE="Apply identity, task-class, ConciseStudentTaskCard, local-completeness, preservation, structure, solution-content, target-editor, synchronization, and rendered gates" />
+        <type-CardMigrationEvidence PURPOSE="Exactly slug, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, targetEditorExpectedResult, targetEditorActualResult, and verdict in the matching card Beads issue; both targetEditor fields equal NOT_RUN: Markdown-only delivery" />
+        <export-validateCandidate PURPOSE="Apply identity, task-class, ConciseStudentTaskCard, local-completeness, preservation, structure, solution-content, and local Markdown, collection, XML, and Beads synchronization gates" />
         <const-legacyCompatibility PURPOSE="Permit legacy structure only for the exact twenty pre-existing slugs until Phase 19, without granting concise migration PASS" EXPIRES="Phase-19" />
       </interface>
       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
@@ -126,8 +126,8 @@
         <tests>V-M-TASK-VALIDATION strict candidate and evidence checks</tests>
       </target>
       <observability>
-        <evidence-anchor>validation decision; CardMigrationEvidence; target-editor expected, actual, and verdict; collection sync; rejection or merge reason</evidence-anchor>
-        <critical-check>Only accepted produces an AcceptedTaskCard; compatibility is not migration PASS; a diagnostic harness is not final evidence; unavailable required browser or editor evidence is BLOCKED rather than PASS.</critical-check>
+        <evidence-anchor>validation decision; CardMigrationEvidence with both target-editor fields marked NOT_RUN; local deterministic verdict; collection sync; rejection or merge reason</evidence-anchor>
+        <critical-check>Only accepted produces an AcceptedTaskCard; compatibility is not migration PASS; external editors, browsers, live APIs, and GitHub-rendered pages are not opened or operated for repository validation and their availability never determines PASS or BLOCKED.</critical-check>
       </observability>
       <verification-ref>V-M-TASK-VALIDATION</verification-ref>
       <notes>
@@ -167,14 +167,14 @@
         <tests>V-M-TASK-LIBRARY per-card and cross-card checks</tests>
       </target>
       <observability>
-        <evidence-anchor>task slug; selected mode; editor profile; five metadata values; preservation ledger; copy-ready code; target-editor verdict; collection sync</evidence-anchor>
-        <critical-check>A migrated card is locally complete, has exactly three progressive hints, contains no legacy markers or full-document JavaScript wrapper, passes its target editor, and resolves every required media, collection, and supplementary link.</critical-check>
+        <evidence-anchor>task slug; selected mode; editor profile; five metadata values; preservation ledger; copy-ready code; local deterministic verdict; collection sync</evidence-anchor>
+        <critical-check>A migrated card is locally complete, has exactly three progressive hints, contains no legacy markers or full-document JavaScript wrapper, records both target-editor result fields as NOT_RUN: Markdown-only delivery, passes local Markdown and synchronization checks, and resolves every required local media, collection, and supplementary link.</critical-check>
       </observability>
       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
       <notes>
         <note-1>A slug is stable. Renaming it is a migration that must verify every inbound reference.</note-1>
         <note-2>Collapsed solutions are spoiler-resistant, not access-controlled.</note-2>
-        <note-3>The serialized wave Beads issue closes continuously after candidate recheck, required technical evidence, pushed commit, GitHub-rendered review, and the complete wave report pass.</note-3>
+        <note-3>The serialized wave Beads issue closes continuously after candidate recheck, local deterministic evidence, pushed commit, and the complete wave report pass.</note-3>
         <note-4>Each accepted task adds one export-&lt;task-slug&gt; public annotation under M-TASK-LIBRARY in the knowledge graph.</note-4>
         <note-5>Text code, HTML, test data, and scenarios remain inside the card; assets are reserved for media or other binary material that cannot reasonably be embedded.</note-5>
         <note-6>Phases 10 through 13 implemented all twenty existing card migrations; Phase 14 synchronized their final thematic and optional interview projections.</note-6>
@@ -228,20 +228,20 @@
     <DF-VALIDATE-TASK NAME="ValidateTask" TRIGGER="Agent prepares a candidate for possible publication">
       <step-1>The agent checks the learning goal against accepted tasks and merges semantically equivalent candidates.</step-1>
       <step-2>The agent independently authors the candidate against the M-TASK-TEMPLATE ConciseStudentTaskCard contract.</step-2>
-      <step-3>The agent applies identity, task-class, concise-card, local-completeness, preservation, structure, solution-content, target-editor, synchronization, and rendered gates.</step-3>
-      <step-4>The agent obtains final evidence in the fixed online-editor profile; temporary harness evidence remains diagnostic only.</step-4>
+      <step-3>The agent applies identity, task-class, concise-card, local-completeness, preservation, structure, solution-content, and local Markdown, collection, XML, and Beads synchronization gates.</step-3>
+      <step-4>The agent records both target-editor result fields as NOT_RUN: Markdown-only delivery and derives verdict only from local deterministic checks.</step-4>
       <step-5>The agent records accepted, needs-rewrite, rejected, or duplicate in Beads; only accepted yields an AcceptedTaskCard.</step-5>
-      <evidence>Validation decision, CardMigrationEvidence when applicable, target-editor expected, actual, and verdict, duplicate or rejection reason, thematic/interview/supported-real-work sync, and unresolved risk.</evidence>
+      <evidence>Validation decision, CardMigrationEvidence when applicable, explicit NOT_RUN target-editor fields, local deterministic verdict, duplicate or rejection reason, thematic/interview/supported-real-work sync, and unresolved risk.</evidence>
     </DF-VALIDATE-TASK>
 
     <DF-PUBLISH-TASK-WAVE NAME="PublishTaskWave" TRIGGER="Eight to ten accepted task cards are ready">
       <step-1>The agent creates accepted task cards and optional colocated assets.</step-1>
       <step-2>The agent synchronizes exactly one thematic collection, zero or one interview collection, supported real-work membership when applicable, and one export-&lt;task-slug&gt; annotation per task.</step-2>
       <step-3>The agent runs V-M-TASK-LIBRARY, V-M-CATALOG, V-M-TASK-VALIDATION, and V-M-GOVERNANCE.</step-3>
-      <step-4>The agent pushes the focused wave commit and captures GitHub-rendered evidence for the changed student-facing artifacts.</step-4>
+      <step-4>The agent pushes the focused wave commit after all local deterministic checks pass.</step-4>
       <step-5>The agent publishes a complete wave report containing decisions, evidence, merges, checks, and remaining risks, then records the technical publication status.</step-5>
       <step-6>The agent closes the child Beads issue after every technical gate passes and continues to the next serialized wave without per-wave human approval.</step-6>
-      <evidence>Accepted paths, thematic, optional interview and supported real-work CollectionEntry facts, graph annotations, validation or migration evidence, target-editor output, pushed commit, GitHub-rendered evidence, complete report, and wave technical-publication status.</evidence>
+      <evidence>Accepted paths, thematic, optional interview and supported real-work CollectionEntry facts, graph annotations, validation or migration evidence, explicit NOT_RUN target-editor fields, local deterministic results, pushed commit, complete report, and wave technical-publication status.</evidence>
     </DF-PUBLISH-TASK-WAVE>
 
     <DF-ADD-TASK NAME="AddTask" TRIGGER="Mentor asks an AI agent to add a task">
@@ -250,7 +250,7 @@
       <step-3>The agent completes DF-VALIDATE-TASK.</step-3>
       <step-4>An accepted card follows the same atomic card, thematic collection, optional interview, graph, verification, and Beads evidence contract as DF-PUBLISH-TASK-WAVE.</step-4>
       <step-5>The serialized wave Beads issue closes after its technical publication gates and complete report pass.</step-5>
-      <evidence>Validation decision, task path, CollectionEntry, graph and verification entries, link results, target-editor evidence, pushed commit, GitHub-rendered evidence, complete report, and technical publication status.</evidence>
+      <evidence>Validation decision, task path, CollectionEntry, graph and verification entries, local link results, explicit NOT_RUN target-editor fields, local deterministic results, pushed commit, complete report, and technical publication status.</evidence>
     </DF-ADD-TASK>
 
     <DF-STUDY-TASK NAME="StudyTask" TRIGGER="Student opens the repository on GitHub">
@@ -265,11 +265,11 @@
     <DF-UPDATE-TASK NAME="UpdateTask" TRIGGER="Agent changes or migrates task content, metadata, path, prerequisites, editor profile, or assets">
       <step-1>The agent resolves the stable slug, source learning goal, source prerequisite, source runtime assumption, current thematic collection, optional interview, supported real-work membership when applicable, and editor profile.</step-1>
       <step-2>The agent selects the focused ConciseStudentTaskCard class for an existing card and records destination locations in CardMigrationEvidence before removing source information or text assets.</step-2>
-      <step-3>The agent updates complete copy-ready code and reruns every affected M-TASK-VALIDATION gate, including final target-editor expected, actual, and verdict.</step-3>
+      <step-3>The agent updates complete copy-ready code, records both target-editor fields as NOT_RUN: Markdown-only delivery, and reruns every affected local M-TASK-VALIDATION gate.</step-3>
       <step-4>The agent synchronizes exactly one thematic collection, zero or one interview, supported real-work membership when applicable, knowledge graph, verification plan, and Beads evidence.</step-4>
       <step-5>The agent checks title, duration, format, editor profile, thematic/interview/real-work membership uniqueness, multi-file completeness and FILE parity, assets, supplementary links, and relative links.</step-5>
       <step-6>A text asset is deleted only after the embedded replacement passes; a slug change uses a dedicated migration path and verifies all inbound references.</step-6>
-      <evidence>CardMigrationEvidence, target-editor verdict, before/after student data, thematic, interview and supported real-work sync, resolved links, graph delta, verification delta, and Beads record.</evidence>
+      <evidence>CardMigrationEvidence, explicit NOT_RUN target-editor fields, local deterministic verdict, before/after student data, thematic, interview and supported real-work sync, resolved local links, graph delta, verification delta, and Beads record.</evidence>
     </DF-UPDATE-TASK>
   </DataFlow>
 
@@ -292,7 +292,7 @@
       <step-1 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
     </Phase-4>
     <Phase-5 name="TaskWaves" status="completed">
-      <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, evidence, pushed-commit, GitHub-rendered, report, and technical-status updates.</goal>
+      <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, local deterministic evidence, pushed-commit, report, and technical-status updates.</goal>
       <step-1 module="M-TASK-LIBRARY" status="completed" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
       <step-2 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
       <step-3 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Apply graph and verification deltas, record the complete report and technical publication status in Beads, close the wave, and continue.</step-3>
@@ -351,22 +351,22 @@
       <blocked-when>BLOCKED if the compatibility list differs from the twenty existing slugs, any Phase 17 through 20 outcome is marked implemented, XML is invalid, or the current cards or collections are represented as already cut over.</blocked-when>
     </Phase-16>
     <Phase-17 name="ConciseWaveA" status="planned">
-      <goal>Migrate exactly eight focused cards in Wave A with per-card target-editor and CardMigrationEvidence PASS.</goal>
+      <goal>Migrate exactly eight focused cards in Wave A with per-card local deterministic and CardMigrationEvidence PASS.</goal>
       <step-1 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Migrate immutable-category-totals, stable-product-sort, loop-closure-bindings, browser-event-loop-order, discriminated-load-state, typed-object-property, response-union-narrowing, and validate-unknown-profile.</step-1>
-      <step-2 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Reject legacy markers, excess hints, open details, invalid metadata, full-document JavaScript, membership drift, or unavailable target-editor evidence.</step-2>
+      <step-2 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Reject legacy markers, excess hints, open details, invalid metadata, full-document JavaScript, local-link failures, or synchronization drift; record external execution as NOT_RUN.</step-2>
       <step-3 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Record the focused commit, pushed state, per-card Beads evidence, graph delta, verification delta, and complete wave report.</step-3>
       <artifact-check-17-1>Exactly the eight named cards plus their graph, verification, and Beads records change; M-TASK-TEMPLATE remains the governing contract.</artifact-check-17-1>
       <artifact-check-17-2>M-CATALOG projections preserve unique thematic and optional interview membership.</artifact-check-17-2>
-      <blocked-when>BLOCKED if any named card lacks a complete target-editor verdict, its central action becomes ambiguous, shared catalog facts drift, or mandatory editor/browser evidence is unavailable.</blocked-when>
+      <blocked-when>BLOCKED if any named card lacks a complete local deterministic verdict, its central action becomes ambiguous, a required local link fails, or shared Markdown, collection, XML, or Beads facts drift.</blocked-when>
     </Phase-17>
     <Phase-18 name="ConciseWaveB" status="planned">
-      <goal>Migrate exactly eight focused browser, DOM, CSS, and accessibility cards in Wave B with per-card target-editor and manual browser evidence.</goal>
+      <goal>Migrate exactly eight focused browser, DOM, CSS, and accessibility cards in Wave B with per-card local Markdown evidence.</goal>
       <step-1 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Migrate this-callback-binding, stale-search-response, delegated-dynamic-list, idempotent-event-listeners, accessible-keyboard-tabs, modal-focus-lifecycle, flex-long-text-overflow, and container-responsive-grid.</step-1>
-      <step-2 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Apply concise structure, minimal-markup, CodePen, keyboard, accessibility, and manual visual gates.</step-2>
+      <step-2 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Apply concise structure, minimal-markup, accessibility-wording, manual-check-text, local-link, and synchronization gates without opening an editor or browser.</step-2>
       <step-3 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Record the focused commit, pushed state, per-card Beads evidence, graph delta, verification delta, and complete wave report.</step-3>
       <artifact-check-18-1>Exactly the eight named cards plus their M-CATALOG projections, graph, verification, and Beads records change.</artifact-check-18-1>
-      <artifact-check-18-2>No CSS or visual PASS is inferred from unit assertions.</artifact-check-18-2>
-      <blocked-when>BLOCKED if minimal markup cannot preserve the task, any solution requires hidden environment, membership drifts, or required CodePen/browser/visual evidence is unavailable.</blocked-when>
+      <artifact-check-18-2>No CSS or visual behavior is asserted by automated tests; the Markdown-visible requirements, starter, solution, and manual-check wording agree.</artifact-check-18-2>
+      <blocked-when>BLOCKED if minimal markup cannot preserve the task, any required local context is hidden, the Markdown contract is contradictory, a required local link fails, or synchronization drifts.</blocked-when>
     </Phase-18>
     <Phase-19 name="ConciseWaveCAndCatalogCutover" status="planned">
       <goal>Migrate four React cards, add users-api-list as the only real-work card, atomically cut over the root to fourteen collections and twenty-one cards, then remove the compatibility exception.</goal>
@@ -376,18 +376,18 @@
       <step-4 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Synchronize all shared contracts, graph facts, verification facts, Beads evidence, and the focused cutover commit.</step-4>
       <artifact-check-19-1>Twenty-one concise cards, fourteen collection pages, five exact metadata rows per card, one thematic membership per card, and one supported users-api-list real-work membership pass.</artifact-check-19-1>
       <artifact-check-19-2>M-TASK-TEMPLATE has no legacy shape; the scan passes with compatibility present, M-GOVERNANCE and M-TASK-VALIDATION remove the exception, and the identical scan passes again after removal.</artifact-check-19-2>
-      <blocked-when>BLOCKED if any concise scan fails, users-api-list runtime states or DummyJSON evidence are unavailable, root and real-work collection cannot change atomically, or compatibility would be removed before all cards pass.</blocked-when>
+      <blocked-when>BLOCKED if any local concise scan fails, users-api-list Markdown does not describe all required states or embeds an unresolved external dependency, root and real-work collection cannot change atomically, or compatibility would be removed before all cards pass.</blocked-when>
     </Phase-19>
-    <Phase-20 name="ConciseRenderedAudit" status="planned">
-      <goal>Audit the published root, all fourteen collections, and all twenty-one cards without inferring final user acceptance.</goal>
-      <step-1 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Record the complete thirty-six-page URL inventory, current branch divergence, pushed commit, and remaining risks.</step-1>
-      <step-2 module="M-TASK-TEMPLATE" status="planned" verification="V-M-TASK-TEMPLATE">Confirm closed details, concise order, and code-fence rendering across both task classes.</step-2>
-      <step-3 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Reconcile every rendered observation with target-editor and Beads evidence.</step-3>
-      <step-4 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Inspect all twenty-one rendered task pages.</step-4>
-      <step-5 module="M-CATALOG" status="planned" verification="V-M-CATALOG">Inspect the root and all fourteen rendered collection pages, including the single real-work projection.</step-5>
-      <artifact-check-20-1>Every URL, visible title, relative link, details state, editor link, collection membership, and real-work projection has a recorded actual result.</artifact-check-20-1>
+    <Phase-20 name="ConciseLocalAudit" status="planned">
+      <goal>Audit the local root, all fourteen collections, and all twenty-one cards without inferring final user acceptance.</goal>
+      <step-1 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Record the complete thirty-six-file inventory, current branch divergence, pushed commit, and remaining risks.</step-1>
+      <step-2 module="M-TASK-TEMPLATE" status="planned" verification="V-M-TASK-TEMPLATE">Confirm closed details, concise order, balanced fences, and details pairing in source Markdown across both task classes.</step-2>
+      <step-3 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Reconcile every local deterministic result with CardMigrationEvidence and Beads facts.</step-3>
+      <step-4 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Inspect all twenty-one source task files.</step-4>
+      <step-5 module="M-CATALOG" status="planned" verification="V-M-CATALOG">Inspect the root and all fourteen source collection files, including the single real-work projection.</step-5>
+      <artifact-check-20-1>Every local file, title, relative link, details pair, code fence, editor instruction, collection membership, and real-work projection has a recorded deterministic result.</artifact-check-20-1>
       <artifact-check-20-2>The top-level story and final acceptance decision remain open for the user.</artifact-check-20-2>
-      <blocked-when>BLOCKED if the published branch, GitHub rendering, editor, DummyJSON, required URL, or branch-divergence evidence is unavailable.</blocked-when>
+      <blocked-when>BLOCKED if any required local file, relative link, Markdown structure, catalog projection, XML/Beads synchronization fact, or branch-divergence result fails.</blocked-when>
     </Phase-20>
   </ImplementationOrder>
 
@@ -396,7 +396,7 @@
     <controller-owns>docs/development-plan.xml, docs/knowledge-graph.xml, docs/verification-plan.xml, and catalog synchronization decisions</controller-owns>
     <worker-owns>Only the explicitly accepted task cards, colocated assets, and packet-scoped derived updates</worker-owns>
     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
-    <replan-trigger>Ambiguous metadata, collection, editor, task class, or profile; duplicate learning goal; missing prerequisite or asset; unnecessary multi-file split; full-document JavaScript wrapper; unexpected GitHub rendering; contradictory card, thematic, interview, or real-work facts; unavailable mandatory evidence; or any requirement for new permanent runtime tooling.</replan-trigger>
-    <checkpoint-requirement>Every concise redesign step must leave task class, editor profile, preservation ledger, artifacts changed, checks run, target-editor expected/actual/verdict, thematic/interview/real-work sync, technical status, remaining risk, and next action.</checkpoint-requirement>
+    <replan-trigger>Ambiguous metadata, collection, editor instruction, task class, or profile; duplicate learning goal; missing prerequisite or local asset; unnecessary multi-file split; full-document JavaScript wrapper; contradictory card, thematic, interview, or real-work facts; failed local deterministic evidence; or any requirement for new permanent runtime tooling.</replan-trigger>
+    <checkpoint-requirement>Every concise redesign step must leave task class, editor profile, preservation ledger, artifacts changed, checks run, both target-editor fields marked NOT_RUN: Markdown-only delivery, local deterministic verdict, thematic/interview/real-work sync, technical status, remaining risk, and next action.</checkpoint-requirement>
   </ExecutionPolicy>
 </DevelopmentPlan>

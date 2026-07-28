@@ -1,22 +1,12 @@
 # Безопасная обработка результата запроса
 
-[← Все подборки](../../README.md)
-
-Откройте [TypeScript Playground](https://www.typescriptlang.org/play/), выберите TypeScript 5.9, включите `strict` в **TS Config** и полностью замените код блоком ниже. Сначала исправьте diagnostic как в исходном режиме `noEmit`, затем оставьте `noEmit` выключенным, обработайте пустой заголовок и нажмите **Run**.
+Откройте [TypeScript Playground](https://www.typescriptlang.org/play/), выберите TypeScript 5.9, включите `strict` в **TS Config** и полностью замените код блоком ниже. Сначала проверьте diagnostics с `noEmit`, затем выключите `noEmit` и нажмите **Run**. Понадобятся union-типы и условные ветви.
 
 ## Условие
 
-```ts
-// Учебная цель: исправлять небезопасное сужение union-типа
-// при обработке успешного и ошибочного ответа.
-// Перед началом нужны union-типы и условные ветви.
-//
-// Исправьте getArticleLabel(result).
-// Сначала сузьте ArticleResult по result.ok.
-// Для успеха верните title после trim() или «Без названия».
-// Для ошибки верните «Ошибка CODE: message».
-// Не используйте type assertion, mutation, throw или I/O внутри функции.
+Исправьте `getArticleLabel(result)`, безопасно сузив `ArticleResult` по `result.ok`. Для успешного ответа верните `title` после `trim()` или `Без названия`, если строка пустая; для ошибки верните `Ошибка CODE: message`. Не используйте type assertion, мутацию, `throw` или I/O внутри функции.
 
+```typescript
 type ArticleResult =
   | { ok: true; data: { title: string } }
   | { ok: false; error: { code: string; message: string } };
@@ -47,29 +37,13 @@ const labels = [
   }),
 ];
 
-const expectedLabels = [
-  'Типы без догадок',
-  'Без названия',
-  'Ошибка NOT_FOUND: Статья не найдена',
-];
-const runtimePass =
-  JSON.stringify(labels) === JSON.stringify(expectedLabels);
-
-console.log({ labels, runtimePass });
+console.log(JSON.stringify(labels));
 ```
-
-## Готово, когда
-
-- TypeScript Playground 5.9 с `strict` не позволяет читать `data` в ветви `ok: false`, а исправленное решение не имеет неожиданных diagnostics.
-- После **Run** `labels` точно содержит очищенный заголовок, `Без названия` и `Ошибка NOT_FOUND: Статья не найдена`.
-- `runtimePass` равен `true`: пустой успешный заголовок не смешан с ошибочным ответом.
-
-Застряли? Открывайте подсказки по одной. После каждой закройте подсказку и попробуйте решить задачу снова. Третья подсказка почти подводит к решению, но не показывает готовый код.
 
 <details>
 <summary>Подсказка 1 — куда смотреть</summary>
 
-Поле `ok` — дискриминант. После `if (result.ok)` TypeScript знает о `data`, а в противоположной ветви оставляет только `error`.
+Поле `ok` — дискриминант: после успешной проверки доступно `data`, а в противоположной ветви остаётся только `error`.
 
 </details>
 
@@ -83,18 +57,14 @@ console.log({ labels, runtimePass });
 <details>
 <summary>Подсказка 3 — почти решение</summary>
 
-Верните очищенный заголовок или маркер пустого результата из первой ветви. После неё формируйте сообщение только из `result.error.code` и `result.error.message`.
+Верните очищенный заголовок или маркер пустого результата из первой ветви, а после неё соберите строку из `result.error.code` и `result.error.message`.
 
 </details>
 
 <details>
 <summary>Решение</summary>
 
-```ts
-type ArticleResult =
-  | { ok: true; data: { title: string } }
-  | { ok: false; error: { code: string; message: string } };
-
+```typescript
 function getArticleLabel(result: ArticleResult): string {
   if (result.ok) {
     const title = result.data.title.trim();
@@ -104,59 +74,9 @@ function getArticleLabel(result: ArticleResult): string {
 
   return `Ошибка ${result.error.code}: ${result.error.message}`;
 }
-
-const labels = [
-  getArticleLabel({
-    ok: true,
-    data: { title: '  Типы без догадок  ' },
-  }),
-  getArticleLabel({
-    ok: true,
-    data: { title: '   ' },
-  }),
-  getArticleLabel({
-    ok: false,
-    error: {
-      code: 'NOT_FOUND',
-      message: 'Статья не найдена',
-    },
-  }),
-];
-
-const expectedLabels = [
-  'Типы без догадок',
-  'Без названия',
-  'Ошибка NOT_FOUND: Статья не найдена',
-];
-const runtimePass =
-  JSON.stringify(labels) === JSON.stringify(expectedLabels);
-
-const invalidErrorResult: Extract<ArticleResult, { ok: false }> = {
-  ok: false,
-  error: {
-    code: 'NOT_FOUND',
-    message: 'Статья не найдена',
-  },
-};
-
-// @ts-expect-error В ошибочной ветви поля data нет.
-invalidErrorResult.data;
-
-console.log({ labels, runtimePass });
 ```
 
-### Почему это работает
-
-Литеральное поле `ok` безопасно сужает union до одной ветви до обращения к её эксклюзивным полям. `trim()` отделяет пустое содержимое успешного ответа от API-ошибки, а отрицательная проверка фиксирует запрет на `data` в ошибочной ветви.
-
-</details>
-
-<details>
-<summary>Самопроверка</summary>
-
-- Почему `data` недоступно после того, как `result.ok` сузился до `false`?
-- Чем пустой заголовок успешного ответа отличается от API-ошибки?
-- Как изменится модель, если у ошибки появится ещё один обязательный вариант данных?
+Литеральное поле `ok` сужает union до ветви с подходящими данными, а `trim()` отделяет пустой успешный заголовок от ошибки запроса. Playground не должен показывать ошибок, а после **Run** ожидается `["Типы без догадок","Без названия","Ошибка NOT_FOUND: Статья не найдена"]`. Для ручной проверки попробуйте обратиться к `result.data` в ошибочной ветви: TypeScript должен это отклонить.
 
 </details>
 
@@ -170,5 +90,3 @@ console.log({ labels, runtimePass });
 - Примерное время: 20 минут
 
 </details>
-
-Нажмите «Назад», чтобы вернуться в выбранную подборку. [Потерялись? Открыть все подборки](../../README.md).

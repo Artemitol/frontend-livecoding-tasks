@@ -48,9 +48,12 @@ sourceRuntimeAssumption | destinationLocations | targetEditorExpectedResult |
 targetEditorActualResult | verdict
 ```
 
-Полная запись хранится в Beads issue соответствующей карточки. Без каждого поля
-и финального target-editor verdict карточка и её wave остаются открытыми.
-Недоступное обязательное evidence означает `BLOCKED`, не `PASS`.
+Полная запись хранится в Beads issue соответствующей карточки. Оба поля
+`targetEditor...` сохраняются только для совместимости схемы и в Markdown-only
+delivery получают явное значение `NOT_RUN: Markdown-only delivery`. `verdict`
+вычисляется по локальным deterministic Markdown, collection, XML и Beads checks;
+внешний редактор, браузер или GitHub-rendered page не являются gate и не могут
+сделать карточку `BLOCKED`.
 
 ## Временная совместимость
 
@@ -81,7 +84,7 @@ validate-unknown-profile
 ```
 
 Исключение разрешает только старую структуру. Оно не доказывает миграцию,
-target-editor PASS или новый catalog cutover. Новый `users-api-list` сразу
+локальный deterministic PASS или новый catalog cutover. Новый `users-api-list` сразу
 создаётся как `ConciseStudentTaskCard` и в список не входит. В Task 6 /
 Phase 19 полный cutover scan сначала выполняется при сохранённом исключении.
 Исключение удаляется только после этого PASS, затем тот же полный scan сразу
@@ -130,7 +133,7 @@ Starter использует один минимальный copy-ready block. �
 file полный и начинается с language-appropriate `FILE: <path>` comment.
 Solution публикует только изменённые файлы, но каждый включённый solution file
 остаётся полным и использует matching starter `FILE: <path>`. Временный harness
-разрешён только как диагностический инструмент агента и не публикуется.
+не требуется и не является частью Markdown-only delivery.
 
 ## Gates
 
@@ -151,26 +154,31 @@ Gates выполняются по порядку. Провал не разреш
    оправданные real files, `FILE:` parity, три exact hints и closed details.
 7. `Solution and content` — доказать соответствие условию, отсутствие
    дублирования окружения и реальную прогрессию hints.
-8. `Target editor` — выполнить exact instruction, записать expected, actual и
-   verdict; недоступность означает `BLOCKED`.
+8. `Markdown evidence` — проверить условие, starter, solution, expected result
+   и manual check только по repository Markdown; записать оба `targetEditor...`
+   поля как `NOT_RUN: Markdown-only delivery`, а verdict вывести из локальных
+   deterministic checks.
 9. `Synchronization` — синхронизировать одну thematic, ноль или одну interview,
    optional real-work, graph, verification и Beads evidence.
-10. `Rendered` — проверить GitHub details, fences, links и student headings.
+10. `Local presentation` — проверить исходный Markdown: порядок headings,
+    парность `<details>`, language fences и разрешение локальных relative links.
 
 ## Evidence matrix
 
-| Task kind | Required target evidence | Stop / failure signal |
+| Task kind | Required local evidence | Stop / failure signal |
 | --- | --- | --- |
-| Console JavaScript | Copy/run и exact output в Programiz | Browser/Node dependency или output mismatch |
-| Browser JavaScript / DOM / HTML/CSS / ESM | CodePen, browser interaction и applicable manual visual result | Hidden wrapper, mode ambiguity или browser unavailable |
-| TypeScript | Type-check и runtime result в TypeScript Playground | Version ambiguity или необъяснённая type error |
-| React / TypeScript | `vite.new/react-ts`, browser state, interactions и lifecycle | Hidden environment dependency или unverified lifecycle |
-| Разобрать код | Written trace плюс target-editor reproduction | Unsupported causal claim |
-| Предсказать результат | Written execution trace плюс exact editor output | Timing, environment или output ambiguity |
+| Console JavaScript | Complete starter, solution, expected output и manual check в Markdown | Hidden Node/browser dependency или внутреннее противоречие |
+| Browser JavaScript / DOM / HTML/CSS / ESM | Минимальные fragments, явный runtime mode, solution и описанный manual check | Hidden wrapper, mode ambiguity или неполный fragment |
+| TypeScript | Complete typed starter, solution и ожидаемый type/runtime result в Markdown | Version ambiguity или необъяснённая type claim |
+| React / TypeScript | Полный declared file starter, changed-file solution и описанные state/lifecycle results | Hidden environment dependency или неполный lifecycle contract |
+| Разобрать код | Written trace, согласованный со starter и explanation | Unsupported causal claim |
+| Предсказать результат | Written execution trace и exact expected output | Timing, environment или output ambiguity |
 | Real work | Все последовательные требования, loading/error/empty states и заявленные boundaries | Частичный результат выдан за complete PASS |
 | Markdown | Deterministic structure, details, fences, metadata и membership scans | Лишний anchor, hint, wrapper, field или membership |
 
-CSS и visual behavior проверяются вручную в браузере, а не unit-тестами.
+CSS и visual behavior не проверяются автоматическими тестами. Markdown-only gate
+проверяет полноту условия, CSS starter/solution и формулировку manual check без
+запуска браузера.
 
 ## Синхронизация
 
@@ -232,12 +240,12 @@ real-work формата и collection membership отклоняет focused ent
 
 Остановиться, если невозможно написать три разные полезные hints; условие
 нельзя свести к одному действию без изменения смысла; minimal starter
-недостаточен; solution требует hidden environment; technology, editor, format
-или collection неоднозначны; multiple files не являются настоящими частями
-real-work мини-проекта; metadata и collections расходятся; real-work membership
-противоречит format или time; обязательная ссылка не открывается; GitHub
-неожиданно рендерит details, fences или links; mandatory evidence недоступно.
+недостаточен; solution требует hidden environment; technology, editor
+instruction, format или collection неоднозначны; multiple files не являются
+настоящими частями real-work мини-проекта; metadata и collections расходятся;
+real-work membership противоречит format или time; обязательная локальная
+relative link не разрешается; deterministic evidence неполно или противоречиво.
 
-Нельзя выдавать compatibility state, diagnostic harness или partial real-work
-result за `PASS`. Top-level story закрывается только после Phase 20 rendered
-audit и явного пользовательского acceptance.
+Нельзя выдавать compatibility state или partial real-work result за `PASS`.
+Top-level story закрывается только после Phase 20 local catalog audit и явного
+пользовательского acceptance.

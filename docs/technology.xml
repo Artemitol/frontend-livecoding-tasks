@@ -21,7 +21,7 @@
     <tool name="grace-cli" value="grace" version="3.11.0" fallback="$HOME/.bun/bin/grace" />
     <tool name="issue-tracker" value="bd/Beads" version="repository-configured" />
     <tool name="worktree" value="native facility or git worktree" version="system" />
-    <tool name="temporary-validation" value="task-appropriate JavaScript, TypeScript, React, DOM, or browser harness" version="task-declared" />
+    <tool name="local-validation" value="rg, find, xmllint, and manual source-Markdown review" version="system" />
     <tool name="target-editor-programiz" value="https://www.programiz.com/javascript/online-compiler/" version="hosted" />
     <tool name="target-editor-codepen" value="https://pen.new" version="hosted" />
     <tool name="target-editor-typescript" value="https://www.typescriptlang.org/play/" version="hosted" />
@@ -72,7 +72,7 @@
   </EditorProfiles>
 
   <TaskEditorProfileMap STATUS="implemented-contract">
-    <mapping-state>Phase 8 fixes the profile assignment; target-editor evidence for each card remains pending in its owning migration phase.</mapping-state>
+    <mapping-state>Phase 8 fixes the student-facing profile assignment; external editor execution is NOT_RUN in Markdown-only delivery and does not gate migration.</mapping-state>
     <profile-assignment-Programiz>
       <task-slugs>immutable-category-totals, stable-product-sort, loop-closure-bindings</task-slugs>
     </profile-assignment-Programiz>
@@ -100,25 +100,25 @@
   <PreferredAgentStack>
     <preferred-content-format>GitHub Flavored Markdown with relative repository links</preferred-content-format>
     <preferred-progressive-disclosure>Exactly three independent closed hint details blocks, then closed concise solution and closed five-field metadata</preferred-progressive-disclosure>
-    <preferred-verification>Strict structural, preservation, content, synchronization, target-editor, browser, link, XML, and GitHub rendered-view evidence; temporary harnesses are diagnostic only</preferred-verification>
+    <preferred-verification>Strict repository-local structural, preservation, content, collection, relative-link, XML, and Beads synchronization evidence; external editor, browser, live-API, and rendered-page execution is out of scope</preferred-verification>
     <preferred-grace-resolution>Resolve grace from PATH, then fall back to $HOME/.bun/bin/grace before treating the CLI as unavailable.</preferred-grace-resolution>
     <discouraged-surface reason="The initial project intentionally has no repository runtime.">catalog generators, site frameworks, and package-manager-based Markdown pipelines</discouraged-surface>
   </PreferredAgentStack>
 
   <Testing>
     <module-level>
-      <command>Verify ConciseStudentTaskCard order, task class, preservation ledger, minimal copy-ready code, FILE parity where justified, three exact hints, five metadata fields, thematic and optional real-work membership, and final target-editor expected, actual, and verdict.</command>
-      <focus>Prove concise document structure, source-contract preservation, and solution behavior in the named online editor without adding a permanent repository runtime.</focus>
+      <command>Verify ConciseStudentTaskCard order, task class, preservation ledger, minimal copy-ready code, FILE parity where justified, three exact hints, five metadata fields, thematic and optional real-work membership, explicit NOT_RUN target-editor fields, and a local deterministic verdict.</command>
+      <focus>Prove concise document structure, source-contract preservation, and internal starter/solution/expected-result consistency without external execution or a permanent repository runtime.</focus>
     </module-level>
     <wave-level>
-      <command>Validate the serialized 8 + 8 + 5 concise redesign units; compare each changed card with exactly one thematic, zero or one interview, and supported real-work entry, graph and verification facts, resolve links, record CardMigrationEvidence, push the focused commit, and capture required rendered evidence.</command>
+      <command>Validate the serialized 8 + 8 + 5 concise redesign units; compare each changed card with exactly one thematic, zero or one interview, and supported real-work entry, graph and verification facts, resolve local links, record Markdown-only CardMigrationEvidence, push the focused commit, and record the complete wave report.</command>
       <focus>Prove migration quality and atomic synchronization across card, collections, knowledge graph, verification plan, and Beads evidence.</focus>
     </wave-level>
     <phase-level>
-      <command>Run xmllint on docs/*.xml, scan changed files for whitespace and placeholder defects, review the full catalog projection, and inspect GitHub rendering when template or HTML markup changes.</command>
-      <focus>Repository-wide structural integrity and student-visible GitHub behavior.</focus>
+      <command>Run xmllint on docs/*.xml, scan changed files for whitespace and placeholder defects, validate details/fence pairing, resolve local relative links, and review the full catalog projection.</command>
+      <focus>Repository-wide source-Markdown and XML structural integrity.</focus>
     </phase-level>
-    <mocking-policy>Use embedded fixtures, deterministic adapters, or fake clocks when network, time, or external state would otherwise make the task non-repeatable; do not mock away the behavior being taught or substitute a harness for final target-editor evidence.</mocking-policy>
+    <mocking-policy>Keep required fixtures and scenarios embedded in Markdown. Do not introduce or run a harness for Markdown-only delivery.</mocking-policy>
   </Testing>
 
   <Observability>
@@ -132,12 +132,12 @@
   <AutonomyPolicy>
     <default-execution-profile>balanced</default-execution-profile>
     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
-    <replan-trigger>Ambiguous metadata, collection, editor, task class, or profile; duplicate learning goal; missing prerequisite or asset; unnecessary multi-file split; full-document JavaScript wrapper; card/collection or real-work contradiction; unexpected GitHub rendering; unavailable mandatory evidence; or a solution requiring undeclared knowledge.</replan-trigger>
-    <checkpoint-requirement>Every task change reports mode, editor profile, preservation ledger, artifacts changed, checks run, target-editor expected/actual/verdict, collection sync, remaining risk, and next action.</checkpoint-requirement>
+    <replan-trigger>Ambiguous metadata, collection, editor instruction, task class, or profile; duplicate learning goal; missing prerequisite or asset; unnecessary multi-file split; full-document JavaScript wrapper; card/collection or real-work contradiction; failed local deterministic evidence; or a solution requiring undeclared knowledge.</replan-trigger>
+    <checkpoint-requirement>Every task change reports mode, editor profile, preservation ledger, artifacts changed, local checks run, explicit NOT_RUN target-editor fields, local verdict, collection sync, remaining risk, and next action.</checkpoint-requirement>
   </AutonomyPolicy>
 
   <DeliveryShape>
     <shape>GitHub repository whose root README is a short student hub, whose fourteen target collections are the primary selection surface, and whose twenty-one target task directories render concise copy-ready self-contained Markdown cards.</shape>
-    <implementation-state>The prior twenty-card, thirteen-collection catalog remains implemented. ConciseStudentTaskCard, the twenty-slug temporary compatibility state, three serialized 8 + 8 + 5 waves, the twenty-one-card and fourteen-collection cutover, and the rendered audit are staged as planned Phases 16 through 20; no future card or collection is claimed implemented.</implementation-state>
+    <implementation-state>The prior twenty-card, thirteen-collection catalog remains implemented. ConciseStudentTaskCard, the twenty-slug temporary compatibility state, three serialized 8 + 8 + 5 waves, the twenty-one-card and fourteen-collection cutover, and the local catalog audit are staged as planned Phases 16 through 20; no future card or collection is claimed implemented.</implementation-state>
   </DeliveryShape>
 </TechnologyStack>

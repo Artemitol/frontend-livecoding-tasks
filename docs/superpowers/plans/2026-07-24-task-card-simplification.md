@@ -2,24 +2,24 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the verbose twenty-card student experience with concise focused cards, add one React/DummyJSON real-work card and its cross-cutting collection, then prove the complete 21-card catalog through the required editor and GitHub-rendered evidence.
+**Goal:** Replace the verbose twenty-card student experience with concise focused cards, add one React/DummyJSON real-work card and its cross-cutting collection, then prove the complete 21-card catalog with repository-local Markdown, collection, XML, and Beads checks.
 
 **Architecture:** Keep the existing `M-GOVERNANCE`, `M-TASK-TEMPLATE`, `M-TASK-VALIDATION`, `M-TASK-LIBRARY`, and `M-CATALOG` ownership boundaries. Add a time-bounded migration compatibility state in the governance artifacts so legacy cards remain an explicitly known intermediate state, then remove it only in the final catalog cutover. Serialize three card waves (`8 + 8 + 5`) because every card changes shared catalog, graph, verification, and Beads facts; the new real-work card enters the last wave with the root and collection cutover.
 
-**Tech Stack:** GitHub Flavored Markdown, XML GRACE artifacts, Beads (`bd`), Git, `rg`, `find`, `awk`, `xmllint`, Programiz, CodePen, TypeScript Playground, React TypeScript at `vite.new/react-ts`, browser manual checks, and the DummyJSON Users API.
+**Tech Stack:** GitHub Flavored Markdown, XML GRACE artifacts, Beads (`bd`), Git, `rg`, `find`, `awk`, and `xmllint`. Student-facing editor links and the DummyJSON contract remain card content, not execution dependencies of this plan.
 
 ## Global Constraints
 
 - Work only on `feature/frontend-livecoding-tasks-kln` in its existing linked worktree; fetch `origin` before work and never commit or push to `main`.
-- Preserve the user decision: the top-level story and `frontend-livecoding-tasks-kln-final-acceptance` stay open until a new complete rendered audit and explicit human acceptance.
+- Preserve the user decision: the top-level story and `frontend-livecoding-tasks-kln-final-acceptance` stay open until a new complete local catalog audit and explicit human acceptance.
 - Do not add a package manager, runnable repository application, permanent harness, CSS/visual unit test, rewritten published history, or a fixed line-count limit.
 - A focused task has one central action and normally takes 10–30 minutes; a real-work task may have related product requirements and normally takes 45–60 minutes.
 - Every target card is title → editor instruction → `Условие` → minimal starter → exactly three closed hints → closed `Решение` → closed five-field `О задаче`; it has no back/fallback navigation, learning-goal framing, `Готово, когда`, `Самопроверка`, tutorial text for `<details>`, harness, diagnostic flags, inflated fixtures, or complete starter duplication in the solution.
 - JavaScript cards use a JavaScript block by default and never use a complete HTML document, `<style>`, `<script>`, or HTML script imports; a DOM task may precede JavaScript with only the semantically necessary HTML fragment.
 - The permitted format values are `Написать код`, `Исправить код`, `Разобрать код`, `Предсказать результат`, and `Приближённая к реальной работе`; the last value is used only for the new cross-cutting class.
 - Every task belongs to exactly one thematic collection; a real-work task also appears in `collections/real-work/README.md` and in zero or one interview collection.
-- A mandatory unavailable editor, DummyJSON endpoint, browser state, or GitHub rendering observation is `BLOCKED`, never `PASS`.
-- Each migrated card records complete `CardMigrationEvidence`, including source learning goal, prerequisite, runtime assumption, destinations, editor instruction, expected/actual result, verdict, collection synchronization, and remaining risk.
+- Do not open or operate Programiz, CodePen, TypeScript Playground, Vite, a browser, or a GitHub-rendered page for validation. Their availability never determines `PASS` or `BLOCKED`.
+- Each migrated card records complete `CardMigrationEvidence`, including source learning goal, prerequisite, runtime assumption, destinations, editor instruction, collection synchronization, and remaining risk. Preserve the legacy `targetEditorExpectedResult` and `targetEditorActualResult` fields as the explicit value `NOT_RUN: Markdown-only delivery`; derive `verdict` only from local deterministic checks.
 - Do not silently change `users-api-list` slug, duration, editor, or thematic collection: a duplicate or collection-capacity conflict is a product decision and stops the wave.
 
 ---
@@ -85,9 +85,9 @@ Run the following commands. The variables make the returned durable IDs, rather 
 ```bash
 bd update frontend-livecoding-tasks-kln-card-simplification-spec --claim
 contractIssueId="$(bd create --silent --parent frontend-livecoding-tasks-kln-card-simplification-spec --type task --priority 1 --title 'Prepare concise-card contract and migration gates' --acceptance 'Target template, compatibility state, GRACE phases, and validation commands are explicit without marking future card facts implemented.')"
-waveAId="$(bd create --silent --parent frontend-livecoding-tasks-kln-card-simplification-spec --type task --priority 1 --title 'Publish concise-card wave A' --acceptance 'All eight named JavaScript and TypeScript cards have PASS evidence, synchronized projections, a focused pushed commit, rendered evidence, and a wave report; any BLOCKED record keeps the wave open.')"
-waveBId="$(bd create --silent --parent frontend-livecoding-tasks-kln-card-simplification-spec --type task --priority 1 --title 'Publish concise-card wave B' --acceptance 'All eight named browser and HTML/CSS cards have PASS evidence, synchronized projections, a focused pushed commit, rendered evidence, and a wave report; any BLOCKED record keeps the wave open.')"
-waveCId="$(bd create --silent --parent frontend-livecoding-tasks-kln-card-simplification-spec --type task --priority 1 --title 'Publish concise-card wave C and catalog cutover' --acceptance 'Four React cards and users-api-list have PASS evidence; fourteen collections, all GRACE projections, the root hub, final rendered audit, and final-review handoff are internally consistent; any BLOCKED evidence keeps the wave open.')"
+waveAId="$(bd create --silent --parent frontend-livecoding-tasks-kln-card-simplification-spec --type task --priority 1 --title 'Publish concise-card wave A' --acceptance 'All eight named JavaScript and TypeScript cards have local deterministic PASS evidence, synchronized projections, a focused pushed commit, and a wave report; any failed local gate keeps the wave open.')"
+waveBId="$(bd create --silent --parent frontend-livecoding-tasks-kln-card-simplification-spec --type task --priority 1 --title 'Publish concise-card wave B' --acceptance 'All eight named browser and HTML/CSS cards have local deterministic PASS evidence, synchronized projections, a focused pushed commit, and a wave report; any failed local gate keeps the wave open.')"
+waveCId="$(bd create --silent --parent frontend-livecoding-tasks-kln-card-simplification-spec --type task --priority 1 --title 'Publish concise-card wave C and catalog cutover' --acceptance 'Four React cards and users-api-list have local deterministic PASS evidence; fourteen collections, all GRACE projections, the root hub, final local audit, and final-review handoff are internally consistent; any failed local gate keeps the wave open.')"
 printf '%s\n' "$contractIssueId" "$waveAId" "$waveBId" "$waveCId"
 ```
 
@@ -99,7 +99,7 @@ Run this complete command block. It creates one independently reviewable work un
 createCardIssue() {
   waveId="$1"
   cardTitle="$2"
-  cardId="$(bd create --silent --parent "$waveId" --type task --priority 1 --title "$cardTitle" --acceptance 'Card has the concise structure, retained one central action, complete CardMigrationEvidence, target-editor verdict, exactly one thematic projection, allowed optional memberships, graph/verification synchronization, and no unsupported boilerplate.')"
+  cardId="$(bd create --silent --parent "$waveId" --type task --priority 1 --title "$cardTitle" --acceptance 'Card has the concise structure, retained one central action, complete Markdown-only CardMigrationEvidence, exactly one thematic projection, allowed optional memberships, graph/verification synchronization, and no unsupported boilerplate.')"
   bd dep add "$cardId" "$contractIssueId"
   bd dep add "$waveId" "$cardId"
 }
@@ -195,7 +195,7 @@ Update the six XML artifacts with unique tags for new pending phases and gates:
 <Phase-17 name="ConciseWaveA" status="planned">...</Phase-17>
 <Phase-18 name="ConciseWaveB" status="planned">...</Phase-18>
 <Phase-19 name="ConciseWaveCAndCatalogCutover" status="planned">...</Phase-19>
-<Phase-20 name="ConciseRenderedAudit" status="planned">...</Phase-20>
+<Phase-20 name="ConciseLocalAudit" status="planned">...</Phase-20>
 ```
 
 Give each phase a matching `Gate-Phase-*`, an observable goal, exact artifact checks, `BLOCKED` stop conditions, and links to `M-GOVERNANCE`, `M-TASK-TEMPLATE`, `M-TASK-VALIDATION`, `M-TASK-LIBRARY`, and `M-CATALOG`. Update existing module contracts rather than inventing a parallel runtime module; every new public fact needs matching development-plan, verification-plan, knowledge-graph, and operational-packet text.
@@ -246,11 +246,11 @@ For every Wave A card, record its source learning goal, prerequisite, runtime as
 
 - [ ] **Step 2: Rewrite one card at a time and stop on a non-focused finding**
 
-For each claimed card issue, complete this serial microcycle before claiming the next: write a single visible `Условие`; keep only minimal copy-ready starter context; write three distinct closed hints; show only the changed code in `Решение`; keep the exact five metadata fields; run its declared target editor; then update its collection, `export-<slug>`, verification fact, and `CardMigrationEvidence`. A fresh reviewer must accept that one card's evidence before the next card changes shared files. If a card cannot be reduced to the listed action without changing its meaning, mark its Beads issue `BLOCKED` and do not substitute a new goal.
+For each claimed card issue, complete this serial microcycle before claiming the next: write a single visible `Условие`; keep only minimal copy-ready starter context; write three distinct closed hints; show only the changed code in `Решение`; keep the exact five metadata fields; run local deterministic Markdown checks; then update its collection, `export-<slug>`, verification fact, and `CardMigrationEvidence`. Record both target-editor result fields as `NOT_RUN: Markdown-only delivery`. A fresh reviewer must accept that one card's local evidence before the next card changes shared files. If a card cannot be reduced to the listed action without changing its meaning, mark its Beads issue `BLOCKED` and do not substitute a new goal.
 
-- [ ] **Step 3: Run the target-editor and structural evidence for each card**
+- [ ] **Step 3: Run local structural and content evidence for each card**
 
-For each claimed slug, run the card's declared editor flow and record expected versus actual output/type result. Then run:
+For each claimed slug, review the `Условие`, starter, solution, expected result, and manual check for internal consistency, record external execution as `NOT_RUN: Markdown-only delivery`, then run:
 
 ```bash
 for cardFile in tasks/{immutable-category-totals,stable-product-sort,loop-closure-bindings,browser-event-loop-order,discriminated-load-state,typed-object-property,response-union-narrowing,validate-unknown-profile}/README.md; do
@@ -259,7 +259,7 @@ for cardFile in tasks/{immutable-category-totals,stable-product-sort,loop-closur
 done
 ```
 
-Expected: all eight cards pass the concise structure check. A missing required editor result is `BLOCKED` in Beads and prevents the wave from closing.
+Expected: all eight cards pass the concise structure check. Only a failed or contradictory local gate prevents the wave from closing; editor/browser availability is out of scope.
 
 - [ ] **Step 4: Synchronize projections without changing unrelated memberships**
 
@@ -281,7 +281,7 @@ git add tasks collections docs/knowledge-graph.xml docs/verification-plan.xml
 git commit -m "docs(tasks): simplify wave A cards"
 ```
 
-Push the focused commit, capture GitHub rendering for the eight cards and affected collection pages, add the complete Wave A report to Beads, run `bd dolt push`, set the wave technical status to `accepted`, and close only card issues whose verdict is `PASS`.
+Push the focused commit, add the complete local-evidence Wave A report to Beads, run `bd dolt push`, set the wave technical status to `accepted`, and close only card issues whose local verdict is `PASS`.
 
 ### Task 4: Execute Wave B as eight independently evidenced browser migrations
 
@@ -290,8 +290,8 @@ Push the focused commit, capture GitHub rendering for the eight cards and affect
 - Modify when source facts change: `collections/javascript/this-and-closures/README.md`, `collections/javascript/event-loop-and-async/README.md`, `collections/javascript/dom-and-events/README.md`, `collections/html-css/accessibility/README.md`, `collections/html-css/layout/README.md`, affected interviews, `docs/knowledge-graph.xml`, `docs/verification-plan.xml`, and Wave B Beads records.
 
 **Interfaces:**
-- Consumes: Wave A closed with technical `accepted` status, Task 2 contract, and fixed CodePen profile assumptions.
-- Produces: eight concise browser cards with manual browser evidence; no CSS appearance assertion is introduced.
+- Consumes: Wave A closed with technical `accepted` status, Task 2 contract, and fixed student-facing editor instructions.
+- Produces: eight concise browser-oriented cards with local Markdown evidence; no CSS appearance assertion is introduced.
 
 - [ ] **Step 1: Record the eight source contracts and retain only their central behavior**
 
@@ -306,15 +306,15 @@ Push the focused commit, capture GitHub rendering for the eight cards and affect
 | `flex-long-text-overflow` | repair long-word behavior in a flex row | CodePen HTML/CSS |
 | `container-responsive-grid` | make grid columns respond to container width | CodePen HTML/CSS |
 
-For each claimed card issue, complete this serial microcycle before the next: capture source facts; reduce only the listed central behavior; run the declared CodePen/browser evidence; update the exact collection/graph/verification/Beads projections; and obtain a fresh reviewer gate. A requirement that is still essential but makes the card a mini-project stops the card issue for a user decision rather than silently reclassifying it.
+For each claimed card issue, complete this serial microcycle before the next: capture source facts; reduce only the listed central behavior; review the Markdown condition/starter/solution/manual-check contract; record external execution as `NOT_RUN: Markdown-only delivery`; update the exact collection/graph/verification/Beads projections; and obtain a fresh reviewer gate. A requirement that is still essential but makes the card a mini-project stops the card issue for a user decision rather than silently reclassifying it.
 
 - [ ] **Step 2: Apply the minimal-markup rule to each card**
 
 Use a separate minimal HTML fragment only when the DOM itself is necessary input; place JavaScript in a JavaScript block and never include a full document, embedded style/script wrapper, or decorative CSS. For HTML/CSS cards, retain only the element fragment and CSS needed for the stated layout behavior. Keep browser/runtime assumptions next to the editor transfer instruction.
 
-- [ ] **Step 3: Verify behavior in CodePen and visual behavior only in a browser**
+- [ ] **Step 3: Verify the browser-behavior contract locally in Markdown**
 
-Record the expected/actual result for each event, focus, stale-response, or layout flow. For accessibility, test keyboard sequence and focus restoration; for layout, inspect the specified browser behavior manually. Do not add `getComputedStyle`, stylesheet parsing, media-query, or pixel assertions to repository tests.
+Confirm that each event, focus, stale-response, accessibility, or layout flow is fully stated in `Условие`, implemented in the solution, and covered by the written expected result/manual check. Do not run CodePen or a browser. Do not add `getComputedStyle`, stylesheet parsing, media-query, or pixel assertions to repository tests.
 
 - [ ] **Step 4: Run the deterministic concise-card and no-full-document checks**
 
@@ -338,7 +338,7 @@ git add tasks collections docs/knowledge-graph.xml docs/verification-plan.xml
 git commit -m "docs(tasks): simplify wave B cards"
 ```
 
-Push, inspect GitHub rendering for all eight cards and affected lists, record one Wave B report, run `bd dolt push`, and close only `PASS` card issues and the Wave B issue after every technical gate passes.
+Push, record one local-evidence Wave B report, run `bd dolt push`, and close only `PASS` card issues and the Wave B issue after every local technical gate passes.
 
 ### Task 5: Execute Wave C and add the single real-work card
 
@@ -348,7 +348,7 @@ Push, inspect GitHub rendering for all eight cards and affected lists, record on
 
 **Interfaces:**
 - Consumes: Wave B technical acceptance; React TypeScript profile; the explicit DummyJSON contract from design section 9.
-- Produces: four concise focused React cards plus one 60-minute `Приближённая к реальной работе` React card with a fixed 10-item page size, deliberate search submit, and browser evidence for all required request states.
+- Produces: four concise focused React cards plus one 60-minute `Приближённая к реальной работе` React card with a fixed 10-item page size, deliberate search submit, and complete Markdown coverage of all required request states.
 
 - [ ] **Step 1: Reduce the four existing React cards to their independent central action**
 
@@ -361,7 +361,7 @@ Push, inspect GitHub rendering for all eight cards and affected lists, record on
 
 Use one complete `src/App.tsx` starter block for each. Preserve React version/runtime assumptions next to the Vite transfer instruction; do not add separate files merely to show architecture.
 
-For each claimed existing React card, complete the same serial microcycle as Wave A: source-fact capture, concise rewrite, target-editor evidence, projection/evidence synchronization, then a fresh reviewer gate before the next shared-file edit.
+For each claimed existing React card, complete the same serial microcycle as Wave A: source-fact capture, concise rewrite, local Markdown evidence, projection/evidence synchronization, then a fresh reviewer gate before the next shared-file edit.
 
 - [ ] **Step 2: Perform duplicate and collection-capacity review before creating `users-api-list`**
 
@@ -389,9 +389,9 @@ response: users, total, skip, limit
 
 They must require name/email/avatar rendering, bounded previous/next pagination from `total`, `limit`, and `skip`, form-submitted search, first-page reset on a new submitted query, separate loading/error/empty states, and no prior-query data presented as the new result. Link the official DummyJSON users documentation; do not copy its whole documentation into the card.
 
-- [ ] **Step 4: Validate React and DummyJSON behavior through the designated browser route**
+- [ ] **Step 4: Validate the React and DummyJSON contract in repository Markdown**
 
-For all five cards, capture Vite/browser expected and actual results. For `users-api-list`, additionally record list display, next/previous boundaries, submitted search, page reset, a no-result query, a throttled loading state, an offline or temporary diagnostic-endpoint error state, and a delayed/stale-response scenario. The diagnostic endpoint substitution is local evidence only and must not appear in the published starter.
+For all five cards, compare visible requirements, starter, solution, expected result, and manual check without opening Vite, a browser, or the live API. For `users-api-list`, verify that the Markdown contract locally covers list display, next/previous boundaries, submitted search, page reset, no-result, loading, error, and delayed/stale-response states. Record external execution as `NOT_RUN: Markdown-only delivery` and do not add diagnostic endpoint substitution to the published starter.
 
 - [ ] **Step 5: Add and synchronize the real-work catalog entry**
 
@@ -436,7 +436,7 @@ Delete the twenty-slug legacy exception from `AGENTS.md` and `docs/task-validati
 
 - [ ] **Step 3: Mark only completed GRACE work implemented**
 
-Change Phase/Gate 16 through 19 from `planned` or `in_progress` to `implemented` only when their attached evidence exists. Leave Phase/Gate 20 pending until Task 7 captures current GitHub-rendered evidence. Update `M-TASK-TEMPLATE`, `M-TASK-VALIDATION`, `M-TASK-LIBRARY`, `M-CATALOG`, and `M-GOVERNANCE` contracts, maps, cross-links, operational packets, risks, and verification expectations so they no longer mention removed navigation, readiness, self-check, legacy card count, or the old 13-collection inventory.
+Change Phase/Gate 16 through 19 from `planned` or `in_progress` to `implemented` only when their attached local evidence exists. Leave Phase/Gate 20 pending until Task 7 completes the current local catalog audit. Update `M-TASK-TEMPLATE`, `M-TASK-VALIDATION`, `M-TASK-LIBRARY`, `M-CATALOG`, and `M-GOVERNANCE` contracts, maps, cross-links, operational packets, risks, and verification expectations so they no longer mention removed navigation, readiness, self-check, legacy card count, the old 13-collection inventory, or mandatory external-editor/browser/GitHub-rendered gates.
 
 - [ ] **Step 4: Prove the cutover deterministically**
 
@@ -469,14 +469,14 @@ git add AGENTS.md templates/task-template.md docs/task-validation-policy.md docs
 git commit -m "docs: cut over concise task card catalog"
 ```
 
-### Task 7: Run the final editor, rendering, and release gate without inferring human acceptance
+### Task 7: Run the final local catalog and release gate without inferring human acceptance
 
 **Files:**
 - Modify: `docs/verification-plan.xml`, `docs/development-plan.xml`, `docs/knowledge-graph.xml`, `docs/operational-packets.xml`, and Beads evidence only if the audit yields new factual results.
 
 **Interfaces:**
-- Consumes: Tasks 1–6, pushed focused commits, all target-editor records, and the full 21-card/14-collection inventory.
-- Produces: a Phase 20 rendered-audit verdict, current branch divergence, a final-review handoff, and an open final-acceptance decision.
+- Consumes: Tasks 1–6, pushed focused commits, all Markdown-only evidence records, and the full 21-card/14-collection inventory.
+- Produces: a Phase 20 local-audit verdict, current branch divergence, a final-review handoff, and an open final-acceptance decision.
 
 - [ ] **Step 1: Re-run the full deterministic catalog audit**
 
@@ -496,17 +496,17 @@ git diff --check
 
 Expected: the first three assertions pass for every card; the `rg` command has no matches; XML and whitespace checks pass.
 
-- [ ] **Step 2: Revalidate all external/editor evidence that can drift**
+- [ ] **Step 2: Revalidate local card-content evidence**
 
-Open every Programiz, CodePen, TypeScript Playground, and Vite card in its named target environment. Recheck the DummyJSON Users API contract, then record `PASS` only where current evidence is observed. A missing editor, altered endpoint, browser failure, or inaccessible target is `BLOCKED`; update the relevant Beads issue and Phase 20 gate rather than using old evidence.
+For every card, compare `Условие`, starter, hints, solution, expected result, manual check, metadata, and collection projection directly in repository Markdown. For the DummyJSON card, verify the endpoint shapes and all required states against the approved local contract without calling the live API. Record both target-editor result fields as `NOT_RUN: Markdown-only delivery`; only a failed or contradictory local check can block Phase 20.
 
-- [ ] **Step 3: Capture GitHub-rendered student flows**
+- [ ] **Step 3: Audit local Markdown student flows**
 
-Inspect the pushed branch or draft pull request for the root hub, all 14 collection pages, and all 21 card pages. Confirm heading/link targets, closed `<details>` initial state, code-fence rendering, the one real-work projection, title/duration consistency, and absence of removed boilerplate. Record each URL, title, result, and remaining risk in the final audit evidence.
+Inspect the source Markdown for the root hub, all 14 collection pages, and all 21 card pages. Confirm heading and relative-link targets, paired closed `<details>`, language-tagged code fences, the one real-work projection, title/duration consistency, and absence of removed boilerplate. Record each repository path, title, result, and remaining risk in the final audit evidence.
 
 - [ ] **Step 4: Record only factual audit status before publishing it**
 
-If and only if Steps 1–3 have current `PASS` evidence, change Phase/Gate 20 to `implemented`; otherwise record its exact `BLOCKED` reason and leave it pending. Then commit only the factual audit deltas:
+If and only if Steps 1–3 have current local `PASS` evidence, change Phase/Gate 20 to `implemented`; otherwise record its exact `BLOCKED` reason and leave it pending. Then commit only the factual audit deltas:
 
 ```bash
 git add docs/development-plan.xml docs/verification-plan.xml docs/knowledge-graph.xml docs/operational-packets.xml
@@ -541,9 +541,9 @@ Add the reviewed commit, audit evidence location, branch divergence, and known r
 | Concise StudentTaskCard, JavaScript, TypeScript, HTML/CSS, React rules | Task 2 establishes the template/policy; Tasks 3–5 apply and validate them. |
 | Progressive hints and solution boundaries | Tasks 2–5 require exactly three closed hints and changed-code-only solutions. |
 | Metadata and catalog | Tasks 2, 5, and 6 control values, 21 cards, fourteen collections, and root-hub structure. |
-| DummyJSON task | Task 5 fixes identity, API, query semantics, all states, stale-response protection, and browser evidence. |
+| DummyJSON task | Task 5 fixes identity, API, query semantics, all states, stale-response protection, and complete local Markdown evidence. |
 | Existing-card migration | Wave Assignment and Tasks 3–5 name all twenty slugs and their central action. |
-| Verification, stop conditions, rendered audit | Global Constraints and Tasks 2–7 give structural, target-editor, browser, GitHub, XML, and `BLOCKED` paths. |
+| Verification, stop conditions, local audit | Global Constraints and Tasks 2–7 give Markdown, collection, XML, Beads, and `BLOCKED` paths without external-editor or rendered-page gates. |
 | GRACE, Beads, branches, release | Tasks 1, 2, 6, and 7 define issue dependencies, artifacts, phase truthfulness, commits, pushes, PR, and final acceptance handoff. |
 
 No spec requirement is intentionally omitted.
