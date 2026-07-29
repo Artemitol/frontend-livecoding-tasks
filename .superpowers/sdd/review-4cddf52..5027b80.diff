@@ -1,0 +1,120 @@
+# Review package: 4cddf5276748092cafe7bc4a6b10f0924b9ad124..5027b8066ef2a5887cfd67865ec9de1d72a38c5e
+
+## Commits
+5027b80 docs: record student catalog verification
+b64ec28 docs: add student catalog entry point
+
+## Files changed
+ README.md                 | 21 +++++++++++++++++++++
+ docs/development-plan.xml |  6 +++---
+ docs/knowledge-graph.xml  |  2 +-
+ 3 files changed, 25 insertions(+), 4 deletions(-)
+
+## Diff
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..ffae6cc
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,21 @@
++# Frontend live-coding задачи
++
++GitHub-first база самостоятельных упражнений по frontend-разработке. Репозиторий можно читать без установки зависимостей: выберите задачу в каталоге, откройте её условие и критерии готовности, а теорию, подсказки и решение раскрывайте по необходимости.
++
++## Как выбрать задачу
++
++Каталог сгруппирован по одной основной теме. В строке задачи указаны технологии, формат, уровень, оценка времени, тренируемые навыки и предварительные знания. Пересекающиеся навыки не дублируют задачу в других темах.
++
++Уровень описывает сложность упражнения: `Базовый`, `Средний` или `Продвинутый`. Формат имеет одно из значений: `Реализация`, `Отладка`, `Разбор`, `Прогноз вывода`.
++
++## Каталог задач
++
++Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и принятия первой волны ментором.
++
++## Как устроена карточка
++
++Метаданные внутри `tasks/<stable-slug>/README.md` являются источником истины. Условие, критерии готовности и самопроверка видимы сразу; теория, каждая подсказка и решение закрыты независимо. Внешние материалы дополняют карточку, но не заменяют локальные условие, fixtures, стартовый код или решение.
++
++## Поддержка каталога
++
++ИИ-агент публикует только кандидатов со статусом `accepted` и в одном изменении синхронизирует карточку, эту тематическую проекцию, knowledge graph и Beads evidence. Каждая задача встречается в каталоге ровно один раз и сортируется внутри темы сначала по уровню, затем по названию.
+diff --git a/docs/development-plan.xml b/docs/development-plan.xml
+index 7b96416..aab84fc 100644
+--- a/docs/development-plan.xml
++++ b/docs/development-plan.xml
+@@ -154,21 +154,21 @@
+       </observability>
+       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
+       <notes>
+         <note-1>A slug is stable. Renaming it is a migration that must verify every inbound reference.</note-1>
+         <note-2>Collapsed solutions are spoiler-resistant, not access-controlled.</note-2>
+         <note-3>The wave Beads issue remains open until mentor wave acceptance is recorded.</note-3>
+         <note-4>Each accepted task adds one export-&lt;task-slug&gt; public annotation under M-TASK-LIBRARY in the knowledge graph.</note-4>
+       </notes>
+     </M-TASK-LIBRARY>
+ 
+-    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="planned">
++    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="implemented">
+       <contract>
+         <purpose>Provide the GitHub repository entry point and thematic, agent-synchronized projections of task metadata.</purpose>
+         <inputs>
+           <param name="canonical-task-metadata" type="TaskMetadataSet" />
+         </inputs>
+         <outputs>
+           <param name="student-index" type="README.md" />
+         </outputs>
+         <errors>
+           <error code="TASK_MISSING_FROM_CATALOG" />
+@@ -249,23 +249,23 @@
+   <ImplementationOrder>
+     <Phase-1 name="Governance" status="completed">
+       <goal>Record approved requirements, worktree isolation, technology boundaries, module contracts, data flows, verification references, and stop conditions.</goal>
+       <step-1 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Finalize and review the written specification and all GRACE planning artifacts.</step-1>
+     </Phase-1>
+     <Phase-2 name="TaskContract" status="completed">
+       <goal>Create the canonical GitHub-first task structure and strict validation policy before any task content is added.</goal>
+       <step-1 module="M-TASK-TEMPLATE" status="completed" verification="V-M-TASK-TEMPLATE">Create and render-review templates/task-template.md.</step-1>
+       <step-2 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Create docs/task-validation-policy.md and prove all terminal decisions and hybrid evidence routes.</step-2>
+     </Phase-2>
+-    <Phase-3 name="StudentEntryPoint" status="pending">
++    <Phase-3 name="StudentEntryPoint" status="completed">
+       <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>
+-      <step-1 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
++      <step-1 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
+     </Phase-3>
+     <Phase-4 name="CandidateAudit" status="pending">
+       <goal>Freeze a finite neutral Beads candidate register, deduplicate it, and record a validation decision for every stable candidate ID.</goal>
+       <step-1 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
+     </Phase-4>
+     <Phase-5 name="TaskWaves" status="pending">
+       <goal>Publish strictly accepted tasks through atomic task, catalog, graph, evidence, and mentor wave-acceptance updates.</goal>
+       <step-1 module="M-TASK-LIBRARY" status="pending" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
+       <step-2 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
+       <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor wave acceptance in Beads.</step-3>
+diff --git a/docs/knowledge-graph.xml b/docs/knowledge-graph.xml
+index 6f44e46..70b2a9d 100644
+--- a/docs/knowledge-graph.xml
++++ b/docs/knowledge-graph.xml
+@@ -41,21 +41,21 @@
+       <purpose>Store accepted, locally complete task cards and their canonical metadata.</purpose>
+       <path>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</path>
+       <depends>M-TASK-VALIDATION, M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
+       <annotations>
+         <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
+         <export-taskCard PURPOSE="Expose the complete student-facing exercise through GitHub" />
+       </annotations>
+     </M-TASK-LIBRARY>
+ 
+-    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="planned">
++    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" STATUS="implemented">
+       <purpose>Provide the student entry point and thematic, agent-synchronized projections of canonical task metadata.</purpose>
+       <path>README.md</path>
+       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
+       <verification-ref>V-M-CATALOG</verification-ref>
+       <annotations>
+         <export-studentIndex PURPOSE="Expose thematic tables with exactly one row per task and all catalog metadata" />
+       </annotations>
+     </M-CATALOG>
+ 
+     <CrossLink from="M-TASK-TEMPLATE" to="M-GOVERNANCE" relation="governed-by" />

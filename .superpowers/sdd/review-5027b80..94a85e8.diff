@@ -1,0 +1,1323 @@
+# Review package: 5027b8066ef2a5887cfd67865ec9de1d72a38c5e..HEAD
+
+## Commits
+94a85e8 docs: move acceptance to final library review
+
+## Files changed
+ AGENTS.md                                          |  2 +-
+ README.md                                          |  2 +-
+ docs/development-plan.xml                          | 30 ++++-----
+ docs/knowledge-graph.xml                           |  2 +-
+ docs/operational-packets.xml                       | 12 ++--
+ docs/requirements.xml                              |  6 +-
+ .../2026-07-22-frontend-task-knowledge-base.md     | 73 +++++++++++-----------
+ ...26-07-22-frontend-task-knowledge-base-design.md | 28 +++++----
+ docs/task-validation-policy.md                     |  7 ++-
+ docs/technology.xml                                |  4 +-
+ docs/verification-plan.xml                         | 33 +++++-----
+ 11 files changed, 105 insertions(+), 94 deletions(-)
+
+## Diff
+diff --git a/AGENTS.md b/AGENTS.md
+index 6f61d16..90ff751 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -40,21 +40,21 @@ Markdown-only tasks do not require automated tests. Review their structure, link
+ 
+ ## Task Publication Contract
+ 
+ - Store each accepted exercise at `tasks/<stable-slug>/README.md`; treat the slug as a stable identifier and handle renames as migrations with inbound-link verification.
+ - Use the exact metadata labels `Технологии`, `Тема`, `Формат`, `Уровень`, `Время`, `Навыки`, `Предварительные знания`, and `Среда выполнения`.
+ - Use only the approved format values `Реализация`, `Отладка`, `Разбор`, and `Прогноз вывода`, and the level values `Базовый`, `Средний`, and `Продвинутый`.
+ - Treat task metadata as canonical. Update the root catalog and the task-library knowledge-graph annotation in the same change; every accepted task must appear exactly once in each projection.
+ - Keep theory, every hint, and the solution in independent `<details>` blocks without the `open` attribute. Keep the prompt, fixtures, starter code, and solution local even when targeted external reading is linked.
+ - Publish only candidates with an `accepted` Beads validation decision. Keep `needs-rewrite`, `rejected`, and `duplicate` candidates out of `tasks/` and record their neutral decision evidence in Beads.
+ - Validate JavaScript, TypeScript, React/DOM, UI, analysis, and output-prediction tasks with the evidence route defined in `docs/task-validation-policy.md`. Unavailable mandatory browser evidence is `BLOCKED`, never `PASS`.
+-- Publish accepted cards in mentor-reviewed waves of 8–10, except that the final incomplete wave may contain 1–7. Keep the wave issue open until mentor acceptance is recorded.
++- Publish accepted cards in serialized technical waves of 8–10, except that the final incomplete wave may contain 1–7. Close each wave continuously after candidate recheck, all deterministic and hybrid gates pass, the focused commit is pushed, GitHub-rendered evidence is captured, and the complete wave report is recorded. Do not require per-wave mentor or user approval; keep the top-level story open until the user accepts the complete library after the final audit.
+ - Stop instead of guessing when metadata, controlled vocabulary, environment, expected output, prerequisite, asset, external material, rendering, or mandatory evidence is ambiguous or unavailable.
+ 
+ ## Commit & Pull Request Guidelines
+ 
+ Agents are authorized to create branches, commits, pushes, and pull requests automatically. Never commit or push directly to `main`. Before making project changes, create or reuse a `feature/*` branch. After a coherent change passes its relevant verification gates, create a focused commit, push the active `feature/*` branch, and open a pull request targeting `main` without asking for additional permission. An explicit user instruction not to branch, commit, push, or create a pull request overrides this default for that task.
+ 
+ ### Worktree Isolation
+ 
+ Before making project changes, work from an isolated Git worktree based on the current remote default branch:
+ 
+diff --git a/README.md b/README.md
+index ffae6cc..2be301d 100644
+--- a/README.md
++++ b/README.md
+@@ -3,19 +3,19 @@
+ GitHub-first база самостоятельных упражнений по frontend-разработке. Репозиторий можно читать без установки зависимостей: выберите задачу в каталоге, откройте её условие и критерии готовности, а теорию, подсказки и решение раскрывайте по необходимости.
+ 
+ ## Как выбрать задачу
+ 
+ Каталог сгруппирован по одной основной теме. В строке задачи указаны технологии, формат, уровень, оценка времени, тренируемые навыки и предварительные знания. Пересекающиеся навыки не дублируют задачу в других темах.
+ 
+ Уровень описывает сложность упражнения: `Базовый`, `Средний` или `Продвинутый`. Формат имеет одно из значений: `Реализация`, `Отладка`, `Разбор`, `Прогноз вывода`.
+ 
+ ## Каталог задач
+ 
+-Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и принятия первой волны ментором.
++Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и технической публикации первой волны.
+ 
+ ## Как устроена карточка
+ 
+ Метаданные внутри `tasks/<stable-slug>/README.md` являются источником истины. Условие, критерии готовности и самопроверка видимы сразу; теория, каждая подсказка и решение закрыты независимо. Внешние материалы дополняют карточку, но не заменяют локальные условие, fixtures, стартовый код или решение.
+ 
+ ## Поддержка каталога
+ 
+ ИИ-агент публикует только кандидатов со статусом `accepted` и в одном изменении синхронизирует карточку, эту тематическую проекцию, knowledge graph и Beads evidence. Каждая задача встречается в каталоге ровно один раз и сортируется внутри темы сначала по уровню, затем по названию.
+diff --git a/docs/development-plan.xml b/docs/development-plan.xml
+index aab84fc..0ad892d 100644
+--- a/docs/development-plan.xml
++++ b/docs/development-plan.xml
+@@ -1,16 +1,16 @@
+ <DevelopmentPlan VERSION="0.3.0">
+   <ArchitectureNotes>
+     <objective>Provide a GitHub-first, self-contained frontend task knowledge base that an AI agent can extend without catalog or graph drift.</objective>
+     <non-goal>Do not build an executable learning platform, catalog generator, or mandatory repository runtime.</non-goal>
+     <risk-1>Task metadata is canonical while the student catalog and knowledge graph are derived, so all three artifacts must change atomically.</risk-1>
+-    <risk-2>Structural verification cannot prove solution correctness; strict hybrid validation and mentor wave acceptance remain separate gates.</risk-2>
++    <risk-2>Structural verification cannot prove solution correctness; strict hybrid validation, pushed commits, GitHub-rendered evidence, and complete wave reports remain separate technical gates, while final complete-library user acceptance gates only top-level story closure.</risk-2>
+     <risk-3>Collapsed details prevent accidental spoilers but do not conceal solutions from raw Markdown or repository search.</risk-3>
+     <risk-4>Publishing before deduplication can create several cards for the same learning goal.</risk-4>
+   </ArchitectureNotes>
+ 
+   <Modules>
+     <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" LAYER="0" ORDER="1" STATUS="implemented">
+       <contract>
+         <purpose>Define the repository's authoring, delivery, synchronization, verification, and stop-condition rules.</purpose>
+         <inputs>
+           <param name="approved-design" type="DesignDecisions" />
+@@ -99,21 +99,21 @@
+           <error code="MANDATORY_EVIDENCE_UNAVAILABLE" />
+         </errors>
+       </contract>
+       <interface>
+         <type-ValidationDecision PURPOSE="accepted, needs-rewrite, rejected, or duplicate" />
+         <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and terminal-decision accounting" />
+         <export-validateCandidate PURPOSE="Apply identity, learning-value, contract, completeness, examples, solution, verification, and editorial gates" />
+       </interface>
+       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+       <target>
+-        <source>docs/task-validation-policy.md; Beads validation and wave-acceptance records</source>
++        <source>docs/task-validation-policy.md; Beads validation and technical wave-publication records</source>
+         <tests>V-M-TASK-VALIDATION strict candidate and evidence checks</tests>
+       </target>
+       <observability>
+         <evidence-anchor>validation decision; evidence type; executed or reviewed scenario; rejection or merge reason</evidence-anchor>
+         <critical-check>Only accepted produces an AcceptedTaskCard; unavailable required browser evidence is BLOCKED rather than PASS.</critical-check>
+       </observability>
+       <verification-ref>V-M-TASK-VALIDATION</verification-ref>
+       <notes>
+         <note-1>Temporary harnesses do not become a permanent repository runtime.</note-1>
+         <note-2>External learning materials may supplement theory but cannot carry the local prompt, fixtures, starter code, or solution.</note-2>
+@@ -142,28 +142,28 @@
+       <interface>
+         <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
+         <export-taskCard PURPOSE="Expose the complete student-facing exercise through GitHub" />
+       </interface>
+       <depends>M-TASK-VALIDATION, M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+       <target>
+         <source>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</source>
+         <tests>V-M-TASK-LIBRARY per-card and cross-card checks</tests>
+       </target>
+       <observability>
+-        <evidence-anchor>task slug; metadata values; validation decision; prerequisite, asset, and supplementary links; wave-acceptance status</evidence-anchor>
++        <evidence-anchor>task slug; metadata values; validation decision; prerequisite, asset, and supplementary links; wave technical-publication status</evidence-anchor>
+         <critical-check>The task is accepted, locally complete, independently authored, and every required path or link resolves.</critical-check>
+       </observability>
+       <verification-ref>V-M-TASK-LIBRARY</verification-ref>
+       <notes>
+         <note-1>A slug is stable. Renaming it is a migration that must verify every inbound reference.</note-1>
+         <note-2>Collapsed solutions are spoiler-resistant, not access-controlled.</note-2>
+-        <note-3>The wave Beads issue remains open until mentor wave acceptance is recorded.</note-3>
++        <note-3>The serialized wave Beads issue closes continuously after candidate recheck, required technical evidence, pushed commit, GitHub-rendered review, and the complete wave report pass.</note-3>
+         <note-4>Each accepted task adds one export-&lt;task-slug&gt; public annotation under M-TASK-LIBRARY in the knowledge graph.</note-4>
+       </notes>
+     </M-TASK-LIBRARY>
+ 
+     <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="implemented">
+       <contract>
+         <purpose>Provide the GitHub repository entry point and thematic, agent-synchronized projections of task metadata.</purpose>
+         <inputs>
+           <param name="canonical-task-metadata" type="TaskMetadataSet" />
+         </inputs>
+@@ -204,33 +204,33 @@
+       <step-3>The agent applies identity, learning-value, contract, local-completeness, examples, solution, verification, and editorial gates.</step-3>
+       <step-4>The agent obtains task-appropriate temporary execution, type-check, trace, browser, or manual evidence.</step-4>
+       <step-5>The agent records accepted, needs-rewrite, rejected, or duplicate in Beads; only accepted yields an AcceptedTaskCard.</step-5>
+       <evidence>Validation decision, duplicate or rejection reason when applicable, evidence type, observed result, and unresolved risk.</evidence>
+     </DF-VALIDATE-TASK>
+ 
+     <DF-PUBLISH-TASK-WAVE NAME="PublishTaskWave" TRIGGER="Eight to ten accepted task cards are ready">
+       <step-1>The agent creates accepted task cards and optional colocated assets.</step-1>
+       <step-2>The agent synchronizes thematic README.md tables and one export-&lt;task-slug&gt; annotation per task.</step-2>
+       <step-3>The agent runs V-M-TASK-LIBRARY, V-M-CATALOG, V-M-TASK-VALIDATION, and V-M-GOVERNANCE.</step-3>
+-      <step-4>The agent publishes a wave report containing decisions, evidence, merges, checks, and remaining risks.</step-4>
+-      <step-5>The mentor accepts the wave or requests fixes in the same story worktree and branch.</step-5>
+-      <step-6>The agent closes the child Beads issue only after mentor acceptance.</step-6>
+-      <evidence>Accepted paths, catalog rows, graph annotations, validation evidence, verification output, and mentor wave-acceptance status.</evidence>
++      <step-4>The agent pushes the focused wave commit and captures GitHub-rendered evidence for the changed student-facing artifacts.</step-4>
++      <step-5>The agent publishes a complete wave report containing decisions, evidence, merges, checks, and remaining risks, then records the technical publication status.</step-5>
++      <step-6>The agent closes the child Beads issue after every technical gate passes and continues to the next serialized wave without per-wave human approval.</step-6>
++      <evidence>Accepted paths, catalog rows, graph annotations, validation evidence, verification output, pushed commit, GitHub-rendered evidence, complete report, and wave technical-publication status.</evidence>
+     </DF-PUBLISH-TASK-WAVE>
+ 
+     <DF-ADD-TASK NAME="AddTask" TRIGGER="Mentor asks an AI agent to add a task">
+       <step-1>The agent reads M-GOVERNANCE, M-TASK-TEMPLATE, and M-TASK-VALIDATION.</step-1>
+       <step-2>The agent resolves mandatory metadata and environment and stops if classification is ambiguous.</step-2>
+       <step-3>The agent completes DF-VALIDATE-TASK.</step-3>
+       <step-4>An accepted card follows the same atomic task, catalog, graph, and evidence contract as DF-PUBLISH-TASK-WAVE.</step-4>
+-      <step-5>The Beads issue remains open until mentor acceptance.</step-5>
+-      <evidence>Validation decision, task path, catalog row, graph entry, link results, hybrid evidence, and mentor-acceptance status.</evidence>
++      <step-5>The serialized wave Beads issue closes after its technical publication gates and complete report pass.</step-5>
++      <evidence>Validation decision, task path, catalog row, graph entry, link results, hybrid evidence, pushed commit, GitHub-rendered evidence, complete report, and technical publication status.</evidence>
+     </DF-ADD-TASK>
+ 
+     <DF-STUDY-TASK NAME="StudyTask" TRIGGER="Student opens the repository on GitHub">
+       <step-1>The student chooses a task from README.md using visible metadata.</step-1>
+       <step-2>GitHub follows a relative link to the task card.</step-2>
+       <step-3>The student reads the visible goal, prompt, starter code, and readiness criteria.</step-3>
+       <step-4>The student optionally opens theory, targeted additional materials, and then reveals hints one at a time.</step-4>
+       <step-5>The student opens the solution after attempting the task and completes self-check questions.</step-5>
+       <evidence>Working relative link, matching metadata, visible required sections, and closed progressive-disclosure blocks.</evidence>
+     </DF-STUDY-TASK>
+@@ -258,34 +258,34 @@
+     </Phase-2>
+     <Phase-3 name="StudentEntryPoint" status="completed">
+       <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>
+       <step-1 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
+     </Phase-3>
+     <Phase-4 name="CandidateAudit" status="pending">
+       <goal>Freeze a finite neutral Beads candidate register, deduplicate it, and record a validation decision for every stable candidate ID.</goal>
+       <step-1 module="M-TASK-VALIDATION" status="pending" verification="V-M-TASK-VALIDATION">Freeze candidate IDs, apply DF-VALIDATE-TASK, and group accepted cards into waves of 8-10 with a permitted final wave of 1-7.</step-1>
+     </Phase-4>
+     <Phase-5 name="TaskWaves" status="pending">
+-      <goal>Publish strictly accepted tasks through atomic task, catalog, graph, evidence, and mentor wave-acceptance updates.</goal>
++      <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, evidence, pushed-commit, GitHub-rendered, report, and technical-status updates.</goal>
+       <step-1 module="M-TASK-LIBRARY" status="pending" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
+       <step-2 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
+-      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor wave acceptance in Beads.</step-3>
++      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas, record the complete report and technical publication status in Beads, close the wave, and continue.</step-3>
+     </Phase-5>
+     <Phase-6 name="FinalAudit" status="pending">
+-      <goal>Prove that every candidate has a terminal decision and every accepted task remains unique, verified, linked, and mentor-accepted.</goal>
+-      <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Run full candidate-status, catalog, graph, XML, Markdown, link, branch-divergence, and acceptance checks.</step-1>
++      <goal>Prove that every candidate has a terminal decision and every accepted task remains unique, technically published, verified, and linked, then prepare the complete library for final user review.</goal>
++      <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Run full candidate-status, catalog, graph, XML, Markdown, link, branch-divergence, and technical publication checks; keep the top-level story open for final user acceptance.</step-1>
+     </Phase-6>
+     <Phase-7 name="ScaleReview" status="pending">
+       <goal>Reassess controlled vocabularies and deterministic validation only after observed catalog size or drift justifies added tooling.</goal>
+       <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Review drift evidence and explicitly approve or reject automation.</step-1>
+     </Phase-7>
+   </ImplementationOrder>
+ 
+   <ExecutionPolicy>
+     <default-profile>balanced</default-profile>
+     <controller-owns>docs/development-plan.xml, docs/knowledge-graph.xml, docs/verification-plan.xml, and catalog synchronization decisions</controller-owns>
+     <worker-owns>Only the explicitly accepted task cards, colocated assets, and packet-scoped derived updates</worker-owns>
+     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
+     <replan-trigger>Ambiguous metadata or environment, duplicate learning goal, missing prerequisite or asset, unexpected GitHub rendering, contradictory task and catalog facts, unavailable mandatory evidence, or any requirement for new permanent runtime tooling.</replan-trigger>
+-    <checkpoint-requirement>Every step must leave assumptions, validation decisions, artifacts changed, checks run, observed evidence, mentor wave-acceptance status, and next action.</checkpoint-requirement>
++    <checkpoint-requirement>Every step must leave assumptions, validation decisions, artifacts changed, checks run, observed evidence, wave technical-publication status, and next action.</checkpoint-requirement>
+   </ExecutionPolicy>
+ </DevelopmentPlan>
+diff --git a/docs/knowledge-graph.xml b/docs/knowledge-graph.xml
+index 70b2a9d..9fa2deb 100644
+--- a/docs/knowledge-graph.xml
++++ b/docs/knowledge-graph.xml
+@@ -20,21 +20,21 @@
+       <depends>M-GOVERNANCE</depends>
+       <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
+       <annotations>
+         <type-TaskMetadata PURPOSE="Exact labels and controlled values for technologies, topic, format, level, duration, skills, prerequisites, and execution environment" />
+         <export-taskSchema PURPOSE="Expose mandatory metadata, visible sections, progressive disclosure, and self-check structure" />
+       </annotations>
+     </M-TASK-TEMPLATE>
+ 
+     <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY" STATUS="implemented">
+       <purpose>Deduplicate and strictly validate independently authored candidates before publication.</purpose>
+-      <path>docs/task-validation-policy.md; Beads validation and wave-acceptance records</path>
++      <path>docs/task-validation-policy.md; Beads validation and technical wave-publication records</path>
+       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
+       <verification-ref>V-M-TASK-VALIDATION</verification-ref>
+       <annotations>
+         <type-ValidationDecision PURPOSE="accepted, needs-rewrite, rejected, or duplicate" />
+         <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and one validation decision per entry" />
+         <export-validateCandidate PURPOSE="Apply strict content, solution, evidence, and editorial gates" />
+       </annotations>
+     </M-TASK-VALIDATION>
+ 
+     <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" STATUS="planned">
+diff --git a/docs/operational-packets.xml b/docs/operational-packets.xml
+index 872c6ff..7bd1b88 100644
+--- a/docs/operational-packets.xml
++++ b/docs/operational-packets.xml
+@@ -15,21 +15,21 @@ Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. The ta
+       ]]></contract-excerpt>
+       <graph-entry-excerpt><![CDATA[
+ M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLATE, is governed by M-GOVERNANCE, and is projected into M-CATALOG.
+       ]]></graph-entry-excerpt>
+       <dependency-contract-summaries>
+         <dependency-1 module="M-GOVERNANCE">Authoring, synchronization, stop-condition, and Beads evidence rules.</dependency-1>
+         <dependency-2 module="M-TASK-TEMPLATE">Canonical metadata labels, visible sections, and progressive-disclosure structure.</dependency-2>
+         <dependency-3 module="M-TASK-VALIDATION">Strict validation decisions and hybrid evidence; only accepted can be published.</dependency-3>
+       </dependency-contract-summaries>
+       <verification-excerpt><![CDATA[
+-Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify hybrid task evidence, local and supplementary links, unique thematic catalog projection, one graph annotation, and mentor wave acceptance.
++Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify candidate recheck, hybrid task evidence, local and supplementary links, unique thematic catalog projection, one graph annotation, pushed commit, GitHub-rendered evidence, complete wave report, and technical publication status.
+       ]]></verification-excerpt>
+       <assumptions>
+         <assumption-1>The task has an accepted validation decision with task-appropriate evidence.</assumption-1>
+         <assumption-2>The stable task slug, controlled metadata, execution environment, prerequisites, assets, and supplementary links can be resolved before editing.</assumption-2>
+       </assumptions>
+       <stop-conditions>
+         <condition-1>Stop for non-accepted validation, ambiguous metadata or environment, duplicate goal, missing prerequisite or asset, broken supplementary link, unavailable mandatory evidence, unexpected GitHub rendering, slug migration, or new permanent tooling.</condition-1>
+       </stop-conditions>
+       <retry-budget>2</retry-budget>
+       <checkpoint-fields>
+@@ -66,20 +66,21 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
+       <story-id>frontend-livecoding-tasks-story-id</story-id>
+       <learning-goal>Independently authored one-sentence observable learning goal.</learning-goal>
+       <proposed-topic>Controlled topic value</proposed-topic>
+       <decision>accepted | needs-rewrite | rejected | duplicate</decision>
+       <decision-reason>Concise contract, quality, or duplication reason.</decision-reason>
+       <duplicate-target>Stable candidate ID or none</duplicate-target>
+       <evidence-type>execution | type-check | trace | browser | manual</evidence-type>
+       <observed-result>Concrete result supporting the decision.</observed-result>
+       <wave-id>Wave child issue ID for accepted, otherwise none</wave-id>
+       <remaining-risk>Known residual risk or none</remaining-risk>
++      <!-- Technical publication status, never a per-wave human approval. -->
+       <wave-acceptance-status>not-applicable | pending | accepted | changes-requested</wave-acceptance-status>
+     </CandidateValidationRecord>
+   </CandidateValidationRecordTemplate>
+ 
+   <GraphDeltaTemplate>
+     <!-- Canonical worker-to-controller graph delta. -->
+     <GraphDelta module="M-TASK-LIBRARY">
+       <imports-added />
+       <imports-removed />
+       <exports-added>
+@@ -108,30 +109,30 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
+       <test-files-removed />
+       <module-checks>
+         <command-1>Verify accepted validation status, exact metadata labels, controlled values, execution environment, and mandatory document anchors.</command-1>
+         <command-2>Resolve prerequisite, asset, catalog, and supplementary links.</command-2>
+         <command-3>Verify task-appropriate execution, type-check, trace, browser, or manual evidence.</command-3>
+         <command-4>Prove that the task slug appears exactly once in thematic catalog tables and graph annotations.</command-4>
+       </module-checks>
+       <required-evidence-anchors>
+         <marker-1>canonical metadata table</marker-1>
+         <marker-2>Условие / Критерии готовности / Теория / Подсказка N / Решение / Самопроверка</marker-2>
+-        <marker-3>Beads validation decision and mentor wave-acceptance status</marker-3>
++        <marker-3>Beads validation decision and wave technical-publication status</marker-3>
+       </required-evidence-anchors>
+       <required-trace-assertions>
+         <assertion-1>A task change must not complete before catalog and graph synchronization is verified.</assertion-1>
+       </required-trace-assertions>
+       <wave-follow-up>
+         <item-1>Compare canonical task metadata with the catalog row and graph annotation.</item-1>
+       </wave-follow-up>
+       <phase-follow-up>
+-        <item-1>Run the full candidate-status, catalog projection, vocabulary, XML, link, evidence, acceptance, and sampled GitHub-rendering review.</item-1>
++        <item-1>Run the full candidate-status, catalog projection, vocabulary, XML, link, evidence, technical-publication, and sampled GitHub-rendering review; prepare the complete library for final user acceptance.</item-1>
+       </phase-follow-up>
+     </VerificationDelta>
+   </VerificationDeltaTemplate>
+ 
+   <FailurePacketTemplate>
+     <!-- Canonical verification-to-fixer failure handoff. -->
+     <FailurePacket>
+       <scenario>Task metadata and the student catalog disagree after an update.</scenario>
+       <contract-ref>M-TASK-LIBRARY / V-M-TASK-LIBRARY / V-M-CATALOG</contract-ref>
+       <expected-evidence>
+@@ -151,19 +152,20 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
+     <!-- Canonical worker or controller checkpoint report. -->
+     <CheckpointReport>
+       <scope>M-TASK-LIBRARY / one task wave</scope>
+       <assumptions-kept>
+         <item-1>Dependency contracts matched the packet.</item-1>
+       </assumptions-kept>
+       <commands-run>
+         <command-1>V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE checks.</command-1>
+       </commands-run>
+       <evidence-captured>
+-        <item-1>Task, catalog, graph annotation, resolved links, and mentor-review status agree.</item-1>
++        <item-1>Task, catalog, graph annotation, resolved links, technical publication evidence, and status agree.</item-1>
+       </evidence-captured>
+       <retry-budget-used>0</retry-budget-used>
+       <next-action>Ready for shared-artifact sync.</next-action>
+       <validation-decision>accepted</validation-decision>
+-      <wave-acceptance-status>pending mentor acceptance</wave-acceptance-status>
++      <!-- The exact accepted value means technical publication complete. -->
++      <wave-acceptance-status>accepted</wave-acceptance-status>
+     </CheckpointReport>
+   </CheckpointReportTemplate>
+ </OperationalPackets>
+diff --git a/docs/requirements.xml b/docs/requirements.xml
+index 6643f80..13094d6 100644
+--- a/docs/requirements.xml
++++ b/docs/requirements.xml
+@@ -1,20 +1,20 @@
+ <RequirementsAnalysis VERSION="0.3.0">
+   <Project>
+     <name>frontend-livecoding-tasks</name>
+     <annotation>Knowledge base of frontend live-coding tasks maintained primarily as Markdown documents with JavaScript, TypeScript, and React examples; tasks are not expected to run from the repository by default.</annotation>
+     <keywords>frontend, live-coding, knowledge-base, markdown, javascript, typescript, react</keywords>
+   </Project>
+ 
+   <Actors>
+     <actor-Student>Primary reader who practices frontend skills independently through GitHub-rendered task cards.</actor-Student>
+-    <actor-Mentor>Content owner who resolves classification disputes and accepts validated waves with optional spot checks.</actor-Mentor>
++    <actor-Mentor>Content owner who resolves classification disputes and accepts the complete library after the final audit.</actor-Mentor>
+     <actor-Agent>AI agent that independently authors, deduplicates, validates, and publishes task cards while synchronizing derived artifacts.</actor-Agent>
+     <actor-GitHub>Repository renderer that presents Markdown, relative links, code fences, and collapsed details blocks.</actor-GitHub>
+   </Actors>
+ 
+   <UseCases>
+     <UC-001>
+       <Actor>Student</Actor>
+       <Action>Chooses a task from the repository catalog using technology, topic, format, level, duration, skills, and prerequisites.</Action>
+       <Goal>Start an exercise appropriate to the current learning need without cloning or running the repository.</Goal>
+       <Preconditions>The catalog and at least one task card exist on GitHub.</Preconditions>
+@@ -29,21 +29,21 @@
+       <Preconditions>The task conforms to the canonical task template and is rendered by GitHub.</Preconditions>
+       <AcceptanceCriteria>The prompt and readiness criteria are visible; theory, every hint, and the solution are separate collapsed details blocks; the execution environment is explicit; the card includes starter code when needed and ends with self-check questions.</AcceptanceCriteria>
+       <Priority>high</Priority>
+       <RelatedFlows>DF-STUDY-TASK</RelatedFlows>
+     </UC-002>
+     <UC-003>
+       <Actor>Mentor</Actor>
+       <Action>Requests an AI agent to add a frontend task.</Action>
+       <Goal>Grow the knowledge base without manually coordinating task, catalog, and GRACE navigation files.</Goal>
+       <Preconditions>The agent can read project governance and the canonical task template.</Preconditions>
+-      <AcceptanceCriteria>The agent publishes only an accepted original task card, synchronizes the catalog and knowledge graph in the same change, records hybrid verification evidence in Beads, and leaves the wave open until mentor acceptance.</AcceptanceCriteria>
++      <AcceptanceCriteria>The agent publishes only an accepted original task card, synchronizes the catalog and knowledge graph in the same change, records hybrid verification evidence in Beads, and closes the serialized wave after every technical publication gate and its complete report pass.</AcceptanceCriteria>
+       <Priority>high</Priority>
+       <RelatedFlows>DF-ADD-TASK</RelatedFlows>
+     </UC-003>
+     <UC-004>
+       <Actor>Agent</Actor>
+       <Action>Updates task content or metadata while preserving repository-wide consistency.</Action>
+       <Goal>Prevent stale catalog entries, broken prerequisites, missing assets, and graph drift.</Goal>
+       <Preconditions>The existing task slug and all derived references can be resolved.</Preconditions>
+       <AcceptanceCriteria>The agent treats the task metadata as canonical, updates every derived reference, verifies uniqueness and link resolution, and stops for clarification when classification is ambiguous.</AcceptanceCriteria>
+       <Priority>high</Priority>
+@@ -68,21 +68,21 @@
+   </NonGoals>
+ 
+   <Constraints>
+     <constraint-1>GitHub's rendered repository view is the primary student interface.</constraint-1>
+     <constraint-2>Markdown is the primary artifact; JavaScript, TypeScript, JSX, and TSX appear mainly as fenced examples.</constraint-2>
+     <constraint-3>Each task lives at tasks/&lt;task-slug&gt;/README.md with optional colocated assets.</constraint-3>
+     <constraint-4>Technology, topic, format, level, estimated duration, skills, prerequisites, and execution environment are mandatory task metadata.</constraint-4>
+     <constraint-5>Theory, each individual hint, and the solution must be separate details blocks without the open attribute.</constraint-5>
+     <constraint-6>Task metadata is canonical; the root catalog and knowledge graph are agent-maintained derived artifacts.</constraint-6>
+     <constraint-7>Adding, deleting, renaming, or reclassifying a task is incomplete until all derived artifacts and links are synchronized.</constraint-7>
+-    <constraint-8>New or materially changed solutions require strict agent validation, wave-level evidence, and mentor acceptance with optional spot checks.</constraint-8>
++    <constraint-8>New or materially changed solutions require strict agent validation and wave-level technical publication evidence; per-wave human approval is not required, while explicit user acceptance of the complete library after the final audit gates top-level story closure.</constraint-8>
+     <constraint-9>A task slug is a stable identifier; changing it is an explicit migration rather than a routine metadata edit.</constraint-9>
+     <constraint-10>Task prose and stable section labels are Russian unless the mentor explicitly requests another language for a task.</constraint-10>
+     <constraint-11>Metadata values reuse the current catalog vocabulary; introducing a new technology or topic requires explicit mentor approval rather than an agent-created synonym.</constraint-11>
+     <constraint-12>The canonical metadata table uses the exact labels Технологии, Тема, Формат, Уровень, Время, Навыки, Предварительные знания, and Среда выполнения.</constraint-12>
+     <constraint-13>Each task card is represented in the M-TASK-LIBRARY knowledge-graph annotations by one export-&lt;task-slug&gt; entry.</constraint-13>
+     <constraint-14>Agents never commit or push directly to main; they deliver changes from feature/* branches through pull requests targeting main.</constraint-14>
+     <constraint-15>Agents resolve the Grace CLI from PATH first and then $HOME/.bun/bin/grace before declaring it unavailable in a non-interactive shell.</constraint-15>
+     <constraint-16>Before project changes, agents detect existing isolation, fetch origin, and create or reuse a worktree and feature/&lt;story-id&gt; branch based on current origin/main.</constraint-16>
+     <constraint-17>All child issues for one Beads story use the same worktree and branch; .worktrees/ remains ignored.</constraint-17>
+     <constraint-18>Task levels use exactly Базовый, Средний, or Продвинутый; formats use exactly Реализация, Отладка, Разбор, or Прогноз вывода.</constraint-18>
+diff --git a/docs/superpowers/plans/2026-07-22-frontend-task-knowledge-base.md b/docs/superpowers/plans/2026-07-22-frontend-task-knowledge-base.md
+index 4e75a2b..d4debf5 100644
+--- a/docs/superpowers/plans/2026-07-22-frontend-task-knowledge-base.md
++++ b/docs/superpowers/plans/2026-07-22-frontend-task-knowledge-base.md
+@@ -1,17 +1,17 @@
+ # Frontend Task Knowledge Base Implementation Plan
+ 
+ > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+ 
+-**Goal:** Создать GitHub-first базу самостоятельно сформулированных frontend live-coding задач, где только строго принятые карточки публикуются волнами и остаются синхронны с каталогом, GRACE knowledge graph и Beads evidence.
++**Goal:** Создать GitHub-first базу самостоятельно сформулированных frontend live-coding задач, где только строго принятые карточки публикуются сериализованными техническими волнами, остаются синхронны с каталогом, GRACE knowledge graph и Beads evidence, а полная библиотека закрывает story только после единственного финального user review.
+ 
+-**Architecture:** Пять GRACE-модулей выполняются последовательно: governance задаёт правила, template фиксирует каноническую карточку, validation отделяет кандидатов от публикации, library хранит только `accepted` карточки, а catalog является производной проекцией их метаданных. Долговременное состояние хранится в существующей Beads story `frontend-livecoding-tasks-kln`; один linked worktree и ветка `feature/frontend-livecoding-tasks-kln` используются для всех дочерних issues, а волны сериализуются из-за общей записи в `README.md` и `docs/knowledge-graph.xml`.
++**Architecture:** Пять GRACE-модулей выполняются последовательно: governance задаёт правила, template фиксирует каноническую карточку, validation отделяет кандидатов от публикации, library хранит только `accepted` карточки, а catalog является производной проекцией их метаданных. Долговременное состояние хранится в существующей Beads story `frontend-livecoding-tasks-kln`; один linked worktree и ветка `feature/frontend-livecoding-tasks-kln` используются для всех дочерних issues, а волны сериализуются из-за общей записи в `README.md` и `docs/knowledge-graph.xml`. Каждая волна закрывается непрерывно после своих технических gates; один final user review проходит только после B7.
+ 
+ **Tech Stack:** GitHub Flavored Markdown, XML-артефакты GRACE 3.11.0, Git, Beads (`bd` 1.1.0), `rg`, `find`, `awk`, `xmllint`, временные task-specific JavaScript/TypeScript/React/DOM/browser harnesses без постоянного package manager или test runner.
+ 
+ ## Global Constraints
+ 
+ - Основной интерфейс ученика — rendered view репозитория на GitHub; обязательного runtime и package manager нет.
+ - Каждая задача хранится в `tasks/<stable-slug>/README.md`; необязательные fixtures находятся только в `tasks/<stable-slug>/assets/`.
+ - Точные metadata labels: `Технологии`, `Тема`, `Формат`, `Уровень`, `Время`, `Навыки`, `Предварительные знания`, `Среда выполнения`.
+ - Допустимые форматы: `Реализация`, `Отладка`, `Разбор`, `Прогноз вывода`.
+ - Допустимые уровни: `Базовый`, `Средний`, `Продвинутый` с калибровкой из design spec; уровень описывает задачу, а не грейд ученика.
+@@ -36,35 +36,35 @@
+ | `.gitignore` | Project-local worktree safety | Verify the exact `.worktrees/` entry; no edit if already correct. |
+ | `templates/task-template.md` | `M-TASK-TEMPLATE`: canonical student-facing card | Create once before any candidate card. |
+ | `docs/task-validation-policy.md` | `M-TASK-VALIDATION`: ordered gates, outcomes, evidence and Beads schemas | Create once before candidate freeze. |
+ | `README.md` | `M-CATALOG`: student entry point and thematic projection | Create an explicit empty state, then update atomically in each accepted wave. |
+ | `tasks/<stable-slug>/README.md` | `M-TASK-LIBRARY`: one accepted task and canonical metadata | Create only from accepted candidate records during a wave. |
+ | `tasks/<stable-slug>/assets/*` | Local fixtures/assets used by one card | Create only when the local contract requires them. |
+ | `docs/development-plan.xml` | GRACE module/phase execution state | Move module and phase statuses only after corresponding evidence passes. |
+ | `docs/knowledge-graph.xml` | Public navigation graph | Move module status with implementation; add exactly one `export-<stable-slug>` per accepted card. |
+ | `docs/verification-plan.xml` | Shared verification contract | Change only if implementation reveals a real command, scenario, or evidence-surface delta. |
+ | `docs/operational-packets.xml` | Canonical execution/evidence schemas | Consume as-is; change only if a confirmed schema defect blocks execution. |
+-| Beads story/candidate/wave records | Durable scope, dependencies, decisions, evidence and mentor acceptance | Create/claim/update/close through `bd`; never duplicate this state in a Markdown TODO file. |
++| Beads story/candidate/wave records | Durable scope, dependencies, decisions, technical publication evidence/status and final user acceptance | Create/claim/update/close through `bd`; never duplicate this state in a Markdown TODO file. |
+ 
+ ## Beads Decomposition and Dependency Graph
+ 
+ The existing top-level story is `frontend-livecoding-tasks-kln` (`feature`, `in_progress`). Execution creates or reuses the following issue-sized children with deterministic IDs, so every later task can recover its issue without relying on shell variables from an earlier session.
+ 
+ | Role | Title | Primary scope | Acceptance / completion evidence | Depends on |
+ | --- | --- | --- | --- | --- |
+ | `B1` | Finalize task-authoring governance | `AGENTS.md`, `.gitignore`, Phase 1 GRACE status | Governance text, worktree check, XML and standard GRACE lint PASS | none |
+ | `B2` | Create canonical task template | `templates/task-template.md`, `M-TASK-TEMPLATE` status | Exact labels/sections, independent closed details, rendered GitHub review | `B1` |
+ | `B3` | Define strict candidate validation policy | `docs/task-validation-policy.md`, `M-TASK-VALIDATION` status | Ordered gates, all outcomes, evidence matrix, Beads record schema, stop conditions | `B2` |
+ | `B4` | Create student catalog empty state | `README.md`, `M-CATALOG` status | Understandable GitHub landing page, empty state, projection contract | `B3` |
+ | `B5` | Approve scope, then freeze and validate initial candidate register | Beads vocabulary decision and candidate records only | Mentor-approved initial vocabulary/scope; finite frozen count; one evidence-backed terminal decision per candidate; no `needs-rewrite`; accepted candidates grouped | `B4` |
+-| `B6-Wnn` | Publish accepted task wave nn | 8–10 cards, or final 1–7; README; graph; evidence | Atomic task/catalog/graph update, gates PASS, push, report, mentor acceptance | `B5` for first wave; previous wave thereafter |
+-| `B7` | Run final library audit | All repository and Beads state | Counts, projection, links, XML, Markdown, GRACE, Git divergence and mentor acceptance PASS | last `B6-Wnn`, or `B5` if zero candidates are accepted |
++| `B6-Wnn` | Publish accepted task wave nn | 8–10 cards, or final 1–7; README; graph; evidence | Atomic task/catalog/graph update, candidate recheck, all technical gates PASS, push, GitHub rendering, complete report and technical close | `B5` for first wave; previous wave thereafter |
++| `B7` | Run final library audit | All repository and Beads state | Counts, projection, links, XML, Markdown, GRACE, Git divergence and technical publication PASS; complete-library user-review handoff prepared | last `B6-Wnn`, or `B5` if zero candidates are accepted |
+ 
+ `Phase 7 — Scale review` is intentionally not a child that blocks this story. Create a separate Beads `decision` issue only after observed catalog drift, vocabulary conflicts, or repeated manual verification cost provides evidence; do not invent a date/count threshold and do not add automation without mentor approval.
+ 
+ ```text
+ frontend-livecoding-tasks-kln
+ └── B1 Governance
+     └── B2 Task template
+         └── B3 Validation policy
+             └── B4 Empty catalog
+                 └── B5 Candidate audit
+@@ -188,22 +188,22 @@ bd show "$catalog_id" >/dev/null 2>&1 || bd create --id="$catalog_id" --type=tas
+ 
+ bd show "$audit_id" >/dev/null 2>&1 || bd create --id="$audit_id" --type=task --priority=1 \
+   --title='Approve scope, freeze and validate initial candidate register' \
+   --description='Scope: obtain mentor approval for initial controlled vocabulary and candidate boundary, independently author a finite neutral inventory, freeze it, deduplicate it, collect hybrid evidence, and assign one terminal decision per stable candidate ID.' \
+   --acceptance='Mentor scope/vocabulary decision is recorded; terminal-decision count equals frozen register size; no needs-rewrite remains; accepted candidates are grouped into valid waves; rejected and duplicate decisions remain neutral and unpublished.' \
+   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md' \
+   --skills='beads,systematic-debugging,verification-before-completion'
+ 
+ bd show "$final_audit_id" >/dev/null 2>&1 || bd create --id="$final_audit_id" --type=task --priority=1 \
+   --title='Run final knowledge-base audit' \
+-  --description='Scope: prove final candidate, task, catalog, graph, link, GRACE, Git, and mentor-acceptance consistency.' \
+-  --acceptance='Every candidate is terminal with no needs-rewrite; every accepted task is unique, verified, linked, graph-indexed, and mentor-accepted; all defined gates pass; branch divergence is reported.' \
++  --description='Scope: prove final candidate, task, catalog, graph, link, GRACE, Git, and technical wave-publication consistency, then prepare the complete-library user-review handoff.' \
++  --acceptance='Every candidate is terminal with no needs-rewrite; every accepted task is unique, verified, linked, graph-indexed, and technically published; all defined gates pass; branch divergence is reported; the story remains open for final user acceptance.' \
+   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md' \
+   --skills='beads,grace-reviewer,verification-before-completion'
+ 
+ for child_id in "$governance_id" "$template_id" "$validation_id" "$catalog_id" "$audit_id" "$final_audit_id"; do
+   bd update "$child_id" --parent="$story_id"
+ done
+ 
+ bd dep add "$template_id" "$governance_id"
+ bd dep add "$validation_id" "$template_id"
+ bd dep add "$catalog_id" "$validation_id"
+@@ -223,21 +223,21 @@ Insert after `## Testing Guidelines` and before `## Commit & Pull Request Guidel
+ ```markdown
+ ## Task Publication Contract
+ 
+ - Store each accepted exercise at `tasks/<stable-slug>/README.md`; treat the slug as a stable identifier and handle renames as migrations with inbound-link verification.
+ - Use the exact metadata labels `Технологии`, `Тема`, `Формат`, `Уровень`, `Время`, `Навыки`, `Предварительные знания`, and `Среда выполнения`.
+ - Use only the approved format values `Реализация`, `Отладка`, `Разбор`, and `Прогноз вывода`, and the level values `Базовый`, `Средний`, and `Продвинутый`.
+ - Treat task metadata as canonical. Update the root catalog and the task-library knowledge-graph annotation in the same change; every accepted task must appear exactly once in each projection.
+ - Keep theory, every hint, and the solution in independent `<details>` blocks without the `open` attribute. Keep the prompt, fixtures, starter code, and solution local even when targeted external reading is linked.
+ - Publish only candidates with an `accepted` Beads validation decision. Keep `needs-rewrite`, `rejected`, and `duplicate` candidates out of `tasks/` and record their neutral decision evidence in Beads.
+ - Validate JavaScript, TypeScript, React/DOM, UI, analysis, and output-prediction tasks with the evidence route defined in `docs/task-validation-policy.md`. Unavailable mandatory browser evidence is `BLOCKED`, never `PASS`.
+-- Publish accepted cards in mentor-reviewed waves of 8–10, except that the final incomplete wave may contain 1–7. Keep the wave issue open until mentor acceptance is recorded.
++- Publish accepted cards in serialized technical waves of 8–10, except that the final incomplete wave may contain 1–7. Close each wave continuously after candidate recheck, all deterministic and hybrid gates pass, the focused commit is pushed, GitHub-rendered evidence is captured, and the complete wave report is recorded. Do not require per-wave mentor or user approval; keep the top-level story open until the user accepts the complete library after the final audit.
+ - Stop instead of guessing when metadata, controlled vocabulary, environment, expected output, prerequisite, asset, external material, rendering, or mandatory evidence is ambiguous or unavailable.
+ ```
+ 
+ - [ ] **Step 3: Verify the worktree ignore contract without rewriting it**
+ 
+ Run:
+ 
+ ```bash
+ test "$(cat .gitignore)" = '.worktrees/'
+ git check-ignore -q .worktrees/probe
+@@ -569,40 +569,43 @@ Gates выполняются строго по порядку. При прова
+ Temporary harnesses live outside the repository and are removed after evidence capture. They never justify adding a package manager, catalog generator, validator, site framework or CI pipeline to v1.
+ 
+ Metadata values and task titles used in Markdown tables are single-line values without the `|` character; use comma-separated wording instead. This keeps the GitHub table valid and makes exact task-to-catalog projection deterministic.
+ 
+ ## Beads validation record
+ 
+ Every candidate record contains: `candidateId`, `candidateRegisterSize`, `storyId`, `learningGoal`, `proposedTopic`, `decision`, `decisionReason`, `duplicateTarget`, `evidenceType`, `observedResult`, `waveId`, `remainingRisk`, and `waveAcceptanceStatus`.
+ 
+ Allowed `waveAcceptanceStatus` values are `not-applicable`, `pending`, `accepted`, and `changes-requested`. Accepted candidates use `pending` after wave assignment; non-accepted outcomes use `not-applicable`.
+ 
++`waveAcceptanceStatus` is a technical publication status, not a human approval. For an accepted candidate, `pending` means that its assigned wave has not completed every technical publication gate, `accepted` means that candidate recheck, required evidence, pushed commit, GitHub-rendered review, and the complete wave report all passed, and `changes-requested` means that a technical gate requires correction.
++
+ ## Wave rules
+ 
+-Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one Beads child issue, changes task cards/catalog/graph/evidence atomically, and remains open until mentor acceptance.
++Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one serialized Beads child issue, changes task cards/catalog/graph/evidence atomically, and closes continuously after candidate recheck, deterministic and hybrid PASS, pushed commit, GitHub-rendered evidence, and a complete wave report. Per-wave mentor or user approval is not required; the top-level story remains open until the user accepts the complete library after the final audit.
+ 
+ ## Stop conditions
+ 
+ Stop without guessing for ambiguous vocabulary, environment or expected output; contradictory examples; happy-path-only solution; missing prerequisite/asset; nondeterministic network/time/state without a fixture/fake/adapter; unavailable browser-only evidence; broken supplementary material; unexpected GitHub rendering; task/catalog/graph drift; unapproved permanent tooling; or a slug migration without inbound-link evidence.
+ 
+ ## Updating a published task
+ 
+ For content, metadata, prerequisite or asset changes, resolve all derived artifacts and inbound links first, rerun every affected validation gate, update the canonical card, catalog and graph in one change, and repeat projection/link/evidence checks. Deletion removes the card, its single catalog row and its single graph annotation in the same change. Reclassification requires mentor approval for any new or ambiguous vocabulary. Slug rename is a dedicated migration: verify every inbound link before removing the old path, update all derived references, and record before/after evidence in Beads.
+ 
+ ## Completion checks
+ 
+ - Candidate terminal count equals frozen `candidateRegisterSize`.
+ - No `needs-rewrite` remains at story completion.
+ - Only accepted candidates have task paths or wave IDs.
+ - Every accepted candidate belongs to exactly one valid wave.
+ - Every decision has concise reason, evidence type, observed result and remaining risk.
+-- A wave closes only after technical PASS, pushed commit, report and mentor acceptance.
++- A wave closes only after candidate recheck, technical PASS, pushed commit, GitHub-rendered evidence, and a complete report.
++- The top-level story closes only after the final audit and explicit user acceptance of the complete library.
+ ```
+ 
+ - [ ] **Step 2: Review the policy against all specified gates and outcomes**
+ 
+ Run:
+ 
+ ```bash
+ for gate in Identity 'Learning value' Contract 'Local completeness' Examples Solution Verification Editorial; do rg -F "$gate" docs/task-validation-policy.md >/dev/null || exit 1; done
+ for decision in accepted needs-rewrite rejected duplicate; do rg -F "\`$decision\`" docs/task-validation-policy.md >/dev/null || exit 1; done
+ rg -n 'candidateRegisterSize|duplicateTarget|waveAcceptanceStatus|BLOCKED|Temporary harnesses|Updating a published task|Slug rename|1–7|8–10' docs/task-validation-policy.md
+@@ -677,21 +680,21 @@ Set `catalog_id='frontend-livecoding-tasks-kln-catalog'`, run `bd update "$catal
+ GitHub-first база самостоятельных упражнений по frontend-разработке. Репозиторий можно читать без установки зависимостей: выберите задачу в каталоге, откройте её условие и критерии готовности, а теорию, подсказки и решение раскрывайте по необходимости.
+ 
+ ## Как выбрать задачу
+ 
+ Каталог сгруппирован по одной основной теме. В строке задачи указаны технологии, формат, уровень, оценка времени, тренируемые навыки и предварительные знания. Пересекающиеся навыки не дублируют задачу в других темах.
+ 
+ Уровень описывает сложность упражнения: `Базовый`, `Средний` или `Продвинутый`. Формат имеет одно из значений: `Реализация`, `Отладка`, `Разбор`, `Прогноз вывода`.
+ 
+ ## Каталог задач
+ 
+-Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и принятия первой волны ментором.
++Принятых задач пока нет. Первая тематическая таблица появится после строгой валидации и технической публикации первой волны.
+ 
+ ## Как устроена карточка
+ 
+ Метаданные внутри `tasks/<stable-slug>/README.md` являются источником истины. Условие, критерии готовности и самопроверка видимы сразу; теория, каждая подсказка и решение закрыты независимо. Внешние материалы дополняют карточку, но не заменяют локальные условие, fixtures, стартовый код или решение.
+ 
+ ## Поддержка каталога
+ 
+ ИИ-агент публикует только кандидатов со статусом `accepted` и в одном изменении синхронизирует карточку, эту тематическую проекцию, knowledge graph и Beads evidence. Каждая задача встречается в каталоге ровно один раз и сортируется внутри темы сначала по уровню, затем по названию.
+ ```
+ 
+@@ -814,21 +817,21 @@ Pause execution and ask the mentor to approve or revise the recorded vocabulary/
+ 
+ - [ ] **Step 4: Create one Beads candidate record per approved row**
+ 
+ For each scratch row, run the following command with values taken exactly from that row:
+ 
+ ```bash
+ candidate_issue_id="frontend-livecoding-tasks-kln-$candidate_id"
+ bd show "$candidate_issue_id" >/dev/null 2>&1 || bd create --id="$candidate_issue_id" --type=task --priority=2 \
+   --title="$candidate_id — $learning_goal" \
+   --description="Candidate validation record for $candidate_id. Learning goal: $learning_goal. Proposed topic: $proposed_topic. Story: frontend-livecoding-tasks-kln." \
+-  --acceptance='One ordered validation decision, reason, evidence type, observed result, duplicate target, wave ID, remaining risk, and wave-acceptance status are recorded; only accepted may be published.' \
++  --acceptance='One ordered validation decision, reason, evidence type, observed result, duplicate target, wave ID, remaining risk, and wave technical-publication status are recorded; only accepted may be published.' \
+   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md'
+ bd update "$candidate_issue_id" \
+   --parent="$audit_id" \
+   --set-metadata candidateId="$candidate_id" \
+   --set-metadata learningGoal="$learning_goal" \
+   --set-metadata proposedTopic="$proposed_topic" \
+   --set-metadata decision=pending
+ ```
+ 
+ Keep a scratch mapping from `candidateId` to returned `candidate_issue_id`. The mapping and register count are durable only after the next step.
+@@ -865,22 +868,22 @@ Expected: each decision is evidence-backed; browser unavailability is `BLOCKED`,
+ - [ ] **Step 7: Partition accepted candidates and create serialized wave issues**
+ 
+ Order accepted candidates by `candidateId`. Repeatedly take the next 10; the final remainder is the last wave. Validate every group: non-final size is exactly 10, and final size is 1–10 (8–10 full or 1–7 incomplete).
+ 
+ For each group, create:
+ 
+ ```bash
+ wave_id="frontend-livecoding-tasks-kln-wave-$wave_number"
+ bd show "$wave_id" >/dev/null 2>&1 || bd create --id="$wave_id" --type=task --priority=1 \
+   --title="Publish accepted task wave $wave_number" \
+-  --description="Scope: publish accepted candidates $wave_candidate_ids atomically as task cards, catalog rows, graph annotations, verification evidence, and a mentor-reviewed report." \
+-  --acceptance="Wave size $wave_size is valid; every candidate is accepted; task/catalog/graph/evidence gates pass; the focused commit is pushed; mentor acceptance is recorded before close." \
++  --description="Scope: publish accepted candidates $wave_candidate_ids atomically as task cards, catalog rows, graph annotations, verification evidence, pushed commit, GitHub-rendered evidence, and a complete technical report." \
++  --acceptance="Wave size $wave_size is valid; every candidate is accepted and rechecked; task/catalog/graph/evidence gates pass; the focused commit is pushed; GitHub-rendered evidence and the complete report are recorded before technical close." \
+   --spec-id='docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md' \
+   --skills='beads,grace-execute,systematic-debugging,verification-before-completion'
+ bd update "$wave_id" --parent='frontend-livecoding-tasks-kln'
+ bd dep add "$wave_id" "$audit_id"
+ if test -n "$previous_wave_id"; then bd dep add "$wave_id" "$previous_wave_id"; fi
+ ```
+ 
+ Update every accepted candidate record with this `waveId` and `waveAcceptanceStatus=pending`, then close the candidate record as a completed validation decision. Add `bd dep add "$final_audit_id" "$wave_id"`; retain the original B7→B5 dependency as well. Record the ordered wave ID/candidate list in B5 notes.
+ 
+ - [ ] **Step 8: Prove terminal accounting and close B5**
+@@ -931,21 +934,21 @@ Expected: B5 closes; only the first wave becomes ready, or B7 becomes ready if t
+ - Create: `tasks/<stable-slug>/README.md` for each accepted candidate in the current wave
+ - Create: `tasks/<stable-slug>/assets/*` only when required by that card
+ - Modify: `README.md`
+ - Modify: `docs/knowledge-graph.xml`
+ - Modify: `docs/development-plan.xml` on first and final wave status transitions
+ - Modify: `docs/verification-plan.xml` only for a real verification-surface delta
+ - Modify: Beads wave and candidate records
+ 
+ **Interfaces:**
+ - Consumes: accepted candidate records with exact stable slugs/metadata/evidence; `taskSchema`; `DF-PUBLISH-TASK-WAVE`.
+-- Produces: `TaskMetadataSet` delta, one `export-<stable-slug>` per card, technically passing pushed wave and mentor acceptance.
++- Produces: `TaskMetadataSet` delta, one `export-<stable-slug>` per card, technically passing pushed wave, GitHub-rendered evidence, complete report, and technical publication status.
+ 
+ - [ ] **Step 1: Claim exactly the ready wave and enforce serialization**
+ 
+ Run:
+ 
+ ```bash
+ wave_id="frontend-livecoding-tasks-kln-wave-$wave_number"
+ bd ready
+ bd show "$wave_id"
+ bd update "$wave_id" --claim
+@@ -993,21 +996,21 @@ Each slug appears in exactly one topic table. Within each topic, order levels `
+ - [ ] **Step 6: Add one graph annotation per accepted task**
+ 
+ Inside `M-TASK-LIBRARY > annotations` add exactly one self-closing entry per new slug:
+ 
+ ```xml
+ <export-stable-slug PURPOSE="Expose the accepted student-facing task card at tasks/stable-slug/README.md" />
+ ```
+ 
+ Replace `stable-slug` in both tag and path with the exact card slug. Do not add task-level CrossLinks because the approved graph contract models cards as public annotations of `M-TASK-LIBRARY`.
+ 
+-On the first accepted wave, change `M-TASK-LIBRARY` from `planned` to `implemented` in both `docs/development-plan.xml` and `docs/knowledge-graph.xml`, and change Phase 5 to `in-progress`. Phase 4 was completed by Task 5. On the final accepted wave, do not mark Phase 5 complete until mentor acceptance for that wave is recorded.
++On the first accepted wave, change `M-TASK-LIBRARY` from `planned` to `implemented` in both `docs/development-plan.xml` and `docs/knowledge-graph.xml`, and change Phase 5 to `in-progress`. Phase 4 was completed by Task 5. On the final accepted wave, mark Phase 5 complete after the wave's technical gates, pushed commit, GitHub-rendered evidence, and complete report pass; no human approval is required.
+ 
+ - [ ] **Step 7: Run deterministic local, projection, graph and XML checks**
+ 
+ Run:
+ 
+ ```bash
+ xmllint --noout docs/*.xml
+ grace_bin="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
+ "$grace_bin" lint --fail-on errors --path "$PWD"
+ 
+@@ -1103,111 +1106,109 @@ Expected: the temporary checker proves exact equality for all seven projected fi
+ 
+ Run:
+ 
+ ```bash
+ git add README.md docs/development-plan.xml docs/knowledge-graph.xml docs/verification-plan.xml tasks
+ git commit -m "feat(tasks): publish accepted wave $wave_number"
+ wave_commit="$(git rev-parse HEAD)"
+ git push origin feature/frontend-livecoding-tasks-kln
+ ```
+ 
+-Inspect the pushed PR rendering for every changed card or, for a large wave, the template plus a documented mentor-selected sample while still structurally checking all cards. Confirm tables, code fences, details default state, relative links and assets. Unexpected rendering or inaccessible required browser evidence blocks acceptance and requires a follow-up commit on the same branch.
++Inspect the pushed PR rendering for every changed card or, for a large wave, the template plus a documented deterministic sample while still structurally checking all cards. Confirm tables, code fences, details default state, relative links and assets. Unexpected rendering or inaccessible required browser evidence sets the technical status to `changes-requested`, blocks wave closure, and requires a follow-up commit on the same branch.
+ 
+-- [ ] **Step 9: Publish the wave report and wait for mentor acceptance**
++- [ ] **Step 9: Publish the complete wave report and record technical publication status**
+ 
+ Build the report from the exact outputs captured in Steps 2–8 and append it:
+ 
+ ```bash
+ wave_report="$(printf '%s\n' \
+   "Wave: $wave_id / $wave_number" \
+   "Candidates: $wave_candidate_ids" \
+   "Task paths: $wave_task_paths" \
+   'Validation decisions: accepted for every listed candidate' \
+   "Evidence: $wave_evidence" \
+   "Duplicate/rejected merges since audit: $wave_merge_records" \
+   'Checks: template, local links, external targets, projection, graph counts, XML, GRACE, whitespace, GitHub rendering' \
+   "Commit/push: $wave_commit / feature/frontend-livecoding-tasks-kln" \
+   "Remaining risks: $wave_remaining_risks" \
+-  'Mentor acceptance: pending')"
++  'Technical publication status: accepted')"
+ bd update "$wave_id" --append-notes="$wave_report"
+ ```
+ 
+ The variables contain complete observed values; use the literal `none` for an empty merge/risk set rather than omitting the field.
+ 
+-Do not close the issue while acceptance is pending. If changes are requested, set candidate/wave acceptance to `changes-requested`, make only supported fixes, rerun all affected gates, push a focused `fix(tasks): address wave $wave_number review` commit, and return to pending.
+-
+-- [ ] **Step 10: Record acceptance and close only this wave**
++`waveAcceptanceStatus` is the retained Beads field name for technical publication status, not a human approval. If any technical check, render review, or report review requires changes, set candidate/wave status to `changes-requested`, make only supported fixes, rerun all affected gates, push a focused `fix(tasks): address wave $wave_number review` commit, and return to `pending` until every technical gate passes.
+ 
+-After explicit mentor acceptance:
++- [ ] **Step 10: Record technical completion, close this wave, and continue**
+ 
+-If this is the final wave, first apply these exact `docs/development-plan.xml` status changes:
++After Step 9 records a complete technically passing report, update every wave candidate to technical status `accepted`. If this is the final wave, first apply these exact `docs/development-plan.xml` status changes:
+ 
+ ```xml
+ <Phase-5 name="TaskWaves" status="completed">
+-  <goal>Publish strictly accepted tasks through atomic task, catalog, graph, evidence, and mentor wave-acceptance updates.</goal>
++  <goal>Publish strictly accepted tasks through serialized atomic task, catalog, graph, evidence, pushed-commit, GitHub-rendered, report, and technical-status updates.</goal>
+   <step-1 module="M-TASK-LIBRARY" status="completed" verification="V-M-TASK-LIBRARY">Publish 8-10 accepted task cards from the canonical template, or 1-7 for the final incomplete wave.</step-1>
+   <step-2 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Synchronize thematic student-catalog tables for the wave.</step-2>
+-  <step-3 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor wave acceptance in Beads.</step-3>
++  <step-3 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Apply graph and verification deltas, record the complete report and technical publication status in Beads, close the wave, and continue.</step-3>
+ </Phase-5>
+ ```
+ 
+ Then run:
+ 
+ ```bash
+-accepted_wave_commit="$(git rev-parse HEAD)"
++published_wave_commit="$(git rev-parse HEAD)"
+ for candidate_issue_id in $wave_candidate_issue_ids; do
+-  bd update "$candidate_issue_id" --set-metadata waveAcceptanceStatus=accepted --append-notes="Mentor accepted wave $wave_id at $accepted_wave_commit."
++  bd update "$candidate_issue_id" --set-metadata waveAcceptanceStatus=accepted --append-notes="Technical publication completed for wave $wave_id at $published_wave_commit."
+ done
+ 
+ if test "$is_final_wave" = true; then
+   xmllint --noout docs/*.xml
+   grace_bin="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"
+   "$grace_bin" lint --fail-on errors --path "$PWD"
+   git diff --check
+   git add docs/development-plan.xml
+-  git commit -m "docs: record accepted task waves"
++  git commit -m "docs: record technically published task waves"
+   git push origin feature/frontend-livecoding-tasks-kln
+ fi
+ 
+-bd update "$wave_id" --append-notes="Mentor acceptance: accepted. Accepted commit: $accepted_wave_commit."
+-bd close "$wave_id" --reason='Technically passing wave accepted by mentor.' --suggest-next
++bd update "$wave_id" --append-notes="Technical publication status: accepted. Published commit: $published_wave_commit."
++bd close "$wave_id" --reason='Candidate recheck, technical gates, push, GitHub rendering, and complete report passed.' --suggest-next
+ ```
+ 
+-If this was not the final wave, the next serialized wave becomes ready. The final-wave status commit contains no task-content changes and is made only after mentor acceptance.
++If this was not the final wave, continue immediately with the next serialized wave. The final-wave status commit contains no task-content changes and is made immediately after the final wave's technical gates and complete report pass.
+ 
+ ---
+ 
+ ### Task 7: Run the Final Story Audit and Prepare Delivery
+ 
+ **Files:**
+ - Modify: `docs/development-plan.xml`
+ - Modify: `docs/knowledge-graph.xml` only if final audit finds a confirmed missing/extra annotation
+ - Modify: `docs/verification-plan.xml` only if final evidence changes its contract
+ - Modify: Beads final-audit and story records
+ - Verify: all `README.md`, `tasks/*/README.md`, `templates/task-template.md`, `docs/*.xml`, local/external links and Git state
+ 
+ **Interfaces:**
+-- Consumes: frozen candidate register, all terminal decisions, mentor-accepted waves and complete `TaskMetadataSet`.
++- Consumes: frozen candidate register, all terminal decisions, technically published waves and complete `TaskMetadataSet`.
+ - Produces: completed Phase 6 evidence, ready draft PR/branch and story handoff; the story itself closes only after the user accepts the complete result.
+ 
+ - [ ] **Step 1: Claim B7 and prove every prerequisite is closed**
+ 
+ Run:
+ 
+ ```bash
+ final_audit_id='frontend-livecoding-tasks-kln-final-audit'
+ bd show "$final_audit_id"
+ bd blocked
+ bd update "$final_audit_id" --claim
+ ```
+ 
+-Expected: B7 has no open blocker; every wave issue is mentor-accepted and closed, or B5 proved `accepted_count=0`.
++Expected: B7 has no open blocker; every wave issue is technically published and closed, or B5 proved `accepted_count=0`.
+ 
+ - [ ] **Step 2: Reconcile candidate accounting from Beads**
+ 
+ Read the frozen size/IDs from B5 and every candidate record. Prove:
+ 
+ ```text
+ registered IDs are unique and contiguous candidate-001..candidate-N
+ terminal_count = N
+ needs-rewrite = 0
+ pending = 0
+@@ -1314,21 +1315,21 @@ rm -r "$final_verification_dir"
+ ```
+ 
+ Re-run every external link and task-specific hybrid evidence whose environment or content could have changed since its wave. Expected: every defined gate passes; if browser or network evidence is currently unavailable, record `BLOCKED` rather than using stale evidence as current PASS.
+ 
+ - [ ] **Step 4: Run a final GitHub student-flow walkthrough**
+ 
+ From the pushed branch/PR, perform `README catalog → task card → visible prompt/criteria → optional theory → hints one by one → solution → self-check` on at least one card per format present and every card with custom HTML/assets. Confirm that no raw link is required to understand the contract. Record the exact cards sampled and observations.
+ 
+ - [ ] **Step 5: Mark Phases 4–6 complete only after evidence**
+ 
+-In `docs/development-plan.xml`, verify Phase 4 is already `completed`. Mark Phase 5 `completed` here only for the valid zero-accepted-candidate path; otherwise it was completed by final-wave acceptance. Mark Phase 6 and its step `completed` only when their exact Beads/evidence conditions hold. Do not mark Phase 7 complete and do not add automation; it remains a future evidence-triggered decision.
++In `docs/development-plan.xml`, verify Phase 4 is already `completed`. Mark Phase 5 `completed` here only for the valid zero-accepted-candidate path; otherwise it was completed by the final wave's technical closure. Mark Phase 6 and its step `completed` only when their exact Beads/evidence conditions hold. Do not mark Phase 7 complete and do not add automation; it remains a future evidence-triggered decision.
+ 
+ - [ ] **Step 6: Commit final artifact-state changes and rerun the gates**
+ 
+ Run:
+ 
+ ```bash
+ git add docs/development-plan.xml docs/knowledge-graph.xml docs/verification-plan.xml
+ if ! git diff --cached --quiet; then git commit -m "docs: record completed knowledge base audit"; fi
+ xmllint --noout docs/*.xml
+ "$grace_bin" lint --fail-on errors --path "$PWD"
+@@ -1349,21 +1350,21 @@ git status --short --branch
+ ```
+ 
+ Expected: the worktree is clean; report the exact `behind ahead` counts. If origin/main advanced, do not rebase/force-push; report the divergence and request explicit integration direction if it blocks mergeability.
+ 
+ - [ ] **Step 8: Close B7, update the story, and leave final acceptance to the user**
+ 
+ Run:
+ 
+ ```bash
+ final_commit="$(git rev-parse HEAD)"
+-bd update "$final_audit_id" --append-notes="PASS: candidate accounting, accepted-wave status, task/catalog/graph projection, local/external links, task evidence, XML, standard GRACE lint, Markdown/whitespace, GitHub student flow, and Git divergence review. Final commit $final_commit."
++bd update "$final_audit_id" --append-notes="PASS: candidate accounting, technical wave-publication status, task/catalog/graph projection, local/external links, task evidence, XML, standard GRACE lint, Markdown/whitespace, GitHub student flow, and Git divergence review. Final commit $final_commit."
+ bd close "$final_audit_id" --reason='Final repository and Beads audit passed.'
+ bd update frontend-livecoding-tasks-kln --append-notes="Implementation complete at $final_commit; all planned child issues closed; awaiting user's final story acceptance before closing the story."
+ bd preflight
+ git status --short --branch
+ ```
+ 
+ Expected: B7 is closed, the top-level story remains `in_progress` only for explicit user acceptance, `bd preflight` has no blocking tracker defect, and Git is clean.
+ 
+ ## Execution Handoff
+ 
+diff --git a/docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md b/docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md
+index 4219827..60a011f 100644
+--- a/docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md
++++ b/docs/superpowers/specs/2026-07-22-frontend-task-knowledge-base-design.md
+@@ -13,39 +13,40 @@
+ 
+ - Основной интерфейс ученика — rendered view репозитория на GitHub.
+ - Основной артефакт — Markdown; обязательный runtime не нужен.
+ - Каждая задача хранится в `tasks/<stable-slug>/README.md`.
+ - Корневой `README.md` содержит тематические таблицы; каждая задача встречается ровно один раз.
+ - Метаданные карточки являются источником истины для каталога и knowledge graph.
+ - Задачи формулируются самостоятельно; неоригинальные формулировки и код не принимаются.
+ - Семантически одинаковые кандидаты объединяются в одну улучшенную карточку.
+ - Порог валидации строгий; только статус `accepted` разрешает публикацию.
+ - Работа идёт волнами по 8–10 принятых задач; последняя неполная волна может содержать 1–7.
+-- Агент предоставляет отчёт волны, а ментор принимает волну целиком с выборочной проверкой.
++- Каждая сериализованная волна закрывается без обязательного принятия ментором или пользователем после candidate recheck, всех детерминированных и гибридных PASS, push focused commit, GitHub-rendered evidence и полного отчёта.
++- После финального технического аудита пользователь принимает полную библиотеку; до этого top-level story не закрывается.
+ - Теория, каждая подсказка и решение находятся в независимых закрытых `<details>`.
+ - Официальная документация, статьи и видео допустимы как целевые учебные ссылки, но не заменяют локальные условие, fixtures или решение.
+ - Изменения выполняются в отдельном worktree и ветке `feature/<beads-story-id>` от актуального `origin/main`.
+ 
+ ## 3. Пользователи и сценарии
+ 
+ ### Ученик
+ 
+ - Выбирает задачу по технологии, теме, формату, уровню, времени, навыкам и предварительным знаниям.
+ - Видит учебную цель, однозначное условие и критерии готовности без раскрытия спойлеров.
+ - По необходимости открывает теорию, дополнительные материалы и подсказки по одной.
+ - После собственной попытки открывает решение и проходит самопроверку.
+ 
+ ### Ментор
+ 
+ - Определяет спорные границы содержания и controlled vocabulary.
+-- Получает отчёт по каждой волне с evidence и оставшимися рисками.
+-- Принимает волну целиком и при необходимости выборочно проверяет карточки.
++- Получает финальный отчёт по полной библиотеке с wave evidence и оставшимися рисками.
++- Принимает полную библиотеку после финального технического аудита.
+ 
+ ### ИИ-агент
+ 
+ - Самостоятельно формулирует кандидатов и проверяет их на дубли.
+ - Применяет единый task contract и строгий validation flow.
+ - Не публикует `needs-rewrite`, `rejected` или `duplicate`.
+ - Атомарно синхронизирует карточку, каталог, knowledge graph и Beads evidence.
+ - Останавливается при неоднозначном контракте или недоступном обязательном evidence.
+ 
+ ## 4. Не-цели
+@@ -216,23 +217,25 @@ Slug является стабильным идентификатором. Ег
+ 
+ ### `DF-PUBLISH-TASK-WAVE`
+ 
+ ```text
+ 8–10 accepted cards; последняя волна может содержать 1–7
+ → tasks/ и assets
+ → тематический каталог
+ → knowledge-graph annotations
+ → structural and projection checks
+ → commit и push проверенной ветки
++→ GitHub-rendered evidence
+ → отчёт волны
+-→ пользовательское принятие либо follow-up fix commit
++→ technical publication status
+ → закрытие дочерней Beads-задачи
++→ немедленно следующая сериализованная волна
+ ```
+ 
+ ### `DF-STUDY-TASK`
+ 
+ ```text
+ тематический каталог
+ → карточка
+ → видимые условие и критерии
+ → опциональная теория и материалы
+ → подсказки по одной
+@@ -252,35 +255,35 @@ Slug является стабильным идентификатором. Ег
+ 
+ ## 10. Ошибки и stop conditions
+ 
+ - Неоднозначная среда или ожидаемый результат → `needs-rewrite`; агент не угадывает.
+ - Противоречивые примеры или решение только для happy path → публикация запрещена.
+ - Технически некорректная или педагогически слабая тема → `rejected`.
+ - Дубликат → `duplicate` с переносом полезных деталей в основную карточку.
+ - Несколько корректных решений → одно основное решение и краткое сравнение альтернатив.
+ - Нестабильные сеть, время или внешнее состояние → локальная fixture, fake clock либо детерминированный adapter.
+ - Недоступное browser-only evidence → `BLOCKED`, не `PASS`.
+-- Сломанный дополнительный материал → заменить или удалить до принятия волны.
+-- Unexpected GitHub rendering → остановить принятие до ручной проверки.
++- Сломанный дополнительный материал → заменить или удалить до технической публикации волны.
++- Unexpected GitHub rendering → остановить техническую публикацию до ручной проверки.
+ - Drift карточки, каталога и graph → атомарная операция незавершена.
+ 
+ ## 11. Git и worktree
+ 
+ 1. Определить, не является ли текущий checkout уже linked worktree.
+ 2. Выполнить `git fetch origin`.
+ 3. Использовать актуальный `origin/main`, а не предположительно свежий локальный `main`.
+ 4. Предпочесть native worktree facility; иначе использовать `git worktree add`.
+ 5. Для story создать или переиспользовать `feature/<story-id>` и одну рабочую директорию для всех дочерних issues.
+ 6. Для локального worktree предпочесть игнорируемую `.worktrees/`.
+ 7. До изменений получить чистый project-appropriate baseline.
+-8. После технически прошедшей волны создать focused Conventional Commit и push активной ветки, затем предоставить отчёт ментору.
+-9. Если ментор просит изменения, внести их в той же ветке, повторить gates и добавить follow-up commit; Beads issue остаётся открытым до принятия.
++8. После технически прошедшей волны создать focused Conventional Commit, выполнить push, получить GitHub-rendered evidence и записать полный отчёт.
++9. После всех технических PASS записать technical publication status, закрыть Beads issue и без человеческой паузы перейти к следующей сериализованной волне.
+ 10. Перед финальной передачей повторно fetch `origin` и проверить divergence.
+ 11. Не выполнять force-push, переписывание опубликованной истории или конфликтную интеграцию main без отдельного полномочия.
+ 
+ ## 12. Порядок реализации
+ 
+ ### Phase 1 — Governance
+ 
+ Синхронизировать `AGENTS.md`, `.gitignore`, GRACE-артефакты и worktree-контракт.
+ 
+ ### Phase 2 — Task contract and validation
+@@ -290,51 +293,52 @@ Slug является стабильным идентификатором. Ег
+ ### Phase 3 — Student entry point
+ 
+ Создать корневой `README.md` с тематической навигацией и явным пустым состоянием.
+ 
+ ### Phase 4 — Candidate audit
+ 
+ Заморозить нейтральный реестр кандидатов в Beads, затем дедуплицировать их и зафиксировать validation decisions.
+ 
+ ### Phase 5 — Task waves
+ 
+-Готовить и принимать задачи волнами по 8–10; последняя неполная волна может быть меньше. Каждая волна атомарно меняет карточки, каталог, graph и evidence.
++Публиковать задачи сериализованными волнами по 8–10; последняя неполная волна может быть меньше. Каждая волна атомарно меняет карточки, каталог, graph и evidence и закрывается сразу после полного технического PASS/push/render/report.
+ 
+ ### Phase 6 — Final audit
+ 
+-Проверить, что все кандидаты имеют terminal status, все принятые карточки представлены ровно один раз, ссылки работают, controlled vocabulary последователен, GRACE XML валиден и пользователь принял каждую волну.
++Проверить, что все кандидаты имеют terminal status, все принятые карточки представлены ровно один раз, ссылки работают, controlled vocabulary последователен, GRACE XML валиден и все волны технически опубликованы. Затем подготовить полную библиотеку к единственному финальному user review; top-level story остаётся открытой до явного принятия.
+ 
+ ### Phase 7 — Scale review
+ 
+ Рассматривать генератор, валидатор или CI только после наблюдаемого drift либо доказанной чрезмерной стоимости ручной проверки.
+ 
+ ## 13. Критерии завершения истории
+ 
+ - Число terminal decisions совпадает с размером замороженного candidate register; каждый кандидат имеет `accepted`, `rejected` или `duplicate`, а `needs-rewrite` отсутствуют.
+ - Все дубли объединены.
+ - В `tasks/` находятся только строго принятые карточки.
+ - Каждая карточка соответствует шаблону и имеет подходящее evidence.
+ - Каждая задача встречается ровно один раз в каталоге и graph annotations.
+ - Обязательные локальные и дополнительные внешние ссылки проверены.
+-- Все волны приняты ментором.
++- Все волны закрыты после технического PASS, push, GitHub-rendered evidence и полного отчёта.
++- Полная библиотека принята пользователем после финального технического аудита.
+ - Все GRACE, Markdown, whitespace и Git gates проходят.
+ - Ветка опубликована без force-push.
+ 
+ ## 14. Риски и меры
+ 
+ | Риск | Мера |
+ | --- | --- |
+ | Технически неверное решение | Строгий `Solution` gate и исполняемое либо trace evidence |
+ | Семантические дубли | `Identity` gate до авторинга карточки |
+ | Catalog drift | Атомарная task/catalog/graph операция и full projection check |
+ | Случайные спойлеры | Независимые закрытые `<details>` |
+-| Broken links | Проверка локальных и внешних ссылок при принятии волны |
++| Broken links | Проверка локальных и внешних ссылок при технической публикации волны |
+ | Нестабильное внешнее окружение | Локальные fixtures и детерминированные adapters |
+ | Разрастание теории | Краткий контекст и целевые ссылки на документацию |
+ | Несопоставимые browser результаты | Точная `Среда выполнения`; недоступное evidence означает `BLOCKED` |
+ | Долгая история отстаёт от main | Повторный fetch и divergence review перед финальной передачей |
+ 
+ ## 15. Критерии готовности дизайна
+ 
+ - Пять модулей имеют однозначные границы и verification refs.
+ - Task contract задаёт точные metadata labels, форматы, уровни и среду.
+ - Validation outcomes не позволяют черновику попасть в библиотеку.
+diff --git a/docs/task-validation-policy.md b/docs/task-validation-policy.md
+index a19e9ca..8168adb 100644
+--- a/docs/task-validation-policy.md
++++ b/docs/task-validation-policy.md
+@@ -46,30 +46,33 @@ Gates выполняются строго по порядку. При прова
+ Temporary harnesses live outside the repository and are removed after evidence capture. They never justify adding a package manager, catalog generator, validator, site framework or CI pipeline to v1.
+ 
+ Metadata values and task titles used in Markdown tables are single-line values without the `|` character; use comma-separated wording instead. This keeps the GitHub table valid and makes exact task-to-catalog projection deterministic.
+ 
+ ## Beads validation record
+ 
+ Every candidate record contains: `candidateId`, `candidateRegisterSize`, `storyId`, `learningGoal`, `proposedTopic`, `decision`, `decisionReason`, `duplicateTarget`, `evidenceType`, `observedResult`, `waveId`, `remainingRisk`, and `waveAcceptanceStatus`.
+ 
+ Allowed `waveAcceptanceStatus` values are `not-applicable`, `pending`, `accepted`, and `changes-requested`. Accepted candidates use `pending` after wave assignment; non-accepted outcomes use `not-applicable`.
+ 
++`waveAcceptanceStatus` is a technical publication status, not a human approval. For an accepted candidate, `pending` means that its assigned wave has not completed every technical publication gate, `accepted` means that candidate recheck, required evidence, pushed commit, GitHub-rendered review, and the complete wave report all passed, and `changes-requested` means that a technical gate requires correction.
++
+ ## Wave rules
+ 
+-Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one Beads child issue, changes task cards/catalog/graph/evidence atomically, and remains open until mentor acceptance.
++Accepted candidates are ordered by stable candidate ID and grouped sequentially: take 10 while at least 10 remain; the last group may therefore contain 1–10. A group of 8–10 is a full wave; a final group of 1–7 is the only permitted incomplete wave. Each wave is one serialized Beads child issue, changes task cards/catalog/graph/evidence atomically, and closes continuously after candidate recheck, deterministic and hybrid PASS, pushed commit, GitHub-rendered evidence, and a complete wave report. Per-wave mentor or user approval is not required; the top-level story remains open until the user accepts the complete library after the final audit.
+ 
+ ## Stop conditions
+ 
+ Stop without guessing for ambiguous vocabulary, environment or expected output; contradictory examples; happy-path-only solution; missing prerequisite/asset; nondeterministic network/time/state without a fixture/fake/adapter; unavailable browser-only evidence; broken supplementary material; unexpected GitHub rendering; task/catalog/graph drift; unapproved permanent tooling; or a slug migration without inbound-link evidence.
+ 
+ ## Updating a published task
+ 
+ For content, metadata, prerequisite or asset changes, resolve all derived artifacts and inbound links first, rerun every affected validation gate, update the canonical card, catalog and graph in one change, and repeat projection/link/evidence checks. Deletion removes the card, its single catalog row and its single graph annotation in the same change. Reclassification requires mentor approval for any new or ambiguous vocabulary. Slug rename is a dedicated migration: verify every inbound link before removing the old path, update all derived references, and record before/after evidence in Beads.
+ 
+ ## Completion checks
+ 
+ - Candidate terminal count equals frozen `candidateRegisterSize`.
+ - No `needs-rewrite` remains at story completion.
+ - Only accepted candidates have task paths or wave IDs.
+ - Every accepted candidate belongs to exactly one valid wave.
+ - Every decision has concise reason, evidence type, observed result and remaining risk.
+-- A wave closes only after technical PASS, pushed commit, report and mentor acceptance.
++- A wave closes only after candidate recheck, technical PASS, pushed commit, GitHub-rendered evidence, and a complete report.
++- The top-level story closes only after the final audit and explicit user acceptance of the complete library.
+diff --git a/docs/technology.xml b/docs/technology.xml
+index 06ecbd0..3e80522 100644
+--- a/docs/technology.xml
++++ b/docs/technology.xml
+@@ -43,21 +43,21 @@
+     <preferred-grace-resolution>Resolve grace from PATH, then fall back to $HOME/.bun/bin/grace before treating the CLI as unavailable.</preferred-grace-resolution>
+     <discouraged-surface reason="The initial project intentionally has no repository runtime.">catalog generators, site frameworks, and package-manager-based Markdown pipelines</discouraged-surface>
+   </PreferredAgentStack>
+ 
+   <Testing>
+     <module-level>
+       <command>Verify the exact task contract, then obtain task-appropriate evidence through temporary execution, type checking, trace comparison, or browser review.</command>
+       <focus>Prove both document structure and solution correctness without adding a permanent repository runtime.</focus>
+     </module-level>
+     <wave-level>
+-      <command>Validate 8-10 accepted cards, or 1-7 in the final incomplete wave; compare canonical metadata with thematic README.md tables, resolve local and external links, and record validation decisions plus mentor wave acceptance in Beads.</command>
++      <command>Validate 8-10 accepted cards, or 1-7 in the final incomplete wave; compare canonical metadata with thematic README.md tables, resolve local and external links, push the focused commit, capture GitHub-rendered evidence, and record validation decisions, the complete report, and technical publication status in Beads.</command>
+       <focus>Prove candidate quality and atomic synchronization across task, catalog, knowledge graph, and evidence changes.</focus>
+     </wave-level>
+     <phase-level>
+       <command>Run xmllint on docs/*.xml, scan changed files for whitespace and placeholder defects, review the full catalog projection, and inspect GitHub rendering when template or HTML markup changes.</command>
+       <focus>Repository-wide structural integrity and student-visible GitHub behavior.</focus>
+     </phase-level>
+     <mocking-policy>Use local fixtures, deterministic adapters, or fake clocks when network, time, or external state would otherwise make the task non-repeatable; do not mock away the behavior being taught.</mocking-policy>
+   </Testing>
+ 
+   <Observability>
+@@ -65,17 +65,17 @@
+     <evidence-format>module-id, verification-ref, artifact-path, check, observed-result</evidence-format>
+     <required-fields>moduleId, verificationRef, candidateId, candidateRegisterSize, artifactPath, validationDecision, duplicateTarget, evidenceType, checkResult, beadsIssueId, waveId, waveAcceptanceStatus</required-fields>
+     <stable-anchors>metadata table; Условие; Критерии готовности; Теория; Подсказка N; Решение; Самопроверка</stable-anchors>
+     <redaction>Never place secrets, credentials, private student data, or proprietary source material in task cards or evidence.</redaction>
+   </Observability>
+ 
+   <AutonomyPolicy>
+     <default-execution-profile>balanced</default-execution-profile>
+     <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
+     <replan-trigger>Ambiguous metadata or environment, duplicate learning goal, missing prerequisite or asset, task/catalog contradiction, unexpected GitHub rendering, unavailable mandatory evidence, or a solution requiring undeclared knowledge.</replan-trigger>
+-    <checkpoint-requirement>Every task change must report assumptions, validation decision, artifacts changed, checks run, evidence captured, wave-acceptance status, and next action.</checkpoint-requirement>
++    <checkpoint-requirement>Every task change must report assumptions, validation decision, artifacts changed, checks run, evidence captured, wave technical-publication status, and next action.</checkpoint-requirement>
+   </AutonomyPolicy>
+ 
+   <DeliveryShape>
+     <shape>GitHub repository whose root README is the student entry point and whose task directories render self-contained Markdown cards.</shape>
+   </DeliveryShape>
+ </TechnologyStack>
+diff --git a/docs/verification-plan.xml b/docs/verification-plan.xml
+index 19ae58d..f187402 100644
+--- a/docs/verification-plan.xml
++++ b/docs/verification-plan.xml
+@@ -1,58 +1,58 @@
+ <VerificationPlan VERSION="0.3.0">
+   <GlobalPolicy>
+     <evidence-format>module-id, verification-ref, artifact-path, check, observed-result</evidence-format>
+     <deterministic-first>true</deterministic-first>
+     <module-level-focus>Check mandatory document structure, stable anchors, and local references close to the changed artifact.</module-level-focus>
+-    <wave-level-focus>Prove strict validation and atomic synchronization across 8-10 accepted task cards, thematic catalog tables, knowledge graph, evidence, and mentor acceptance.</wave-level-focus>
++    <wave-level-focus>Prove strict validation and atomic synchronization across 8-10 accepted task cards, thematic catalog tables, knowledge graph, evidence, pushed commit, GitHub-rendered review, complete report, and technical publication status.</wave-level-focus>
+     <phase-level-focus>Validate all GRACE XML, catalog projection integrity, controlled vocabulary use, and GitHub rendering when shared Markdown structure changes.</phase-level-focus>
+     <autonomy-gate>Every module requires executable or manual checks, observable artifact evidence, stop conditions, and wave or phase follow-up before autonomous edits.</autonomy-gate>
+-    <mentor-review-gate>Strict agent validation never replaces mentor wave acceptance; the mentor may spot-check individual cards.</mentor-review-gate>
++    <final-user-review-gate>Per-wave human approval is not required. After the technical final audit, the top-level story remains open until the user reviews and accepts the complete library.</final-user-review-gate>
+     <redaction>Never include secrets, credentials, private student data, or proprietary source material in repository content or evidence.</redaction>
+   </GlobalPolicy>
+ 
+   <CriticalFlows>
+     <VF-001 NAME="StudentStudiesTask" USE_CASES="UC-001, UC-002" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
+       <scenario>A student selects a suitable task and controls theory, hint, and solution disclosure on GitHub.</scenario>
+       <expected-outcome>The catalog link works, metadata matches, required prompt content is visible, and every guidance block is independently collapsed.</expected-outcome>
+       <required-signals>
+         <artifact-marker>README.md catalog row and relative task link</artifact-marker>
+         <artifact-marker>task metadata table and required headings</artifact-marker>
+         <trace-sequence>CATALOG_SELECTED -> TASK_OPENED -> THEORY_OPTIONAL -> HINT_N_OPTIONAL -> SOLUTION_OPTIONAL -> SELF_CHECK</trace-sequence>
+       </required-signals>
+     </VF-001>
+     <VF-002 NAME="AgentAddsTask" USE_CASES="UC-003" DATA_FLOW="DF-ADD-TASK" PRIORITY="high">
+       <scenario>An AI agent adds one task from a mentor request.</scenario>
+-      <expected-outcome>An accepted task card, catalog projection, graph entry, and hybrid verification evidence change atomically, followed by mentor wave acceptance.</expected-outcome>
++      <expected-outcome>An accepted task card, catalog projection, graph entry, and hybrid verification evidence change atomically; the serialized wave closes after push, GitHub-rendered evidence, and complete report pass.</expected-outcome>
+       <required-signals>
+         <artifact-marker>tasks/&lt;task-slug&gt;/README.md</artifact-marker>
+         <artifact-marker>README.md unique catalog entry</artifact-marker>
+         <artifact-marker>docs/knowledge-graph.xml task-library context</artifact-marker>
+-        <trace-sequence>CONTRACT_READ -> METADATA_RESOLVED -> CANDIDATE_VALIDATED -> TASK_WRITTEN -> CATALOG_SYNCED -> GRAPH_SYNCED -> CHECKED -> WAVE_ACCEPTED</trace-sequence>
++        <trace-sequence>CONTRACT_READ -> METADATA_RESOLVED -> CANDIDATE_VALIDATED -> TASK_WRITTEN -> CATALOG_SYNCED -> GRAPH_SYNCED -> CHECKED -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
+       </required-signals>
+     </VF-002>
+     <VF-003 NAME="AgentUpdatesTask" USE_CASES="UC-004" DATA_FLOW="DF-UPDATE-TASK" PRIORITY="high">
+       <scenario>An AI agent changes task content or metadata without leaving stale derived references.</scenario>
+       <expected-outcome>Catalog placement, graph facts, prerequisites, assets, and inbound links remain consistent; ambiguous edits stop before drift is introduced.</expected-outcome>
+       <required-signals>
+         <artifact-marker>before and after canonical metadata</artifact-marker>
+         <artifact-marker>unique matching catalog projection</artifact-marker>
+         <trace-sequence>CHANGE_CLASSIFIED -> DERIVED_ARTIFACTS_IDENTIFIED -> SYNCHRONIZED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
+       </required-signals>
+     </VF-003>
+     <VF-004 NAME="AgentValidatesCandidate" USE_CASES="UC-005" DATA_FLOW="DF-VALIDATE-TASK, DF-PUBLISH-TASK-WAVE" PRIORITY="high">
+       <scenario>An agent evaluates a candidate before publication and later publishes accepted cards as one wave.</scenario>
+-      <expected-outcome>Every stable ID in the frozen candidate register receives accepted, needs-rewrite, rejected, or duplicate with evidence; only accepted enters tasks/, and the wave remains open until mentor acceptance.</expected-outcome>
++      <expected-outcome>Every stable ID in the frozen candidate register receives accepted, needs-rewrite, rejected, or duplicate with evidence; only accepted enters tasks/, and the wave closes continuously after every technical publication gate passes.</expected-outcome>
+       <required-signals>
+         <artifact-marker>Beads validation decision and evidence type</artifact-marker>
+         <artifact-marker>accepted card or neutral non-publication reason</artifact-marker>
+-        <trace-sequence>IDENTITY -> LEARNING_VALUE -> CONTRACT -> LOCAL_COMPLETENESS -> EXAMPLES -> SOLUTION -> VERIFICATION -> EDITORIAL -> DECISION -> WAVE_ACCEPTANCE</trace-sequence>
++        <trace-sequence>IDENTITY -> LEARNING_VALUE -> CONTRACT -> LOCAL_COMPLETENESS -> EXAMPLES -> SOLUTION -> VERIFICATION -> EDITORIAL -> DECISION -> PUSHED -> GITHUB_RENDERED -> WAVE_REPORTED -> TECHNICALLY_PUBLISHED</trace-sequence>
+       </required-signals>
+     </VF-004>
+   </CriticalFlows>
+ 
+   <ModuleVerification>
+     <V-M-GOVERNANCE MODULE="M-GOVERNANCE" PRIORITY="high">
+       <test-files>
+         <file>AGENTS.md</file>
+         <file>.gitignore</file>
+         <file>.agents/skills/grace-cli/SKILL.md</file>
+@@ -136,50 +136,50 @@
+         <check-5>Reject publication when mandatory browser evidence is unavailable; record BLOCKED rather than PASS.</check-5>
+       </module-checks>
+       <scenarios>
+         <scenario-1 kind="success">An independently authored candidate has a unique learning goal, explicit environment, correct examples and solution, and matching hybrid evidence, so it becomes accepted.</scenario-1>
+         <scenario-2 kind="failure">An ambiguous, duplicated, incorrect, externally incomplete, or unverifiable candidate cannot enter tasks/.</scenario-2>
+       </scenarios>
+       <required-evidence-anchors>
+         <marker-1>ValidationDecision</marker-1>
+         <marker-2>evidence type and observed result</marker-2>
+         <marker-3>duplicate merge or rejection reason</marker-3>
+-        <marker-4>mentor wave-acceptance status</marker-4>
++        <marker-4>wave technical-publication status</marker-4>
+         <marker-5>candidate register size and stable candidate ID</marker-5>
+       </required-evidence-anchors>
+       <required-trace-assertions>
+         <assertion-1>Only accepted produces an AcceptedTaskCard.</assertion-1>
+         <assertion-2>Temporary harnesses do not introduce permanent repository runtime tooling.</assertion-2>
+       </required-trace-assertions>
+-      <wave-follow-up>Group 8-10 accepted cards, or 1-7 in the final incomplete wave; commit and push the technically passing wave, publish the validation report, and keep the child Beads issue open until mentor acceptance.</wave-follow-up>
++      <wave-follow-up>Group 8-10 accepted cards, or 1-7 in the final incomplete wave; recheck candidates, commit and push the technically passing wave, capture GitHub-rendered evidence, publish the complete report, record technical status, close the child Beads issue, and continue.</wave-follow-up>
+       <phase-follow-up>Prove terminal-decision count equals frozen candidate-register size and no needs-rewrite remains at story completion.</phase-follow-up>
+     </V-M-TASK-VALIDATION>
+ 
+     <V-M-TASK-LIBRARY MODULE="M-TASK-LIBRARY" PRIORITY="high">
+       <test-files>
+         <file>tasks/&lt;task-slug&gt;/README.md</file>
+         <file>tasks/&lt;task-slug&gt;/assets/*</file>
+       </test-files>
+       <module-checks>
+         <check-1>Enumerate task cards and verify each conforms to the current template contract.</check-1>
+         <check-2>Resolve every prerequisite and asset link against the repository filesystem and verify every supplementary external link is reachable.</check-2>
+         <check-3>Verify controlled metadata vocabulary, stable slug, local prompt and solution completeness, incremental hints, and task-specific environment assumptions.</check-3>
+-        <check-4>Verify an accepted validation decision and record mentor wave acceptance before closing the child issue.</check-4>
++        <check-4>Verify an accepted validation decision, candidate recheck, required evidence, pushed commit, GitHub-rendered review, complete wave report, and technical publication status before closing the child issue.</check-4>
+       </module-checks>
+       <scenarios>
+         <scenario-1 kind="success">A student can understand and attempt the task using only the GitHub-rendered card.</scenario-1>
+-        <scenario-2 kind="failure">A non-accepted decision, missing prerequisite or asset, broken required or supplementary link, undeclared environment dependency, ambiguous classification, or unaccepted wave blocks completion.</scenario-2>
++        <scenario-2 kind="failure">A non-accepted decision, missing prerequisite or asset, broken required or supplementary link, undeclared environment dependency, ambiguous classification, or incomplete technical publication gate blocks completion.</scenario-2>
+       </scenarios>
+       <required-evidence-anchors>
+         <marker-1>canonical metadata table</marker-1>
+         <marker-2>relative prerequisite links</marker-2>
+-        <marker-3>validation decision and mentor wave-acceptance status</marker-3>
++        <marker-3>validation decision and wave technical-publication status</marker-3>
+       </required-evidence-anchors>
+       <required-trace-assertions>
+         <assertion-1>A task edit must not complete before dependent catalog and graph updates are verified.</assertion-1>
+       </required-trace-assertions>
+       <wave-follow-up>Compare changed task metadata with its catalog projection and graph delta.</wave-follow-up>
+       <phase-follow-up>Review vocabulary consistency and sample student-facing task rendering.</phase-follow-up>
+     </V-M-TASK-LIBRARY>
+ 
+     <V-M-CATALOG MODULE="M-CATALOG" PRIORITY="high">
+       <test-files>
+@@ -248,53 +248,54 @@
+       <commands>
+         <command-1>Freeze the Beads candidate register, run V-M-TASK-VALIDATION for every stable candidate ID, and group accepted cards into waves of 8-10 with a final-wave exception of 1-7.</command-1>
+       </commands>
+       <required-evidence>
+         <evidence-1>Every candidate is accepted, needs-rewrite, rejected, or duplicate with a reason and evidence type.</evidence-1>
+         <evidence-2>Duplicate learning goals are merged before publication.</evidence-2>
+         <evidence-3>The candidate register has a fixed size and every unplanned addition receives a new stable ID before validation.</evidence-3>
+       </required-evidence>
+     </Gate-Phase-4>
+     <Gate-Phase-5 PHASE="Phase-5">
+-      <goal>Each accepted wave leaves the student view, validation evidence, and agent navigation internally consistent.</goal>
++      <goal>Each technically published wave leaves the student view, validation evidence, and agent navigation internally consistent.</goal>
+       <commands>
+         <command-1>Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE.</command-1>
+         <command-2>Scan changed files for trailing whitespace, unresolved placeholders, malformed document anchors, and broken local or external links.</command-2>
+       </commands>
+       <required-evidence>
+         <evidence-1>Accepted task, catalog, graph, and verification deltas are atomic.</evidence-1>
+         <evidence-2>All links resolve and every task appears exactly once.</evidence-2>
+-        <evidence-3>Mentor wave acceptance is recorded before the child Beads issue is closed.</evidence-3>
++        <evidence-3>Candidate recheck, technical PASS, pushed commit, GitHub-rendered evidence, complete report, and technical publication status are recorded before the child Beads issue is closed.</evidence-3>
+       </required-evidence>
+     </Gate-Phase-5>
+     <Gate-Phase-6 PHASE="Phase-6">
+-      <goal>The complete initial library has no unresolved candidate, validation, catalog, graph, link, acceptance, or Git-divergence defect.</goal>
++      <goal>The complete initial library has no unresolved candidate, validation, catalog, graph, link, technical-publication, or Git-divergence defect and is ready for final user review.</goal>
+       <commands>
+         <command-1>Run every module verification and the full GRACE, Markdown, link, catalog-projection, and Beads-status audit.</command-1>
+         <command-2>Fetch origin and report branch divergence from origin/main without rewriting published history.</command-2>
+       </commands>
+       <required-evidence>
+         <evidence-1>No needs-rewrite remains and terminal-decision count equals frozen candidate-register size.</evidence-1>
+-        <evidence-2>Every accepted card is mentor-wave-accepted and appears exactly once in catalog and graph.</evidence-2>
++        <evidence-2>Every accepted card belongs to a technically published wave and appears exactly once in catalog and graph.</evidence-2>
+         <evidence-3>The feature branch is pushed without force and divergence is reported.</evidence-3>
++        <evidence-4>The final complete-library report is ready and the top-level story remains open until explicit user acceptance.</evidence-4>
+       </required-evidence>
+     </Gate-Phase-6>
+     <Gate-Phase-7 PHASE="Phase-7">
+       <goal>Automation is introduced only when observed scale or drift justifies its maintenance cost.</goal>
+       <commands>
+         <command-1>Review task count, catalog drift incidents, vocabulary conflicts, and repeated manual verification cost.</command-1>
+       </commands>
+       <required-evidence>
+         <evidence-1>A Beads issue records the observed problem, alternatives, mentor decision, and resulting scope.</evidence-1>
+         <evidence-2>No generator, validator, CI, or runtime tooling is added without explicit approval.</evidence-2>
+       </required-evidence>
+     </Gate-Phase-7>
+   </PhaseGates>
+ 
+   <FailurePackets>
+     <packet-template>
+       <canonical-schema>docs/operational-packets.xml</canonical-schema>
+       <expected-fields>scenario, contract-ref, expected-evidence, observed-evidence, first-divergent-artifact-or-anchor, next-action</expected-fields>
+-      <stop-conditions>ambiguous metadata or environment; duplicate learning goal; missing prerequisite or asset; broken supplementary link; unexpected GitHub rendering; catalog drift; unresolved inbound link; unavailable mandatory evidence; unaccepted wave</stop-conditions>
++      <stop-conditions>ambiguous metadata or environment; duplicate learning goal; missing prerequisite or asset; broken supplementary link; unexpected GitHub rendering; catalog drift; unresolved inbound link; unavailable mandatory evidence; incomplete wave technical publication</stop-conditions>
+     </packet-template>
+   </FailurePackets>
+ </VerificationPlan>

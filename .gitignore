@@ -1,1 +1,5 @@
-/docs/superpowers/
+.worktrees/
+.DS_Store
+.superpowers/brainstorm/.last-port
+.superpowers/brainstorm/.last-token
+.superpowers/brainstorm/*/state/

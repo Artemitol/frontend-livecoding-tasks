@@ -38,9 +38,47 @@ Choose JavaScript, TypeScript, or React examples according to the learning goal 
 
 Markdown-only tasks do not require automated tests. Review their structure, links, code fences, terminology, and example consistency manually. When a task includes a runnable solution or bug fix, add tests using `*.test.ts` or `*.test.tsx` and describe behavior rather than implementation details. In frontend tests, prefer `data-testid` selectors when identifying elements. Do not test CSS or visual styling with automated tests; verify it manually or with browser-based visual checks. Cover the primary interaction, an edge case, and failure handling when relevant. Document any task-specific manual verification steps in its Markdown file or README.
 
+## Task Publication Contract
+
+- Store each accepted exercise at `tasks/<stable-slug>/README.md`; treat the slug as a stable identifier and handle renames as migrations with inbound-link verification.
+- `ConciseStudentTaskCard` is the target student contract. Its exact order is title, target-editor instruction, `Условие`, one complete minimal starter block or the minimum necessary HTML fragment plus JavaScript, exactly three closed hints, closed `Решение`, and closed five-field `О задаче`.
+- A focused card has one central action and normally takes 10–30 minutes. A real-work card may contain sequential related product requirements, normally takes 45–60 minutes, and uses `Приближённая к реальной работе` as its format.
+- `Условие` is the only visible requirements source. Do not add `← Все подборки`, browser-back or fallback instructions, learning-goal prose, `Готово, когда`, `Самопроверка`, hint instructions, mandatory theory, a test harness, diagnostic flags, or duplicated starter code.
+- Keep the root `README.md` as the student hub with exactly the four `##` blocks `Как пользоваться базой`, `Подборки по направлениям`, `Симуляции собеседований`, and `Где писать код`. At cutover it links all ten thematic, three interview, and one real-work collection plus the four approved editors; task tables, metadata-source explanations, agent-maintenance prose, Beads, GRACE, and knowledge-graph terminology do not belong there.
+- The target catalog has exactly 21 task cards and 14 collection pages: ten thematic, three interview, and `collections/real-work/README.md`. Every task appears in exactly one thematic collection and no more than one interview. A confirmed real-work task additionally appears exactly once in the real-work collection; a focused task never appears there.
+- Thematic entries include a linked student title, one plain-language sentence, and exact time. Interview entries include only the linked student title and exact time after the shared timer paragraph. Real-work entries include the linked student title and exact time after the shared format explanation.
+- End every card with one closed `О задаче` block containing exactly `Технология`, `Подборка`, `Формат`, `Сложность`, and `Примерное время`. The legacy labels `Технологии`, `Тема`, `Уровень`, `Время`, `Навыки`, `Предварительные знания`, and `Среда выполнения` are migration inputs only and are not mandatory student-card labels.
+- Use only the technology values `JavaScript`, `TypeScript`, `HTML/CSS`, `HTML/JavaScript`, `HTML/CSS/JavaScript`, and `React/TypeScript`; the format values `Написать код`, `Исправить код`, `Разобрать код`, `Предсказать результат`, and `Приближённая к реальной работе`; and the difficulty values `Базовая`, `Средняя`, and `Продвинутая`.
+- For JavaScript publish one `javascript` block by default. Do not publish `<!doctype html>`, `<html>`, `<head>`, `<body>`, `<style>`, or `<script>` wrappers. If a DOM task needs declared markup, place only the semantically necessary HTML fragment before the JavaScript block. HTML/CSS tasks likewise use only the necessary fragment and editable CSS.
+- Keep starter code in one complete minimal copy-ready block by default. Several files are permitted only for a real-work mini-project with genuine file boundaries. Every starter file begins with a language-appropriate `FILE: <path>` comment and is complete. The solution includes only changed files; every included solution file is complete and uses the matching starter `FILE: <path>`.
+- Select exactly one target editor from the execution profile: Programiz (`https://www.programiz.com/javascript/online-compiler/`) for console JavaScript without browser APIs; CodePen (`https://pen.new`) for browser JavaScript, DOM, HTML/CSS, or ESM; TypeScript Playground (`https://www.typescriptlang.org/play/`) for pure TypeScript; or React TypeScript (`https://vite.new/react-ts`) for React with TypeScript. State any browser, ESM, framework-version, or runtime assumption next to the transfer instruction when it can affect behavior.
+- Include exactly three distinct closed hints with the summaries `Подсказка 1 — куда смотреть`, `Подсказка 2 — с чего начать`, and `Подсказка 3 — почти решение`. Keep `Решение` and `О задаче` in independent `<details>` blocks without the `open` attribute.
+- `Решение` contains only changed code or, for a multi-file real-work task, only changed complete files with matching starter `FILE: <path>` comments, plus a short explanation, the expected result, and a simple manual check. It does not repeat unchanged fixtures, an entire single-block starter, an HTML document, a harness, or unchanged files.
+- Keep the prompt, complete starter code, text fixtures, solution, and required verification context local even when targeted external reading is linked. Text code, HTML, test data, and scenarios belong in the card; reserve `assets/` for media or other binary material that cannot reasonably be embedded.
+- Publish only candidates with an `accepted` Beads validation decision. Keep `needs-rewrite`, `rejected`, and `duplicate` candidates out of `tasks/` and record their neutral decision evidence in Beads.
+- Before a migrated card can pass, record `CardMigrationEvidence` in its Beads issue with exactly `slug`, `mode`, `editorProfile`, `sourceLearningGoal`, `sourcePrerequisite`, `sourceRuntimeAssumption`, `destinationLocations`, `targetEditorExpectedResult`, `targetEditorActualResult`, and `verdict`. In Markdown-only delivery, keep the two `targetEditor...` fields for schema compatibility and record them explicitly as `NOT_RUN: Markdown-only delivery`; derive `verdict` only from local deterministic Markdown, collection, XML, and Beads synchronization checks. External editors, browsers, and GitHub-rendered pages are not publication gates.
+- Validate JavaScript, TypeScript, React/DOM, UI, analysis, and output-prediction cards with the Markdown-only route defined in `docs/task-validation-policy.md`. Do not open or operate external editors or browsers as part of repository validation. Do not test CSS or visual styling with automated tests; review the task's visible requirements, starter, solution, and manual-check wording in Markdown.
+- Treat the card's title and five-field `О задаче` block as student-facing source data. Update the card, exactly one thematic collection, zero or one interview collection, `docs/knowledge-graph.xml`, `docs/verification-plan.xml`, and Beads evidence in the same change. Keep title, duration, editor profile, links, and collection membership synchronized.
+- Publish accepted cards in serialized technical waves of 8–10, except that the final incomplete wave may contain 1–7. Close each wave continuously after candidate recheck, all local deterministic Markdown/XML gates pass, the focused commit is pushed, and the complete wave report is recorded. Do not require per-wave mentor or user approval; keep the top-level story open until the user accepts the complete library after the final local audit.
+- All 21 published cards must conform to `ConciseStudentTaskCard`; there is no live legacy-structure exception.
+- Run the deterministic commands in `docs/task-validation-policy.md` after every catalog change. They reject legacy markers, any fourth hint, any `<details open...>`, full HTML documents, invalid metadata, duplicate thematic membership, and unsupported real-work membership before a card or phase receives PASS.
+- Stop instead of guessing when three distinct useful hints cannot be written; starter or solution code is incomplete as Markdown; a required file is not described; technology, editor instruction, or task profile is ambiguous; multiple blocks are unnecessary or lack matching `FILE:` paths; an inlined replacement does not preserve a removed asset; metadata and collection facts disagree; one task belongs to multiple thematic or interview collections; real-work membership contradicts format or duration; or a required local relative link does not resolve. External editor, browser, and GitHub-rendering availability are outside the Markdown-only gate and never make a card `BLOCKED`.
+
 ## Commit & Pull Request Guidelines
 
 Agents are authorized to create branches, commits, pushes, and pull requests automatically. Never commit or push directly to `main`. Before making project changes, create or reuse a `feature/*` branch. After a coherent change passes its relevant verification gates, create a focused commit, push the active `feature/*` branch, and open a pull request targeting `main` without asking for additional permission. An explicit user instruction not to branch, commit, push, or create a pull request overrides this default for that task.
+
+### Worktree Isolation
+
+Before making project changes, work from an isolated Git worktree based on the current remote default branch:
+
+1. Detect whether the current checkout is already a linked worktree. Do not create a nested worktree.
+2. Run `git fetch origin` and use the resulting `origin/main` as the base; do not assume the local `main` is current.
+3. Prefer a native worktree facility when the agent environment provides one. Otherwise use `git worktree add`.
+4. For a Beads story, create or reuse `feature/<story-id>` and keep every child issue for that story in the same worktree and branch.
+5. Prefer `.worktrees/` for a project-local manual worktree. The directory must remain ignored by Git.
+6. Verify a clean project-appropriate baseline before editing. If the baseline fails, report the evidence and get direction before proceeding.
+7. Before final delivery, fetch `origin` again and report branch divergence. Do not force-push, rewrite published history, or integrate a conflicting `main` without the required explicit authority.
 
 Write commit messages in English and follow Conventional Commits 1.0.0:
 
@@ -297,7 +335,7 @@ bd prime                # Refresh Beads context
 
 ### Rules
 
-- Use `bd` for all task tracking; do not create markdown TODO lists.
+- Use `bd` for all task tracking; do not create markdown task lists.
 - Run `bd prime` when Beads context is missing or stale. Codex 0.129.0+ can load Beads context automatically through native hooks; use `/hooks` to inspect or toggle them.
 - Keep persistent project memory in Beads via `bd remember`; do not create ad hoc memory files.
 
