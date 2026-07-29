@@ -73,7 +73,7 @@ Run:
 bd prime
 bd show frontend-livecoding-tasks-kln-card-simplification-spec
 find tasks -mindepth 2 -maxdepth 2 -name README.md | sort | wc -l
-find collections -mindepth 3 -maxdepth 3 -name README.md | sort | wc -l
+find collections -mindepth 2 -maxdepth 3 -name README.md | sort | wc -l
 ```
 
 Expected: the issue points to the approved design; the baseline is exactly 20 cards and 13 collection pages.
@@ -157,7 +157,7 @@ Run:
 
 ```bash
 rg -l 'Готово, когда|Самопроверка|← Все подборки|Потерялись\?' tasks/*/README.md | wc -l
-find collections -mindepth 3 -maxdepth 3 -name README.md | sort | wc -l
+find collections -mindepth 2 -maxdepth 3 -name README.md | sort | wc -l
 ```
 
 Expected: all twenty baseline cards still contain legacy card-contract material and there are 13 collections; this is a known intermediate condition, not a failure to hide.
@@ -402,7 +402,7 @@ Create `collections/real-work/README.md` with only confirmed real-work entries, 
 ```bash
 xmllint --noout docs/knowledge-graph.xml docs/verification-plan.xml
 test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md | wc -l | tr -d ' ')" -eq 21
-test "$(find collections -mindepth 3 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14
+test "$(find collections -mindepth 2 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14
 git diff --check
 git add README.md tasks collections docs/knowledge-graph.xml docs/verification-plan.xml
 git commit -m "docs(tasks): simplify wave C and add real-work task"
@@ -447,7 +447,7 @@ test "$(rg -n '^## ' README.md | wc -l | tr -d ' ')" -eq 4
 test "$(rg -c ']\(collections/.*/README\.md\)' README.md)" -eq 14
 test "$(rg -c 'https://www\.programiz\.com/javascript/online-compiler/|https://pen\.new|https://www\.typescriptlang\.org/play/|https://vite\.new/react-ts' README.md)" -eq 4
 test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md | wc -l | tr -d ' ')" -eq 21
-test "$(find collections -mindepth 3 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14
+test "$(find collections -mindepth 2 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14
 test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md -print0 | xargs -0 rg -l 'Готово, когда|Самопроверка|← Все подборки|Потерялись\?|<details open' | wc -l | tr -d ' ')" -eq 0
 while IFS= read -r cardFile; do
   slug="${cardFile#tasks/}"

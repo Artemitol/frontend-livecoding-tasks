@@ -91,10 +91,9 @@
     <profile-assignment-ReactTypeScript>
       <task-slugs>react-derived-list, react-batched-counter, react-effect-subscription, react-strictmode-cleanup</task-slugs>
     </profile-assignment-ReactTypeScript>
-    <profile-assignment-ReactTypeScriptPlanned STATUS="planned" PHASE="Phase-19">
+    <profile-assignment-ReactTypeScriptRealWork STATUS="implemented" PHASE="Phase-19">
       <task-slugs>users-api-list</task-slugs>
-    </profile-assignment-ReactTypeScriptPlanned>
-    <migration-compatibility STATUS="temporary" EXPIRES="Phase-19">Only the twenty implemented profile-map slugs may retain legacy StudentTaskCard structure while Phases 16 through 19 are incomplete; this state is not concise migration PASS. Phase 19 scans before removal, removes only after PASS, and repeats the identical scan without compatibility before completion.</migration-compatibility>
+    </profile-assignment-ReactTypeScriptRealWork>
   </TaskEditorProfileMap>
 
   <PreferredAgentStack>
@@ -138,6 +137,6 @@
 
   <DeliveryShape>
     <shape>GitHub repository whose root README is a short student hub, whose fourteen target collections are the primary selection surface, and whose twenty-one target task directories render concise copy-ready self-contained Markdown cards.</shape>
-    <implementation-state>The prior twenty-card, thirteen-collection catalog remains implemented. ConciseStudentTaskCard, the twenty-slug temporary compatibility state, three serialized 8 + 8 + 5 waves, the twenty-one-card and fourteen-collection cutover, and the local catalog audit are staged as planned Phases 16 through 20; no future card or collection is claimed implemented.</implementation-state>
+    <implementation-state>ConciseStudentTaskCard, all three serialized 8 + 8 + 5 waves, and the twenty-one-card and fourteen-collection cutover are implemented through Phase 19. The complete local catalog audit remains planned as Phase 20.</implementation-state>
   </DeliveryShape>
 </TechnologyStack>

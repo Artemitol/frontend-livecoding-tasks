@@ -4,7 +4,7 @@
     <deterministic-first>true</deterministic-first>
     <module-level-focus>Check ConciseStudentTaskCard order, exact hints and metadata, minimal code, absence of legacy or full-document markers, and local references close to the changed artifact.</module-level-focus>
     <wave-level-focus>Prove each serialized 8 + 8 + 5 redesign unit and atomic synchronization across cards, thematic, optional interview, and supported real-work collections, knowledge graph, verification plan, local deterministic evidence, pushed commit, complete report, and Beads status.</wave-level-focus>
-    <phase-level-focus>Validate all GRACE XML, the explicit temporary twenty-slug compatibility state, twenty-one-card and fourteen-collection target integrity, editor-profile URLs as content, controlled vocabulary, and source-Markdown structure.</phase-level-focus>
+    <phase-level-focus>Validate all GRACE XML, twenty-one-card and fourteen-collection catalog integrity, editor-profile URLs as content, controlled vocabulary, and source-Markdown structure.</phase-level-focus>
     <autonomy-gate>Every module requires executable or manual checks, observable artifact evidence, stop conditions, and wave or phase follow-up before autonomous edits.</autonomy-gate>
     <final-user-review-gate>Per-wave human approval is not required. After the technical final audit, the top-level story remains open until the user reviews and accepts the complete library.</final-user-review-gate>
     <redaction>Never include secrets, credentials, private student data, or proprietary source material in repository content or evidence.</redaction>
@@ -83,8 +83,8 @@
         <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
         <check-7>Verify Programiz, CodePen, TypeScript Playground, and React TypeScript profiles use the exact approved URLs across governance, technology, validation, the current root map, and affected cards; verify all twenty stable slugs appear exactly once in the fixed TaskEditorProfileMap.</check-7>
         <check-8>Verify Phases 8 through 15 are completed with the current root hub, thirteen collections, twenty migrated cards, synchronized graph facts, and Gate-Phase-15 implemented with PASS evidence.</check-8>
-        <check-9>Verify Phases and Gates 16 through 20 exist only as planned or in-progress records, link the five existing modules, include observable artifact checks and BLOCKED conditions, and never claim the current legacy catalog is concise.</check-9>
-        <check-10>Verify AGENTS.md and docs/task-validation-policy.md contain the same exact twenty-slug compatibility inventory, five format values, twenty-one-card and fourteen-collection target, and Phase 19 expiry.</check-10>
+        <check-9>Verify Phases and Gates 16 through 19 are implemented, Phase and Gate 20 remain planned, all five existing modules stay linked, and every phase includes observable artifact checks and BLOCKED conditions.</check-9>
+        <check-10>Verify AGENTS.md and docs/task-validation-policy.md expose the same five format values, twenty-one-card and fourteen-collection catalog, and no legacy-structure exception.</check-10>
       </module-checks>
       <scenarios>
         <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>
@@ -150,7 +150,7 @@
         <check-5>Verify external materials are targeted and reachable while condition, complete starter code, text fixtures, solution, and required verification context remain local.</check-5>
         <check-6>Verify title, duration, format, editor profile, exactly one thematic collection, zero or one interview, supported real-work membership, graph, verification, and Beads evidence are synchronized.</check-6>
         <check-7>Do not open or operate external editors, browsers, live APIs, or GitHub-rendered pages; their availability does not affect PASS or BLOCKED.</check-7>
-        <check-8>Before Phase 19 cutover, verify only the exact twenty named legacy slugs may use compatibility and that compatibility never substitutes for concise structural and local deterministic PASS.</check-8>
+        <check-8>Verify all twenty-one cards conform to the concise structure and no legacy exception can substitute for local deterministic PASS.</check-8>
         <check-9>After cutover, run the policy commands that reject legacy markers, a fourth hint, open details, full HTML documents, invalid metadata, duplicate thematic membership, and unsupported real-work membership.</check-9>
       </module-checks>
       <scenarios>
@@ -182,7 +182,7 @@
         <file>tasks/&lt;task-slug&gt;/assets/*</file>
       </test-files>
       <module-checks>
-        <check-1>During transition enumerate exactly twenty legacy-compatible cards without concise PASS; after Phase 19 enumerate exactly twenty-one ConciseStudentTaskCards with visible editor instruction, condition, minimal code, and exactly three hint summaries.</check-1>
+        <check-1>Enumerate exactly twenty-one ConciseStudentTaskCards with visible editor instruction, condition, minimal code, and exactly three hint summaries.</check-1>
         <check-2>Verify one minimal starter block or justified real-work files; every starter file is complete with a FILE path, and every included changed solution file is complete with the matching starter FILE path.</check-2>
         <check-3>Resolve prerequisite, media asset, collection, and supplementary links; reject legacy navigation, full-document JavaScript markup, or text code, HTML, test data, and scenarios left in assets after inline replacement passes.</check-3>
         <check-4>Verify five-field vocabulary including the fifth real-work format, stable slug, preserved source learning goal, prerequisite and runtime assumptions, concise solution boundaries, and fixed editor profile.</check-4>
@@ -231,10 +231,10 @@
         <file>tasks/*/README.md</file>
       </test-files>
       <module-checks>
-        <check-1>Verify the transition truthfully retains ten thematic and three interview pages; after Phase 19 verify those thirteen plus exactly one real-work README and no technology-level intermediate README.</check-1>
+        <check-1>Verify ten thematic and three interview pages plus exactly one real-work README and no technology-level intermediate README.</check-1>
         <check-2>Resolve every root, collection, and task link; compare linked student title and exact duration with the card.</check-2>
         <check-3>Verify every task belongs to exactly one thematic collection, no task belongs to two interviews, and the real-work membership set exactly equals the cards using the real-work format.</check-3>
-        <check-4>Verify the root README has exactly four student blocks; before cutover it truthfully links thirteen current collections, and after Phase 19 it links all fourteen without old task tables, metadata-source explanations, or agent-maintenance prose.</check-4>
+        <check-4>Verify the root README has exactly four student blocks and links all fourteen collections without old task tables, metadata-source explanations, or agent-maintenance prose.</check-4>
         <check-5>Verify the root editor map and all card profiles use the same four exact URLs.</check-5>
       </module-checks>
       <scenarios>
@@ -438,8 +438,8 @@
         <evidence-3>All four external editor surfaces opened, all six editor-profile instructions rendered, and the three former fixture cards passed the deep flow without hidden asset dependencies.</evidence-3>
       </required-evidence>
     </Gate-Phase-15>
-    <Gate-Phase-16 PHASE="Phase-16" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
-      <goal>The concise target contract is staged consistently while the observable current state remains exactly twenty legacy-marker cards and thirteen collection pages.</goal>
+    <Gate-Phase-16 PHASE="Phase-16" status="implemented" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+      <goal>The concise target contract and its historical twenty-card, thirteen-collection baseline are recorded consistently.</goal>
       <commands>
         <command-1>test "$(rg -l 'Готово, когда|Самопроверка|← Все подборки|Потерялись\?' tasks/*/README.md | wc -l | tr -d ' ')" -eq 20</command-1>
         <command-2>test "$(find collections -mindepth 3 -maxdepth 3 -name README.md | sort | wc -l | tr -d ' ')" -eq 13</command-2>
@@ -448,16 +448,16 @@
         <command-5>git diff --check</command-5>
       </commands>
       <artifact-checks>
-        <artifact-check-16-1>Template contains only focused and real-work concise variants; governance and validation name the same twenty compatibility slugs and Phase 19 expiry.</artifact-check-16-1>
-        <artifact-check-16-2>Requirements, technology, development, verification, graph, and packets all distinguish the implemented twenty-card/thirteen-collection catalog from the planned twenty-one-card/fourteen-collection target.</artifact-check-16-2>
+        <artifact-check-16-1>Template contains only focused and real-work concise variants; governance and validation share the same local evidence contract.</artifact-check-16-1>
+        <artifact-check-16-2>Requirements, technology, development, verification, graph, and packets retain historical baseline evidence without exposing a live legacy exception.</artifact-check-16-2>
       </artifact-checks>
       <required-evidence>
         <evidence-1>Baseline output is exactly twenty and thirteen; XML and whitespace gates exit zero; the placeholder scan has no matches.</evidence-1>
         <evidence-2>No task, collection, root hub, or future migration evidence is changed or marked implemented.</evidence-2>
       </required-evidence>
-      <blocked-when>BLOCKED if the baseline count, compatibility inventory, XML, placeholder, diff, cross-reference, or planned-status check fails.</blocked-when>
+      <blocked-when>BLOCKED if the baseline evidence, XML, placeholder, diff, cross-reference, or contract check fails.</blocked-when>
     </Gate-Phase-16>
-    <Gate-Phase-17 PHASE="Phase-17" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+    <Gate-Phase-17 PHASE="Phase-17" status="implemented" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
       <goal>Exactly eight named Wave A cards become focused concise cards with synchronized local deterministic, graph, verification, collection, and Beads evidence.</goal>
       <commands>
         <command-1>Enumerate the changed task paths and compare them exactly with immutable-category-totals, stable-product-sort, loop-closure-bindings, browser-event-loop-order, discriminated-load-state, typed-object-property, response-union-narrowing, and validate-unknown-profile.</command-1>
@@ -474,7 +474,7 @@
       </required-evidence>
       <blocked-when>BLOCKED if any central action, structure, metadata, local link, membership, graph, verification, Beads, pushed-commit, or local deterministic evidence is missing, contradictory, or failing.</blocked-when>
     </Gate-Phase-17>
-    <Gate-Phase-18 PHASE="Phase-18" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+    <Gate-Phase-18 PHASE="Phase-18" status="implemented" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
       <goal>Exactly eight named Wave B cards become focused concise cards with minimal markup and local Markdown-only evidence.</goal>
       <commands>
         <command-1>Enumerate the changed task paths and compare them exactly with this-callback-binding, stale-search-response, delegated-dynamic-list, idempotent-event-listeners, accessible-keyboard-tabs, modal-focus-lifecycle, flex-long-text-overflow, and container-responsive-grid.</command-1>
@@ -491,9 +491,9 @@
       </required-evidence>
       <blocked-when>BLOCKED if minimal markup changes the stated behavior, required context is missing from Markdown, CSS or accessibility wording contradicts starter or solution content, a required local link fails, or synchronization drifts.</blocked-when>
     </Gate-Phase-18>
-    <Gate-Phase-19 PHASE="Phase-19" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
-      <goal>Wave C and the catalog cut over atomically to twenty-one concise cards, fourteen collections, five formats, and one supported users-api-list real-work projection before compatibility is removed.</goal>
-      <sequence>Run every command with compatibility still present; only after complete PASS remove the exact compatibility exception, then rerun the same commands unchanged and require a second complete PASS before Phase 19 can complete.</sequence>
+    <Gate-Phase-19 PHASE="Phase-19" status="implemented" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
+      <goal>Wave C and the catalog cut over atomically to twenty-one concise cards, fourteen collections, five formats, and one supported users-api-list real-work projection.</goal>
+      <sequence>The complete deterministic command block passed before removal of the temporary exception and passes unchanged after removal; the post-cutover block remains the live catalog gate.</sequence>
       <commands>
         <command-1>test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md | wc -l | tr -d ' ')" -eq 21</command-1>
         <command-2>test "$(find collections -mindepth 2 -maxdepth 3 -name README.md | wc -l | tr -d ' ')" -eq 14</command-2>
@@ -511,7 +511,7 @@
         <evidence-2>users-api-list alone has the real-work format and collection membership; its Markdown locally contains every required React/DummyJSON state, failure branch, expected result, and manual-check instruction.</evidence-2>
         <evidence-3>The focused cutover commit is pushed with complete wave evidence; Phase 20 remains planned.</evidence-3>
       </required-evidence>
-      <blocked-when>BLOCKED if any count, marker, metadata, local link, membership, root, graph, verification, Beads, local DummyJSON contract, or atomicity check fails; compatibility must not be removed while a failure remains.</blocked-when>
+      <blocked-when>BLOCKED if any count, marker, metadata, local link, membership, root, graph, verification, Beads, local DummyJSON contract, or atomicity check fails.</blocked-when>
     </Gate-Phase-19>
     <Gate-Phase-20 PHASE="Phase-20" status="planned" MODULES="M-GOVERNANCE,M-TASK-TEMPLATE,M-TASK-VALIDATION,M-TASK-LIBRARY,M-CATALOG">
       <goal>The local thirty-six-file student experience is structurally consistent and is handed to the user without inferring final acceptance.</goal>

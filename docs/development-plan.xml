@@ -6,7 +6,7 @@
     <risk-2>Markdown review cannot prove execution in every student environment; local deterministic Markdown, collection, XML, and Beads synchronization checks are the publication gates, while final complete-library user acceptance gates only top-level story closure.</risk-2>
     <risk-3>Collapsed details prevent accidental spoilers but do not conceal solutions from raw Markdown or repository search.</risk-3>
     <risk-4>Publishing before deduplication can create several cards for the same learning goal.</risk-4>
-    <risk-5>The concise target contract can be mistaken for completed migration while the current twenty cards still use legacy structure, so the exact compatibility inventory remains explicit until Phase 19.</risk-5>
+    <risk-5>Legacy structure can re-enter the concise catalog unless every catalog change runs the complete deterministic scan.</risk-5>
     <risk-6>Real-work format, duration, thematic ownership, dedicated collection membership, and target-editor behavior can drift unless they cut over atomically.</risk-6>
   </ArchitectureNotes>
 
@@ -28,8 +28,8 @@
         </errors>
       </contract>
       <interface>
-        <export-authoringRules PURPOSE="Expose concise-card authoring, temporary legacy compatibility, delivery, tool-resolution, and synchronization requirements" />
-        <export-verificationContracts PURPOSE="Expose module, flow, Phase 16 through 20, and matching gate evidence without inferring future implementation" />
+        <export-authoringRules PURPOSE="Expose concise-card authoring, delivery, tool-resolution, and synchronization requirements" />
+        <export-verificationContracts PURPOSE="Expose module, flow, implemented Phase 16 through 19 evidence, and the planned Phase 20 audit gate" />
       </interface>
       <depends>none</depends>
       <target>
@@ -43,7 +43,7 @@
       <verification-ref>V-M-GOVERNANCE</verification-ref>
       <notes>
         <note-1>The initial governance and Phases 8 through 15 of the approved student redesign are implemented; the published GitHub-rendered audit passed before final user acceptance.</note-1>
-        <note-2>Phases 16 through 20 stage a new concise redesign; their planned state does not invalidate the historical Phase 8 through 15 evidence or claim the current cards are concise.</note-2>
+        <note-2>Phases 16 through 19 implement the concise redesign; Phase 20 remains the planned local complete-catalog audit.</note-2>
       </notes>
     </M-GOVERNANCE>
 
@@ -118,7 +118,6 @@
         <type-CandidateRegister PURPOSE="Finite Beads inventory with stable candidate IDs and terminal-decision accounting" />
         <type-CardMigrationEvidence PURPOSE="Exactly slug, mode, editorProfile, sourceLearningGoal, sourcePrerequisite, sourceRuntimeAssumption, destinationLocations, targetEditorExpectedResult, targetEditorActualResult, and verdict in the matching card Beads issue; both targetEditor fields equal NOT_RUN: Markdown-only delivery" />
         <export-validateCandidate PURPOSE="Apply identity, task-class, ConciseStudentTaskCard, local-completeness, preservation, structure, solution-content, and local Markdown, collection, XML, and Beads synchronization gates" />
-        <const-legacyCompatibility PURPOSE="Permit legacy structure only for the exact twenty pre-existing slugs until Phase 19, without granting concise migration PASS" EXPIRES="Phase-19" />
       </interface>
       <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
       <target>
@@ -138,7 +137,7 @@
 
     <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" LAYER="3" ORDER="1" STATUS="implemented">
       <contract>
-        <purpose>Store the current twenty legacy-compatible cards while migrating them in serialized waves to concise focused cards and adding one concise real-work card.</purpose>
+        <purpose>Store twenty-one concise cards produced by the serialized 8 + 8 + 5 waves: twenty focused cards and one real-work card.</purpose>
         <inputs>
           <param name="approved-task-content" type="AcceptedTaskCard" />
           <param name="validation-evidence" type="BeadsValidationRecord" />
@@ -178,13 +177,13 @@
         <note-4>Each accepted task adds one export-&lt;task-slug&gt; public annotation under M-TASK-LIBRARY in the knowledge graph.</note-4>
         <note-5>Text code, HTML, test data, and scenarios remain inside the card; assets are reserved for media or other binary material that cannot reasonably be embedded.</note-5>
         <note-6>Phases 10 through 13 implemented all twenty existing card migrations; Phase 14 synchronized their final thematic and optional interview projections.</note-6>
-        <note-7>The concise redesign is a new migration. The exact twenty legacy slugs remain a temporary compatibility state until their 8 + 8 + 4 focused migrations and the new users-api-list real-work card pass Phases 17 through 19.</note-7>
+        <note-7>The concise redesign completed the 8 + 8 + 4 focused migrations and added users-api-list as the single real-work card through Phase 19.</note-7>
       </notes>
     </M-TASK-LIBRARY>
 
     <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="4" ORDER="1" STATUS="implemented">
       <contract>
-        <purpose>Provide the root student hub plus thematic, interview, and target real-work collection pages that lead students to task cards.</purpose>
+        <purpose>Provide the root student hub plus ten thematic, three interview, and one real-work collection page that lead students to task cards.</purpose>
         <inputs>
           <param name="canonical-task-metadata" type="TaskMetadataSet" />
         </inputs>
@@ -192,7 +191,7 @@
           <param name="student-hub" type="README.md" />
           <param name="thematic-collections" type="collections/*/*/README.md" />
           <param name="interview-collections" type="collections/interviews/*/README.md" />
-          <param name="real-work-collection" type="collections/real-work/README.md" optional="true" />
+          <param name="real-work-collection" type="collections/real-work/README.md" />
         </outputs>
         <errors>
           <error code="TASK_MISSING_FROM_COLLECTION" />
@@ -203,7 +202,7 @@
       </contract>
       <interface>
         <type-CollectionEntry PURPOSE="Linked student title and exact integer duration copied from the card, plus one plain-language sentence only for thematic collections" />
-        <export-studentIndex PURPOSE="Expose the four-block root hub and, after Phase 19, ten thematic, three interview, and one real-work collection without duplicating card content" />
+        <export-studentIndex PURPOSE="Expose the four-block root hub with ten thematic, three interview, and one real-work collection without duplicating card content" />
       </interface>
       <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
       <target>
@@ -219,7 +218,7 @@
         <note-1>The catalog is maintained by an AI agent under contract, not generated by a script.</note-1>
         <note-2>Phase 14 atomically replaced the old root task tables with the current four-block student hub after every collection and card passed.</note-2>
         <note-3>All ten thematic and three interview collection files are current student navigation; Phase 15 completed the published rendered audit.</note-3>
-        <note-4>The four-block root still truthfully represents the implemented thirteen-page catalog. The fourteenth real-work page, twenty-first card, and root link remain planned until their atomic Phase 19 cutover.</note-4>
+        <note-4>The four-block root represents the implemented fourteen-page catalog, including the real-work page and users-api-list link added atomically in Phase 19.</note-4>
       </notes>
     </M-CATALOG>
   </Modules>
@@ -339,44 +338,44 @@
       <goal>Audit the published root, thirteen collections, and twenty cards through complete URL inventory and deep GitHub-rendered student flows.</goal>
       <step-1 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Record resolved URLs, visible titles, links, details behavior, every technology, interview, card mode, editor profile, former fixture card, and remaining risk before final user acceptance.</step-1>
     </Phase-15>
-    <Phase-16 name="ConciseContractPreparation" status="planned">
-      <goal>Stage the observable concise-card, compatibility, five-format, twenty-one-card, fourteen-collection, and deterministic cutover contracts without claiming any current card migrated.</goal>
-      <step-1 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Synchronize AGENTS.md and all six GRACE artifacts with the approved transition state.</step-1>
-      <step-2 module="M-TASK-TEMPLATE" status="planned" verification="V-M-TASK-TEMPLATE">Expose only the focused and real-work ConciseStudentTaskCard target shapes.</step-2>
-      <step-3 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Define the exact twenty-slug compatibility inventory, CardMigrationEvidence, and cutover rejection commands.</step-3>
-      <step-4 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Confirm all twenty current cards remain legacy-compatible and receive no concise PASS in this phase.</step-4>
-      <step-5 module="M-CATALOG" status="planned" verification="V-M-CATALOG">Confirm the implemented catalog remains thirteen pages until Phase 19.</step-5>
-      <artifact-check-16-1>AGENTS.md, templates/task-template.md, docs/task-validation-policy.md, and the six GRACE XML artifacts contain synchronized target and compatibility facts.</artifact-check-16-1>
-      <artifact-check-16-2>Baseline scans observe exactly twenty legacy-marker cards and thirteen collection pages.</artifact-check-16-2>
-      <blocked-when>BLOCKED if the compatibility list differs from the twenty existing slugs, any Phase 17 through 20 outcome is marked implemented, XML is invalid, or the current cards or collections are represented as already cut over.</blocked-when>
+    <Phase-16 name="ConciseContractPreparation" status="implemented">
+      <goal>Define the concise-card, five-format, twenty-one-card, fourteen-collection, and deterministic cutover contracts.</goal>
+      <step-1 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Synchronize AGENTS.md and all six GRACE artifacts with the approved transition state.</step-1>
+      <step-2 module="M-TASK-TEMPLATE" status="completed" verification="V-M-TASK-TEMPLATE">Expose only the focused and real-work ConciseStudentTaskCard target shapes.</step-2>
+      <step-3 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Define CardMigrationEvidence and the local cutover rejection commands.</step-3>
+      <step-4 module="M-TASK-LIBRARY" status="completed" verification="V-M-TASK-LIBRARY">Record the original twenty-card baseline before serialized migration.</step-4>
+      <step-5 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Record the original thirteen-page baseline before Phase 19.</step-5>
+      <artifact-check-16-1>AGENTS.md, templates/task-template.md, docs/task-validation-policy.md, and the six GRACE XML artifacts contain synchronized concise target facts.</artifact-check-16-1>
+      <artifact-check-16-2>The baseline and migration evidence distinguish historical state from the implemented cutover.</artifact-check-16-2>
+      <blocked-when>BLOCKED if the concise contract, XML, placeholder, cross-reference, or deterministic evidence checks fail.</blocked-when>
     </Phase-16>
-    <Phase-17 name="ConciseWaveA" status="planned">
+    <Phase-17 name="ConciseWaveA" status="implemented">
       <goal>Migrate exactly eight focused cards in Wave A with per-card local deterministic and CardMigrationEvidence PASS.</goal>
-      <step-1 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Migrate immutable-category-totals, stable-product-sort, loop-closure-bindings, browser-event-loop-order, discriminated-load-state, typed-object-property, response-union-narrowing, and validate-unknown-profile.</step-1>
-      <step-2 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Reject legacy markers, excess hints, open details, invalid metadata, full-document JavaScript, local-link failures, or synchronization drift; record external execution as NOT_RUN.</step-2>
-      <step-3 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Record the focused commit, pushed state, per-card Beads evidence, graph delta, verification delta, and complete wave report.</step-3>
+      <step-1 module="M-TASK-LIBRARY" status="completed" verification="V-M-TASK-LIBRARY">Migrate immutable-category-totals, stable-product-sort, loop-closure-bindings, browser-event-loop-order, discriminated-load-state, typed-object-property, response-union-narrowing, and validate-unknown-profile.</step-1>
+      <step-2 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Reject legacy markers, excess hints, open details, invalid metadata, full-document JavaScript, local-link failures, or synchronization drift; record external execution as NOT_RUN.</step-2>
+      <step-3 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Record the focused commit, pushed state, per-card Beads evidence, graph delta, verification delta, and complete wave report.</step-3>
       <artifact-check-17-1>Exactly the eight named cards plus their graph, verification, and Beads records change; M-TASK-TEMPLATE remains the governing contract.</artifact-check-17-1>
       <artifact-check-17-2>M-CATALOG projections preserve unique thematic and optional interview membership.</artifact-check-17-2>
       <blocked-when>BLOCKED if any named card lacks a complete local deterministic verdict, its central action becomes ambiguous, a required local link fails, or shared Markdown, collection, XML, or Beads facts drift.</blocked-when>
     </Phase-17>
-    <Phase-18 name="ConciseWaveB" status="planned">
+    <Phase-18 name="ConciseWaveB" status="implemented">
       <goal>Migrate exactly eight focused browser, DOM, CSS, and accessibility cards in Wave B with per-card local Markdown evidence.</goal>
-      <step-1 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Migrate this-callback-binding, stale-search-response, delegated-dynamic-list, idempotent-event-listeners, accessible-keyboard-tabs, modal-focus-lifecycle, flex-long-text-overflow, and container-responsive-grid.</step-1>
-      <step-2 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Apply concise structure, minimal-markup, accessibility-wording, manual-check-text, local-link, and synchronization gates without opening an editor or browser.</step-2>
-      <step-3 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Record the focused commit, pushed state, per-card Beads evidence, graph delta, verification delta, and complete wave report.</step-3>
+      <step-1 module="M-TASK-LIBRARY" status="completed" verification="V-M-TASK-LIBRARY">Migrate this-callback-binding, stale-search-response, delegated-dynamic-list, idempotent-event-listeners, accessible-keyboard-tabs, modal-focus-lifecycle, flex-long-text-overflow, and container-responsive-grid.</step-1>
+      <step-2 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Apply concise structure, minimal-markup, accessibility-wording, manual-check-text, local-link, and synchronization gates without opening an editor or browser.</step-2>
+      <step-3 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Record the focused commit, pushed state, per-card Beads evidence, graph delta, verification delta, and complete wave report.</step-3>
       <artifact-check-18-1>Exactly the eight named cards plus their M-CATALOG projections, graph, verification, and Beads records change.</artifact-check-18-1>
       <artifact-check-18-2>No CSS or visual behavior is asserted by automated tests; the Markdown-visible requirements, starter, solution, and manual-check wording agree.</artifact-check-18-2>
       <blocked-when>BLOCKED if minimal markup cannot preserve the task, any required local context is hidden, the Markdown contract is contradictory, a required local link fails, or synchronization drifts.</blocked-when>
     </Phase-18>
-    <Phase-19 name="ConciseWaveCAndCatalogCutover" status="planned">
-      <goal>Migrate four React cards, add users-api-list as the only real-work card, atomically cut over the root to fourteen collections and twenty-one cards, then remove the compatibility exception.</goal>
-      <step-1 module="M-TASK-LIBRARY" status="planned" verification="V-M-TASK-LIBRARY">Migrate react-derived-list, react-batched-counter, react-effect-subscription, and react-strictmode-cleanup, then add concise users-api-list.</step-1>
-      <step-2 module="M-CATALOG" status="planned" verification="V-M-CATALOG">Add collections/real-work/README.md, its one users-api-list entry, the thematic entry, and the root link atomically.</step-2>
-      <step-3 module="M-TASK-VALIDATION" status="planned" verification="V-M-TASK-VALIDATION">Run the full twenty-one-card and fourteen-collection cutover commands with compatibility present, remove the exact list only after PASS, then rerun the identical commands without compatibility.</step-3>
-      <step-4 module="M-GOVERNANCE" status="planned" verification="V-M-GOVERNANCE">Synchronize all shared contracts, graph facts, verification facts, Beads evidence, and the focused cutover commit.</step-4>
+    <Phase-19 name="ConciseWaveCAndCatalogCutover" status="implemented">
+      <goal>Migrate four React cards, add users-api-list as the only real-work card, and atomically cut over the root to fourteen collections and twenty-one cards.</goal>
+      <step-1 module="M-TASK-LIBRARY" status="completed" verification="V-M-TASK-LIBRARY">Migrate react-derived-list, react-batched-counter, react-effect-subscription, and react-strictmode-cleanup, then add concise users-api-list.</step-1>
+      <step-2 module="M-CATALOG" status="completed" verification="V-M-CATALOG">Add collections/real-work/README.md, its one users-api-list entry, the thematic entry, and the root link atomically.</step-2>
+      <step-3 module="M-TASK-VALIDATION" status="completed" verification="V-M-TASK-VALIDATION">Run the full twenty-one-card and fourteen-collection cutover commands before and after removing the temporary exception.</step-3>
+      <step-4 module="M-GOVERNANCE" status="completed" verification="V-M-GOVERNANCE">Synchronize all shared contracts, graph facts, verification facts, Beads evidence, and the focused cutover commit.</step-4>
       <artifact-check-19-1>Twenty-one concise cards, fourteen collection pages, five exact metadata rows per card, one thematic membership per card, and one supported users-api-list real-work membership pass.</artifact-check-19-1>
-      <artifact-check-19-2>M-TASK-TEMPLATE has no legacy shape; the scan passes with compatibility present, M-GOVERNANCE and M-TASK-VALIDATION remove the exception, and the identical scan passes again after removal.</artifact-check-19-2>
-      <blocked-when>BLOCKED if any local concise scan fails, users-api-list Markdown does not describe all required states or embeds an unresolved external dependency, root and real-work collection cannot change atomically, or compatibility would be removed before all cards pass.</blocked-when>
+      <artifact-check-19-2>M-TASK-TEMPLATE has no legacy shape, the temporary exception is absent, and the complete deterministic scan passes.</artifact-check-19-2>
+      <blocked-when>BLOCKED if any local concise scan fails, users-api-list Markdown does not describe all required states, or root and real-work collection facts drift.</blocked-when>
     </Phase-19>
     <Phase-20 name="ConciseLocalAudit" status="planned">
       <goal>Audit the local root, all fourteen collections, and all twenty-one cards without inferring final user acceptance.</goal>

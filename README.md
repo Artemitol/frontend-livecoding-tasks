@@ -30,6 +30,10 @@
 - [Состояние и производные данные](collections/react/state-and-derived-data/README.md)
 - [Эффекты и жизненный цикл](collections/react/effects-and-lifecycle/README.md)
 
+### Практический формат
+
+- [Приближённая к реальной работе](collections/real-work/README.md) — связанные продуктовые требования в одной задаче.
+
 ## Симуляции собеседований
 
 - [Собеседование №1](collections/interviews/interview-01/README.md) — 5 задач, примерно 80 минут.

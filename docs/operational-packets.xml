@@ -15,7 +15,7 @@
         <file-7>optional collections/real-work/README.md for a confirmed real-work card</file-7>
       </write-scope>
       <contract-excerpt><![CDATA[
-Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. A ConciseStudentTaskCard uses the focused or real-work class, one fixed editor profile, one minimal copy-ready starter by default, exactly three closed hints, concise closed solution, and closed five-field metadata. A changed card synchronizes exactly one thematic collection, zero or one interview, supported real-work membership, graph, verification and Beads evidence. Until Phase 19, only the exact twenty named compatibility slugs may retain legacy structure, and compatibility is never concise migration PASS.
+Only an AcceptedTaskCard from M-TASK-VALIDATION may enter M-TASK-LIBRARY. A ConciseStudentTaskCard uses the focused or real-work class, one fixed editor profile, one minimal copy-ready starter by default, exactly three closed hints, concise closed solution, and closed five-field metadata. A changed card synchronizes exactly one thematic collection, zero or one interview, supported real-work membership, graph, verification and Beads evidence. All published cards use this concise contract.
       ]]></contract-excerpt>
       <graph-entry-excerpt><![CDATA[
 M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLATE, is governed by M-GOVERNANCE, and is projected into M-CATALOG.
@@ -23,7 +23,7 @@ M-TASK-LIBRARY accepts output from M-TASK-VALIDATION, conforms to M-TASK-TEMPLAT
       <dependency-contract-summaries>
         <dependency-1 module="M-GOVERNANCE">Authoring, synchronization, stop-condition, and Beads evidence rules.</dependency-1>
         <dependency-2 module="M-TASK-TEMPLATE">Focused and real-work concise shapes, technology-dependent fences, five metadata labels and formats, editor profiles, minimal copy-ready code, real-work-only multi-file rules with complete changed solution files and matching FILE paths, exact hints, solution boundaries, and progressive disclosure.</dependency-2>
-        <dependency-3 module="M-TASK-VALIDATION">Strict candidate or migration decisions, exact compatibility inventory, CardMigrationEvidence with explicit NOT_RUN target-editor fields, thematic/interview/real-work sync, and local deterministic evidence.</dependency-3>
+        <dependency-3 module="M-TASK-VALIDATION">Strict candidate or migration decisions, CardMigrationEvidence with explicit NOT_RUN target-editor fields, thematic/interview/real-work sync, and local deterministic evidence.</dependency-3>
       </dependency-contract-summaries>
       <verification-excerpt><![CDATA[
 Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Verify task class, editor profile, exact CardMigrationEvidence fields with both target-editor results set to NOT_RUN: Markdown-only delivery, minimal copy-ready code, exact hints, no legacy or full-document marker, local and supplementary links, exactly one thematic, zero-or-one interview, supported real-work membership, graph and verification sync, pushed commit, complete local-evidence report, and technical publication status.
@@ -123,17 +123,11 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
     </StudentHubCutoverEvidence>
   </StudentHubCutoverEvidenceTemplate>
 
-  <ConciseMigrationTransition STATUS="planned">
-    <!-- Target redesign facts only; none of these records assert current card migration. -->
-    <compatibility-state>
-      <allowed-slugs>accessible-keyboard-tabs, browser-event-loop-order, container-responsive-grid, delegated-dynamic-list, discriminated-load-state, flex-long-text-overflow, idempotent-event-listeners, immutable-category-totals, loop-closure-bindings, modal-focus-lifecycle, react-batched-counter, react-derived-list, react-effect-subscription, react-strictmode-cleanup, response-union-narrowing, stable-product-sort, stale-search-response, this-callback-binding, typed-object-property, validate-unknown-profile</allowed-slugs>
-      <permission>Legacy structure only; no concise structural or wave PASS.</permission>
-      <expiry>In Phase 19 run the full scan with compatibility present, remove only after PASS, then rerun the identical scan without compatibility; only the second PASS completes cutover.</expiry>
-    </compatibility-state>
-    <Phase-16 STATUS="planned" GATE="Gate-Phase-16">Stage M-GOVERNANCE, M-TASK-TEMPLATE, M-TASK-VALIDATION, M-TASK-LIBRARY, and M-CATALOG target facts while observing twenty current legacy cards and thirteen current collections.</Phase-16>
-    <Phase-17 STATUS="planned" GATE="Gate-Phase-17">Migrate the exact eight-card focused Wave A with complete CardMigrationEvidence.</Phase-17>
-    <Phase-18 STATUS="planned" GATE="Gate-Phase-18">Migrate the exact eight-card focused Wave B with local Markdown structure, accessibility wording, and manual-check evidence.</Phase-18>
-    <Phase-19 STATUS="planned" GATE="Gate-Phase-19">Migrate four React cards, add users-api-list, cut over to twenty-one cards and fourteen collections, and then remove compatibility.</Phase-19>
+  <ConciseMigrationTransition STATUS="in-progress">
+    <Phase-16 STATUS="implemented" GATE="Gate-Phase-16">The concise focused and real-work contracts and local deterministic evidence model are synchronized.</Phase-16>
+    <Phase-17 STATUS="implemented" GATE="Gate-Phase-17">The exact eight-card focused Wave A has complete CardMigrationEvidence.</Phase-17>
+    <Phase-18 STATUS="implemented" GATE="Gate-Phase-18">The exact eight-card focused Wave B has local Markdown structure, accessibility wording, and manual-check evidence.</Phase-18>
+    <Phase-19 STATUS="implemented" GATE="Gate-Phase-19">Four React cards and users-api-list complete the twenty-one-card, fourteen-collection concise catalog.</Phase-19>
     <Phase-20 STATUS="planned" GATE="Gate-Phase-20">Audit the local thirty-six-file Markdown inventory and leave final user acceptance open.</Phase-20>
     <target-inventory>
       <task-cards>Exactly twenty-one.</task-cards>
@@ -142,7 +136,7 @@ Run V-M-TASK-VALIDATION, V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE. Veri
       <formats>Написать код | Исправить код | Разобрать код | Предсказать результат | Приближённая к реальной работе</formats>
     </target-inventory>
     <cutover-rejections>Reject legacy markers, a fourth hint, open details, a full JavaScript HTML document, invalid metadata, duplicate thematic membership, unsupported real-work membership, or any mismatched graph, verification, and Beads fact.</cutover-rejections>
-    <blocked-when>BLOCKED whenever a required structural, local Markdown, local DummyJSON-contract, pushed-commit, or synchronization result is unavailable or failing; never substitute compatibility or a diagnostic harness for PASS.</blocked-when>
+    <blocked-when>BLOCKED whenever a required structural, local Markdown, local DummyJSON-contract, pushed-commit, or synchronization result is unavailable or failing; never substitute a partial result or diagnostic harness for PASS.</blocked-when>
   </ConciseMigrationTransition>
 
   <GraphDeltaTemplate>

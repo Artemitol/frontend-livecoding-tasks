@@ -127,8 +127,8 @@
     <constraint-30>Text code, HTML, test data, and scenarios are embedded in the card; assets are reserved for media or other binary material that cannot reasonably be embedded.</constraint-30>
     <constraint-31>The root README retains exactly four student blocks and, after Phase 19, links ten thematic collections, three interview collections, one real-work collection, and four approved editors; old task tables, metadata-source explanations, and agent-maintenance prose are excluded.</constraint-31>
     <constraint-32>CSS and visual behavior are not unit-tested. Markdown-only validation checks the completeness and consistency of the condition, starter, solution, and manual-check wording without running a browser.</constraint-32>
-    <constraint-33>While Phases 16 through 19 are incomplete, legacy structure is permitted only for these twenty existing slugs and does not count as concise migration PASS: accessible-keyboard-tabs, browser-event-loop-order, container-responsive-grid, delegated-dynamic-list, discriminated-load-state, flex-long-text-overflow, idempotent-event-listeners, immutable-category-totals, loop-closure-bindings, modal-focus-lifecycle, react-batched-counter, react-derived-list, react-effect-subscription, react-strictmode-cleanup, response-union-narrowing, stable-product-sort, stale-search-response, this-callback-binding, typed-object-property, validate-unknown-profile.</constraint-33>
-    <constraint-34>Phase 19 first runs the deterministic cutover scan with compatibility present, removes the exception only after PASS, then reruns the identical scan without compatibility; only the second PASS proves exactly twenty-one ConciseStudentTaskCards, fourteen collection pages, exact metadata, unique thematic membership, and supported real-work membership.</constraint-34>
+    <constraint-33>All twenty-one published cards conform to ConciseStudentTaskCard; no legacy-structure exception remains active after Phase 19.</constraint-33>
+    <constraint-34>The deterministic catalog scan proves exactly twenty-one ConciseStudentTaskCards, fourteen collection pages, exact metadata, unique thematic membership, and supported real-work membership after every catalog change.</constraint-34>
     <constraint-35>JavaScript cards use one JavaScript block by default; only the minimum necessary HTML fragment may precede it, while full HTML documents and script wrappers are prohibited.</constraint-35>
     <constraint-36>A focused task has one central action and normally takes 10–30 minutes; a real-work task has related sequential product requirements, normally takes 45–60 minutes, belongs to one thematic collection, and additionally appears in the real-work collection.</constraint-36>
     <constraint-37>Every starter and solution fence uses the language identifier required by the card technology; the template must not force JavaScript or TSX on TypeScript, React, or HTML/CSS cards.</constraint-37>
@@ -147,7 +147,7 @@
     <risk-10>Copy-ready code can silently change runtime semantics when moved to an online editor.</risk-10>
     <risk-11>Collection title, duration, membership, or editor links can drift across student navigation surfaces.</risk-11>
     <risk-12>Simplifying metadata can lose prerequisites or runtime assumptions unless preservation evidence is explicit.</risk-12>
-    <risk-13>A staged target contract can falsely imply that legacy cards are already migrated unless the exact temporary compatibility inventory and planned phase states remain explicit.</risk-13>
+    <risk-13>Legacy structure can re-enter the catalog unless every catalog change runs the complete deterministic ConciseStudentTaskCard scan.</risk-13>
     <risk-14>A real-work entry can drift from its format, duration, thematic membership, or dedicated collection projection.</risk-14>
   </Risks>
 

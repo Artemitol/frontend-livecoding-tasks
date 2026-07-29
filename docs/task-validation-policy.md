@@ -55,40 +55,11 @@ delivery получают явное значение `NOT_RUN: Markdown-only de
 внешний редактор, браузер или GitHub-rendered page не являются gate и не могут
 сделать карточку `BLOCKED`.
 
-## Временная совместимость
+## Действующий каталог
 
-Пока хотя бы одна из Phases 16–19 не завершена, legacy-структуру разрешено
-временно сохранять только этим двадцати уже существующим slug:
-
-```text
-accessible-keyboard-tabs
-browser-event-loop-order
-container-responsive-grid
-delegated-dynamic-list
-discriminated-load-state
-flex-long-text-overflow
-idempotent-event-listeners
-immutable-category-totals
-loop-closure-bindings
-modal-focus-lifecycle
-react-batched-counter
-react-derived-list
-react-effect-subscription
-react-strictmode-cleanup
-response-union-narrowing
-stable-product-sort
-stale-search-response
-this-callback-binding
-typed-object-property
-validate-unknown-profile
-```
-
-Исключение разрешает только старую структуру. Оно не доказывает миграцию,
-локальный deterministic PASS или новый catalog cutover. Новый `users-api-list` сразу
-создаётся как `ConciseStudentTaskCard` и в список не входит. В Task 6 /
-Phase 19 полный cutover scan сначала выполняется при сохранённом исключении.
-Исключение удаляется только после этого PASS, затем тот же полный scan сразу
-повторяется без исключения. Только повторный PASS разрешает завершить cutover.
+Все 21 опубликованная карточка обязана соответствовать `ConciseStudentTaskCard`.
+Legacy-структура не имеет действующего исключения и отклоняется теми же
+детерминированными проверками, что и новая карточка.
 
 ## Контракт карточки
 
@@ -199,10 +170,8 @@ Slug rename остаётся отдельной migration с inbound-link eviden
 
 ## Детерминированный cutover gate
 
-Весь блок ниже запускается дважды. Первый запуск выполняется при сохранённом
-временном исключении. Только после полного первого PASS удаляется исключение из
-`AGENTS.md` и этой политики. Затем без изменений команд выполняется второй
-запуск уже после удаления. Только второй PASS завершает Phase 19:
+Весь блок ниже запускается после каждого изменения карточек или каталога. Он
+является единым действующим gate для уже завершённого Phase 19 cutover:
 
 ```bash
 test "$(find tasks -mindepth 2 -maxdepth 2 -name README.md | wc -l | tr -d ' ')" -eq 21
@@ -246,6 +215,6 @@ instruction, format или collection неоднозначны; multiple files �
 real-work membership противоречит format или time; обязательная локальная
 relative link не разрешается; deterministic evidence неполно или противоречиво.
 
-Нельзя выдавать compatibility state или partial real-work result за `PASS`.
+Нельзя выдавать partial real-work result за `PASS`.
 Top-level story закрывается только после Phase 20 local catalog audit и явного
 пользовательского acceptance.
