@@ -1,11 +1,17 @@
 # Локальная политика валидации ARMY-97
 
-`Army97CandidateRecord` хранит `accepted`, `needs-rewrite`, `rejected` или
-`duplicate`; в `tasks/` попадает только `accepted`. В migration Beads issue
-хранит ровно `CardMigrationEvidence`: `slug`, `mode`, `editorProfile`,
-`sourceLearningGoal`, `sourcePrerequisite`, `sourceRuntimeAssumption`,
-`destinationLocations`, `targetEditorExpectedResult`, `targetEditorActualResult`
-и `verdict`.
+`Army97CandidateRecord` разделяет неизменяемый `sourceAuditDecision` и
+изменяемый `publicationDecision`; в `tasks/` попадает только публикация со
+значением `accepted`. `docs/army-97-candidate-audit.json` фиксирует хеш всех
+неизменяемых полей. `docs/scripts/validate-army-97-beads.mjs` читает live Beads,
+выводит текущие publication-counts и проверяет синхронизацию candidate/card.
+
+Переход `needs-rewrite → accepted` требует в metadata card issue двух вложенных
+объектов, а не текста в notes: ровно десятипольного `cardMigrationEvidence` и
+ровно четырёхпольного `fullCatalogGateEvidence`. Второй объект привязан к
+предку текущего `HEAD`, пути этой policy и хешу полного структурированного
+evidence. `publicationTransitionEvidence` в candidate и card хранит точную
+ссылку `Beads:<card-id>#cardMigrationEvidence+fullCatalogGateEvidence`.
 
 После каждого изменения `tasks/` или `collections/` запускайте этот полный
 локальный gate из корня. До первой replacement-wave он проверяется через
@@ -14,6 +20,8 @@
 ```bash
 set -euo pipefail
 BASH_VERSINFO="${BASH_VERSINFO:-0}"; test "$BASH_VERSINFO" -ge 3
+node --test docs/scripts/validate-army-97-beads.test.mjs
+node docs/scripts/validate-army-97-beads.mjs
 taskFiles="$(find tasks -mindepth 2 -maxdepth 2 -type f -name README.md | sort)"; test -n "$taskFiles"
 test -z "$(printf '%s\n' "$taskFiles" | rg -v '^tasks/task-[0-9]{4}/README\.md$' || true)"
 taskIds="$(printf '%s\n' "$taskFiles" | sed -E 's#tasks/(task-[0-9]{4})/README\.md#\1#')"; test "$(printf '%s\n' "$taskIds" | sort | uniq -d | wc -l | tr -d ' ')" -eq 0
@@ -50,10 +58,14 @@ GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"; test -x "
 git diff --check
 ```
 
-The checks cover exact sandbox syntax; required order and closed details; starter
-requirement comments; controlled metadata; no provenance, migration, or full
-document markers; local links; thematic and real-work projections; 30 sequential
-static simulations; their links, duration, two-collection composition, recurrence,
-and realism evidence; XML, Grace, and whitespace hygiene. Simulations link cards
-and never duplicate conditions. Browser, external editor, rendered-page, and CSS
-layout execution are not local publication gates.
+The checks cover the tracked immutable Beads snapshot, derived mutable publication
+counts, synchronized candidate/card state, exact structured transition evidence,
+and focused invalid-transition probes before checking sandbox syntax; required
+order and closed details; starter requirement comments; controlled metadata; no
+provenance, migration, or full-document markers; local links; thematic and
+real-work projections; 30 sequential static simulations; their links, duration,
+two-collection composition, recurrence, and realism evidence; XML, Grace, and
+whitespace hygiene. The validator uses only built-in Node.js modules plus the
+existing `bd` and Git CLIs; it adds no task runtime, package, or dependency.
+Simulations link cards and never duplicate conditions. Browser, external editor,
+rendered-page, and CSS layout execution are not local publication gates.

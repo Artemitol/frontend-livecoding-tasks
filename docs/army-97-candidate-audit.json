@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceAuditRevision": "round-1",
+  "candidateRegisterSize": 118,
+  "immutableCandidateFields": [
+    "recordType",
+    "candidateId",
+    "inputOrder",
+    "centralAction",
+    "starterBehavior",
+    "expectedResult",
+    "sourceAuditRevision",
+    "sourceAuditDecision",
+    "decisionEvidence",
+    "duplicateTarget",
+    "correctionPath",
+    "targetTaskId",
+    "targetCollection"
+  ],
+  "sourceAuditCounts": {
+    "accepted": 56,
+    "needsRewrite": 62,
+    "rejected": 0,
+    "duplicate": 0
+  },
+  "immutableCandidateRecordsSha256": "58743f396f7a7a25c9c0f7f85d12aa9146da3b25607caf6943c84fddf6eae91f"
+}
