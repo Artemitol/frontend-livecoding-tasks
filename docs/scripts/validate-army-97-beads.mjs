@@ -1,9 +1,9 @@
 // FILE: docs/scripts/validate-army-97-beads.mjs
-// VERSION: 1.0.0
+// VERSION: 2.0.0
 // START_MODULE_CONTRACT
-//   PURPOSE: Enforce the ARMY-97 source-audit and publication-decision contract against live Beads metadata.
-//   SCOPE: Immutable snapshot hashing, mutable count derivation, candidate/card synchronization, and structured transition evidence.
-//   DEPENDS: bd CLI, Git, docs/army-97-candidate-audit.json, M-TASK-VALIDATION
+//   PURPOSE: Enforce the ARMY-97 source-audit, published-catalog, and publication-decision contract against live Beads metadata.
+//   SCOPE: Immutable snapshot hashing, mutable count derivation, current task/collection inventory, candidate/card synchronization, and structured current-commit evidence.
+//   DEPENDS: bd CLI, Git, Node fs, docs/army-97-candidate-audit.json, docs/scripts/run-army-97-catalog-gate.mjs, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, DF-ARMY97-CANDIDATE-TO-CARD
 //   ROLE: SCRIPT
 //   MAP_MODE: LOCALS
@@ -11,18 +11,24 @@
 //
 // START_MODULE_MAP
 //   createImmutableManifest - Derive the immutable source-audit snapshot and digest.
+//   validatePublishedCatalogState - Cross-check published Markdown identities against Beads state and current receipts.
 //   validatePublicationRegistry - Validate candidate/card state and derive mutable counts.
 //   loadLiveRegistry - Read the current ARMY-97 registry from Beads.
+//   loadPublishedCatalogState - Read current legacy and published ARMY-97 task identities and thematic membership.
 //   run - Validate the live registry from the repository root.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v1.0.0 - Replace declarative transition text with a tracked deterministic Beads gate.
+//   LAST_CHANGE: v2.0.0 - Require every published wave card to match live publication state and exact-current-catalog evidence.
 // END_CHANGE_SUMMARY
 
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import {
+  existsSync,
+  readdirSync,
+  readFileSync,
+} from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -80,6 +86,22 @@ const allowedSourceDecisions = new Set([
 const allowedPublicationDecisions = new Set([
   'accepted',
   'needs-rewrite',
+]);
+const allowedGateModes = new Set(['wave', 'final']);
+const completeWaveCardCounts = new Set([
+  0,
+  10,
+  20,
+  30,
+  40,
+  50,
+  60,
+  70,
+  80,
+  90,
+  100,
+  110,
+  118,
 ]);
 const allowedModes = new Set(['focused', 'real-work']);
 const allowedEditorProfiles = new Set([
@@ -399,6 +421,7 @@ function validateFullCatalogGateEvidence(
   card,
   cardMigrationEvidence,
   verifyCatalogGateExecution,
+  expectedGateMode,
 ) {
   const evidence = card.metadata.fullCatalogGateEvidence;
 
@@ -411,6 +434,13 @@ function validateFullCatalogGateEvidence(
     FULL_CATALOG_GATE_EVIDENCE_FIELDS,
     `${card.id}: FullCatalogGateEvidence`,
   );
+
+  if (
+    expectedGateMode !== undefined
+    && evidence.gateMode !== expectedGateMode
+  ) {
+    fail(`${card.id}: FullCatalogGateEvidence gateMode does not match the current catalog`);
+  }
 
   if (typeof verifyCatalogGateExecution !== 'function') {
     fail(`${card.id}: actual exact-commit catalog gate execution is required`);
@@ -449,6 +479,7 @@ function validatePublicationTransition(
   candidate,
   card,
   verifyCatalogGateExecution,
+  verifiedCardIds,
 ) {
   const metadata = candidate.metadata;
 
@@ -492,25 +523,180 @@ function validatePublicationTransition(
     cardMigrationEvidence,
     verifyCatalogGateExecution,
   );
+  verifiedCardIds.add(card.id);
 
   return true;
 }
 
+// START_CONTRACT: validatePublishedCatalogState
+//   PURPOSE: Cross-check current task identities, thematic mapping, publication decisions, and mode-bound card evidence.
+//   INPUTS: { publishedCatalog: PublishedCatalogState, candidates: Army97CandidateRecord[], cards: Army97CardWorkItem[], transitionTaskIds: Set<string>, verifiedCardIds: Set<string>, verifyCatalogGateExecution: function }
+//   OUTPUTS: { object - Current catalog mode and exact legacy, ARMY, and total counts }
+//   SIDE_EFFECTS: Executes exact-commit receipt verification for published cards not already verified as transitions.
+//   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
+// END_CONTRACT: validatePublishedCatalogState
+function validatePublishedCatalogState({
+  publishedCatalog,
+  candidates,
+  cards,
+  transitionTaskIds,
+  verifiedCardIds,
+  verifyCatalogGateExecution,
+}) {
+  const {
+    gateMode,
+    legacyTaskCount,
+    totalTaskCount,
+    publishedArmyTaskIds,
+    thematicByTaskId,
+  } = publishedCatalog ?? {};
+
+  if (
+    !allowedGateModes.has(gateMode)
+    || !Number.isInteger(legacyTaskCount)
+    || !Number.isInteger(totalTaskCount)
+    || !Array.isArray(publishedArmyTaskIds)
+    || !thematicByTaskId
+    || Array.isArray(thematicByTaskId)
+    || typeof thematicByTaskId !== 'object'
+  ) {
+    fail('published catalog state is malformed');
+  }
+
+  const sortedTaskIds = [...publishedArmyTaskIds].sort();
+  const uniqueTaskIds = [...new Set(sortedTaskIds)];
+
+  if (JSON.stringify(sortedTaskIds) !== JSON.stringify(uniqueTaskIds)) {
+    fail('published ARMY-97 task IDs must be unique');
+  }
+
+  if (totalTaskCount !== legacyTaskCount + uniqueTaskIds.length) {
+    fail('current task count must equal legacy-card count plus published ARMY-97 IDs');
+  }
+
+  if (
+    (gateMode === 'wave' && legacyTaskCount !== 21)
+    || (gateMode === 'final' && legacyTaskCount !== 0)
+  ) {
+    fail(`${gateMode} catalog has an invalid legacy-card count`);
+  }
+
+  if (
+    (gateMode === 'wave' && !completeWaveCardCounts.has(uniqueTaskIds.length))
+    || (gateMode === 'final' && uniqueTaskIds.length !== 118)
+  ) {
+    fail(`${gateMode} catalog does not end at a complete serialized wave boundary`);
+  }
+
+  const expectedTaskIds = Array.from(
+    { length: uniqueTaskIds.length },
+    (_, index) => `task-${String(index + 1).padStart(4, '0')}`,
+  );
+
+  if (JSON.stringify(uniqueTaskIds) !== JSON.stringify(expectedTaskIds)) {
+    fail('published ARMY-97 task IDs must be one contiguous immutable prefix');
+  }
+
+  const thematicTaskIds = Object.keys(thematicByTaskId).sort();
+
+  if (JSON.stringify(thematicTaskIds) !== JSON.stringify(uniqueTaskIds)) {
+    fail('published ARMY-97 thematic map must contain exactly the published IDs');
+  }
+
+  const candidatesByTaskId = new Map(
+    candidates.map((candidate) => [
+      candidate.metadata.targetTaskId,
+      candidate,
+    ]),
+  );
+  const cardsByTaskId = new Map(
+    cards.map((card) => [card.metadata.targetTaskId, card]),
+  );
+  const publishedTaskIdSet = new Set(uniqueTaskIds);
+
+  for (const transitionTaskId of transitionTaskIds) {
+    if (!publishedTaskIdSet.has(transitionTaskId)) {
+      fail(`${transitionTaskId}: accepted rewrite transition has no published card`);
+    }
+  }
+
+  for (const publishedTaskId of uniqueTaskIds) {
+    const candidate = candidatesByTaskId.get(publishedTaskId);
+    const card = cardsByTaskId.get(publishedTaskId);
+
+    if (!candidate || !card) {
+      fail(`${publishedTaskId}: published task is absent from the immutable registry`);
+    }
+
+    if (
+      candidate.metadata.publicationDecision !== 'accepted'
+      || card.metadata.publicationDecision !== 'accepted'
+    ) {
+      fail(`${publishedTaskId}: published ARMY-97 card requires publicationDecision accepted`);
+    }
+
+    if (thematicByTaskId[publishedTaskId] !== card.metadata.targetCollection) {
+      fail(`${publishedTaskId}: published thematic collection does not match the frozen card mapping`);
+    }
+
+    const cardEvidence = validateCardMigrationEvidence(card);
+
+    if (
+      !cardEvidence.destinationLocations.includes(
+        `tasks/${publishedTaskId}/README.md`,
+      )
+      || !cardEvidence.destinationLocations.includes(
+        card.metadata.targetCollection,
+      )
+    ) {
+      fail(`${card.id}: CardMigrationEvidence destinations do not identify the published card and thematic collection`);
+    }
+
+    if (
+      card.metadata.fullCatalogGateEvidence?.gateMode !== gateMode
+    ) {
+      fail(`${card.id}: FullCatalogGateEvidence gateMode does not match the current catalog`);
+    }
+
+    if (!verifiedCardIds.has(card.id)) {
+      validateFullCatalogGateEvidence(
+        card,
+        cardEvidence,
+        verifyCatalogGateExecution,
+        gateMode,
+      );
+      verifiedCardIds.add(card.id);
+    }
+  }
+
+  return {
+    catalogMode: gateMode,
+    legacyTaskCount,
+    publishedArmyTaskCount: uniqueTaskIds.length,
+    currentTaskCount: totalTaskCount,
+  };
+}
+
 // START_CONTRACT: validatePublicationRegistry
-//   PURPOSE: Enforce immutable source state, synchronized card state, and structured publication transitions.
-//   INPUTS: { candidates: Army97CandidateRecord[], cards: Army97CardWorkItem[], manifest: object, verifyCatalogGateExecution?: function }
-//   OUTPUTS: { object - Derived source and publication counts plus transition count }
-//   SIDE_EFFECTS: Executes the supplied exact-commit catalog verifier for every transition.
+//   PURPOSE: Enforce immutable source state, synchronized published-catalog state, and structured publication transitions.
+//   INPUTS: { candidates: Army97CandidateRecord[], cards: Army97CardWorkItem[], manifest: object, publishedCatalog: PublishedCatalogState, verifyCatalogGateExecution: function }
+//   OUTPUTS: { object - Derived source, publication, catalog, and transition counts }
+//   SIDE_EFFECTS: Executes the supplied exact-commit catalog verifier for every published card receipt.
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, DF-ARMY97-CANDIDATE-TO-CARD
 // END_CONTRACT: validatePublicationRegistry
 export function validatePublicationRegistry({
   candidates,
   cards,
   manifest,
+  publishedCatalog,
   verifyCatalogGateExecution,
 }) {
   if (!Array.isArray(candidates) || !Array.isArray(cards)) {
     fail('candidate and card registries must be arrays');
+  }
+
+  if (publishedCatalog === undefined) {
+    fail('current published catalog state is required');
   }
 
   if (
@@ -530,6 +716,8 @@ export function validatePublicationRegistry({
   );
   const immutableSnapshot = validateManifest(sortedCandidates, manifest);
   let transitionCount = 0;
+  const transitionTaskIds = new Set();
+  const verifiedCardIds = new Set();
 
   // START_BLOCK_VALIDATE_CANDIDATE_CARD_STATE
   for (let index = 0; index < sortedCandidates.length; index += 1) {
@@ -545,11 +733,22 @@ export function validatePublicationRegistry({
       candidate,
       card,
       verifyCatalogGateExecution,
+      verifiedCardIds,
     )) {
       transitionCount += 1;
+      transitionTaskIds.add(candidate.metadata.targetTaskId);
     }
   }
   // END_BLOCK_VALIDATE_CANDIDATE_CARD_STATE
+
+  const catalogSummary = validatePublishedCatalogState({
+    publishedCatalog,
+    candidates: sortedCandidates,
+    cards: sortedCards,
+    transitionTaskIds,
+    verifiedCardIds,
+    verifyCatalogGateExecution,
+  });
 
   return {
     candidateRegisterSize: sortedCandidates.length,
@@ -558,6 +757,7 @@ export function validatePublicationRegistry({
     transitionCount,
     immutableCandidateRecordsSha256:
       immutableSnapshot.immutableCandidateRecordsSha256,
+    ...catalogSummary,
   };
 }
 
@@ -585,19 +785,76 @@ export function loadLiveRegistry(cwd = repoRoot) {
   return { candidates, cards };
 }
 
+// START_CONTRACT: loadPublishedCatalogState
+//   PURPOSE: Derive current ARMY-97 publication identity and thematic membership from tracked Markdown.
+//   INPUTS: { cwd: string - Repository root }
+//   OUTPUTS: { PublishedCatalogState }
+//   SIDE_EFFECTS: Reads task and controlled thematic Markdown paths.
+//   LINKS: M-TASK-LIBRARY, M-CATALOG, V-M-TASK-VALIDATION
+// END_CONTRACT: loadPublishedCatalogState
+export function loadPublishedCatalogState(cwd = repoRoot) {
+  const tasksRoot = resolve(cwd, 'tasks');
+  const taskDirectories = readdirSync(tasksRoot, { withFileTypes: true })
+    .filter((entry) => (
+      entry.isDirectory()
+      && existsSync(resolve(tasksRoot, entry.name, 'README.md'))
+    ))
+    .map((entry) => entry.name)
+    .sort();
+  const publishedArmyTaskIds = taskDirectories.filter(
+    (directory) => taskIdPattern.test(directory),
+  );
+  const legacyTaskCount =
+    taskDirectories.length - publishedArmyTaskIds.length;
+  const gateMode = legacyTaskCount > 0 ? 'wave' : 'final';
+  const thematicByTaskId = {};
+
+  for (const collectionPath of allowedTargetCollections) {
+    const absoluteCollectionPath = resolve(cwd, collectionPath);
+
+    if (!existsSync(absoluteCollectionPath)) {
+      continue;
+    }
+
+    const content = readFileSync(absoluteCollectionPath, 'utf8');
+
+    for (const match of content.matchAll(
+      /tasks\/(task-[0-9]{4})\/README\.md/g,
+    )) {
+      const taskId = match[1];
+
+      if (Object.hasOwn(thematicByTaskId, taskId)) {
+        fail(`${taskId}: published ARMY-97 card has multiple controlled thematic memberships`);
+      }
+
+      thematicByTaskId[taskId] = collectionPath;
+    }
+  }
+
+  return {
+    gateMode,
+    legacyTaskCount,
+    totalTaskCount: taskDirectories.length,
+    publishedArmyTaskIds,
+    thematicByTaskId,
+  };
+}
+
 // START_CONTRACT: run
-//   PURPOSE: Apply the tracked manifest and validator to the live Beads registry.
+//   PURPOSE: Apply the tracked manifest, current Markdown catalog state, and validator to live Beads.
 //   INPUTS: { none }
 //   OUTPUTS: { object - Validation summary }
-//   SIDE_EFFECTS: Reads Beads, Git history, and the tracked manifest; writes summary to stdout.
+//   SIDE_EFFECTS: Reads Beads, tracked Markdown, Git history, and the tracked manifest; writes summary to stdout.
 //   LINKS: V-M-TASK-VALIDATION
 // END_CONTRACT: run
 export function run() {
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
   const registry = loadLiveRegistry(repoRoot);
+  const publishedCatalog = loadPublishedCatalogState(repoRoot);
   const summary = validatePublicationRegistry({
     ...registry,
     manifest,
+    publishedCatalog,
     verifyCatalogGateExecution: ({
       cardMigrationEvidence,
       fullCatalogGateEvidence,

@@ -1,61 +1,102 @@
 # Локальная политика валидации ARMY-97
 
+Публикационный gate имеет два явных режима: `wave` и `final`. Они используют
+один tracked-скрипт, но подтверждают разные состояния каталога.
+
+## Режим `wave`
+
+`wave` применяется только во время Task 3, до cutover. Он:
+
+- сохраняет точный закрытый список из 21 legacy-карточки;
+- принимает только полный накопительный префикс сериализованных ARMY-97 волн:
+  `0, 10, 20, …, 110, 118` карточек;
+- требует непрерывный префикс `task-0001..task-NNNN`;
+- проверяет все текущие `tasks/` против всех тематических `collections/`:
+  каждый task существует, покрыт и входит ровно в одну тематическую подборку;
+- отклоняет ссылку на отсутствующую, то есть ещё не опубликованную,
+  ARMY-97 карточку;
+- проверяет полный `ConciseStudentTaskCard` контракт у каждой опубликованной
+  `tasks/task-NNNN/README.md`, не применяя новый контракт к legacy-карточкам;
+- не требует 118 карточек, финальные `92/8/16/2` или 30 симуляций.
+
+Live Beads-валидатор дополнительно доказывает, что число текущих task-файлов
+равно `21 legacy + опубликованные immutable ARMY-97 IDs`, каждый опубликованный
+ID имеет `publicationDecision: accepted`, совпадает со своей frozen thematic
+mapping и содержит текущие `CardMigrationEvidence` и
+`FullCatalogGateEvidence`. Поэтому частичный filesystem-вывод сам по себе не
+может разрешить публикацию или переход `needs-rewrite → accepted`.
+
+## Режим `final`
+
+`final` резервируется для cutover и финального аудита. В этом режиме legacy
+пути уже отсутствуют, а gate требует:
+
+- ровно 118 карточек и непрерывный диапазон `task-0001..task-0118`;
+- только четыре controlled thematic paths;
+- точные тематические количества JavaScript 92, TypeScript 8, React 16 и
+  HTML/CSS 2;
+- ровно 30 последовательных симуляций с правильными ссылками, суммой времени,
+  минимум двумя тематиками, трёхсимуляционным recurrence и realism evidence.
+
+## Evidence и порядок исполнения
+
 `Army97CandidateRecord` разделяет неизменяемый `sourceAuditDecision` и
-изменяемый `publicationDecision`; в `tasks/` попадает только публикация со
-значением `accepted`. `docs/army-97-candidate-audit.json` фиксирует хеш всех
-неизменяемых полей. `docs/scripts/validate-army-97-beads.mjs` читает live Beads,
-выводит текущие publication-counts и проверяет синхронизацию candidate/card.
+изменяемый `publicationDecision`. В `tasks/` попадает только карточка с
+`publicationDecision: accepted`. Переход `needs-rewrite → accepted` разрешён в
+Task 3 после полного PASS текущего накопительного каталога в режиме `wave`;
+строгий финальный сертификат для этого перехода до cutover не требуется.
 
-Переход `needs-rewrite → accepted` требует в metadata card issue двух вложенных
-объектов, а не текста в notes: ровно десятипольного `cardMigrationEvidence` и
-ровно восьмипольного `fullCatalogGateEvidence`. Последний выдаёт только
-`docs/scripts/run-army-97-catalog-gate.mjs` после PASS полного catalog-only gate
-из изолированного архива точного текущего `HEAD`. Evidence связывает policy,
-gate script, commit, tree, gate blob, хеш вывода и `CardMigrationEvidence`.
-`publicationTransitionEvidence` в candidate и card хранит точную ссылку
-`Beads:<card-id>#cardMigrationEvidence+fullCatalogGateEvidence`.
+Каждая опубликованная карточка, включая исходно `accepted`, хранит в metadata
+card issue:
 
-Catalog-only gate принимает только полный замороженный каталог: ровно 118
-карточек с непрерывными путями `task-0001..task-0118`, только четыре
-контролируемых тематических пути с распределением `92/8/16/2`, и все вложенные
-страницы коллекций участвуют в provenance scan, совместимом с Bash 3.
+- ровно десятипольный `cardMigrationEvidence`;
+- ровно девятипольный `fullCatalogGateEvidence`: `policyPath`,
+  `catalogGatePath`, `catalogCommit`, `catalogTree`, `catalogGateBlob`,
+  `gateMode`, `gateOutputSha256`, `verdict`, `evidenceSha256`.
 
-Сначала зафиксируйте полный каталог commit-ом. Затем передайте точный
-десятипольный JSON в
-`node docs/scripts/run-army-97-catalog-gate.mjs --commit HEAD --card-evidence-file <path>`.
-Только успешно выданный объект можно сохранить в card metadata; после этого
-синхронно измените candidate и card publication state и запустите полный gate.
-Runner ничего не выдаёт при catalog failure, а live validator повторно запускает
-gate на том же текущем `HEAD`.
+Evidence выдаёт только `docs/scripts/run-army-97-catalog-gate.mjs`. Runner
+архивирует точный текущий `HEAD`, запускает из архива tracked gate с явным
+`--mode`, проверяет JSON PASS того же режима и связывает commit, tree, gate blob,
+полный output и точный `CardMigrationEvidence`; его `slug` обязан существовать
+как task-файл именно в исполненном commit. Live Beads-валидатор требует тот же
+режим текущего каталога и повторно исполняет receipt. Ancestor commit,
+самостоятельно вычисленный digest, output другого режима или PASS произвольной
+частичной команды не принимаются.
 
-После каждого изменения `tasks/` или `collections/` запускайте этот полный
-локальный gate из корня. До первой replacement-wave он проверяется через
-`bash -n`; PASS требует карточек и 30 simulations.
+Сначала закоммитьте полную текущую волну. Для каждой её карточки подготовьте
+точный десятипольный JSON и выполните:
+
+```bash
+catalogCommit="$(git rev-parse HEAD)"
+node docs/scripts/run-army-97-catalog-gate.mjs \
+  --mode wave \
+  --commit "$catalogCommit" \
+  --card-evidence-file <path>
+```
+
+Сохраните только успешно выданный объект, синхронно обновите candidate/card
+publication state и запустите полный wave gate. Канонический порядок
+load-bearing: regression probes, current-worktree catalog gate, exact-HEAD
+archive gate, live Beads validation, затем XML, Grace и diff.
 
 ```bash
 set -euo pipefail
-BASH_VERSINFO="${BASH_VERSINFO:-0}"; test "$BASH_VERSINFO" -ge 3
+test "${BASH_VERSINFO[0]:-0}" -ge 3
 node --test docs/scripts/validate-army-97-catalog.test.mjs docs/scripts/validate-army-97-beads.test.mjs docs/scripts/run-army-97-catalog-gate.test.mjs
-bash docs/scripts/validate-army-97-catalog.sh
+bash docs/scripts/validate-army-97-catalog.sh --mode wave
 catalogCommit="$(git rev-parse HEAD)"
-node docs/scripts/run-army-97-catalog-gate.mjs --commit "$catalogCommit" --verify-only
+node docs/scripts/run-army-97-catalog-gate.mjs --mode wave --commit "$catalogCommit" --verify-only
 node docs/scripts/validate-army-97-beads.mjs
 xmllint --noout docs/*.xml
 GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"; test -x "$GRACE_BIN"; "$GRACE_BIN" lint --fail-on errors --path "$PWD"
 git diff --check
 ```
 
-The ordering is load-bearing: probes run first, then the current worktree
-catalog-only gate, then the exact committed catalog gate, and only after both
-PASS does live Beads transition validation run. A later catalog failure stops
-before transition validation, while stale evidence also fails because its commit
-must equal current `HEAD` and its gate is re-executed. Catalog checks cover exact
-sandbox syntax, card structure, controlled metadata, provenance exclusion,
-thematic and real-work projections, 30 simulations, recurrence, realism, and
-local links. XML, Grace, and diff checks follow the transition gate. The
-validator uses only built-in Node.js modules plus existing Bash, Git, `tar`, and
-`bd`; it adds no task runtime, package, or dependency. The production-gate
-regression executes a complete controlled 118-card fixture plus partial,
-non-contiguous, thematic-drift, unexpected-path, and nested-provenance negative
-probes. Browser, external editor, rendered-page, and CSS layout execution are
-not local publication gates.
+После cutover замените `--mode wave` на `--mode final` в обеих catalog-командах
+и повторно выдайте current-HEAD receipts финального режима перед финальным
+Beads-аудитом.
+
+Оба режима используют только встроенные модули Node.js и существующие Bash,
+Git, `tar`, `find`, `xargs`, `rg`, `sed` и `bd`. Внешние редакторы, браузеры,
+GitHub rendering, API и CSS-layout проверки не являются локальными
+publication gates.

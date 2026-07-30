@@ -1,8 +1,8 @@
 // FILE: docs/scripts/run-army-97-catalog-gate.test.mjs
-// VERSION: 1.0.0
+// VERSION: 2.0.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove FullCatalogGateEvidence can only follow a successful exact-commit catalog gate.
-//   SCOPE: Real temporary Git repositories, passing and failing catalog gates, receipt emission, and transition validation.
+//   SCOPE: Real temporary Git repositories, explicit wave/final execution, passing and failing catalog gates, receipt emission, and transition validation.
 //   DEPENDS: node:test, Git, Bash, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, Army97PublicationDecisionTransition
 //   ROLE: TEST
@@ -11,14 +11,14 @@
 //
 // START_MODULE_MAP
 //   createGitFixture - Create a real isolated Git history with a tracked catalog gate.
-//   createRegistryFixture - Build one needs-rewrite candidate and synchronized card.
+//   createRegistryFixture - Build one complete wave whose first candidate needs rewrite.
 //   applyTransition - Add supplied full-catalog evidence to both publication records.
 //   createExecutedRegistry - Build a transition whose gate was emitted and is re-verifiable.
 //   fabricateAncestorEvidence - Build a correctly digested receipt without executing its gate.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v1.0.0 - Add causal exact-commit catalog-gate evidence probes.
+//   LAST_CHANGE: v2.0.0 - Bind causal exact-commit evidence probes to explicit catalog mode and a complete published wave.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -61,6 +61,16 @@ const cardMigrationEvidence = {
   verdict: 'PASS',
 };
 
+function cardEvidence(number) {
+  const targetTaskId = `task-${String(number).padStart(4, '0')}`;
+
+  return {
+    ...structuredClone(cardMigrationEvidence),
+    slug: targetTaskId,
+    destinationLocations: `tasks/${targetTaskId}/README.md; collections/javascript/interview-practice/README.md; GRACE; Beads`,
+  };
+}
+
 function git(repositoryRoot, args) {
   return execFileSync('git', args, {
     cwd: repositoryRoot,
@@ -90,12 +100,15 @@ function canonicalize(value) {
 
 // START_CONTRACT: createGitFixture
 //   PURPOSE: Create a real Git repository whose tracked catalog gate deterministically passes or fails.
-//   INPUTS: { gatePasses: boolean }
+//   INPUTS: { gatePasses: boolean, includePublishedTasks?: boolean }
 //   OUTPUTS: { repositoryRoot, gateCommit, headCommit }
 //   SIDE_EFFECTS: Creates a temporary Git repository and commits fixture files.
 //   LINKS: V-M-TASK-VALIDATION
 // END_CONTRACT: createGitFixture
-function createGitFixture(gatePasses) {
+function createGitFixture(
+  gatePasses,
+  { includePublishedTasks = true } = {},
+) {
   const repositoryRoot = mkdtempSync(join(tmpdir(), 'army97-catalog-runner-test-'));
   const scriptsDirectory = join(repositoryRoot, 'docs', 'scripts');
 
@@ -110,14 +123,29 @@ function createGitFixture(gatePasses) {
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
+      'test "$1" = "--mode"',
+      'test "$2" = "wave" || test "$2" = "final"',
       gatePasses ? 'test -f catalog-pass-marker' : 'test -f catalog-missing-marker',
-      "printf '%s\\n' 'catalog-pass'",
+      "printf '{\"catalogGate\":\"PASS\",\"gateMode\":\"%s\"}\\n' \"$2\"",
       '',
     ].join('\n'),
   );
 
   if (gatePasses) {
     writeFileSync(join(repositoryRoot, 'catalog-pass-marker'), 'present\n');
+  }
+
+  if (includePublishedTasks) {
+    for (let number = 1; number <= 10; number += 1) {
+      const targetTaskId = `task-${String(number).padStart(4, '0')}`;
+      const taskDirectory = join(repositoryRoot, 'tasks', targetTaskId);
+
+      mkdirSync(taskDirectory, { recursive: true });
+      writeFileSync(
+        join(taskDirectory, 'README.md'),
+        `# ${targetTaskId}\n`,
+      );
+    }
   }
 
   git(repositoryRoot, ['init', '-q']);
@@ -140,55 +168,84 @@ function createGitFixture(gatePasses) {
 }
 
 // START_CONTRACT: createRegistryFixture
-//   PURPOSE: Build a one-record needs-rewrite registry before publication.
+//   PURPOSE: Build one complete ten-card wave registry with the first card held for rewrite.
 //   INPUTS: { none }
 //   OUTPUTS: { candidates, cards, manifest }
 //   SIDE_EFFECTS: none
 //   LINKS: Army97CandidateRecord, Army97CardWorkItem
 // END_CONTRACT: createRegistryFixture
 function createRegistryFixture() {
-  const candidate = {
-    id: 'frontend-livecoding-tasks-army-97-candidate-001',
-    metadata: {
-      recordType: 'Army97CandidateRecord',
-      candidateId: 'frontend-livecoding-tasks-army-97-candidate-001',
-      inputOrder: 1,
-      centralAction: 'Repair one branch.',
-      starterBehavior: 'The starter omits the required branch.',
-      expectedResult: 'Both branches return the declared result.',
-      sourceAuditRevision: 'round-1',
-      sourceAuditDecision: 'needs-rewrite',
-      decisionEvidence: 'The source fixture cannot exercise the missing branch.',
-      duplicateTarget: 'none',
-      correctionPath: 'Add the missing fixture and its exact result.',
-      publicationDecision: 'needs-rewrite',
-      publicationTransitionEvidence: 'none: source-audit freeze',
-      targetTaskId: 'task-0001',
-      targetCollection: 'collections/javascript/interview-practice/README.md',
-    },
-  };
-  const card = {
-    id: 'frontend-livecoding-tasks-army-97-task-0001',
-    metadata: {
-      recordType: 'Army97CardWorkItem',
-      candidateId: candidate.id,
-      targetTaskId: 'task-0001',
-      editorProfile: 'Programiz',
-      format: 'Исправить код',
-      targetCollection: 'collections/javascript/interview-practice/README.md',
-      expectedLocalMarkdownEvidence: 'Complete exact-commit catalog gate PASS.',
-      prerequisitePublicationDecision: 'accepted',
-      sourceAuditDecision: 'needs-rewrite',
-      publicationDecision: 'needs-rewrite',
-      publicationTransitionEvidence: 'none: source-audit freeze',
-    },
-  };
-  const candidates = [candidate];
+  const candidates = [];
+  const cards = [];
+  const publishedArmyTaskIds = [];
+  const thematicByTaskId = {};
+
+  for (let number = 1; number <= 10; number += 1) {
+    const candidateNumber = String(number).padStart(3, '0');
+    const taskNumber = String(number).padStart(4, '0');
+    const candidateId =
+      `frontend-livecoding-tasks-army-97-candidate-${candidateNumber}`;
+    const targetTaskId = `task-${taskNumber}`;
+    const isRewrite = number === 1;
+    const candidate = {
+      id: candidateId,
+      metadata: {
+        recordType: 'Army97CandidateRecord',
+        candidateId,
+        inputOrder: number,
+        centralAction: `Repair deterministic branch ${number}.`,
+        starterBehavior: `The starter omits required branch ${number}.`,
+        expectedResult: `Branch ${number} returns the declared result.`,
+        sourceAuditRevision: 'round-1',
+        sourceAuditDecision: isRewrite ? 'needs-rewrite' : 'accepted',
+        decisionEvidence: isRewrite
+          ? 'The source fixture cannot exercise the missing branch.'
+          : 'The source contract is complete.',
+        duplicateTarget: 'none',
+        correctionPath: isRewrite
+          ? 'Add the missing fixture and its exact result.'
+          : 'none',
+        publicationDecision: isRewrite ? 'needs-rewrite' : 'accepted',
+        publicationTransitionEvidence: 'none: source-audit freeze',
+        targetTaskId,
+        targetCollection: 'collections/javascript/interview-practice/README.md',
+      },
+    };
+    const card = {
+      id: `frontend-livecoding-tasks-army-97-task-${taskNumber}`,
+      metadata: {
+        recordType: 'Army97CardWorkItem',
+        candidateId,
+        targetTaskId,
+        editorProfile: 'Programiz',
+        format: 'Исправить код',
+        targetCollection: 'collections/javascript/interview-practice/README.md',
+        expectedLocalMarkdownEvidence: 'Complete exact-commit catalog gate PASS.',
+        prerequisitePublicationDecision: 'accepted',
+        sourceAuditDecision: candidate.metadata.sourceAuditDecision,
+        publicationDecision: candidate.metadata.publicationDecision,
+        publicationTransitionEvidence: 'none: source-audit freeze',
+      },
+    };
+
+    candidates.push(candidate);
+    cards.push(card);
+    publishedArmyTaskIds.push(targetTaskId);
+    thematicByTaskId[targetTaskId] =
+      'collections/javascript/interview-practice/README.md';
+  }
 
   return {
     candidates,
-    cards: [card],
+    cards,
     manifest: createImmutableManifest(candidates),
+    publishedCatalog: {
+      gateMode: 'wave',
+      legacyTaskCount: 21,
+      totalTaskCount: 31,
+      publishedArmyTaskIds,
+      thematicByTaskId,
+    },
   };
 }
 
@@ -224,12 +281,27 @@ function createExecutedRegistry() {
   assert.equal(typeof runner.emitFullCatalogGateEvidence, 'function');
   assert.equal(typeof runner.verifyFullCatalogGateEvidence, 'function');
   const repository = createGitFixture(true);
-  const evidence = runner.emitFullCatalogGateEvidence({
-    repositoryRoot: repository.repositoryRoot,
-    catalogCommit: repository.headCommit,
-    cardMigrationEvidence,
-  });
-  const registry = applyTransition(createRegistryFixture(), evidence);
+  const registry = createRegistryFixture();
+  let transitionEvidence;
+
+  for (let index = 0; index < registry.cards.length; index += 1) {
+    const evidence = cardEvidence(index + 1);
+    const gateEvidence = runner.emitFullCatalogGateEvidence({
+      repositoryRoot: repository.repositoryRoot,
+      catalogCommit: repository.headCommit,
+      gateMode: 'wave',
+      cardMigrationEvidence: evidence,
+    });
+
+    registry.cards[index].metadata.cardMigrationEvidence = evidence;
+    registry.cards[index].metadata.fullCatalogGateEvidence = gateEvidence;
+
+    if (index === 0) {
+      transitionEvidence = gateEvidence;
+    }
+  }
+
+  applyTransition(registry, transitionEvidence);
 
   registry.verifyCatalogGateExecution = ({
     cardMigrationEvidence: candidateEvidence,
@@ -260,7 +332,10 @@ function fabricateAncestorEvidence(repositoryRoot, catalogCommit) {
       repositoryRoot,
       ['rev-parse', `${catalogCommit}:${catalogGatePath}`],
     ),
-    gateOutputSha256: sha256('catalog-pass\n'),
+    gateMode: 'wave',
+    gateOutputSha256: sha256(
+      '{"catalogGate":"PASS","gateMode":"wave"}\n',
+    ),
     verdict: 'PASS',
   };
 
@@ -290,12 +365,30 @@ test('emits FullCatalogGateEvidence only after the exact commit gate passes', ()
   const evidence = runner.emitFullCatalogGateEvidence({
     repositoryRoot: fixture.repositoryRoot,
     catalogCommit: fixture.headCommit,
+    gateMode: 'wave',
     cardMigrationEvidence,
   });
 
   assert.equal(evidence.catalogCommit, fixture.headCommit);
+  assert.equal(evidence.gateMode, 'wave');
   assert.equal(evidence.verdict, 'PASS');
   assert.match(evidence.gateOutputSha256, /^[0-9a-f]{64}$/);
+});
+
+test('does not emit evidence for a card absent from the exact catalog commit', () => {
+  const fixture = createGitFixture(true, {
+    includePublishedTasks: false,
+  });
+
+  assert.throws(
+    () => runner.emitFullCatalogGateEvidence({
+      repositoryRoot: fixture.repositoryRoot,
+      catalogCommit: fixture.headCommit,
+      gateMode: 'wave',
+      cardMigrationEvidence,
+    }),
+    /not published at catalog commit/,
+  );
 });
 
 test('does not emit FullCatalogGateEvidence when the exact commit gate fails', () => {
@@ -306,6 +399,7 @@ test('does not emit FullCatalogGateEvidence when the exact commit gate fails', (
     () => runner.emitFullCatalogGateEvidence({
       repositoryRoot: fixture.repositoryRoot,
       catalogCommit: fixture.headCommit,
+      gateMode: 'wave',
       cardMigrationEvidence,
     }),
     /catalog gate failed/,

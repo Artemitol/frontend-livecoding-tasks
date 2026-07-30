@@ -1,8 +1,8 @@
 // FILE: docs/scripts/run-army-97-catalog-gate.mjs
-// VERSION: 1.0.0
+// VERSION: 2.0.0
 // START_MODULE_CONTRACT
-//   PURPOSE: Execute the tracked catalog-only gate at an exact Git commit before emitting FullCatalogGateEvidence.
-//   SCOPE: Exact-commit archive execution, causal PASS receipts, current-HEAD enforcement, and receipt verification.
+//   PURPOSE: Execute the tracked wave or final catalog gate at an exact Git commit before emitting FullCatalogGateEvidence.
+//   SCOPE: Explicit gate-mode selection, exact-commit archive execution, card-file presence, causal PASS receipts, current-HEAD enforcement, and receipt verification.
 //   DEPENDS: Git, Bash, tar, docs/scripts/validate-army-97-catalog.sh, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, Army97PublicationDecisionTransition
 //   ROLE: SCRIPT
@@ -11,13 +11,14 @@
 //
 // START_MODULE_MAP
 //   runCatalogGateAtCommit - Execute the catalog gate from an isolated archive of one commit.
+//   assertCardPublishedAtCommit - Bind card evidence to a task file in the executed commit.
 //   emitFullCatalogGateEvidence - Emit PASS evidence only after a successful current-HEAD gate.
 //   verifyFullCatalogGateEvidence - Re-execute the exact gate and compare its causal receipt.
 //   run - Execute the command-line verify-only or evidence-emission workflow.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v1.0.0 - Make full-catalog evidence causal to a successful exact-commit gate.
+//   LAST_CHANGE: v2.0.0 - Bind every receipt to explicit mode, exact current commit, successful execution, and the published card file.
 // END_CHANGE_SUMMARY
 
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -38,6 +39,7 @@ export const FULL_CATALOG_GATE_EVIDENCE_FIELDS = [
   'catalogCommit',
   'catalogTree',
   'catalogGateBlob',
+  'gateMode',
   'gateOutputSha256',
   'verdict',
   'evidenceSha256',
@@ -48,6 +50,7 @@ const catalogGatePath = 'docs/scripts/validate-army-97-catalog.sh';
 const commitPattern = /^[0-9a-f]{40}$/;
 const objectPattern = /^[0-9a-f]{40,64}$/;
 const digestPattern = /^[0-9a-f]{64}$/;
+const allowedGateModes = new Set(['wave', 'final']);
 const maxBuffer = 256 * 1024 * 1024;
 const modulePath = fileURLToPath(import.meta.url);
 const defaultRepositoryRoot = resolve(dirname(modulePath), '..', '..');
@@ -90,6 +93,7 @@ function gitValue(repositoryRoot, args) {
     cwd: repositoryRoot,
     encoding: 'utf8',
     maxBuffer,
+    stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
 }
 
@@ -111,6 +115,37 @@ function evidenceDigest(execution, cardMigrationEvidence) {
     ...execution,
     cardMigrationEvidence,
   })));
+}
+
+// START_CONTRACT: assertCardPublishedAtCommit
+//   PURPOSE: Require CardMigrationEvidence to identify a task card present in the exact executed catalog commit.
+//   INPUTS: { repositoryRoot: string, catalogCommit: string, cardMigrationEvidence: object }
+//   OUTPUTS: { string - Git blob ID of the published task card }
+//   SIDE_EFFECTS: Reads one Git object.
+//   LINKS: CardMigrationEvidence, Army97PublicationDecisionTransition
+// END_CONTRACT: assertCardPublishedAtCommit
+function assertCardPublishedAtCommit(
+  repositoryRoot,
+  catalogCommit,
+  cardMigrationEvidence,
+) {
+  const slug = cardMigrationEvidence?.slug;
+
+  if (
+    typeof slug !== 'string'
+    || !/^task-[0-9]{4}$/.test(slug)
+  ) {
+    fail('CardMigrationEvidence slug must be one immutable task-NNNN ID');
+  }
+
+  try {
+    return gitValue(
+      repositoryRoot,
+      ['rev-parse', `${catalogCommit}:tasks/${slug}/README.md`],
+    );
+  } catch {
+    fail(`${slug} is not published at catalog commit ${catalogCommit}`);
+  }
 }
 
 function requireEvidenceShape(fullCatalogGateEvidence) {
@@ -135,9 +170,10 @@ function requireEvidenceShape(fullCatalogGateEvidence) {
   if (
     fullCatalogGateEvidence.policyPath !== policyPath
     || fullCatalogGateEvidence.catalogGatePath !== catalogGatePath
+    || !allowedGateModes.has(fullCatalogGateEvidence.gateMode)
     || fullCatalogGateEvidence.verdict !== 'PASS'
   ) {
-    fail('FullCatalogGateEvidence must identify the tracked policy, catalog gate, and PASS');
+    fail('FullCatalogGateEvidence must identify the tracked policy, catalog gate, gate mode, and PASS');
   }
 
   if (
@@ -152,16 +188,21 @@ function requireEvidenceShape(fullCatalogGateEvidence) {
 }
 
 // START_CONTRACT: runCatalogGateAtCommit
-//   PURPOSE: Execute the catalog-only gate from an isolated archive of one exact commit.
-//   INPUTS: { repositoryRoot: string, catalogCommit: string }
-//   OUTPUTS: { CatalogGateExecution - Commit, tree, gate blob, output digest, and PASS }
+//   PURPOSE: Execute the selected wave or final catalog gate from an isolated archive of one exact commit.
+//   INPUTS: { repositoryRoot: string, catalogCommit: string, gateMode: wave | final }
+//   OUTPUTS: { CatalogGateExecution - Commit, tree, gate blob, mode, output digest, and PASS }
 //   SIDE_EFFECTS: Creates and removes a narrow temporary archive directory; executes Git, tar, and Bash.
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION
 // END_CONTRACT: runCatalogGateAtCommit
 export function runCatalogGateAtCommit({
   repositoryRoot = defaultRepositoryRoot,
   catalogCommit,
+  gateMode,
 }) {
+  if (!allowedGateModes.has(gateMode)) {
+    fail(`unsupported catalog gate mode: ${String(gateMode)}`);
+  }
+
   const resolvedRepositoryRoot = resolve(repositoryRoot);
   const resolvedCommit = resolveCommit(
     resolvedRepositoryRoot,
@@ -219,7 +260,7 @@ export function runCatalogGateAtCommit({
     try {
       gateOutput = execFileSync(
         'bash',
-        [catalogGatePath],
+        [catalogGatePath, '--mode', gateMode],
         {
           cwd: archiveDirectory,
           encoding: 'utf8',
@@ -235,12 +276,28 @@ export function runCatalogGateAtCommit({
       fail(`catalog gate failed for ${resolvedCommit}${details ? `: ${details}` : ''}`);
     }
 
+    let gateResult;
+
+    try {
+      gateResult = JSON.parse(gateOutput);
+    } catch {
+      fail(`catalog gate returned non-JSON output for ${resolvedCommit}`);
+    }
+
+    if (
+      gateResult.catalogGate !== 'PASS'
+      || gateResult.gateMode !== gateMode
+    ) {
+      fail(`catalog gate output does not certify ${gateMode} mode at ${resolvedCommit}`);
+    }
+
     return {
       policyPath,
       catalogGatePath,
       catalogCommit: resolvedCommit,
       catalogTree,
       catalogGateBlob,
+      gateMode,
       gateOutputSha256: sha256(gateOutput),
       verdict: 'PASS',
     };
@@ -251,7 +308,7 @@ export function runCatalogGateAtCommit({
 
 // START_CONTRACT: emitFullCatalogGateEvidence
 //   PURPOSE: Emit durable evidence only after the current HEAD catalog gate succeeds.
-//   INPUTS: { repositoryRoot: string, catalogCommit: string, cardMigrationEvidence: object }
+//   INPUTS: { repositoryRoot: string, catalogCommit: string, gateMode: wave | final, cardMigrationEvidence: object }
 //   OUTPUTS: { FullCatalogGateEvidence }
 //   SIDE_EFFECTS: Executes the exact-commit catalog gate.
 //   LINKS: Army97PublicationDecisionTransition, CardMigrationEvidence
@@ -259,6 +316,7 @@ export function runCatalogGateAtCommit({
 export function emitFullCatalogGateEvidence({
   repositoryRoot = defaultRepositoryRoot,
   catalogCommit,
+  gateMode,
   cardMigrationEvidence,
 }) {
   const resolvedRepositoryRoot = resolve(repositoryRoot);
@@ -275,7 +333,13 @@ export function emitFullCatalogGateEvidence({
   const execution = runCatalogGateAtCommit({
     repositoryRoot: resolvedRepositoryRoot,
     catalogCommit: resolvedCommit,
+    gateMode,
   });
+  assertCardPublishedAtCommit(
+    resolvedRepositoryRoot,
+    resolvedCommit,
+    cardMigrationEvidence,
+  );
 
   return {
     ...execution,
@@ -307,7 +371,13 @@ export function verifyFullCatalogGateEvidence({
   const execution = runCatalogGateAtCommit({
     repositoryRoot: resolvedRepositoryRoot,
     catalogCommit: fullCatalogGateEvidence.catalogCommit,
+    gateMode: fullCatalogGateEvidence.gateMode,
   });
+  assertCardPublishedAtCommit(
+    resolvedRepositoryRoot,
+    fullCatalogGateEvidence.catalogCommit,
+    cardMigrationEvidence,
+  );
 
   for (const field of FULL_CATALOG_GATE_EVIDENCE_FIELDS.slice(0, -1)) {
     if (fullCatalogGateEvidence[field] !== execution[field]) {
@@ -332,6 +402,7 @@ function parseArguments(args) {
     repositoryRoot: defaultRepositoryRoot,
     catalogCommit: undefined,
     cardEvidenceFile: undefined,
+    gateMode: undefined,
     verifyOnly: false,
   };
 
@@ -343,6 +414,9 @@ function parseArguments(args) {
       index += 1;
     } else if (argument === '--commit') {
       parsed.catalogCommit = args[index + 1];
+      index += 1;
+    } else if (argument === '--mode') {
+      parsed.gateMode = args[index + 1];
       index += 1;
     } else if (argument === '--card-evidence-file') {
       parsed.cardEvidenceFile = args[index + 1];
@@ -358,6 +432,10 @@ function parseArguments(args) {
     fail('--commit is required');
   }
 
+  if (!allowedGateModes.has(parsed.gateMode)) {
+    fail('--mode must be wave or final');
+  }
+
   if (!parsed.verifyOnly && !parsed.cardEvidenceFile) {
     fail('use --verify-only or provide --card-evidence-file');
   }
@@ -370,7 +448,7 @@ function parseArguments(args) {
 }
 
 // START_CONTRACT: run
-//   PURPOSE: Run the exact-commit catalog gate and print a verification or card evidence receipt.
+//   PURPOSE: Run the exact-commit wave or final catalog gate and print a verification or card evidence receipt.
 //   INPUTS: { args: string[] - CLI arguments }
 //   OUTPUTS: { CatalogGateExecution | FullCatalogGateEvidence }
 //   SIDE_EFFECTS: Executes the catalog gate and writes one JSON record to stdout.
@@ -382,10 +460,12 @@ export function run(args = process.argv.slice(2)) {
     ? runCatalogGateAtCommit({
       repositoryRoot: parsed.repositoryRoot,
       catalogCommit: parsed.catalogCommit,
+      gateMode: parsed.gateMode,
     })
     : emitFullCatalogGateEvidence({
       repositoryRoot: parsed.repositoryRoot,
       catalogCommit: parsed.catalogCommit,
+      gateMode: parsed.gateMode,
       cardMigrationEvidence: JSON.parse(
         readFileSync(resolve(parsed.cardEvidenceFile), 'utf8'),
       ),

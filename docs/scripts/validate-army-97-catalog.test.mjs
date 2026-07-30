@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 1.0.0
+// VERSION: 2.0.0
 // START_MODULE_CONTRACT
-//   PURPOSE: Prove the production ARMY-97 catalog gate certifies the exact final inventory and scans nested collection content.
-//   SCOPE: Real Bash 3 production-gate execution against controlled partial, malformed, complete, and provenance-tainted catalogs.
+//   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
+//   SCOPE: Real Bash 3 production-gate execution against controlled legacy-plus-wave, malformed, complete-final, and provenance-tainted catalogs.
 //   DEPENDS: node:test, Bash 3+, docs/scripts/validate-army-97-catalog.sh, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 //   ROLE: TEST
@@ -11,12 +11,13 @@
 //
 // START_MODULE_MAP
 //   createInventoryFixture - Create controlled task IDs and thematic projections without full card bodies.
+//   createWaveCatalogFixture - Create the closed legacy inventory plus one current ARMY-97 wave.
 //   createCompleteCatalogFixture - Create a complete synthetic 118-card and 30-simulation catalog.
 //   runProductionCatalogGate - Execute the tracked production Bash gate against one fixture.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v1.0.0 - Add exact-inventory and nested-provenance production-gate regressions.
+//   LAST_CHANGE: v2.0.0 - Add positive and negative cumulative-wave fixtures while retaining strict final probes.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -36,6 +37,41 @@ const productionCatalogGate = fileURLToPath(
   new URL('./validate-army-97-catalog.sh', import.meta.url),
 );
 const temporaryRoots = [];
+const legacyTaskSlugs = [
+  'accessible-keyboard-tabs',
+  'browser-event-loop-order',
+  'container-responsive-grid',
+  'delegated-dynamic-list',
+  'discriminated-load-state',
+  'flex-long-text-overflow',
+  'idempotent-event-listeners',
+  'immutable-category-totals',
+  'loop-closure-bindings',
+  'modal-focus-lifecycle',
+  'react-batched-counter',
+  'react-derived-list',
+  'react-effect-subscription',
+  'react-strictmode-cleanup',
+  'response-union-narrowing',
+  'stable-product-sort',
+  'stale-search-response',
+  'this-callback-binding',
+  'typed-object-property',
+  'users-api-list',
+  'validate-unknown-profile',
+];
+const legacyThematicPaths = [
+  'collections/html-css/accessibility/README.md',
+  'collections/html-css/layout/README.md',
+  'collections/javascript/arrays-and-objects/README.md',
+  'collections/javascript/dom-and-events/README.md',
+  'collections/javascript/event-loop-and-async/README.md',
+  'collections/javascript/this-and-closures/README.md',
+  'collections/react/effects-and-lifecycle/README.md',
+  'collections/react/state-and-derived-data/README.md',
+  'collections/typescript/narrowing-and-validation/README.md',
+  'collections/typescript/type-modeling/README.md',
+];
 const controlledCollections = [
   {
     path: 'collections/javascript/interview-practice/README.md',
@@ -221,6 +257,96 @@ function cardFixture(number, collection) {
   ].join('\n');
 }
 
+// START_CONTRACT: createWaveCatalogFixture
+//   PURPOSE: Create the closed legacy catalog plus one controlled ARMY-97 wave prefix.
+//   INPUTS: { armyTaskNumbers?: number[], referencedArmyTaskNumbers?: number[], malformedTaskNumber?: number, duplicateArmyTaskNumber?: number }
+//   OUTPUTS: { string - Temporary repository root }
+//   SIDE_EFFECTS: Creates legacy cards, current-wave cards, and thematic projections.
+//   LINKS: V-M-TASK-VALIDATION, M-TASK-LIBRARY, M-CATALOG
+// END_CONTRACT: createWaveCatalogFixture
+function createWaveCatalogFixture({
+  armyTaskNumbers = range(1, 10),
+  referencedArmyTaskNumbers = armyTaskNumbers,
+  malformedTaskNumber,
+  duplicateArmyTaskNumber,
+} = {}) {
+  const repositoryRoot = createFixtureRoot();
+
+  writeFixtureFile(repositoryRoot, 'README.md', '# Wave catalog\n');
+  writeFixtureFile(
+    repositoryRoot,
+    'collections/real-work/README.md',
+    '# Real-work tasks\n',
+  );
+
+  for (const slug of legacyTaskSlugs) {
+    writeFixtureFile(
+      repositoryRoot,
+      `tasks/${slug}/README.md`,
+      `# Legacy ${slug}\n`,
+    );
+  }
+
+  legacyThematicPaths.forEach((collectionPath, index) => {
+    const assignedSlugs = legacyTaskSlugs.filter(
+      (_, taskIndex) => taskIndex % legacyThematicPaths.length === index,
+    );
+
+    writeFixtureFile(
+      repositoryRoot,
+      collectionPath,
+      [
+        `# Legacy collection ${index + 1}`,
+        '',
+        ...assignedSlugs.map(
+          (slug) => `[${slug}](../../../tasks/${slug}/README.md) — 15 минут`,
+        ),
+        '',
+      ].join('\n'),
+    );
+  });
+
+  const reactCollection = controlledCollections[2];
+
+  for (const number of armyTaskNumbers) {
+    writeFixtureFile(
+      repositoryRoot,
+      `tasks/${taskId(number)}/README.md`,
+      number === malformedTaskNumber
+        ? '# Malformed ARMY-97 card\n'
+        : cardFixture(number, reactCollection),
+    );
+  }
+
+  writeFixtureFile(
+    repositoryRoot,
+    reactCollection.path,
+    [
+      `# ${reactCollection.name}`,
+      '',
+      ...referencedArmyTaskNumbers.map(collectionEntry),
+      '',
+    ].join('\n'),
+  );
+
+  if (duplicateArmyTaskNumber !== undefined) {
+    const duplicateCollection = controlledCollections[0];
+
+    writeFixtureFile(
+      repositoryRoot,
+      duplicateCollection.path,
+      [
+        `# ${duplicateCollection.name}`,
+        '',
+        collectionEntry(duplicateArmyTaskNumber),
+        '',
+      ].join('\n'),
+    );
+  }
+
+  return repositoryRoot;
+}
+
 // START_CONTRACT: createCompleteCatalogFixture
 //   PURPOSE: Create the smallest complete synthetic catalog accepted by every production-gate layer.
 //   INPUTS: { nestedProvenance?: string }
@@ -306,13 +432,13 @@ function createCompleteCatalogFixture({ nestedProvenance = '' } = {}) {
 
 // START_CONTRACT: runProductionCatalogGate
 //   PURPOSE: Execute the tracked production Bash gate in one controlled catalog root.
-//   INPUTS: { repositoryRoot: string }
+//   INPUTS: { repositoryRoot: string, gateMode?: wave | final }
 //   OUTPUTS: { SpawnSyncReturns<string> }
 //   SIDE_EFFECTS: Executes Bash without mutating the fixture.
 //   LINKS: V-M-TASK-VALIDATION
 // END_CONTRACT: runProductionCatalogGate
-function runProductionCatalogGate(repositoryRoot) {
-  return spawnSync('bash', [productionCatalogGate], {
+function runProductionCatalogGate(repositoryRoot, gateMode = 'final') {
+  return spawnSync('bash', [productionCatalogGate, '--mode', gateMode], {
     cwd: repositoryRoot,
     encoding: 'utf8',
     maxBuffer: 50 * 1024 * 1024,
@@ -326,6 +452,92 @@ test.after(() => {
 });
 
 // START_BLOCK_PRODUCTION_CATALOG_GATE_PROBES
+test('accepts the exact legacy catalog plus one complete serialized wave', () => {
+  const repositoryRoot = createWaveCatalogFixture();
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+  assert.equal(
+    result.stdout,
+    '{"catalogGate":"PASS","gateMode":"wave","tasks":31,"legacyCards":21,"publishedArmyCards":10,"covered":31,"orphans":0,"thematicErrors":0}\n',
+  );
+});
+
+test('rejects a partial serialized wave prefix', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyTaskNumbers: range(1, 9),
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(
+    result.stderr,
+    /complete serialized ARMY-97 wave prefix/,
+  );
+});
+
+test('rejects a malformed published ARMY-97 card during a wave', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    malformedTaskNumber: 5,
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(
+    result.stderr,
+    /failed ARMY-97 card contract/,
+  );
+});
+
+test('rejects duplicate thematic membership across the current catalog', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    duplicateArmyTaskNumber: 1,
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(
+    result.stderr,
+    /exactly one thematic collection/,
+  );
+});
+
+test('rejects an orphaned task across the current thematic catalog', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    referencedArmyTaskNumbers: range(1, 9),
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(
+    result.stderr,
+    /exactly one thematic collection/,
+  );
+});
+
+test('rejects a collection reference to an unpublished ARMY-97 ID', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    referencedArmyTaskNumbers: [...range(1, 10), 11],
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(
+    result.stderr,
+    /unpublished task card/,
+  );
+});
+
 test('rejects a partial task catalog at the exact inventory boundary', () => {
   const repositoryRoot = createInventoryFixture({
     taskNumbers: [1],
@@ -400,7 +612,10 @@ test('accepts a complete controlled production catalog fixture', () => {
     0,
     `${result.stdout}\n${result.stderr}`.slice(-8_000),
   );
-  assert.equal(result.stdout, '{"catalogGate":"PASS"}\n');
+  assert.equal(
+    result.stdout,
+    '{"catalogGate":"PASS","gateMode":"final","tasks":118,"legacyCards":0,"publishedArmyCards":118,"covered":118,"orphans":0,"thematicErrors":0}\n',
+  );
 });
 
 test('rejects prohibited provenance in a nested simulation under Bash 3', () => {
