@@ -11,7 +11,6 @@
 //
 // START_MODULE_MAP
 //   createImmutableManifest - Derive the immutable source-audit snapshot and digest.
-//   createFullCatalogGateEvidence - Create a self-verifying structured gate record.
 //   validatePublicationRegistry - Validate candidate/card state and derive mutable counts.
 //   loadLiveRegistry - Read the current ARMY-97 registry from Beads.
 //   run - Validate the live registry from the repository root.
@@ -26,6 +25,11 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import {
+  FULL_CATALOG_GATE_EVIDENCE_FIELDS,
+  verifyFullCatalogGateEvidence,
+} from './run-army-97-catalog-gate.mjs';
 
 export const IMMUTABLE_CANDIDATE_FIELDS = [
   'recordType',
@@ -56,13 +60,6 @@ export const CARD_MIGRATION_EVIDENCE_FIELDS = [
   'verdict',
 ];
 
-export const FULL_CATALOG_GATE_EVIDENCE_FIELDS = [
-  'policyPath',
-  'catalogCommit',
-  'verdict',
-  'evidenceSha256',
-];
-
 const immutableManifestFields = [
   'schemaVersion',
   'sourceAuditRevision',
@@ -74,8 +71,6 @@ const immutableManifestFields = [
 const candidateIdPattern = /^frontend-livecoding-tasks-army-97-candidate-(\d{3})$/;
 const cardIdPattern = /^frontend-livecoding-tasks-army-97-task-(\d{4})$/;
 const taskIdPattern = /^task-(\d{4})$/;
-const catalogCommitPattern = /^[0-9a-f]{40}$/;
-const evidenceSha256Pattern = /^[0-9a-f]{64}$/;
 const allowedSourceDecisions = new Set([
   'accepted',
   'needs-rewrite',
@@ -100,7 +95,6 @@ const allowedTargetCollections = new Set([
   'collections/html-css/interview-practice/README.md',
 ]);
 const freezeEvidence = 'none: source-audit freeze';
-const policyPath = 'docs/task-validation-policy.md';
 
 const modulePath = fileURLToPath(import.meta.url);
 const repoRoot = resolve(dirname(modulePath), '..', '..');
@@ -142,16 +136,6 @@ function orderedImmutableRecord(candidate) {
 
   for (const field of IMMUTABLE_CANDIDATE_FIELDS) {
     record[field] = candidate.metadata?.[field];
-  }
-
-  return record;
-}
-
-function orderedRecord(value, fields) {
-  const record = {};
-
-  for (const field of fields) {
-    record[field] = value[field];
   }
 
   return record;
@@ -238,49 +222,6 @@ export function createImmutableManifest(candidates) {
 
 function transitionEvidenceReference(cardId) {
   return `Beads:${cardId}#cardMigrationEvidence+fullCatalogGateEvidence`;
-}
-
-function fullCatalogEvidenceDigest({
-  cardMigrationEvidence,
-  policyPath: evidencePolicyPath,
-  catalogCommit,
-  verdict,
-}) {
-  return sha256(JSON.stringify({
-    policyPath: evidencePolicyPath,
-    catalogCommit,
-    verdict,
-    cardMigrationEvidence: orderedRecord(
-      cardMigrationEvidence,
-      CARD_MIGRATION_EVIDENCE_FIELDS,
-    ),
-  }));
-}
-
-// START_CONTRACT: createFullCatalogGateEvidence
-//   PURPOSE: Build a deterministic structured proof record tied to the card evidence and catalog commit.
-//   INPUTS: { cardMigrationEvidence: object, catalogCommit: string }
-//   OUTPUTS: { FullCatalogGateEvidence }
-//   SIDE_EFFECTS: none
-//   LINKS: V-M-TASK-VALIDATION, CardMigrationEvidence
-// END_CONTRACT: createFullCatalogGateEvidence
-export function createFullCatalogGateEvidence({
-  cardMigrationEvidence,
-  catalogCommit,
-}) {
-  const evidence = {
-    policyPath,
-    catalogCommit,
-    verdict: 'PASS',
-  };
-
-  return {
-    ...evidence,
-    evidenceSha256: fullCatalogEvidenceDigest({
-      ...evidence,
-      cardMigrationEvidence,
-    }),
-  };
 }
 
 function validateManifest(candidates, manifest) {
@@ -457,7 +398,7 @@ function validateCardMigrationEvidence(card) {
 function validateFullCatalogGateEvidence(
   card,
   cardMigrationEvidence,
-  hasCatalogCommit,
+  verifyCatalogGateExecution,
 ) {
   const evidence = card.metadata.fullCatalogGateEvidence;
 
@@ -471,33 +412,17 @@ function validateFullCatalogGateEvidence(
     `${card.id}: FullCatalogGateEvidence`,
   );
 
-  if (
-    evidence.policyPath !== policyPath
-    || evidence.verdict !== 'PASS'
-  ) {
-    fail(`${card.id}: FullCatalogGateEvidence must record the tracked policy and PASS`);
+  if (typeof verifyCatalogGateExecution !== 'function') {
+    fail(`${card.id}: actual exact-commit catalog gate execution is required`);
   }
 
-  if (
-    !catalogCommitPattern.test(evidence.catalogCommit)
-    || !hasCatalogCommit(evidence.catalogCommit)
-  ) {
-    fail(`${card.id}: FullCatalogGateEvidence catalogCommit is not an ancestor of HEAD`);
-  }
-
-  if (!evidenceSha256Pattern.test(evidence.evidenceSha256)) {
-    fail(`${card.id}: FullCatalogGateEvidence evidenceSha256 is malformed`);
-  }
-
-  const expectedDigest = fullCatalogEvidenceDigest({
+  const verified = verifyCatalogGateExecution({
     cardMigrationEvidence,
-    policyPath: evidence.policyPath,
-    catalogCommit: evidence.catalogCommit,
-    verdict: evidence.verdict,
+    fullCatalogGateEvidence: evidence,
   });
 
-  if (evidence.evidenceSha256 !== expectedDigest) {
-    fail(`${card.id}: FullCatalogGateEvidence evidenceSha256 does not match the structured record`);
+  if (verified !== true) {
+    fail(`${card.id}: exact-commit catalog gate execution was not verified`);
   }
 }
 
@@ -520,7 +445,11 @@ function validateSynchronizedState(candidate, card) {
   }
 }
 
-function validatePublicationTransition(candidate, card, hasCatalogCommit) {
+function validatePublicationTransition(
+  candidate,
+  card,
+  verifyCatalogGateExecution,
+) {
   const metadata = candidate.metadata;
 
   if (metadata.sourceAuditDecision === 'accepted') {
@@ -561,7 +490,7 @@ function validatePublicationTransition(candidate, card, hasCatalogCommit) {
   validateFullCatalogGateEvidence(
     card,
     cardMigrationEvidence,
-    hasCatalogCommit,
+    verifyCatalogGateExecution,
   );
 
   return true;
@@ -569,16 +498,16 @@ function validatePublicationTransition(candidate, card, hasCatalogCommit) {
 
 // START_CONTRACT: validatePublicationRegistry
 //   PURPOSE: Enforce immutable source state, synchronized card state, and structured publication transitions.
-//   INPUTS: { candidates: Army97CandidateRecord[], cards: Army97CardWorkItem[], manifest: object, hasCatalogCommit?: function }
+//   INPUTS: { candidates: Army97CandidateRecord[], cards: Army97CardWorkItem[], manifest: object, verifyCatalogGateExecution?: function }
 //   OUTPUTS: { object - Derived source and publication counts plus transition count }
-//   SIDE_EFFECTS: none
+//   SIDE_EFFECTS: Executes the supplied exact-commit catalog verifier for every transition.
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, DF-ARMY97-CANDIDATE-TO-CARD
 // END_CONTRACT: validatePublicationRegistry
 export function validatePublicationRegistry({
   candidates,
   cards,
   manifest,
-  hasCatalogCommit = () => true,
+  verifyCatalogGateExecution,
 }) {
   if (!Array.isArray(candidates) || !Array.isArray(cards)) {
     fail('candidate and card registries must be arrays');
@@ -612,7 +541,11 @@ export function validatePublicationRegistry({
     validateCardShape(card, expectedOrder);
     validateSynchronizedState(candidate, card);
 
-    if (validatePublicationTransition(candidate, card, hasCatalogCommit)) {
+    if (validatePublicationTransition(
+      candidate,
+      card,
+      verifyCatalogGateExecution,
+    )) {
       transitionCount += 1;
     }
   }
@@ -652,22 +585,6 @@ export function loadLiveRegistry(cwd = repoRoot) {
   return { candidates, cards };
 }
 
-function isCatalogCommit(commit) {
-  try {
-    execFileSync(
-      'git',
-      ['merge-base', '--is-ancestor', commit, 'HEAD'],
-      {
-        cwd: repoRoot,
-        stdio: 'ignore',
-      },
-    );
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 // START_CONTRACT: run
 //   PURPOSE: Apply the tracked manifest and validator to the live Beads registry.
 //   INPUTS: { none }
@@ -681,7 +598,14 @@ export function run() {
   const summary = validatePublicationRegistry({
     ...registry,
     manifest,
-    hasCatalogCommit: isCatalogCommit,
+    verifyCatalogGateExecution: ({
+      cardMigrationEvidence,
+      fullCatalogGateEvidence,
+    }) => verifyFullCatalogGateEvidence({
+      repositoryRoot: repoRoot,
+      cardMigrationEvidence,
+      fullCatalogGateEvidence,
+    }),
   });
 
   process.stdout.write(`${JSON.stringify(summary, null, 2)}\n`);

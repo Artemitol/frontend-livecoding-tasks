@@ -10,7 +10,7 @@
     <constraint-provenance>No student-facing card, collection, root page, or simulation contains authorship, source provenance, import, or migration language.</constraint-provenance>
     <constraint-catalog>Each task has exactly one thematic collection; React real-work additionally has exactly one real-work projection.</constraint-catalog>
     <constraint-simulations>Exactly thirty static mixed simulations satisfy 30-120 minutes, two thematic collections, three-simulation recurrence, and recorded realism evidence.</constraint-simulations>
-    <constraint-validation>Tracked immutable candidate hash, derived and synchronized publication decisions, exact nested CardMigrationEvidence and FullCatalogGateEvidence records, full-catalog local validation, XML, Grace, and diff checks gate publication.</constraint-validation>
+    <constraint-validation>Tracked immutable candidate hash, derived and synchronized publication decisions, exact CardMigrationEvidence, and causal FullCatalogGateEvidence emitted and re-verified only after the complete catalog-only gate passes at current HEAD precede XML, Grace, and diff publication checks.</constraint-validation>
   </Constraints>
   <NonGoals><item-1>No browser, target-editor, GitHub-rendering, or CSS-layout gate.</item-1><item-2>No student-facing source migration history.</item-2></NonGoals>
 </RequirementsAnalysis>
