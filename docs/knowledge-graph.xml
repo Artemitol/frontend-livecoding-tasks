@@ -12,6 +12,6 @@
   </Army97PublicTaskRegistry>
   <Army97PublishedWave-001 FIRST="task-0001" LAST="task-0010" COUNT="10" THEMATIC="collections/react/interview-practice/README.md" REAL-WORK="task-0004 task-0006 task-0008"/>
   <Army97PublishedWave-002 FIRST="task-0011" LAST="task-0020" COUNT="10" THEMATIC="collections/react/interview-practice/README.md collections/javascript/interview-practice/README.md" REAL-WORK="task-0013"/>
-  <Army97Wave-003 STATUS="authoring-pending-independent-review" FIRST="task-0021" LAST="task-0030" COUNT="10" THEMATIC="collections/javascript/interview-practice/README.md" REAL-WORK="none"/>
+  <Army97PublishedWave-003 FIRST="task-0021" LAST="task-0030" COUNT="10" THEMATIC="collections/javascript/interview-practice/README.md" REAL-WORK="none" CONTENT-REVIEW="PASS" TRANSITIONS="task-0027 task-0028 task-0029 task-0030"/>
   <CrossLink from="M-TASK-VALIDATION" to="M-TASK-LIBRARY" relation="DF-ARMY97-CANDIDATE-TO-CARD"/><CrossLink from="M-TASK-LIBRARY" to="M-CATALOG" relation="DF-ARMY97-CARD-TO-CATALOG"/><CrossLink from="M-CATALOG" to="M-TASK-LIBRARY" relation="DF-ARMY97-SIMULATION"/>
 </Project></KnowledgeGraph>
