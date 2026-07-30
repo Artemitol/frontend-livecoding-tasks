@@ -2,13 +2,20 @@
   <Modules>
     <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY"><purpose>Own branch, cleanup, authoring, stop, and full-gate rules.</purpose><inputs>Approved ARMY-97 design</inputs><outputs>AGENTS.md, .gitignore, shared contracts</outputs><verification-ref>V-M-GOVERNANCE</verification-ref></M-GOVERNANCE>
     <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY"><purpose>Define the immutable task-XXXX student-card contract.</purpose><inputs>Task intent and controlled metadata</inputs><outputs>ConciseStudentTaskCard</outputs><depends>M-GOVERNANCE</depends><verification-ref>V-M-TASK-TEMPLATE</verification-ref></M-TASK-TEMPLATE>
-    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY"><purpose>Own candidate decisions and full-catalog checks.</purpose><inputs>Army97CandidateRecord, candidate inventory</inputs><outputs>accepted decision, CardMigrationEvidence</outputs><depends>M-GOVERNANCE, M-TASK-TEMPLATE</depends><verification-ref>V-M-TASK-VALIDATION</verification-ref></M-TASK-VALIDATION>
-    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER"><purpose>Own tasks/task-XXXX cards.</purpose><inputs>accepted candidate</inputs><outputs>self-contained student card</outputs><depends>M-TASK-VALIDATION, M-TASK-TEMPLATE</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-TASK-LIBRARY>
+    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY"><purpose>Own immutable source-audit decisions, mutable publication decisions, and full-catalog checks.</purpose><inputs>Army97CandidateRecord, candidate inventory</inputs><outputs>sourceAuditDecision, publicationDecision, CardMigrationEvidence</outputs><depends>M-GOVERNANCE, M-TASK-TEMPLATE</depends><verification-ref>V-M-TASK-VALIDATION</verification-ref></M-TASK-VALIDATION>
+    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER"><purpose>Own tasks/task-XXXX cards.</purpose><inputs>candidate with publicationDecision accepted</inputs><outputs>self-contained student card</outputs><depends>M-TASK-VALIDATION, M-TASK-TEMPLATE</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-TASK-LIBRARY>
     <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT"><purpose>Own thematic, real-work, and simulation projections.</purpose><inputs>published cards</inputs><outputs>collections and student hub</outputs><depends>M-TASK-LIBRARY</depends><verification-ref>V-M-CATALOG</verification-ref></M-CATALOG>
   </Modules>
   <DataFlows><DF-ARMY97-CANDIDATE-TO-CARD NAME="Candidate to card">M-TASK-VALIDATION -&gt; M-TASK-LIBRARY</DF-ARMY97-CANDIDATE-TO-CARD><DF-ARMY97-CARD-TO-CATALOG NAME="Card to catalog">M-TASK-LIBRARY -&gt; M-CATALOG</DF-ARMY97-CARD-TO-CATALOG><DF-ARMY97-SIMULATION NAME="Simulation">M-CATALOG validates static simulations against M-TASK-LIBRARY metadata</DF-ARMY97-SIMULATION></DataFlows>
   <Army97CandidateRegistry>
-    <annotations candidate-register-size="118" accepted-count="74" needs-rewrite-count="44" rejected-count="0" duplicate-count="0" exact-duplicate-group-count="0" distinct-target-count="118"/>
+    <annotations candidate-register-size="118" source-audit-revision="round-1" source-audit-accepted-count="56" source-audit-needs-rewrite-count="62" source-audit-rejected-count="0" source-audit-duplicate-count="0" exact-duplicate-group-count="0" distinct-target-count="118"/>
+    <source-audit-round-1 INITIAL-RECORDED-ACCEPTED="74" INITIAL-RECORDED-NEEDS-REWRITE="44" RECLASSIFIED="candidate-014 candidate-017 candidate-027 candidate-030 candidate-031 candidate-034 candidate-043 candidate-056 candidate-068 candidate-074 candidate-076 candidate-080 candidate-081 candidate-086 candidate-097 candidate-098 candidate-105 candidate-110" CORRECTED-WITHOUT-RECLASSIFICATION="candidate-107"/>
+    <publication-decision-model MUTABLE="true">
+      <accepted-source-state FROM="accepted" TO="accepted" EVIDENCE="source-audit freeze or later CardMigrationEvidence PASS"/>
+      <rewrite-transition FROM="needs-rewrite" TO="accepted" EVIDENCE="publicationTransitionEvidence naming CardMigrationEvidence PASS and the full local gate"/>
+      <rewrite-hold FROM="needs-rewrite" TO="needs-rewrite" EVIDENCE="non-empty correctionPath"/>
+      <immutable-source-fields>sourceAuditRevision, sourceAuditDecision, decisionEvidence, duplicateTarget, correctionPath, targetTaskId, targetCollection</immutable-source-fields>
+    </publication-decision-model>
     <thematic-registry>
       <thematic-javascript PATH="collections/javascript/interview-practice/README.md" EXPECTED="92"/>
       <thematic-typescript PATH="collections/typescript/interview-practice/README.md" EXPECTED="8"/>
