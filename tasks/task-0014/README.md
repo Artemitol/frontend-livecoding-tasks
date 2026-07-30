@@ -83,7 +83,7 @@ export default function App() {
 <details>
 <summary>Подсказка 3 — почти решение</summary>
 
-Храните последний count в `useRef`; обновляйте ref вместе с функциональным `setCount`, чтобы стабильный interval читал `countRef.current`.
+Храните последний count в `useRef`; синхронизируйте ref в отдельном effect с зависимостью от `count`, чтобы стабильный interval читал `countRef.current`.
 
 </details>
 
@@ -97,6 +97,10 @@ function OfflineCounter({ onOffline }: OfflineCounterProps) {
   const [count, setCount] = useState(0);
   const [offline, setOffline] = useState(false);
   const countRef = useRef(count);
+
+  useEffect(() => {
+    countRef.current = count;
+  }, [count]);
 
   useEffect(() => {
     const handleOffline = (): void => {
@@ -126,11 +130,7 @@ function OfflineCounter({ onOffline }: OfflineCounterProps) {
   }, [offline]);
 
   const increase = (): void => {
-    setCount((current) => {
-      const next = current + 1;
-      countRef.current = next;
-      return next;
-    });
+    setCount((current) => current + 1);
   };
 
   return (
@@ -145,11 +145,11 @@ function OfflineCounter({ onOffline }: OfflineCounterProps) {
 }
 ```
 
-Подписка существует только в жизненном цикле компонента, состояние `offline` разрешает единственный interval, а ref предоставляет ему последнее число без перезапуска.
+Подписка существует только в жизненном цикле компонента, состояние `offline` разрешает единственный interval, а отдельный effect синхронизирует ref с последним числом без побочного эффекта внутри state updater.
 
 Ожидаемый результат: каждое событие при смонтированном компоненте увеличивает внешний счётчик на один, логи раз в секунду содержат текущий count, а после скрытия не меняется ни счётчик событий, ни консоль.
 
-Ручная проверка: увеличьте count до `2`, вызовите событие и проверьте `Обработано offline: 1` и логи `count:2`; увеличьте до `3`, повторите событие и проверьте значение `2` без удвоения частоты логов; скройте счётчик, вызовите событие снова и убедитесь, что значение остаётся `2`, а новые логи не появляются.
+Ручная проверка: увеличьте count до `2`, вызовите событие, проверьте `Обработано offline: 1` и дождитесь одного лога `count:2`; затем увеличьте count до `3` и убедитесь, что следующий секундный tick того же interval выводит `count:3`. Отдельно повторите событие и проверьте `Обработано offline: 2` без удвоения секундной частоты; скройте счётчик, вызовите событие снова и убедитесь, что значение остаётся `2`, а новые логи не появляются.
 
 </details>
 
