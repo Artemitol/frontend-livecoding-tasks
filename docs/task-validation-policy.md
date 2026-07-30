@@ -15,6 +15,11 @@ gate script, commit, tree, gate blob, хеш вывода и `CardMigrationEvide
 `publicationTransitionEvidence` в candidate и card хранит точную ссылку
 `Beads:<card-id>#cardMigrationEvidence+fullCatalogGateEvidence`.
 
+Catalog-only gate принимает только полный замороженный каталог: ровно 118
+карточек с непрерывными путями `task-0001..task-0118`, только четыре
+контролируемых тематических пути с распределением `92/8/16/2`, и все вложенные
+страницы коллекций участвуют в provenance scan, совместимом с Bash 3.
+
 Сначала зафиксируйте полный каталог commit-ом. Затем передайте точный
 десятипольный JSON в
 `node docs/scripts/run-army-97-catalog-gate.mjs --commit HEAD --card-evidence-file <path>`.
@@ -30,7 +35,7 @@ gate на том же текущем `HEAD`.
 ```bash
 set -euo pipefail
 BASH_VERSINFO="${BASH_VERSINFO:-0}"; test "$BASH_VERSINFO" -ge 3
-node --test docs/scripts/validate-army-97-beads.test.mjs docs/scripts/run-army-97-catalog-gate.test.mjs
+node --test docs/scripts/validate-army-97-catalog.test.mjs docs/scripts/validate-army-97-beads.test.mjs docs/scripts/run-army-97-catalog-gate.test.mjs
 bash docs/scripts/validate-army-97-catalog.sh
 catalogCommit="$(git rev-parse HEAD)"
 node docs/scripts/run-army-97-catalog-gate.mjs --commit "$catalogCommit" --verify-only
@@ -49,5 +54,8 @@ sandbox syntax, card structure, controlled metadata, provenance exclusion,
 thematic and real-work projections, 30 simulations, recurrence, realism, and
 local links. XML, Grace, and diff checks follow the transition gate. The
 validator uses only built-in Node.js modules plus existing Bash, Git, `tar`, and
-`bd`; it adds no task runtime, package, or dependency. Browser, external editor,
-rendered-page, and CSS layout execution are not local publication gates.
+`bd`; it adds no task runtime, package, or dependency. The production-gate
+regression executes a complete controlled 118-card fixture plus partial,
+non-contiguous, thematic-drift, unexpected-path, and nested-provenance negative
+probes. Browser, external editor, rendered-page, and CSS layout execution are
+not local publication gates.

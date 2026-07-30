@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # FILE: docs/scripts/validate-army-97-catalog.sh
-# VERSION: 1.0.0
+# VERSION: 1.1.0
 # START_MODULE_CONTRACT
 #   PURPOSE: Validate the complete ARMY-97 student catalog without reading or mutating Beads.
 #   SCOPE: Task cards, thematic and real-work projections, simulations, provenance exclusion, and local links.
@@ -11,18 +11,81 @@
 # END_MODULE_CONTRACT
 #
 # START_CHANGE_SUMMARY
-#   LAST_CHANGE: v1.0.0 - Extract the complete catalog-only gate for exact-commit execution.
+#   LAST_CHANGE: v1.1.0 - Certify the frozen final inventory and scan nested collection provenance under Bash 3.
 # END_CHANGE_SUMMARY
 
 set -euo pipefail
 
 test "${BASH_VERSINFO:-0}" -ge 3
 
+catalogFail() {
+  printf 'ARMY-97 catalog gate: %s\n' "$1" >&2
+  exit 1
+}
+
+# START_BLOCK_CERTIFY_FROZEN_CATALOG_INVENTORY
 taskFiles="$(find tasks -mindepth 2 -maxdepth 2 -type f -name README.md | sort)"
-test -n "$taskFiles"
-test -z "$(printf '%s\n' "$taskFiles" | rg -v '^tasks/task-[0-9]{4}/README\.md$' || true)"
+taskCount="$(printf '%s\n' "$taskFiles" | sed '/^$/d' | wc -l | tr -d ' ')"
+if [ "$taskCount" -ne 118 ]; then
+  catalogFail "expected exactly 118 task cards; found $taskCount"
+fi
+if [ -n "$(printf '%s\n' "$taskFiles" | rg -v '^tasks/task-[0-9]{4}/README\.md$' || true)" ]; then
+  catalogFail 'task cards must use only tasks/task-NNNN/README.md paths'
+fi
 taskIds="$(printf '%s\n' "$taskFiles" | sed -E 's#tasks/(task-[0-9]{4})/README\.md#\1#')"
-test "$(printf '%s\n' "$taskIds" | sort | uniq -d | wc -l | tr -d ' ')" -eq 0
+expectedTaskIds="$(for number in $(seq 1 118); do
+  printf 'task-%04d\n' "$number"
+done)"
+if [ "$taskIds" != "$expectedTaskIds" ]; then
+  catalogFail 'expected contiguous task-0001 through task-0118'
+fi
+
+controlledThematicFiles="$(printf '%s\n' \
+  'collections/html-css/interview-practice/README.md' \
+  'collections/javascript/interview-practice/README.md' \
+  'collections/react/interview-practice/README.md' \
+  'collections/typescript/interview-practice/README.md' |
+  sort)"
+thematicFiles="$(find collections -type f -name README.md |
+  sort |
+  rg -v '^collections/(interviews|real-work)(/|$)' || true)"
+if [ "$thematicFiles" != "$controlledThematicFiles" ]; then
+  catalogFail 'missing or unexpected thematic collection paths'
+fi
+
+thematicSpecifications=(
+  'collections/javascript/interview-practice/README.md|92'
+  'collections/typescript/interview-practice/README.md|8'
+  'collections/react/interview-practice/README.md|16'
+  'collections/html-css/interview-practice/README.md|2'
+)
+allThematicTaskFiles=''
+for thematicSpecification in "${thematicSpecifications[@]}"; do
+  thematicFile="${thematicSpecification%|*}"
+  expectedCount="${thematicSpecification##*|}"
+  thematicTaskFiles="$(rg -o 'tasks/task-[0-9]{4}/README\.md' "$thematicFile" || true)"
+  thematicCount="$(printf '%s\n' "$thematicTaskFiles" | sed '/^$/d' | wc -l | tr -d ' ')"
+  if [ "$thematicCount" -ne "$expectedCount" ]; then
+    catalogFail "expected $expectedCount task links in $thematicFile; found $thematicCount"
+  fi
+  uniqueThematicCount="$(printf '%s\n' "$thematicTaskFiles" |
+    sed '/^$/d' |
+    sort -u |
+    wc -l |
+    tr -d ' ')"
+  if [ "$uniqueThematicCount" -ne "$expectedCount" ]; then
+    catalogFail "$thematicFile contains duplicate task links"
+  fi
+  allThematicTaskFiles="${allThematicTaskFiles}${thematicTaskFiles}"$'\n'
+done
+
+uniqueThematicTaskFiles="$(printf '%s' "$allThematicTaskFiles" |
+  sed '/^$/d' |
+  sort -u)"
+if [ "$uniqueThematicTaskFiles" != "$taskFiles" ]; then
+  catalogFail 'every frozen task must appear in exactly one controlled thematic collection'
+fi
+# END_BLOCK_CERTIFY_FROZEN_CATALOG_INVENTORY
 
 while IFS= read -r taskFile; do
   test "$(rg -n '^Песочница для выполнения — \[[^]]+\]\(https?://[^)]+\)\.$' "$taskFile" | wc -l | tr -d ' ')" -eq 1
@@ -125,7 +188,13 @@ for start in $(seq 1 28); do
   test -z "$(rg --no-filename -o 'tasks/task-[0-9]{4}/README\.md' $ids | sort | uniq -d)"
 done
 
-! rg -n -i 'author|source repository|video walkthrough|imported|migrated|мигрир|импортир' README.md collections/**/README.md tasks/task-*/README.md
+# START_BLOCK_SCAN_ALL_MARKDOWN_PROVENANCE
+while IFS= read -r markdownFile; do
+  if rg -n -i 'author|source repository|video walkthrough|imported|migrated|мигрир|импортир' "$markdownFile"; then
+    catalogFail "prohibited provenance in $markdownFile"
+  fi
+done < <(find README.md collections tasks -type f -name README.md | sort)
+# END_BLOCK_SCAN_ALL_MARKDOWN_PROVENANCE
 
 while IFS= read -r file; do
   while IFS= read -r link; do

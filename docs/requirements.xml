@@ -8,9 +8,9 @@
     <constraint-immutable-id>Every published task is tasks/task-XXXX/README.md; its ID is hidden, immutable, never reused, and never renumbered.</constraint-immutable-id>
     <constraint-card-contract>Card order is title, exact sandbox line, Условие, starter comments containing every requirement, three closed hints, closed solution, and closed five-field metadata.</constraint-card-contract>
     <constraint-provenance>No student-facing card, collection, root page, or simulation contains authorship, source provenance, import, or migration language.</constraint-provenance>
-    <constraint-catalog>Each task has exactly one thematic collection; React real-work additionally has exactly one real-work projection.</constraint-catalog>
+    <constraint-catalog>Exactly task-0001 through task-0118 appear once across only the four controlled thematic paths with JavaScript 92, TypeScript 8, React 16, and HTML/CSS 2; React real-work additionally has exactly one real-work projection.</constraint-catalog>
     <constraint-simulations>Exactly thirty static mixed simulations satisfy 30-120 minutes, two thematic collections, three-simulation recurrence, and recorded realism evidence.</constraint-simulations>
-    <constraint-validation>Tracked immutable candidate hash, derived and synchronized publication decisions, exact CardMigrationEvidence, and causal FullCatalogGateEvidence emitted and re-verified only after the complete catalog-only gate passes at current HEAD precede XML, Grace, and diff publication checks.</constraint-validation>
+    <constraint-validation>Tracked immutable candidate hash, derived and synchronized publication decisions, exact CardMigrationEvidence, and causal FullCatalogGateEvidence emitted and re-verified only after the complete exact-inventory catalog-only gate passes at current HEAD precede XML, Grace, and diff publication checks; nested collection provenance scanning remains Bash 3 compatible.</constraint-validation>
   </Constraints>
   <NonGoals><item-1>No browser, target-editor, GitHub-rendering, or CSS-layout gate.</item-1><item-2>No student-facing source migration history.</item-2></NonGoals>
 </RequirementsAnalysis>
