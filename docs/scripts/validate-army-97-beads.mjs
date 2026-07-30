@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-beads.mjs
-// VERSION: 2.0.0
+// VERSION: 2.1.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Enforce the ARMY-97 source-audit, published-catalog, and publication-decision contract against live Beads metadata.
-//   SCOPE: Immutable snapshot hashing, mutable count derivation, current task/collection inventory, candidate/card synchronization, and structured current-commit evidence.
+//   SCOPE: Immutable snapshot hashing, mutable count derivation, current task/collection/editor inventory, candidate/card synchronization, and structured current-commit evidence.
 //   DEPENDS: bd CLI, Git, Node fs, docs/army-97-candidate-audit.json, docs/scripts/run-army-97-catalog-gate.mjs, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, DF-ARMY97-CANDIDATE-TO-CARD
 //   ROLE: SCRIPT
@@ -14,12 +14,12 @@
 //   validatePublishedCatalogState - Cross-check published Markdown identities against Beads state and current receipts.
 //   validatePublicationRegistry - Validate candidate/card state and derive mutable counts.
 //   loadLiveRegistry - Read the current ARMY-97 registry from Beads.
-//   loadPublishedCatalogState - Read current legacy and published ARMY-97 task identities and thematic membership.
+//   loadPublishedCatalogState - Read current task identities, thematic membership, technology, and editor profile from Markdown.
 //   run - Validate the live registry from the repository root.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.0.0 - Require every published wave card to match live publication state and exact-current-catalog evidence.
+//   LAST_CHANGE: v2.1.0 - Bind the sandbox profile parsed from published Markdown to card technology and frozen Beads editor metadata.
 // END_CHANGE_SUMMARY
 
 import { createHash } from 'node:crypto';
@@ -109,6 +109,32 @@ const allowedEditorProfiles = new Set([
   'CodePen',
   'TypeScript Playground',
   'React TypeScript',
+]);
+const allowedEditorsByTechnology = {
+  JavaScript: new Set(['Programiz', 'CodePen']),
+  TypeScript: new Set(['TypeScript Playground']),
+  'HTML/CSS': new Set(['CodePen']),
+  'HTML/JavaScript': new Set(['CodePen']),
+  'HTML/CSS/JavaScript': new Set(['CodePen']),
+  'React/TypeScript': new Set(['React TypeScript']),
+};
+const editorProfileBySandboxLine = new Map([
+  [
+    'Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).',
+    'Programiz',
+  ],
+  [
+    'Песочница для выполнения — [CodePen](https://pen.new).',
+    'CodePen',
+  ],
+  [
+    'Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).',
+    'TypeScript Playground',
+  ],
+  [
+    'Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).',
+    'React TypeScript',
+  ],
 ]);
 const allowedTargetCollections = new Set([
   'collections/javascript/interview-practice/README.md',
@@ -549,6 +575,7 @@ function validatePublishedCatalogState({
     totalTaskCount,
     publishedArmyTaskIds,
     thematicByTaskId,
+    cardFactsByTaskId,
   } = publishedCatalog ?? {};
 
   if (
@@ -559,6 +586,9 @@ function validatePublishedCatalogState({
     || !thematicByTaskId
     || Array.isArray(thematicByTaskId)
     || typeof thematicByTaskId !== 'object'
+    || !cardFactsByTaskId
+    || Array.isArray(cardFactsByTaskId)
+    || typeof cardFactsByTaskId !== 'object'
   ) {
     fail('published catalog state is malformed');
   }
@@ -603,6 +633,12 @@ function validatePublishedCatalogState({
     fail('published ARMY-97 thematic map must contain exactly the published IDs');
   }
 
+  const cardFactTaskIds = Object.keys(cardFactsByTaskId).sort();
+
+  if (JSON.stringify(cardFactTaskIds) !== JSON.stringify(uniqueTaskIds)) {
+    fail('published ARMY-97 card facts must contain exactly the published IDs');
+  }
+
   const candidatesByTaskId = new Map(
     candidates.map((candidate) => [
       candidate.metadata.targetTaskId,
@@ -637,6 +673,17 @@ function validatePublishedCatalogState({
 
     if (thematicByTaskId[publishedTaskId] !== card.metadata.targetCollection) {
       fail(`${publishedTaskId}: published thematic collection does not match the frozen card mapping`);
+    }
+
+    const cardFact = cardFactsByTaskId[publishedTaskId];
+    const allowedMarkdownEditors =
+      allowedEditorsByTechnology[cardFact?.technology];
+
+    if (
+      !allowedMarkdownEditors?.has(cardFact?.editorProfile)
+      || cardFact.editorProfile !== card.metadata.editorProfile
+    ) {
+      fail(`${card.id}: Markdown editor profile does not match card technology and frozen Beads profile`);
     }
 
     const cardEvidence = validateCardMigrationEvidence(card);
@@ -788,7 +835,7 @@ export function loadLiveRegistry(cwd = repoRoot) {
 // START_CONTRACT: loadPublishedCatalogState
 //   PURPOSE: Derive current ARMY-97 publication identity and thematic membership from tracked Markdown.
 //   INPUTS: { cwd: string - Repository root }
-//   OUTPUTS: { PublishedCatalogState }
+//   OUTPUTS: { PublishedCatalogState - Counts, IDs, thematic mapping, and Markdown technology/editor facts }
 //   SIDE_EFFECTS: Reads task and controlled thematic Markdown paths.
 //   LINKS: M-TASK-LIBRARY, M-CATALOG, V-M-TASK-VALIDATION
 // END_CONTRACT: loadPublishedCatalogState
@@ -808,6 +855,7 @@ export function loadPublishedCatalogState(cwd = repoRoot) {
     taskDirectories.length - publishedArmyTaskIds.length;
   const gateMode = legacyTaskCount > 0 ? 'wave' : 'final';
   const thematicByTaskId = {};
+  const cardFactsByTaskId = {};
 
   for (const collectionPath of allowedTargetCollections) {
     const absoluteCollectionPath = resolve(cwd, collectionPath);
@@ -831,12 +879,31 @@ export function loadPublishedCatalogState(cwd = repoRoot) {
     }
   }
 
+  for (const taskId of publishedArmyTaskIds) {
+    const content = readFileSync(
+      resolve(tasksRoot, taskId, 'README.md'),
+      'utf8',
+    );
+    const technology = content.match(
+      /^- Технология: (JavaScript|TypeScript|HTML\/CSS|HTML\/JavaScript|HTML\/CSS\/JavaScript|React\/TypeScript)$/m,
+    )?.[1];
+    const sandboxLine = content.match(
+      /^Песочница для выполнения — \[[^\]]+\]\(https?:\/\/[^)]+\)\.$/m,
+    )?.[0];
+
+    cardFactsByTaskId[taskId] = {
+      technology,
+      editorProfile: editorProfileBySandboxLine.get(sandboxLine),
+    };
+  }
+
   return {
     gateMode,
     legacyTaskCount,
     totalTaskCount: taskDirectories.length,
     publishedArmyTaskIds,
     thematicByTaskId,
+    cardFactsByTaskId,
   };
 }
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # FILE: docs/scripts/validate-army-97-catalog.sh
-# VERSION: 2.0.0
+# VERSION: 2.1.0
 # START_MODULE_CONTRACT
 #   PURPOSE: Validate either a serialized ARMY-97 publication wave or the strict final student catalog without reading or mutating Beads.
-#   SCOPE: Closed legacy compatibility, complete wave prefixes, task-card structure, thematic and real-work projections, final simulations, provenance exclusion, and local links.
+#   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, technology/editor mapping, exact thematic rows, real-work projections, final simulations, provenance exclusion, and local links.
 #   DEPENDS: Bash 3+, find, xargs, rg, sed
 #   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 #   ROLE: SCRIPT
@@ -11,7 +11,7 @@
 # END_MODULE_CONTRACT
 #
 # START_CHANGE_SUMMARY
-#   LAST_CHANGE: v2.0.0 - Separate cumulative wave certification from the strict cutover and final-audit certificate.
+#   LAST_CHANGE: v2.1.0 - Enforce canonical duration, Markdown editor mapping, and exact title-description-duration thematic rows.
 # END_CHANGE_SUMMARY
 
 set -euo pipefail
@@ -244,7 +244,35 @@ while IFS= read -r taskFile; do
   printf '%s\n' "$metadata" | rg -q -- '- Технология: (JavaScript|TypeScript|HTML/CSS|HTML/JavaScript|HTML/CSS/JavaScript|React/TypeScript)$'
   printf '%s\n' "$metadata" | rg -q -- '- Формат: (Написать код|Исправить код|Разобрать код|Предсказать результат|Приближённая к реальной работе)$'
   printf '%s\n' "$metadata" | rg -q -- '- Сложность: (Базовая|Средняя|Продвинутая)$'
-  printf '%s\n' "$metadata" | rg -q -- '- Примерное время: [1-9][0-9]*$'
+  printf '%s\n' "$metadata" | rg -q -- '- Примерное время: [1-9][0-9]* минут$'
+  technology="$(printf '%s\n' "$metadata" |
+    sed -n 's/^- Технология: //p')"
+  sandboxLine="$(rg '^Песочница для выполнения — ' "$taskFile")"
+  programizLine='Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).'
+  codePenLine='Песочница для выполнения — [CodePen](https://pen.new).'
+  typeScriptPlaygroundLine='Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).'
+  reactTypeScriptLine='Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).'
+  case "$technology" in
+    JavaScript)
+      if rg -q '(^|[^[:alnum:]_])(document|window|navigator|localStorage|sessionStorage|location|history|HTMLElement|NodeList|MutationObserver|IntersectionObserver|ResizeObserver)([^[:alnum:]_]|$)|(^|[^[:alnum:]_])(fetch|requestAnimationFrame|cancelAnimationFrame)[[:space:]]*\(|^[[:space:]]*(import|export)([[:space:]{]|$)|(^|[^[:alnum:]_])import[[:space:]]*\(' "$taskFile"; then
+        expectedSandboxLine="$codePenLine"
+      else
+        expectedSandboxLine="$programizLine"
+      fi
+      ;;
+    TypeScript)
+      expectedSandboxLine="$typeScriptPlaygroundLine"
+      ;;
+    React/TypeScript)
+      expectedSandboxLine="$reactTypeScriptLine"
+      ;;
+    HTML/CSS|HTML/JavaScript|HTML/CSS/JavaScript)
+      expectedSandboxLine="$codePenLine"
+      ;;
+  esac
+  if [ "$sandboxLine" != "$expectedSandboxLine" ]; then
+    catalogFail "$taskFile technology and editor profile do not match"
+  fi
   for summary in 'Подсказка 1 — куда смотреть' 'Подсказка 2 — с чего начать' 'Подсказка 3 — почти решение' Решение; do
     line="$(rg -n "^<summary>$summary</summary>$" "$taskFile" | cut -d: -f1)"
     end="$(tail -n +"$line" "$taskFile" | rg -n '^</details>$' | head -n 1 | cut -d: -f1)"
@@ -262,6 +290,25 @@ while IFS= read -r taskFile; do
   test "$(printf '%s\n' "$thematicFile" | wc -l | tr -d ' ')" -eq 1
   collectionName="$(rg -o -- '- Подборка: .+' "$taskFile" | sed 's/- Подборка: //')"
   rg -qF "$collectionName" "$thematicFile"
+  cardTitle="$(sed -n 's/^# //p' "$taskFile" | head -n 1)"
+  cardDuration="$(rg -o -- '- Примерное время: [1-9][0-9]* минут$' "$taskFile" |
+    sed 's/- Примерное время: //')"
+  collectionRow="$(rg -F "$taskFile" "$thematicFile" || true)"
+  linkedTitle="$(printf '%s\n' "$collectionRow" |
+    sed -E 's/^[^[]*\[([^]]+)\]\(.*/\1/')"
+  rowDuration="$(printf '%s\n' "$collectionRow" |
+    rg -o '[1-9][0-9]* минут$' || true)"
+  rowDescription="$(printf '%s\n' "$collectionRow" |
+    sed -E 's/^[^[]*\[[^]]+\]\([^)]*\)[[:space:]]+—[[:space:]]+//' |
+    sed -E 's/[[:space:]]+—[[:space:]]+[1-9][0-9]* минут$//')"
+  if (
+    [ "$linkedTitle" != "$cardTitle" ] ||
+    [ "$rowDuration" != "$cardDuration" ] ||
+    ! printf '%s\n' "$rowDescription" | rg -q '^.+[.!?]$' ||
+    printf '%s\n' "$rowDescription" | rg -q '[.!?][[:space:]]+[^[:space:]]'
+  ); then
+    catalogFail "$taskFile collection row must match the card title, one description sentence, and exact duration"
+  fi
   if rg -q -- '- Формат: Приближённая к реальной работе$' "$taskFile"; then
     rg -q -- '- Технология: React/TypeScript$' "$taskFile"
     rg -l "\]\([^)]*$taskFile\)" collections/real-work/README.md >/dev/null

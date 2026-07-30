@@ -4,7 +4,7 @@
   <Tooling><tool name="content-search" value="rg"/><tool name="xml-validation" value="xmllint"/><tool name="grace-cli" value="grace" fallback="$HOME/.bun/bin/grace"/><tool name="issue-tracker" value="bd"/></Tooling>
   <EditorProfiles>
     <profile-Programiz URL="https://www.programiz.com/javascript/online-compiler/">Console JavaScript.</profile-Programiz>
-    <profile-CodePen URL="https://pen.new">Browser JavaScript, DOM, HTML, and CSS.</profile-CodePen>
+    <profile-CodePen URL="https://pen.new">Browser JavaScript, DOM, HTML, CSS, and ESM.</profile-CodePen>
     <profile-TypeScriptPlayground URL="https://www.typescriptlang.org/play/">Pure TypeScript.</profile-TypeScriptPlayground>
     <profile-ReactTypeScript URL="https://vite.new/react-ts">React with TypeScript.</profile-ReactTypeScript>
   </EditorProfiles>

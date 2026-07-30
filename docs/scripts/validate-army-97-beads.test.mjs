@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-beads.test.mjs
-// VERSION: 2.0.0
+// VERSION: 2.1.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove that the ARMY-97 Beads publication validator rejects invalid decision transitions.
-//   SCOPE: Deterministic in-memory candidate, card, published-wave, immutable-manifest, and structured-evidence probes.
+//   SCOPE: Deterministic in-memory candidate, card, published-wave, Markdown editor, immutable-manifest, and structured-evidence probes.
 //   DEPENDS: node:test, node:assert, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION
 //   ROLE: TEST
@@ -16,7 +16,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.0.0 - Cross-check published task identities, thematic membership, publication state, and current-wave evidence.
+//   LAST_CHANGE: v2.1.0 - Reject Markdown sandbox profiles that drift from technology and frozen Beads card metadata.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -133,6 +133,15 @@ function publishedCatalog({
   thematicByTaskId,
   gateMode = 'wave',
   legacyTaskCount = 21,
+  cardFactsByTaskId = Object.fromEntries(
+    publishedArmyTaskIds.map((taskId) => [
+      taskId,
+      {
+        technology: 'JavaScript',
+        editorProfile: 'Programiz',
+      },
+    ]),
+  ),
 }) {
   return {
     gateMode,
@@ -140,6 +149,7 @@ function publishedCatalog({
     totalTaskCount: legacyTaskCount + publishedArmyTaskIds.length,
     publishedArmyTaskIds,
     thematicByTaskId,
+    cardFactsByTaskId,
   };
 }
 
@@ -327,6 +337,17 @@ test('rejects published thematic membership that drifts from the frozen card map
     'collections/react/interview-practice/README.md';
 
   assertInvalid(fixture, /published thematic collection does not match/);
+});
+
+test('rejects a published card whose Markdown editor differs from the frozen Beads profile', () => {
+  const fixture = makePublishedWaveFixture();
+
+  fixture.publishedCatalog.cardFactsByTaskId['task-0001'] = {
+    technology: 'JavaScript',
+    editorProfile: 'CodePen',
+  };
+
+  assertInvalid(fixture, /Markdown editor profile does not match/);
 });
 
 test('rejects a published catalog whose total is not legacy plus exact ARMY IDs', () => {

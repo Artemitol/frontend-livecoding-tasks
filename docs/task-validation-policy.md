@@ -17,12 +17,23 @@
   ARMY-97 карточку;
 - проверяет полный `ConciseStudentTaskCard` контракт у каждой опубликованной
   `tasks/task-NNNN/README.md`, не применяя новый контракт к legacy-карточкам;
+- требует canonical metadata duration `- Примерное время: N минут`; вариант
+  только с числом отклоняется;
+- связывает `Технология` с точными sandbox name/URL: Programiz для console
+  JavaScript без browser API и ESM, CodePen для browser JavaScript, DOM,
+  HTML/CSS и ESM, TypeScript Playground для pure TypeScript, React TypeScript
+  для React/TypeScript;
+- требует у каждой ARMY-97 карточки тематическую строку с точным linked title,
+  одним непустым plain-language предложением и duration, полностью совпадающим
+  с `N минут` из card metadata;
 - не требует 118 карточек, финальные `92/8/16/2` или 30 симуляций.
 
 Live Beads-валидатор дополнительно доказывает, что число текущих task-файлов
 равно `21 legacy + опубликованные immutable ARMY-97 IDs`, каждый опубликованный
 ID имеет `publicationDecision: accepted`, совпадает со своей frozen thematic
-mapping и содержит текущие `CardMigrationEvidence` и
+mapping, а editor profile, прочитанный из card Markdown, совпадает с
+technology mapping и frozen Beads card metadata. Каждая карточка содержит
+текущие `CardMigrationEvidence` и
 `FullCatalogGateEvidence`. Поэтому частичный filesystem-вывод сам по себе не
 может разрешить публикацию или переход `needs-rewrite → accepted`.
 

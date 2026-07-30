@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.0.0
+// VERSION: 2.1.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
-//   SCOPE: Real Bash 3 production-gate execution against controlled legacy-plus-wave, malformed, complete-final, and provenance-tainted catalogs.
+//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, editor, thematic-row, malformed, and provenance probes.
 //   DEPENDS: node:test, Bash 3+, docs/scripts/validate-army-97-catalog.sh, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 //   ROLE: TEST
@@ -17,7 +17,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.0.0 - Add positive and negative cumulative-wave fixtures while retaining strict final probes.
+//   LAST_CHANGE: v2.1.0 - Add canonical duration, technology/editor, and title-description-time thematic-row regressions.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -98,6 +98,24 @@ const controlledCollections = [
     taskIds: range(117, 118),
   },
 ];
+const editorProfiles = {
+  Programiz: {
+    name: 'Programiz',
+    url: 'https://www.programiz.com/javascript/online-compiler/',
+  },
+  CodePen: {
+    name: 'CodePen',
+    url: 'https://pen.new',
+  },
+  TypeScriptPlayground: {
+    name: 'TypeScript Playground',
+    url: 'https://www.typescriptlang.org/play/',
+  },
+  ReactTypeScript: {
+    name: 'React TypeScript',
+    url: 'https://vite.new/react-ts',
+  },
+};
 
 function range(first, last) {
   return Array.from(
@@ -108,6 +126,22 @@ function range(first, last) {
 
 function taskId(number) {
   return `task-${String(number).padStart(4, '0')}`;
+}
+
+function editorProfileForTechnology(technology) {
+  if (technology === 'TypeScript') {
+    return editorProfiles.TypeScriptPlayground;
+  }
+
+  if (technology === 'React/TypeScript') {
+    return editorProfiles.ReactTypeScript;
+  }
+
+  if (technology.startsWith('HTML/')) {
+    return editorProfiles.CodePen;
+  }
+
+  return editorProfiles.Programiz;
 }
 
 function writeFixtureFile(repositoryRoot, relativePath, content) {
@@ -126,10 +160,17 @@ function createFixtureRoot() {
   return repositoryRoot;
 }
 
-function collectionEntry(number) {
+function collectionEntry(
+  number,
+  {
+    title = `Task ${String(number).padStart(4, '0')}`,
+    description = 'Решите одну изолированную задачу.',
+    duration = '15 минут',
+  } = {},
+) {
   const id = taskId(number);
 
-  return `[Task ${String(number).padStart(4, '0')}](../../../tasks/${id}/README.md) — 15 минут`;
+  return `1. [${title}](../../../tasks/${id}/README.md) — ${description} — ${duration}`;
 }
 
 function writeControlledCollections(repositoryRoot, collections) {
@@ -182,7 +223,15 @@ function createInventoryFixture({
   return repositoryRoot;
 }
 
-function cardFixture(number, collection) {
+function cardFixture(
+  number,
+  collection,
+  {
+    duration = '15 минут',
+    editorProfile = editorProfileForTechnology(collection.technology),
+    starterOverride,
+  } = {},
+) {
   const paddedNumber = String(number).padStart(4, '0');
   const language = collection.technology === 'TypeScript'
     ? 'typescript'
@@ -194,14 +243,14 @@ function cardFixture(number, collection) {
   const starterComment = language === 'html'
     ? '<!-- Complete the fragment. -->'
     : '// Complete the value.';
-  const starterValue = language === 'html'
+  const starterValue = starterOverride ?? (language === 'html'
     ? '<button>Task</button>'
-    : 'const value = 1;';
+    : 'const value = 1;');
 
   return [
     `# Task ${paddedNumber}`,
     '',
-    'Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).',
+    `Песочница для выполнения — [${editorProfile.name}](${editorProfile.url}).`,
     '',
     '## Условие',
     `\`\`\`${language}`,
@@ -250,7 +299,7 @@ function cardFixture(number, collection) {
     `- Подборка: ${collection.name}`,
     '- Формат: Написать код',
     '- Сложность: Базовая',
-    '- Примерное время: 15',
+    `- Примерное время: ${duration}`,
     '',
     '</details>',
     '',
@@ -269,6 +318,12 @@ function createWaveCatalogFixture({
   referencedArmyTaskNumbers = armyTaskNumbers,
   malformedTaskNumber,
   duplicateArmyTaskNumber,
+  cardDuration = '15 минут',
+  cardDurationByNumber = {},
+  armyCollection = controlledCollections[2],
+  defaultCardOptions = {},
+  cardOptionsByNumber = {},
+  collectionEntryOptionsByNumber = {},
 } = {}) {
   const repositoryRoot = createFixtureRoot();
 
@@ -306,25 +361,30 @@ function createWaveCatalogFixture({
     );
   });
 
-  const reactCollection = controlledCollections[2];
-
   for (const number of armyTaskNumbers) {
     writeFixtureFile(
       repositoryRoot,
       `tasks/${taskId(number)}/README.md`,
       number === malformedTaskNumber
         ? '# Malformed ARMY-97 card\n'
-        : cardFixture(number, reactCollection),
+        : cardFixture(number, armyCollection, {
+          ...defaultCardOptions,
+          ...cardOptionsByNumber[number],
+          duration: cardDurationByNumber[number] ?? cardDuration,
+        }),
     );
   }
 
   writeFixtureFile(
     repositoryRoot,
-    reactCollection.path,
+    armyCollection.path,
     [
-      `# ${reactCollection.name}`,
+      `# ${armyCollection.name}`,
       '',
-      ...referencedArmyTaskNumbers.map(collectionEntry),
+      ...referencedArmyTaskNumbers.map((number) => collectionEntry(
+        number,
+        collectionEntryOptionsByNumber[number],
+      )),
       '',
     ].join('\n'),
   );
@@ -494,6 +554,163 @@ test('rejects a malformed published ARMY-97 card during a wave', () => {
     result.stderr,
     /failed ARMY-97 card contract/,
   );
+});
+
+test('accepts the canonical N минут card duration', () => {
+  const repositoryRoot = createWaveCatalogFixture();
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+});
+
+test('rejects a digits-only card duration', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    cardDuration: '15',
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(
+    result.stderr,
+    /failed ARMY-97 card contract/,
+  );
+});
+
+test('accepts the exact editor profile mapped from card technology', () => {
+  const repositoryRoot = createWaveCatalogFixture();
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+});
+
+test('rejects React TypeScript published with Programiz', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    cardOptionsByNumber: {
+      1: {
+        editorProfile: editorProfiles.Programiz,
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /technology and editor profile/);
+});
+
+test('accepts CodePen for JavaScript that uses browser APIs', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[0],
+    defaultCardOptions: {
+      editorProfile: editorProfiles.CodePen,
+      starterOverride: "const value = document.querySelector('#value');",
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+});
+
+test('rejects Programiz for JavaScript that uses browser APIs', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[0],
+    defaultCardOptions: {
+      editorProfile: editorProfiles.Programiz,
+      starterOverride: "const value = document.querySelector('#value');",
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /technology and editor profile/);
+});
+
+test('rejects CodePen for console JavaScript without browser APIs', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[0],
+    defaultCardOptions: {
+      editorProfile: editorProfiles.CodePen,
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /technology and editor profile/);
+});
+
+test('accepts collection rows with exact title, one description sentence, and duration', () => {
+  const repositoryRoot = createWaveCatalogFixture();
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+});
+
+test('rejects a collection row with a missing description', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    collectionEntryOptionsByNumber: {
+      1: {
+        description: '',
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /collection row/);
+});
+
+test('rejects a collection row whose linked title differs from the card title', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    collectionEntryOptionsByNumber: {
+      1: {
+        title: 'Wrong student title',
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /collection row/);
+});
+
+test('rejects a collection row whose time differs from card metadata', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    collectionEntryOptionsByNumber: {
+      1: {
+        duration: '20 минут',
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /collection row/);
 });
 
 test('rejects duplicate thematic membership across the current catalog', () => {

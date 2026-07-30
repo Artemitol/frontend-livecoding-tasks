@@ -1,8 +1,8 @@
 // FILE: docs/scripts/run-army-97-catalog-gate.test.mjs
-// VERSION: 2.0.0
+// VERSION: 2.1.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove FullCatalogGateEvidence can only follow a successful exact-commit catalog gate.
-//   SCOPE: Real temporary Git repositories, explicit wave/final execution, passing and failing catalog gates, receipt emission, and transition validation.
+//   SCOPE: Real temporary Git repositories, explicit wave/final execution, passing and failing catalog gates, Markdown editor facts, receipt emission, and transition validation.
 //   DEPENDS: node:test, Git, Bash, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, Army97PublicationDecisionTransition
 //   ROLE: TEST
@@ -18,7 +18,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.0.0 - Bind causal exact-commit evidence probes to explicit catalog mode and a complete published wave.
+//   LAST_CHANGE: v2.1.0 - Keep causal receipt fixtures synchronized with the published Markdown technology/editor contract.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -179,6 +179,7 @@ function createRegistryFixture() {
   const cards = [];
   const publishedArmyTaskIds = [];
   const thematicByTaskId = {};
+  const cardFactsByTaskId = {};
 
   for (let number = 1; number <= 10; number += 1) {
     const candidateNumber = String(number).padStart(3, '0');
@@ -233,6 +234,10 @@ function createRegistryFixture() {
     publishedArmyTaskIds.push(targetTaskId);
     thematicByTaskId[targetTaskId] =
       'collections/javascript/interview-practice/README.md';
+    cardFactsByTaskId[targetTaskId] = {
+      technology: 'JavaScript',
+      editorProfile: 'Programiz',
+    };
   }
 
   return {
@@ -245,6 +250,7 @@ function createRegistryFixture() {
       totalTaskCount: 31,
       publishedArmyTaskIds,
       thematicByTaskId,
+      cardFactsByTaskId,
     },
   };
 }

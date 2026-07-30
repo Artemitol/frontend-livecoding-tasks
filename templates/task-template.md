@@ -59,9 +59,24 @@
 - Формат: ⟦Написать код | Исправить код | Разобрать код | Предсказать результат |
   Приближённая к реальной работе⟧
 - Сложность: ⟦Базовая | Средняя | Продвинутая⟧
-- Примерное время: ⟦Целое число минут⟧
+- Примерное время: ⟦N⟧ минут
 
 </details>
+
+Выбирайте sandbox и URL только по этому профилю:
+
+- console JavaScript без browser API и ESM — [Programiz](https://www.programiz.com/javascript/online-compiler/);
+- browser JavaScript, DOM, HTML/CSS или ESM — [CodePen](https://pen.new);
+- pure TypeScript — [TypeScript Playground](https://www.typescriptlang.org/play/);
+- React/TypeScript — [React TypeScript](https://vite.new/react-ts).
+
+Тематическая строка этой карточки содержит точный linked title, одно
+непустое plain-language предложение и тот же `⟦N⟧ минут`, что указан в
+метаданных:
+
+```text
+1. [⟦Простое название задачи⟧](../../../tasks/task-XXXX/README.md) — ⟦Одно предложение.⟧ — ⟦N⟧ минут
+```
 
 Для DOM-задачи поставьте перед JavaScript только необходимый HTML fragment.
 Для реальной React-работы несколько полных starter-файлов допустимы, если
