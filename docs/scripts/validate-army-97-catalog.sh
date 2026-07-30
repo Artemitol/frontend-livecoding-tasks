@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # FILE: docs/scripts/validate-army-97-catalog.sh
-# VERSION: 2.1.0
+# VERSION: 2.2.0
 # START_MODULE_CONTRACT
 #   PURPOSE: Validate either a serialized ARMY-97 publication wave or the strict final student catalog without reading or mutating Beads.
-#   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, technology/editor mapping, exact thematic rows, real-work projections, final simulations, provenance exclusion, and local links.
+#   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, technology/editor mapping, exact thematic-row grammar, real-work projections, final simulations, provenance exclusion, and local links.
 #   DEPENDS: Bash 3+, find, xargs, rg, sed
 #   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 #   ROLE: SCRIPT
@@ -11,7 +11,7 @@
 # END_MODULE_CONTRACT
 #
 # START_CHANGE_SUMMARY
-#   LAST_CHANGE: v2.1.0 - Enforce canonical duration, Markdown editor mapping, and exact title-description-duration thematic rows.
+#   LAST_CHANGE: v2.2.0 - Enforce one exact thematic-row grammar with no prefix, suffix, empty prose, or extra field.
 # END_CHANGE_SUMMARY
 
 set -euo pipefail
@@ -294,18 +294,28 @@ while IFS= read -r taskFile; do
   cardDuration="$(rg -o -- '- Примерное время: [1-9][0-9]* минут$' "$taskFile" |
     sed 's/- Примерное время: //')"
   collectionRow="$(rg -F "$taskFile" "$thematicFile" || true)"
+  collectionRowCount="$(printf '%s\n' "$collectionRow" |
+    sed '/^$/d' |
+    wc -l |
+    tr -d ' ')"
+  collectionRowGrammar='^[1-9][0-9]*\. \[[^]]+\]\(\.\./\.\./\.\./tasks/task-[0-9]{4}/README\.md\) — [^—.!?]*\p{L}[^—.!?]*\p{L}[^—.!?]*[.!?] — [1-9][0-9]* минут$'
+  if (
+    [ "$collectionRowCount" -ne 1 ] ||
+    ! printf '%s\n' "$collectionRow" | rg -q "$collectionRowGrammar"
+  ); then
+    catalogFail "$taskFile collection row must use exact ordinal, link, substantive sentence, and duration grammar"
+  fi
   linkedTitle="$(printf '%s\n' "$collectionRow" |
-    sed -E 's/^[^[]*\[([^]]+)\]\(.*/\1/')"
+    sed -E 's/^[1-9][0-9]*\. \[([^]]+)\]\(.*/\1/')"
   rowDuration="$(printf '%s\n' "$collectionRow" |
     rg -o '[1-9][0-9]* минут$' || true)"
   rowDescription="$(printf '%s\n' "$collectionRow" |
-    sed -E 's/^[^[]*\[[^]]+\]\([^)]*\)[[:space:]]+—[[:space:]]+//' |
-    sed -E 's/[[:space:]]+—[[:space:]]+[1-9][0-9]* минут$//')"
+    sed -E 's/^[1-9][0-9]*\. \[[^]]+\]\([^)]*\) — //' |
+    sed -E 's/ — [1-9][0-9]* минут$//')"
   if (
     [ "$linkedTitle" != "$cardTitle" ] ||
     [ "$rowDuration" != "$cardDuration" ] ||
-    ! printf '%s\n' "$rowDescription" | rg -q '^.+[.!?]$' ||
-    printf '%s\n' "$rowDescription" | rg -q '[.!?][[:space:]]+[^[:space:]]'
+    ! printf '%s\n' "$rowDescription" | rg -q '\p{L}.*\p{L}[.!?]$'
   ); then
     catalogFail "$taskFile collection row must match the card title, one description sentence, and exact duration"
   fi

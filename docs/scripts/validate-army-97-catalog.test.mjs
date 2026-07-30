@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.1.0
+// VERSION: 2.2.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
-//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, editor, thematic-row, malformed, and provenance probes.
+//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, editor, exact thematic-row grammar, malformed, and provenance probes.
 //   DEPENDS: node:test, Bash 3+, docs/scripts/validate-army-97-catalog.sh, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 //   ROLE: TEST
@@ -17,7 +17,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.1.0 - Add canonical duration, technology/editor, and title-description-time thematic-row regressions.
+//   LAST_CHANGE: v2.2.0 - Add exact thematic-row grammar regressions for prefixes, substantive descriptions, extra fields, and suffixes.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -163,14 +163,16 @@ function createFixtureRoot() {
 function collectionEntry(
   number,
   {
+    prefix = '',
     title = `Task ${String(number).padStart(4, '0')}`,
     description = 'Решите одну изолированную задачу.',
     duration = '15 минут',
+    suffix = '',
   } = {},
 ) {
   const id = taskId(number);
 
-  return `1. [${title}](../../../tasks/${id}/README.md) — ${description} — ${duration}`;
+  return `${prefix}1. [${title}](../../../tasks/${id}/README.md) — ${description} — ${duration}${suffix}`;
 }
 
 function writeControlledCollections(repositoryRoot, collections) {
@@ -656,7 +658,7 @@ test('rejects CodePen for console JavaScript without browser APIs', () => {
   assert.match(result.stderr, /technology and editor profile/);
 });
 
-test('accepts collection rows with exact title, one description sentence, and duration', () => {
+test('accepts exact collection row grammar with a substantive Russian sentence', () => {
   const repositoryRoot = createWaveCatalogFixture();
 
   const result = runProductionCatalogGate(repositoryRoot, 'wave');
@@ -666,6 +668,66 @@ test('accepts collection rows with exact title, one description sentence, and du
     0,
     `${result.stdout}\n${result.stderr}`.slice(-8_000),
   );
+});
+
+test('rejects an arbitrary prefix before a collection row', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    collectionEntryOptionsByNumber: {
+      1: {
+        prefix: 'Injected prefix ',
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /collection row/);
+});
+
+test('rejects a punctuation-only collection description', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    collectionEntryOptionsByNumber: {
+      1: {
+        description: '.',
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /collection row/);
+});
+
+test('rejects an extra field in a collection row', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    collectionEntryOptionsByNumber: {
+      1: {
+        description: 'Решите задачу — лишнее поле.',
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /collection row/);
+});
+
+test('rejects a suffix after a collection row', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    collectionEntryOptionsByNumber: {
+      1: {
+        suffix: ' trailing suffix',
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /collection row/);
 });
 
 test('rejects a collection row with a missing description', () => {

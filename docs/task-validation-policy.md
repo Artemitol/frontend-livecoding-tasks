@@ -23,9 +23,11 @@
   JavaScript без browser API и ESM, CodePen для browser JavaScript, DOM,
   HTML/CSS и ESM, TypeScript Playground для pure TypeScript, React TypeScript
   для React/TypeScript;
-- требует у каждой ARMY-97 карточки тематическую строку с точным linked title,
-  одним непустым plain-language предложением и duration, полностью совпадающим
-  с `N минут` из card metadata;
+- требует у каждой ARMY-97 карточки тематическую строку точного вида
+  `N. [Exact title](../../../tasks/task-XXXX/README.md) — Substantive sentence. — N минут`:
+  без префикса, суффикса и дополнительного поля, с точным linked title,
+  содержательными словами, ровно одним завершающим знаком предложения и
+  duration, полностью совпадающим с `N минут` из card metadata;
 - не требует 118 карточек, финальные `92/8/16/2` или 30 симуляций.
 
 Live Beads-валидатор дополнительно доказывает, что число текущих task-файлов
