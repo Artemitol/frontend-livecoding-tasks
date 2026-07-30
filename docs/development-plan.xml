@@ -7,5 +7,148 @@
     <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT"><purpose>Own thematic, real-work, and simulation projections.</purpose><inputs>published cards</inputs><outputs>collections and student hub</outputs><depends>M-TASK-LIBRARY</depends><verification-ref>V-M-CATALOG</verification-ref></M-CATALOG>
   </Modules>
   <DataFlows><DF-ARMY97-CANDIDATE-TO-CARD NAME="Candidate to card">M-TASK-VALIDATION -&gt; M-TASK-LIBRARY</DF-ARMY97-CANDIDATE-TO-CARD><DF-ARMY97-CARD-TO-CATALOG NAME="Card to catalog">M-TASK-LIBRARY -&gt; M-CATALOG</DF-ARMY97-CARD-TO-CATALOG><DF-ARMY97-SIMULATION NAME="Simulation">M-CATALOG validates static simulations against M-TASK-LIBRARY metadata</DF-ARMY97-SIMULATION></DataFlows>
-  <Phases><Phase-ARMY97-GOVERNANCE STATUS="in-progress">Replace legacy rules and validate the deterministic contract.</Phase-ARMY97-GOVERNANCE><Phase-ARMY97-AUDIT STATUS="planned">Freeze candidates and exact duplicates.</Phase-ARMY97-AUDIT><Phase-ARMY97-WAVES STATUS="planned">Publish accepted 8-10-card waves.</Phase-ARMY97-WAVES><Phase-ARMY97-CUTOVER STATUS="planned">Replace legacy catalog.</Phase-ARMY97-CUTOVER><Phase-ARMY97-SIMULATIONS STATUS="planned">Publish 30 static simulations.</Phase-ARMY97-SIMULATIONS><Phase-ARMY97-FINAL-AUDIT STATUS="planned">Run final local audit.</Phase-ARMY97-FINAL-AUDIT></Phases>
+  <Army97CandidateRegistry>
+    <annotations candidate-register-size="118" accepted-count="74" needs-rewrite-count="44" rejected-count="0" duplicate-count="0" exact-duplicate-group-count="0" distinct-target-count="118"/>
+    <thematic-registry>
+      <thematic-javascript PATH="collections/javascript/interview-practice/README.md" EXPECTED="92"/>
+      <thematic-typescript PATH="collections/typescript/interview-practice/README.md" EXPECTED="8"/>
+      <thematic-react PATH="collections/react/interview-practice/README.md" EXPECTED="16"/>
+      <thematic-html-css PATH="collections/html-css/interview-practice/README.md" EXPECTED="2"/>
+    </thematic-registry>
+    <candidate-task-mapping>
+      <candidate-001 BEAD="frontend-livecoding-tasks-army-97-candidate-001" TARGET="task-0001" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-002 BEAD="frontend-livecoding-tasks-army-97-candidate-002" TARGET="task-0002" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-003 BEAD="frontend-livecoding-tasks-army-97-candidate-003" TARGET="task-0003" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-004 BEAD="frontend-livecoding-tasks-army-97-candidate-004" TARGET="task-0004" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-005 BEAD="frontend-livecoding-tasks-army-97-candidate-005" TARGET="task-0005" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-006 BEAD="frontend-livecoding-tasks-army-97-candidate-006" TARGET="task-0006" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-007 BEAD="frontend-livecoding-tasks-army-97-candidate-007" TARGET="task-0007" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-008 BEAD="frontend-livecoding-tasks-army-97-candidate-008" TARGET="task-0008" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-009 BEAD="frontend-livecoding-tasks-army-97-candidate-009" TARGET="task-0009" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-010 BEAD="frontend-livecoding-tasks-army-97-candidate-010" TARGET="task-0010" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-011 BEAD="frontend-livecoding-tasks-army-97-candidate-011" TARGET="task-0011" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-012 BEAD="frontend-livecoding-tasks-army-97-candidate-012" TARGET="task-0012" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-013 BEAD="frontend-livecoding-tasks-army-97-candidate-013" TARGET="task-0013" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-014 BEAD="frontend-livecoding-tasks-army-97-candidate-014" TARGET="task-0014" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-015 BEAD="frontend-livecoding-tasks-army-97-candidate-015" TARGET="task-0015" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-016 BEAD="frontend-livecoding-tasks-army-97-candidate-016" TARGET="task-0016" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-017 BEAD="frontend-livecoding-tasks-army-97-candidate-017" TARGET="task-0017" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-018 BEAD="frontend-livecoding-tasks-army-97-candidate-018" TARGET="task-0018" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-019 BEAD="frontend-livecoding-tasks-army-97-candidate-019" TARGET="task-0019" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-020 BEAD="frontend-livecoding-tasks-army-97-candidate-020" TARGET="task-0020" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-021 BEAD="frontend-livecoding-tasks-army-97-candidate-021" TARGET="task-0021" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-022 BEAD="frontend-livecoding-tasks-army-97-candidate-022" TARGET="task-0022" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-023 BEAD="frontend-livecoding-tasks-army-97-candidate-023" TARGET="task-0023" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-024 BEAD="frontend-livecoding-tasks-army-97-candidate-024" TARGET="task-0024" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-025 BEAD="frontend-livecoding-tasks-army-97-candidate-025" TARGET="task-0025" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-026 BEAD="frontend-livecoding-tasks-army-97-candidate-026" TARGET="task-0026" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-027 BEAD="frontend-livecoding-tasks-army-97-candidate-027" TARGET="task-0027" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-028 BEAD="frontend-livecoding-tasks-army-97-candidate-028" TARGET="task-0028" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-029 BEAD="frontend-livecoding-tasks-army-97-candidate-029" TARGET="task-0029" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-030 BEAD="frontend-livecoding-tasks-army-97-candidate-030" TARGET="task-0030" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-031 BEAD="frontend-livecoding-tasks-army-97-candidate-031" TARGET="task-0031" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-032 BEAD="frontend-livecoding-tasks-army-97-candidate-032" TARGET="task-0032" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-033 BEAD="frontend-livecoding-tasks-army-97-candidate-033" TARGET="task-0033" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-034 BEAD="frontend-livecoding-tasks-army-97-candidate-034" TARGET="task-0034" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-035 BEAD="frontend-livecoding-tasks-army-97-candidate-035" TARGET="task-0035" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-036 BEAD="frontend-livecoding-tasks-army-97-candidate-036" TARGET="task-0036" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-037 BEAD="frontend-livecoding-tasks-army-97-candidate-037" TARGET="task-0037" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-038 BEAD="frontend-livecoding-tasks-army-97-candidate-038" TARGET="task-0038" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-039 BEAD="frontend-livecoding-tasks-army-97-candidate-039" TARGET="task-0039" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-040 BEAD="frontend-livecoding-tasks-army-97-candidate-040" TARGET="task-0040" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-041 BEAD="frontend-livecoding-tasks-army-97-candidate-041" TARGET="task-0041" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-042 BEAD="frontend-livecoding-tasks-army-97-candidate-042" TARGET="task-0042" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-043 BEAD="frontend-livecoding-tasks-army-97-candidate-043" TARGET="task-0043" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-044 BEAD="frontend-livecoding-tasks-army-97-candidate-044" TARGET="task-0044" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-045 BEAD="frontend-livecoding-tasks-army-97-candidate-045" TARGET="task-0045" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-046 BEAD="frontend-livecoding-tasks-army-97-candidate-046" TARGET="task-0046" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-047 BEAD="frontend-livecoding-tasks-army-97-candidate-047" TARGET="task-0047" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-048 BEAD="frontend-livecoding-tasks-army-97-candidate-048" TARGET="task-0048" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-049 BEAD="frontend-livecoding-tasks-army-97-candidate-049" TARGET="task-0049" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-050 BEAD="frontend-livecoding-tasks-army-97-candidate-050" TARGET="task-0050" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-051 BEAD="frontend-livecoding-tasks-army-97-candidate-051" TARGET="task-0051" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-052 BEAD="frontend-livecoding-tasks-army-97-candidate-052" TARGET="task-0052" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-053 BEAD="frontend-livecoding-tasks-army-97-candidate-053" TARGET="task-0053" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-054 BEAD="frontend-livecoding-tasks-army-97-candidate-054" TARGET="task-0054" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-055 BEAD="frontend-livecoding-tasks-army-97-candidate-055" TARGET="task-0055" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-056 BEAD="frontend-livecoding-tasks-army-97-candidate-056" TARGET="task-0056" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-057 BEAD="frontend-livecoding-tasks-army-97-candidate-057" TARGET="task-0057" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-058 BEAD="frontend-livecoding-tasks-army-97-candidate-058" TARGET="task-0058" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-059 BEAD="frontend-livecoding-tasks-army-97-candidate-059" TARGET="task-0059" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-060 BEAD="frontend-livecoding-tasks-army-97-candidate-060" TARGET="task-0060" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-061 BEAD="frontend-livecoding-tasks-army-97-candidate-061" TARGET="task-0061" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-062 BEAD="frontend-livecoding-tasks-army-97-candidate-062" TARGET="task-0062" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-063 BEAD="frontend-livecoding-tasks-army-97-candidate-063" TARGET="task-0063" THEMATIC="collections/react/interview-practice/README.md"/>
+      <candidate-064 BEAD="frontend-livecoding-tasks-army-97-candidate-064" TARGET="task-0064" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-065 BEAD="frontend-livecoding-tasks-army-97-candidate-065" TARGET="task-0065" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-066 BEAD="frontend-livecoding-tasks-army-97-candidate-066" TARGET="task-0066" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-067 BEAD="frontend-livecoding-tasks-army-97-candidate-067" TARGET="task-0067" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-068 BEAD="frontend-livecoding-tasks-army-97-candidate-068" TARGET="task-0068" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-069 BEAD="frontend-livecoding-tasks-army-97-candidate-069" TARGET="task-0069" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-070 BEAD="frontend-livecoding-tasks-army-97-candidate-070" TARGET="task-0070" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-071 BEAD="frontend-livecoding-tasks-army-97-candidate-071" TARGET="task-0071" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-072 BEAD="frontend-livecoding-tasks-army-97-candidate-072" TARGET="task-0072" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-073 BEAD="frontend-livecoding-tasks-army-97-candidate-073" TARGET="task-0073" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-074 BEAD="frontend-livecoding-tasks-army-97-candidate-074" TARGET="task-0074" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-075 BEAD="frontend-livecoding-tasks-army-97-candidate-075" TARGET="task-0075" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-076 BEAD="frontend-livecoding-tasks-army-97-candidate-076" TARGET="task-0076" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-077 BEAD="frontend-livecoding-tasks-army-97-candidate-077" TARGET="task-0077" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-078 BEAD="frontend-livecoding-tasks-army-97-candidate-078" TARGET="task-0078" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-079 BEAD="frontend-livecoding-tasks-army-97-candidate-079" TARGET="task-0079" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-080 BEAD="frontend-livecoding-tasks-army-97-candidate-080" TARGET="task-0080" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-081 BEAD="frontend-livecoding-tasks-army-97-candidate-081" TARGET="task-0081" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-082 BEAD="frontend-livecoding-tasks-army-97-candidate-082" TARGET="task-0082" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-083 BEAD="frontend-livecoding-tasks-army-97-candidate-083" TARGET="task-0083" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-084 BEAD="frontend-livecoding-tasks-army-97-candidate-084" TARGET="task-0084" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-085 BEAD="frontend-livecoding-tasks-army-97-candidate-085" TARGET="task-0085" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-086 BEAD="frontend-livecoding-tasks-army-97-candidate-086" TARGET="task-0086" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-087 BEAD="frontend-livecoding-tasks-army-97-candidate-087" TARGET="task-0087" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-088 BEAD="frontend-livecoding-tasks-army-97-candidate-088" TARGET="task-0088" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-089 BEAD="frontend-livecoding-tasks-army-97-candidate-089" TARGET="task-0089" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-090 BEAD="frontend-livecoding-tasks-army-97-candidate-090" TARGET="task-0090" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-091 BEAD="frontend-livecoding-tasks-army-97-candidate-091" TARGET="task-0091" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-092 BEAD="frontend-livecoding-tasks-army-97-candidate-092" TARGET="task-0092" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-093 BEAD="frontend-livecoding-tasks-army-97-candidate-093" TARGET="task-0093" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-094 BEAD="frontend-livecoding-tasks-army-97-candidate-094" TARGET="task-0094" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-095 BEAD="frontend-livecoding-tasks-army-97-candidate-095" TARGET="task-0095" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-096 BEAD="frontend-livecoding-tasks-army-97-candidate-096" TARGET="task-0096" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-097 BEAD="frontend-livecoding-tasks-army-97-candidate-097" TARGET="task-0097" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-098 BEAD="frontend-livecoding-tasks-army-97-candidate-098" TARGET="task-0098" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-099 BEAD="frontend-livecoding-tasks-army-97-candidate-099" TARGET="task-0099" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-100 BEAD="frontend-livecoding-tasks-army-97-candidate-100" TARGET="task-0100" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-101 BEAD="frontend-livecoding-tasks-army-97-candidate-101" TARGET="task-0101" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-102 BEAD="frontend-livecoding-tasks-army-97-candidate-102" TARGET="task-0102" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-103 BEAD="frontend-livecoding-tasks-army-97-candidate-103" TARGET="task-0103" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-104 BEAD="frontend-livecoding-tasks-army-97-candidate-104" TARGET="task-0104" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-105 BEAD="frontend-livecoding-tasks-army-97-candidate-105" TARGET="task-0105" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-106 BEAD="frontend-livecoding-tasks-army-97-candidate-106" TARGET="task-0106" THEMATIC="collections/typescript/interview-practice/README.md"/>
+      <candidate-107 BEAD="frontend-livecoding-tasks-army-97-candidate-107" TARGET="task-0107" THEMATIC="collections/html-css/interview-practice/README.md"/>
+      <candidate-108 BEAD="frontend-livecoding-tasks-army-97-candidate-108" TARGET="task-0108" THEMATIC="collections/html-css/interview-practice/README.md"/>
+      <candidate-109 BEAD="frontend-livecoding-tasks-army-97-candidate-109" TARGET="task-0109" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-110 BEAD="frontend-livecoding-tasks-army-97-candidate-110" TARGET="task-0110" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-111 BEAD="frontend-livecoding-tasks-army-97-candidate-111" TARGET="task-0111" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-112 BEAD="frontend-livecoding-tasks-army-97-candidate-112" TARGET="task-0112" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-113 BEAD="frontend-livecoding-tasks-army-97-candidate-113" TARGET="task-0113" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-114 BEAD="frontend-livecoding-tasks-army-97-candidate-114" TARGET="task-0114" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-115 BEAD="frontend-livecoding-tasks-army-97-candidate-115" TARGET="task-0115" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-116 BEAD="frontend-livecoding-tasks-army-97-candidate-116" TARGET="task-0116" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-117 BEAD="frontend-livecoding-tasks-army-97-candidate-117" TARGET="task-0117" THEMATIC="collections/javascript/interview-practice/README.md"/>
+      <candidate-118 BEAD="frontend-livecoding-tasks-army-97-candidate-118" TARGET="task-0118" THEMATIC="collections/javascript/interview-practice/README.md"/>
+    </candidate-task-mapping>
+    <wave-registry>
+      <wave-001 BEAD="frontend-livecoding-tasks-army-97-wave-001" FIRST="task-0001" LAST="task-0010" SIZE="10"/>
+      <wave-002 BEAD="frontend-livecoding-tasks-army-97-wave-002" FIRST="task-0011" LAST="task-0020" SIZE="10"/>
+      <wave-003 BEAD="frontend-livecoding-tasks-army-97-wave-003" FIRST="task-0021" LAST="task-0030" SIZE="10"/>
+      <wave-004 BEAD="frontend-livecoding-tasks-army-97-wave-004" FIRST="task-0031" LAST="task-0040" SIZE="10"/>
+      <wave-005 BEAD="frontend-livecoding-tasks-army-97-wave-005" FIRST="task-0041" LAST="task-0050" SIZE="10"/>
+      <wave-006 BEAD="frontend-livecoding-tasks-army-97-wave-006" FIRST="task-0051" LAST="task-0060" SIZE="10"/>
+      <wave-007 BEAD="frontend-livecoding-tasks-army-97-wave-007" FIRST="task-0061" LAST="task-0070" SIZE="10"/>
+      <wave-008 BEAD="frontend-livecoding-tasks-army-97-wave-008" FIRST="task-0071" LAST="task-0080" SIZE="10"/>
+      <wave-009 BEAD="frontend-livecoding-tasks-army-97-wave-009" FIRST="task-0081" LAST="task-0090" SIZE="10"/>
+      <wave-010 BEAD="frontend-livecoding-tasks-army-97-wave-010" FIRST="task-0091" LAST="task-0100" SIZE="10"/>
+      <wave-011 BEAD="frontend-livecoding-tasks-army-97-wave-011" FIRST="task-0101" LAST="task-0110" SIZE="10"/>
+      <wave-012 BEAD="frontend-livecoding-tasks-army-97-wave-012" FIRST="task-0111" LAST="task-0118" SIZE="8"/>
+    </wave-registry>
+  </Army97CandidateRegistry>
+  <Phases><Phase-ARMY97-GOVERNANCE STATUS="complete">Replace legacy rules and validate the deterministic contract.</Phase-ARMY97-GOVERNANCE><Phase-ARMY97-AUDIT STATUS="complete">Freeze candidates, exact duplicates, immutable IDs, thematic registry, and serialized waves.</Phase-ARMY97-AUDIT><Phase-ARMY97-WAVES STATUS="planned">Publish accepted 8-10-card waves.</Phase-ARMY97-WAVES><Phase-ARMY97-CUTOVER STATUS="planned">Replace legacy catalog.</Phase-ARMY97-CUTOVER><Phase-ARMY97-SIMULATIONS STATUS="planned">Publish 30 static simulations.</Phase-ARMY97-SIMULATIONS><Phase-ARMY97-FINAL-AUDIT STATUS="planned">Run final local audit.</Phase-ARMY97-FINAL-AUDIT></Phases>
 </DevelopmentPlan>
