@@ -43,8 +43,10 @@ async function loadRecords(ids) {
   return result;
 }
 
-loadRecords([1, 2, 3]).then((records) => {
-  console.log(requestLog);
+const pendingRecords = loadRecords([1, 2, 3]);
+console.log(requestLog);
+
+pendingRecords.then((records) => {
   console.log(records.map((record) => record.title));
   document.body.dataset.requestOrder = requestLog.join(',');
 });
@@ -82,9 +84,9 @@ async function loadRecords(ids) {
 
 `map` создаёт все запросы в одном синхронном проходе. `Promise.all` возвращает записи по индексам `ids`, даже если второй запрос завершится первым, и отклоняется при первой ошибке.
 
-Ожидаемый результат: `requestLog` равен `[1, 2, 3]`, а заголовки — `['first', 'second', 'third']`; атрибут `data-request-order` у `body` равен `1,2,3`; вызов с `404` отклоняется с `not found`.
+Ожидаемый результат: синхронный лог сразу после `loadRecords` равен `[1, 2, 3]`, а заголовки после завершения — `['first', 'second', 'third']`; атрибут `data-request-order` у `body` равен `1,2,3`; вызов с `404` отклоняется с `not found`.
 
-Ручная проверка: вставьте решение, запустите пример и затем вызовите `loadRecords([1, 404])`, обработав ошибку через `catch`.
+Ручная проверка: вставьте решение и убедитесь, что первый, синхронный лог уже содержит `[1, 2, 3]`, хотя заголовки появляются позже; затем вызовите `loadRecords([1, 404])` и проверьте `not found` через `catch`.
 
 </details>
 

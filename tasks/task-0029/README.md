@@ -4,22 +4,28 @@
 
 ## Условие
 ```javascript
-// Исправьте runWithRetry: после ошибки она ждёт delayMilliseconds и повторяет request, а после limits неудачных попыток отклоняется последней ошибкой.
-// Используйте локальный request: сценарий successAfterTwo возвращает успех на второй попытке, а alwaysFail всегда отклоняется; сетевой доступ не нужен.
+// Исправьте runWithRetry: после ошибки она ждёт delayMilliseconds и повторяет request, а после limit неудачных попыток отклоняется последней ошибкой.
+// Используйте локальные сценарии и встроенные счётчики: успех требует 2 попытки и 1 ожидание, три ошибки — 3 попытки и 2 ожидания по 10 мс; сетевой доступ не нужен.
 // Используйте современный консольный JavaScript с async, await, Promise и timer без ESM и browser API.
 
+const waitLog = [];
+
 const wait = (milliseconds) => new Promise((resolve) => {
+  waitLog.push(milliseconds);
   setTimeout(resolve, milliseconds);
 });
 
 function createRequest(outcomes) {
   let attempts = 0;
 
-  return () => {
+  const request = () => {
     const outcome = outcomes[attempts];
     attempts += 1;
     return outcome instanceof Error ? Promise.reject(outcome) : Promise.resolve(outcome);
   };
+
+  request.getAttemptCount = () => attempts;
+  return request;
 }
 
 async function runWithRetry(request, limit, delayMilliseconds) {
@@ -29,8 +35,22 @@ async function runWithRetry(request, limit, delayMilliseconds) {
 const successAfterTwo = createRequest([new Error('temporary'), 'ok']);
 const alwaysFail = createRequest([new Error('one'), new Error('two'), new Error('three')]);
 
-runWithRetry(successAfterTwo, 3, 0).then(console.log);
-runWithRetry(alwaysFail, 3, 0).catch((error) => console.log(error.message));
+async function verifyRetries() {
+  console.log(await runWithRetry(successAfterTwo, 3, 10));
+  console.log(successAfterTwo.getAttemptCount(), [...waitLog]);
+
+  waitLog.length = 0;
+
+  try {
+    await runWithRetry(alwaysFail, 3, 10);
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  console.log(alwaysFail.getAttemptCount(), [...waitLog]);
+}
+
+verifyRetries();
 ```
 
 <details>
@@ -79,9 +99,9 @@ async function runWithRetry(request, limit, delayMilliseconds) {
 
 Успешный вызов немедленно завершает функцию. Ошибка ждёт только перед следующей доступной попыткой, а после третьей неудачи наружу передаётся последняя ошибка.
 
-Ожидаемый результат: сценарий `successAfterTwo` выводит `ok`, а `alwaysFail` выводит `three` после ровно трёх попыток.
+Ожидаемый результат: сценарий `successAfterTwo` выводит `ok`, затем `2` и `[10]`; `alwaysFail` выводит `three`, затем `3` и `[10, 10]`.
 
-Ручная проверка: вставьте решение, запустите блок и добавьте счётчик вызовов в `createRequest`, чтобы проверить два и три вызова для обоих сценариев.
+Ручная проверка: вставьте решение и сравните четыре строки с `ok`, `2 [10]`, `three`, `3 [10, 10]`; так отдельно наблюдаются попытки и каждый вызов `wait`.
 
 </details>
 

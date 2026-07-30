@@ -109,7 +109,7 @@ function promiseAllSettled(values) {
 
 Ожидаемый результат: `promiseAll` выдаёт `['first', 'second', 3]`; `promiseAllSettled` выдаёт записи `fulfilled`, `rejected`, `fulfilled` в этом порядке; обе функции возвращают `[]` для пустого массива.
 
-Ручная проверка: вставьте решение, запустите блок, затем отдельно вызовите обе функции с `[]` и `promiseAll([rejectAfter('no', 0)])`.
+Ручная проверка: вставьте решение, запустите блок, затем добавьте `promiseAll([]).then(console.log)`, `promiseAllSettled([]).then(console.log)` и `promiseAll([rejectAfter('no', 0)]).catch(console.log)`; сравните два пустых массива и строку `no`.
 
 </details>
 
