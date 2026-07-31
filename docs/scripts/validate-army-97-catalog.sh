@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # FILE: docs/scripts/validate-army-97-catalog.sh
-# VERSION: 2.3.0
+# VERSION: 2.5.0
 # START_MODULE_CONTRACT
 #   PURPOSE: Validate either a serialized ARMY-97 publication wave or the strict final student catalog without reading or mutating Beads.
-#   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, technology/editor mapping, exact thematic-row grammar, real-work projections, final simulations, provenance exclusion, and local links.
+#   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, starter-only pure-versus-browser editor routing, exact thematic-row grammar, real-work projections, final simulations, bounded provenance exclusion, and local links.
 #   DEPENDS: Bash 3+, find, xargs, rg, sed
 #   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 #   ROLE: SCRIPT
@@ -11,7 +11,7 @@
 # END_MODULE_CONTRACT
 #
 # START_CHANGE_SUMMARY
-#   LAST_CHANGE: v2.3.0 - Bind exactly one real-work projection to card format without restricting the card technology.
+#   LAST_CHANGE: v2.5.0 - Classify browser APIs from starter code only and bound the standalone author provenance marker.
 # END_CHANGE_SUMMARY
 
 set -euo pipefail
@@ -252,16 +252,26 @@ while IFS= read -r taskFile; do
   codePenLine='Песочница для выполнения — [CodePen](https://pen.new).'
   typeScriptPlaygroundLine='Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).'
   reactTypeScriptLine='Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).'
+  starterSection="$(sed -n '/^## Условие$/,/^<details>$/p' "$taskFile")"
+  browserStarterPattern='(^|[^[:alnum:]_$])(document|window|navigator|localStorage|sessionStorage|location|history|HTMLElement|NodeList|EventTarget|Document|WebSocket|MutationObserver|IntersectionObserver|ResizeObserver)([^[:alnum:]_$]|$)|(^|[^[:alnum:]_$])(fetch|requestAnimationFrame|cancelAnimationFrame|addEventListener|removeEventListener)[[:space:]]*\(|^[[:space:]]*(import|export)([[:space:]{]|$)|(^|[^[:alnum:]_$])import[[:space:]]*\('
+  usesBrowserRuntime='false'
+  if printf '%s\n' "$starterSection" | rg -q "$browserStarterPattern"; then
+    usesBrowserRuntime='true'
+  fi
   case "$technology" in
     JavaScript)
-      if rg -q '(^|[^[:alnum:]_])(document|window|navigator|localStorage|sessionStorage|location|history|HTMLElement|NodeList|MutationObserver|IntersectionObserver|ResizeObserver)([^[:alnum:]_]|$)|(^|[^[:alnum:]_])(fetch|requestAnimationFrame|cancelAnimationFrame)[[:space:]]*\(|^[[:space:]]*(import|export)([[:space:]{]|$)|(^|[^[:alnum:]_])import[[:space:]]*\(' "$taskFile"; then
+      if [ "$usesBrowserRuntime" = 'true' ]; then
         expectedSandboxLine="$codePenLine"
       else
         expectedSandboxLine="$programizLine"
       fi
       ;;
     TypeScript)
-      expectedSandboxLine="$typeScriptPlaygroundLine"
+      if [ "$usesBrowserRuntime" = 'true' ]; then
+        expectedSandboxLine="$codePenLine"
+      else
+        expectedSandboxLine="$typeScriptPlaygroundLine"
+      fi
       ;;
     React/TypeScript)
       expectedSandboxLine="$reactTypeScriptLine"
@@ -278,7 +288,7 @@ while IFS= read -r taskFile; do
     end="$(tail -n +"$line" "$taskFile" | rg -n '^</details>$' | head -n 1 | cut -d: -f1)"
     test -n "$(sed -n "$((line + 1)),$((line + end - 2))p" "$taskFile" | rg '[^[:space:]]')"
   done
-  ! rg -n -i 'author|source repository|video walkthrough|imported|migrated|мигрир|импортир|<!doctype|<html|<head|<body|<style|<script|← Все подборки|Самопроверка|Готово, когда' "$taskFile"
+  ! rg -q -i '(^|[^[:alnum:]_])author([^[:alnum:]_]|$)|source repository|video walkthrough|imported|migrated|мигрир|импортир|<!doctype|<html|<head|<body|<style|<script|← Все подборки|Самопроверка|Готово, когда' "$taskFile"
 done <<< "$armyTaskFiles"
 trap - ERR
 
@@ -386,7 +396,7 @@ else
   provenanceFiles="$(find README.md collections tasks -type f -name README.md | sort)"
 fi
 while IFS= read -r markdownFile; do
-  if rg -n -i 'author|source repository|video walkthrough|imported|migrated|мигрир|импортир' "$markdownFile"; then
+  if rg -n -i '(^|[^[:alnum:]_])author([^[:alnum:]_]|$)|source repository|video walkthrough|imported|migrated|мигрир|импортир' "$markdownFile"; then
     catalogFail "prohibited provenance in $markdownFile"
   fi
 done <<< "$provenanceFiles"

@@ -21,8 +21,15 @@
   только с числом отклоняется;
 - связывает `Технология` с точными sandbox name/URL: Programiz для console
   JavaScript без browser API и ESM, CodePen для browser JavaScript, DOM,
-  HTML/CSS и ESM, TypeScript Playground для pure TypeScript, React TypeScript
-  для React/TypeScript;
+  HTML/CSS, ESM и TypeScript с browser API или DOM, TypeScript Playground
+  только для pure TypeScript без browser API и DOM, React TypeScript для
+  React/TypeScript;
+- определяет browser-профиль только по fenced starter-блокам между
+  `## Условие` и первой подсказкой: DOM/browser identifiers, включая
+  `EventTarget`, `Document` и `WebSocket`, влияют на mapping, а те же слова в
+  hints, solution и объяснительном prose не влияют;
+- отклоняет provenance-маркеры, включая самостоятельное слово `author`, но не
+  подстроки технических identifiers и заголовков, например `Authorization`;
 - требует у каждой ARMY-97 карточки тематическую строку точного вида
   `N. [Exact title](../../../tasks/task-XXXX/README.md) — Substantive sentence. — N минут`:
   без префикса, суффикса и дополнительного поля, с точным linked title,

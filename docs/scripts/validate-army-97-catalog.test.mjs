@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.3.1
+// VERSION: 2.5.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
-//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, editor, exact thematic-row grammar, format-driven real-work membership, malformed, and provenance probes.
+//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, starter-only pure/browser TypeScript editor routing, exact thematic-row grammar, format-driven real-work membership, malformed, and bounded provenance probes.
 //   DEPENDS: node:test, Bash 3+, docs/scripts/validate-army-97-catalog.sh, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 //   ROLE: TEST
@@ -17,7 +17,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.3.1 - Document the wave fixture's real-work input and projection side effect.
+//   LAST_CHANGE: v2.5.0 - Cover extended browser TypeScript globals, prose-only browser words, and literal authorization headers.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -233,6 +233,7 @@ function cardFixture(
     editorProfile = editorProfileForTechnology(collection.technology),
     format = 'Написать код',
     starterOverride,
+    solutionExplanation = '',
   } = {},
 ) {
   const paddedNumber = String(number).padStart(4, '0');
@@ -288,6 +289,8 @@ function cardFixture(
     `\`\`\`${language}`,
     language === 'html' ? '<button>Ready</button>' : 'const value = 2;',
     '```',
+    '',
+    solutionExplanation,
     '',
     'Ожидаемый результат: значение изменено.',
     '',
@@ -618,6 +621,110 @@ test('rejects React TypeScript published with Programiz', () => {
 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /technology and editor profile/);
+});
+
+test('accepts TypeScript Playground for pure TypeScript', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[1],
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+});
+
+test('rejects CodePen for pure TypeScript without browser APIs', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[1],
+    defaultCardOptions: {
+      editorProfile: editorProfiles.CodePen,
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /technology and editor profile/);
+});
+
+test('accepts CodePen for TypeScript that uses browser APIs', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[1],
+    defaultCardOptions: {
+      editorProfile: editorProfiles.CodePen,
+      starterOverride: "const value: HTMLElement | null = document.querySelector('#value');",
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+});
+
+test('rejects TypeScript Playground for TypeScript that uses browser APIs', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[1],
+    defaultCardOptions: {
+      editorProfile: editorProfiles.TypeScriptPlayground,
+      starterOverride: "const value: HTMLElement | null = document.querySelector('#value');",
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /technology and editor profile/);
+});
+
+for (const [browserGlobal, starterOverride] of [
+  ['EventTarget', 'declare const target: EventTarget;'],
+  ['Document', 'declare const page: Document;'],
+  ['WebSocket', 'declare const socket: WebSocket;'],
+]) {
+  test(`accepts CodePen for TypeScript starter using ${browserGlobal}`, () => {
+    const repositoryRoot = createWaveCatalogFixture({
+      armyCollection: controlledCollections[1],
+      defaultCardOptions: {
+        editorProfile: editorProfiles.CodePen,
+        starterOverride,
+      },
+    });
+
+    const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+    assert.equal(
+      result.status,
+      0,
+      `${result.stdout}\n${result.stderr}`.slice(-8_000),
+    );
+  });
+}
+
+test('keeps prose-only document and window references in TypeScript Playground', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[1],
+    defaultCardOptions: {
+      editorProfile: editorProfiles.TypeScriptPlayground,
+      solutionExplanation:
+        'В объяснении упомянуты document и window, но starter остаётся pure TypeScript.',
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
 });
 
 test('accepts CodePen for JavaScript that uses browser APIs', () => {
@@ -955,6 +1062,23 @@ test('accepts a complete controlled production catalog fixture', () => {
   assert.equal(
     result.stdout,
     '{"catalogGate":"PASS","gateMode":"final","tasks":118,"legacyCards":0,"publishedArmyCards":118,"covered":118,"orphans":0,"thematicErrors":0}\n',
+  );
+});
+
+test('accepts a literal Authorization header without treating it as provenance', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    defaultCardOptions: {
+      starterOverride:
+        "const headers = { Authorization: 'Bearer local-token' };",
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
   );
 });
 

@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-beads.mjs
-// VERSION: 2.1.0
+// VERSION: 2.3.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Enforce the ARMY-97 source-audit, published-catalog, and publication-decision contract against live Beads metadata.
-//   SCOPE: Immutable snapshot hashing, mutable count derivation, current task/collection/editor inventory, candidate/card synchronization, and structured current-commit evidence.
+//   SCOPE: Immutable snapshot hashing, mutable count derivation, current task/collection/editor inventory with starter-only browser classification, candidate/card synchronization, and structured current-commit evidence.
 //   DEPENDS: bd CLI, Git, Node fs, docs/army-97-candidate-audit.json, docs/scripts/run-army-97-catalog-gate.mjs, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, DF-ARMY97-CANDIDATE-TO-CARD
 //   ROLE: SCRIPT
@@ -15,11 +15,13 @@
 //   validatePublicationRegistry - Validate candidate/card state and derive mutable counts.
 //   loadLiveRegistry - Read the current ARMY-97 registry from Beads.
 //   loadPublishedCatalogState - Read current task identities, thematic membership, technology, and editor profile from Markdown.
+//   extractStarterCode - Read only fenced starter code from the condition section.
+//   expectedEditorProfileForCard - Map technology and starter browser APIs to one editor profile.
 //   run - Validate the live registry from the repository root.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.1.0 - Bind the sandbox profile parsed from published Markdown to card technology and frozen Beads editor metadata.
+//   LAST_CHANGE: v2.3.0 - Derive JavaScript and TypeScript editors from starter code without prose leakage.
 // END_CHANGE_SUMMARY
 
 import { createHash } from 'node:crypto';
@@ -110,14 +112,14 @@ const allowedEditorProfiles = new Set([
   'TypeScript Playground',
   'React TypeScript',
 ]);
-const allowedEditorsByTechnology = {
-  JavaScript: new Set(['Programiz', 'CodePen']),
-  TypeScript: new Set(['TypeScript Playground']),
-  'HTML/CSS': new Set(['CodePen']),
-  'HTML/JavaScript': new Set(['CodePen']),
-  'HTML/CSS/JavaScript': new Set(['CodePen']),
-  'React/TypeScript': new Set(['React TypeScript']),
+const fixedEditorByTechnology = {
+  'HTML/CSS': 'CodePen',
+  'HTML/JavaScript': 'CodePen',
+  'HTML/CSS/JavaScript': 'CodePen',
+  'React/TypeScript': 'React TypeScript',
 };
+const browserStarterPattern =
+  /(^|[^A-Za-z0-9_$])(document|window|navigator|localStorage|sessionStorage|location|history|HTMLElement|NodeList|EventTarget|Document|WebSocket|MutationObserver|IntersectionObserver|ResizeObserver)([^A-Za-z0-9_$]|$)|(^|[^A-Za-z0-9_$])(fetch|requestAnimationFrame|cancelAnimationFrame|addEventListener|removeEventListener)\s*\(|^\s*(import|export)([\s{]|$)|(^|[^A-Za-z0-9_$])import\s*\(/m;
 const editorProfileBySandboxLine = new Map([
   [
     'Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).',
@@ -676,11 +678,13 @@ function validatePublishedCatalogState({
     }
 
     const cardFact = cardFactsByTaskId[publishedTaskId];
-    const allowedMarkdownEditors =
-      allowedEditorsByTechnology[cardFact?.technology];
+    const expectedMarkdownEditor = expectedEditorProfileForCard(
+      cardFact?.technology,
+      cardFact?.starterCode,
+    );
 
     if (
-      !allowedMarkdownEditors?.has(cardFact?.editorProfile)
+      cardFact?.editorProfile !== expectedMarkdownEditor
       || cardFact.editorProfile !== card.metadata.editorProfile
     ) {
       fail(`${card.id}: Markdown editor profile does not match card technology and frozen Beads profile`);
@@ -722,6 +726,46 @@ function validatePublishedCatalogState({
     publishedArmyTaskCount: uniqueTaskIds.length,
     currentTaskCount: totalTaskCount,
   };
+}
+
+// START_CONTRACT: extractStarterCode
+//   PURPOSE: Isolate only fenced starter bodies from the student condition section.
+//   INPUTS: { content: string - Complete task-card Markdown }
+//   OUTPUTS: { string - Concatenated starter code without hints, solution, metadata, or prose }
+//   SIDE_EFFECTS: none
+//   LINKS: M-TASK-TEMPLATE, V-M-TASK-VALIDATION
+// END_CONTRACT: extractStarterCode
+function extractStarterCode(content) {
+  const conditionSection = content.match(
+    /^## Условие\r?\n([\s\S]*?)(?=^<details>)/m,
+  )?.[1] ?? '';
+
+  return [...conditionSection.matchAll(
+    /^```[^\r\n]*\r?\n([\s\S]*?)^```[ \t]*$/gm,
+  )].map((match) => match[1]).join('\n');
+}
+
+// START_CONTRACT: expectedEditorProfileForCard
+//   PURPOSE: Map one card to its unique editor from technology and starter runtime APIs.
+//   INPUTS: { technology: string, starterCode: string }
+//   OUTPUTS: { string | undefined - Required controlled editor profile }
+//   SIDE_EFFECTS: none
+//   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION
+// END_CONTRACT: expectedEditorProfileForCard
+function expectedEditorProfileForCard(technology, starterCode) {
+  const usesBrowserRuntime =
+    typeof starterCode === 'string'
+    && browserStarterPattern.test(starterCode);
+
+  if (technology === 'JavaScript') {
+    return usesBrowserRuntime ? 'CodePen' : 'Programiz';
+  }
+
+  if (technology === 'TypeScript') {
+    return usesBrowserRuntime ? 'CodePen' : 'TypeScript Playground';
+  }
+
+  return fixedEditorByTechnology[technology];
 }
 
 // START_CONTRACT: validatePublicationRegistry
@@ -835,7 +879,7 @@ export function loadLiveRegistry(cwd = repoRoot) {
 // START_CONTRACT: loadPublishedCatalogState
 //   PURPOSE: Derive current ARMY-97 publication identity and thematic membership from tracked Markdown.
 //   INPUTS: { cwd: string - Repository root }
-//   OUTPUTS: { PublishedCatalogState - Counts, IDs, thematic mapping, and Markdown technology/editor facts }
+//   OUTPUTS: { PublishedCatalogState - Counts, IDs, thematic mapping, and Markdown technology/editor/starter facts }
 //   SIDE_EFFECTS: Reads task and controlled thematic Markdown paths.
 //   LINKS: M-TASK-LIBRARY, M-CATALOG, V-M-TASK-VALIDATION
 // END_CONTRACT: loadPublishedCatalogState
@@ -890,10 +934,12 @@ export function loadPublishedCatalogState(cwd = repoRoot) {
     const sandboxLine = content.match(
       /^Песочница для выполнения — \[[^\]]+\]\(https?:\/\/[^)]+\)\.$/m,
     )?.[0];
+    const starterCode = extractStarterCode(content);
 
     cardFactsByTaskId[taskId] = {
       technology,
       editorProfile: editorProfileBySandboxLine.get(sandboxLine),
+      starterCode,
     };
   }
 

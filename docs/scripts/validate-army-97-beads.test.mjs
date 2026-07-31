@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-beads.test.mjs
-// VERSION: 2.1.0
+// VERSION: 2.3.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove that the ARMY-97 Beads publication validator rejects invalid decision transitions.
-//   SCOPE: Deterministic in-memory candidate, card, published-wave, Markdown editor, immutable-manifest, and structured-evidence probes.
+//   SCOPE: Deterministic in-memory candidate, card, published-wave, starter-classified pure/browser TypeScript editor, immutable-manifest, and structured-evidence probes.
 //   DEPENDS: node:test, node:assert, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION
 //   ROLE: TEST
@@ -16,7 +16,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.1.0 - Reject Markdown sandbox profiles that drift from technology and frozen Beads card metadata.
+//   LAST_CHANGE: v2.3.0 - Require frozen TypeScript profiles to match starter-only browser classification.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -139,6 +139,7 @@ function publishedCatalog({
       {
         technology: 'JavaScript',
         editorProfile: 'Programiz',
+        starterCode: 'const value = 1;',
       },
     ]),
   ),
@@ -345,7 +346,111 @@ test('rejects a published card whose Markdown editor differs from the frozen Bea
   fixture.publishedCatalog.cardFactsByTaskId['task-0001'] = {
     technology: 'JavaScript',
     editorProfile: 'CodePen',
+    starterCode: 'const value = 1;',
   };
+
+  assertInvalid(fixture, /Markdown editor profile does not match/);
+});
+
+test('accepts a published browser TypeScript card with synchronized CodePen metadata', () => {
+  const fixture = makePublishedWaveFixture();
+  const candidate = fixture.candidates[0];
+  const card = fixture.cards[0];
+  const targetTaskId = card.metadata.targetTaskId;
+  const targetCollection =
+    'collections/typescript/interview-practice/README.md';
+
+  candidate.metadata.targetCollection = targetCollection;
+  card.metadata.targetCollection = targetCollection;
+  card.metadata.editorProfile = 'CodePen';
+  card.metadata.cardMigrationEvidence.editorProfile = 'CodePen';
+  card.metadata.cardMigrationEvidence.destinationLocations =
+    `tasks/${targetTaskId}/README.md; ${targetCollection}; GRACE; Beads`;
+  fixture.publishedCatalog.thematicByTaskId[targetTaskId] = targetCollection;
+  fixture.publishedCatalog.cardFactsByTaskId[targetTaskId] = {
+    technology: 'TypeScript',
+    editorProfile: 'CodePen',
+    starterCode: 'declare const target: EventTarget;',
+  };
+  fixture.manifest = validator.createImmutableManifest(fixture.candidates);
+
+  const result = validator.validatePublicationRegistry(fixture);
+
+  assert.equal(result.publishedArmyTaskCount, 10);
+});
+
+test('rejects a browser TypeScript card whose Markdown editor differs from frozen CodePen', () => {
+  const fixture = makePublishedWaveFixture();
+  const candidate = fixture.candidates[0];
+  const card = fixture.cards[0];
+  const targetTaskId = card.metadata.targetTaskId;
+  const targetCollection =
+    'collections/typescript/interview-practice/README.md';
+
+  candidate.metadata.targetCollection = targetCollection;
+  card.metadata.targetCollection = targetCollection;
+  card.metadata.editorProfile = 'CodePen';
+  card.metadata.cardMigrationEvidence.editorProfile = 'CodePen';
+  card.metadata.cardMigrationEvidence.destinationLocations =
+    `tasks/${targetTaskId}/README.md; ${targetCollection}; GRACE; Beads`;
+  fixture.publishedCatalog.thematicByTaskId[targetTaskId] = targetCollection;
+  fixture.publishedCatalog.cardFactsByTaskId[targetTaskId] = {
+    technology: 'TypeScript',
+    editorProfile: 'TypeScript Playground',
+    starterCode: 'declare const target: EventTarget;',
+  };
+  fixture.manifest = validator.createImmutableManifest(fixture.candidates);
+
+  assertInvalid(fixture, /Markdown editor profile does not match/);
+});
+
+test('rejects frozen CodePen for a pure TypeScript starter', () => {
+  const fixture = makePublishedWaveFixture();
+  const candidate = fixture.candidates[0];
+  const card = fixture.cards[0];
+  const targetTaskId = card.metadata.targetTaskId;
+  const targetCollection =
+    'collections/typescript/interview-practice/README.md';
+
+  candidate.metadata.targetCollection = targetCollection;
+  card.metadata.targetCollection = targetCollection;
+  card.metadata.editorProfile = 'CodePen';
+  card.metadata.cardMigrationEvidence.editorProfile = 'CodePen';
+  card.metadata.cardMigrationEvidence.destinationLocations =
+    `tasks/${targetTaskId}/README.md; ${targetCollection}; GRACE; Beads`;
+  fixture.publishedCatalog.thematicByTaskId[targetTaskId] = targetCollection;
+  fixture.publishedCatalog.cardFactsByTaskId[targetTaskId] = {
+    technology: 'TypeScript',
+    editorProfile: 'CodePen',
+    starterCode: 'const value: number = 1;',
+  };
+  fixture.manifest = validator.createImmutableManifest(fixture.candidates);
+
+  assertInvalid(fixture, /Markdown editor profile does not match/);
+});
+
+test('rejects frozen TypeScript Playground for a browser starter', () => {
+  const fixture = makePublishedWaveFixture();
+  const candidate = fixture.candidates[0];
+  const card = fixture.cards[0];
+  const targetTaskId = card.metadata.targetTaskId;
+  const targetCollection =
+    'collections/typescript/interview-practice/README.md';
+
+  candidate.metadata.targetCollection = targetCollection;
+  card.metadata.targetCollection = targetCollection;
+  card.metadata.editorProfile = 'TypeScript Playground';
+  card.metadata.cardMigrationEvidence.editorProfile =
+    'TypeScript Playground';
+  card.metadata.cardMigrationEvidence.destinationLocations =
+    `tasks/${targetTaskId}/README.md; ${targetCollection}; GRACE; Beads`;
+  fixture.publishedCatalog.thematicByTaskId[targetTaskId] = targetCollection;
+  fixture.publishedCatalog.cardFactsByTaskId[targetTaskId] = {
+    technology: 'TypeScript',
+    editorProfile: 'TypeScript Playground',
+    starterCode: 'declare const socket: WebSocket;',
+  };
+  fixture.manifest = validator.createImmutableManifest(fixture.candidates);
 
   assertInvalid(fixture, /Markdown editor profile does not match/);
 });
