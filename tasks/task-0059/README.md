@@ -6,7 +6,7 @@
 ```javascript
 // Исправьте createStatusPoller(options, dependencies): верните poller, который последовательно отправляет POST на options.url с JSON {"resourceId":...}, Content-Type и Authorization: Bearer <authToken>.
 // status processing означает ровно одну delay-паузу и повтор; status done вызывает onSuccess(data) один раз и resolve(data), а HTTP, network или status error вызывает onError(error) один раз и reject тем же Error.
-// Используйте только fetchImpl и sleepImpl: успешная фикстура даёт 3 одинаковых запроса, задержки 25,25 и success: 1 error: 0; ошибочная — 1 запрос и failedErrors: 1, без работы после settlement.
+// Используйте только fetchImpl и sleepImpl: успешная фикстура даёт 3 одинаковых полных request { url, method, body, headers }, задержки 25,25, исходный done-payload в onSuccess и success: 1 error: 0; ошибочная — 1 request, 0 задержек, один и тот же Error в onError и reject.
 
 function createStatusPoller(options, dependencies) {
   return async () => {
@@ -32,7 +32,10 @@ const createFetchMock = (responses, requests) => async (url, request) => {
     url,
     method: request.method,
     body: request.body,
-    authorization: request.headers.Authorization,
+    headers: {
+      contentType: request.headers['Content-Type'],
+      authorization: request.headers.Authorization,
+    },
   });
 
   return {
@@ -50,14 +53,16 @@ async function runChecks() {
     success: 0,
     error: 0,
   };
+  let successPayload;
 
   const poll = createStatusPoller(
     {
       resourceId: '42',
       url: '/jobs/status',
       authToken: 'local-token',
-      onSuccess: () => {
+      onSuccess: (data) => {
         calls.success += 1;
+        successPayload = data;
       },
       onError: () => {
         calls.error += 1;
@@ -78,17 +83,20 @@ async function runChecks() {
 
   const result = await poll();
 
-  console.log(result.result);
-  console.log(requests.map((request) => request.method).join(','));
-  console.log(requests.map((request) => request.body).join(','));
-  console.log(requests.map(
-    (request) => request.authorization,
-  ).join(','));
-  console.log(calls);
-  console.log(delays.join(','));
+  console.log(JSON.stringify(requests));
+  console.log(JSON.stringify(result));
+  console.log('successPayload:', successPayload === result);
+  console.log(JSON.stringify(calls));
+  console.log('delays:', delays.join(','));
 
   const failedRequests = [];
-  let failedCalls = 0;
+  const failedDelays = [];
+  const failedCalls = {
+    success: 0,
+    error: 0,
+  };
+  let failedSuccessPayload;
+  let failedCallbackError;
 
   try {
     const failedPoll = createStatusPoller(
@@ -96,9 +104,13 @@ async function runChecks() {
         resourceId: 'broken',
         url: '/jobs/status',
         authToken: 'failed-token',
-        onSuccess: () => {},
-        onError: () => {
-          failedCalls += 1;
+        onSuccess: (data) => {
+          failedCalls.success += 1;
+          failedSuccessPayload = data;
+        },
+        onError: (error) => {
+          failedCalls.error += 1;
+          failedCallbackError = error;
         },
       },
       {
@@ -106,15 +118,33 @@ async function runChecks() {
         fetchImpl: createFetchMock([
           { status: 'error', message: 'Job failed' },
         ], failedRequests),
-        sleepImpl: async () => {},
+        sleepImpl: async (delay) => {
+          failedDelays.push(delay);
+        },
       },
     );
     await failedPoll();
   } catch (error) {
+    console.log(JSON.stringify(failedRequests));
+    console.log(
+      'failedCallbacks:',
+      JSON.stringify(failedCalls),
+      'failedSuccessPayload:',
+      failedSuccessPayload === undefined,
+      'failedCallbackError:',
+      failedCallbackError === error,
+    );
     console.log(error.message);
   }
 
-  console.log('failedRequests:', failedRequests.length, 'errors:', failedCalls);
+  console.log(
+    'failedRequests:',
+    failedRequests.length,
+    'failedDelays:',
+    failedDelays.length,
+    'errors:',
+    failedCalls.error,
+  );
 }
 
 document.body.innerHTML = '<pre>Результат смотрите в консоли</pre>';
@@ -201,11 +231,11 @@ function createStatusPoller(options, dependencies) {
 }
 ```
 
-Фабрика замыкает идентификатор, URL, токен и callbacks в одном poller. Последовательный цикл исключает перекрывающиеся запросы, а terminal-ветви немедленно завершают функцию.
+Фабрика замыкает идентификатор, URL, токен и callbacks в одном poller. Последовательный цикл исключает перекрывающиеся запросы, а terminal-ветви немедленно завершают функцию: `onSuccess` получает тот же объект, с которым завершается Promise, а `onError` — тот же `Error`, который отклоняет Promise. Ошибочная фикстура отдельно подтверждает, что `onSuccess` не вызывался.
 
-Ожидаемый результат: выводятся `ready`, `POST,POST,POST`, три одинаковых тела `{"resourceId":"42"}`, три значения `Bearer local-token`, `{ success: 1, error: 0 }`, `25,25`, `Job failed`, затем `failedRequests: 1 errors: 1`.
+Ожидаемый результат: выводится один массив из трёх одинаковых записей `[{"url":"/jobs/status","method":"POST","body":"{\\"resourceId\\":\\"42\\"}","headers":{"contentType":"application/json","authorization":"Bearer local-token"}}, ...]`, затем `{"status":"done","result":"ready"}`, `successPayload: true`, `{"success":1,"error":0}`, `delays: 25,25`; далее одна запись `[{"url":"/jobs/status","method":"POST","body":"{\\"resourceId\\":\\"broken\\"}","headers":{"contentType":"application/json","authorization":"Bearer failed-token"}}]`, `failedCallbacks: {"success":0,"error":1} failedSuccessPayload: true failedCallbackError: true`, `Job failed`, затем `failedRequests: 1 failedDelays: 0 errors: 1`.
 
-Ручная проверка: вставьте решение и сравните восемь строк; проверьте у каждого request точные body и Authorization, затем сделайте первый mock-response с `ok: false` и убедитесь, что выполняется один запрос, только `onError` и ни одной задержки.
+Ручная проверка: вставьте решение и сравните все девять строк; в первом массиве проверьте у каждого из трёх request точные URL, method, body, оба headers и `successPayload: true`, затем у ошибочного request — URL и headers, `failedCallbacks: {"success":0,"error":1}`, отсутствие success-payload, тот же Error, один request и ноль задержек. После этого сделайте первый mock-response с `ok: false` и убедитесь, что `onSuccess` не вызывается, а `onError` получает тот же Error, которым Promise отклоняется.
 
 </details>
 
