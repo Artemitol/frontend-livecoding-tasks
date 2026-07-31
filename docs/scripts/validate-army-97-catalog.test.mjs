@@ -1,5 +1,5 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.3.0
+// VERSION: 2.3.1
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
 //   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, editor, exact thematic-row grammar, format-driven real-work membership, malformed, and provenance probes.
@@ -11,13 +11,13 @@
 //
 // START_MODULE_MAP
 //   createInventoryFixture - Create controlled task IDs and thematic projections without full card bodies.
-//   createWaveCatalogFixture - Create the closed legacy inventory plus one current ARMY-97 wave.
+//   createWaveCatalogFixture - Create the closed legacy inventory plus one current ARMY-97 wave and its optional real-work projection.
 //   createCompleteCatalogFixture - Create a complete synthetic 118-card and 30-simulation catalog.
 //   runProductionCatalogGate - Execute the tracked production Bash gate against one fixture.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.3.0 - Prove real-work membership follows card format for JavaScript as well as React and remains exactly one row.
+//   LAST_CHANGE: v2.3.1 - Document the wave fixture's real-work input and projection side effect.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -311,9 +311,9 @@ function cardFixture(
 
 // START_CONTRACT: createWaveCatalogFixture
 //   PURPOSE: Create the closed legacy catalog plus one controlled ARMY-97 wave prefix.
-//   INPUTS: { armyTaskNumbers?: number[], referencedArmyTaskNumbers?: number[], malformedTaskNumber?: number, duplicateArmyTaskNumber?: number }
+//   INPUTS: { armyTaskNumbers?: number[], referencedArmyTaskNumbers?: number[], realWorkTaskNumbers?: number[], malformedTaskNumber?: number, duplicateArmyTaskNumber?: number }
 //   OUTPUTS: { string - Temporary repository root }
-//   SIDE_EFFECTS: Creates legacy cards, current-wave cards, and thematic projections.
+//   SIDE_EFFECTS: Creates legacy cards, current-wave cards, thematic projections, and the real-work projection.
 //   LINKS: V-M-TASK-VALIDATION, M-TASK-LIBRARY, M-CATALOG
 // END_CONTRACT: createWaveCatalogFixture
 function createWaveCatalogFixture({
