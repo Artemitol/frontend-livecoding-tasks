@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # FILE: docs/scripts/validate-army-97-catalog.sh
-# VERSION: 2.2.0
+# VERSION: 2.3.0
 # START_MODULE_CONTRACT
 #   PURPOSE: Validate either a serialized ARMY-97 publication wave or the strict final student catalog without reading or mutating Beads.
 #   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, technology/editor mapping, exact thematic-row grammar, real-work projections, final simulations, provenance exclusion, and local links.
@@ -11,7 +11,7 @@
 # END_MODULE_CONTRACT
 #
 # START_CHANGE_SUMMARY
-#   LAST_CHANGE: v2.2.0 - Enforce one exact thematic-row grammar with no prefix, suffix, empty prose, or extra field.
+#   LAST_CHANGE: v2.3.0 - Bind exactly one real-work projection to card format without restricting the card technology.
 # END_CHANGE_SUMMARY
 
 set -euo pipefail
@@ -319,11 +319,17 @@ while IFS= read -r taskFile; do
   ); then
     catalogFail "$taskFile collection row must match the card title, one description sentence, and exact duration"
   fi
+  realWorkReferences="$(rg -o "\]\([^)]*$taskFile\)" collections/real-work/README.md || true)"
+  realWorkReferenceCount="$(printf '%s\n' "$realWorkReferences" |
+    sed '/^$/d' |
+    wc -l |
+    tr -d ' ')"
   if rg -q -- '- Формат: Приближённая к реальной работе$' "$taskFile"; then
-    rg -q -- '- Технология: React/TypeScript$' "$taskFile"
-    rg -l "\]\([^)]*$taskFile\)" collections/real-work/README.md >/dev/null
-  else
-    ! rg -l "\]\([^)]*$taskFile\)" collections/real-work/README.md
+    if [ "$realWorkReferenceCount" -ne 1 ]; then
+      catalogFail "$taskFile real-work format must appear exactly once in the real-work collection"
+    fi
+  elif [ "$realWorkReferenceCount" -ne 0 ]; then
+    catalogFail "$taskFile focused card must not appear in the real-work collection"
   fi
 done <<< "$armyTaskFiles"
 

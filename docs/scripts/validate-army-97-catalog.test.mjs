@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.2.0
+// VERSION: 2.3.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
-//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, editor, exact thematic-row grammar, malformed, and provenance probes.
+//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, editor, exact thematic-row grammar, format-driven real-work membership, malformed, and provenance probes.
 //   DEPENDS: node:test, Bash 3+, docs/scripts/validate-army-97-catalog.sh, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 //   ROLE: TEST
@@ -17,7 +17,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.2.0 - Add exact thematic-row grammar regressions for prefixes, substantive descriptions, extra fields, and suffixes.
+//   LAST_CHANGE: v2.3.0 - Prove real-work membership follows card format for JavaScript as well as React and remains exactly one row.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -231,6 +231,7 @@ function cardFixture(
   {
     duration = '15 минут',
     editorProfile = editorProfileForTechnology(collection.technology),
+    format = 'Написать код',
     starterOverride,
   } = {},
 ) {
@@ -299,7 +300,7 @@ function cardFixture(
     '',
     `- Технология: ${collection.technology}`,
     `- Подборка: ${collection.name}`,
-    '- Формат: Написать код',
+    `- Формат: ${format}`,
     '- Сложность: Базовая',
     `- Примерное время: ${duration}`,
     '',
@@ -318,6 +319,7 @@ function cardFixture(
 function createWaveCatalogFixture({
   armyTaskNumbers = range(1, 10),
   referencedArmyTaskNumbers = armyTaskNumbers,
+  realWorkTaskNumbers = [],
   malformedTaskNumber,
   duplicateArmyTaskNumber,
   cardDuration = '15 минут',
@@ -333,7 +335,14 @@ function createWaveCatalogFixture({
   writeFixtureFile(
     repositoryRoot,
     'collections/real-work/README.md',
-    '# Real-work tasks\n',
+    [
+      '# Real-work tasks',
+      '',
+      ...realWorkTaskNumbers.map((number) => (
+        `1. [Task ${String(number).padStart(4, '0')}](../../tasks/${taskId(number)}/README.md) — 15 минут`
+      )),
+      '',
+    ].join('\n'),
   );
 
   for (const slug of legacyTaskSlugs) {
@@ -656,6 +665,58 @@ test('rejects CodePen for console JavaScript without browser APIs', () => {
 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /technology and editor profile/);
+});
+
+test('accepts one CodePen JavaScript real-work card in the real-work collection', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[0],
+    realWorkTaskNumbers: [1],
+    cardOptionsByNumber: {
+      1: {
+        editorProfile: editorProfiles.CodePen,
+        format: 'Приближённая к реальной работе',
+        starterOverride: "const value = document.querySelector('#value');",
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`.slice(-8_000),
+  );
+});
+
+test('rejects a focused card referenced by the real-work collection', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    realWorkTaskNumbers: [1],
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /focused card must not appear in the real-work collection/);
+});
+
+test('rejects duplicate real-work rows for one real-work card', () => {
+  const repositoryRoot = createWaveCatalogFixture({
+    armyCollection: controlledCollections[0],
+    realWorkTaskNumbers: [1, 1],
+    cardOptionsByNumber: {
+      1: {
+        editorProfile: editorProfiles.CodePen,
+        format: 'Приближённая к реальной работе',
+        starterOverride: "const value = document.querySelector('#value');",
+      },
+    },
+  });
+
+  const result = runProductionCatalogGate(repositoryRoot, 'wave');
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /real-work format must appear exactly once/);
 });
 
 test('accepts exact collection row grammar with a substantive Russian sentence', () => {
