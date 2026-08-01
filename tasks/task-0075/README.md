@@ -5,7 +5,7 @@
 ## Условие
 ```javascript
 // Исправьте unwrap: объект вида { type: '...', value: ... } заменяется своим value на любой глубине, включая массивы.
-// Верните новые объекты и массивы, не изменяя source; проверка должна вывести имя, первый тег, true и true.
+// Верните новые объекты и массивы, не изменяя source; сохраните null и обычный объект с полем value без type, а вложенный wrapper распакуйте до листа.
 // Используйте консольный JavaScript без ESM и browser API.
 
 function unwrap(value) {
@@ -25,13 +25,15 @@ function unwrap(value) {
 }
 
 const source = {
-  person: { type: 'text', value: 'Mila' },
+  person: { type: 'text', value: { type: 'text', value: 'Mila' } },
   tags: [
     { type: 'text', value: 'js' },
     { type: 'text', value: 'ts' },
   ],
   settings: {
     enabled: { type: 'boolean', value: true },
+    note: { value: 'keep' },
+    empty: null,
   },
 };
 
@@ -40,6 +42,8 @@ const result = unwrap(source);
 console.log(result.person);
 console.log(result.tags[0]);
 console.log(result.settings.enabled);
+console.log(result.settings.note.value);
+console.log(result.settings.empty);
 console.log('inputUnchanged:', before === JSON.stringify(source));
 ```
 
@@ -89,9 +93,9 @@ function unwrap(value) {
 
 Проверка `type` отличает wrapper от обычного объекта с полем `value`; каждый контейнер создаётся заново и рекурсивно преобразуется.
 
-Ожидаемый результат: `Mila`, `js`, `true`, `inputUnchanged: true`.
+Ожидаемый результат: `Mila`, `js`, `true`, `keep`, `null`, `inputUnchanged: true`.
 
-Ручная проверка: вставьте решение и замените один `value` на вложенный wrapper, чтобы проверить повторную распаковку.
+Ручная проверка: вставьте решение и замените обычный `note` на wrapper, чтобы сравнить сохранение объекта с повторной распаковкой.
 
 </details>
 

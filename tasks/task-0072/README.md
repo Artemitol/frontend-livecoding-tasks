@@ -8,11 +8,15 @@
 // Исправьте только имя переменной цикла так, чтобы в консоль вывелись 1, 2 и 3.
 // Используйте консольный JavaScript без ESM и browser API.
 
-const values = [1, 2, 3];
+function go(n) {
+  console.log(n);
 
-for (const values of values) {
-  console.log(values);
+  for (const n of n.a) {
+    console.log(n);
+  }
 }
+
+go({ a: [1, 2, 3] });
 ```
 
 <details>
@@ -32,7 +36,7 @@ for (const values of values) {
 <details>
 <summary>Подсказка 3 — почти решение</summary>
 
-Назовите элемент, например, `value`: `for (const value of values)` оставит справа доступ к массиву.
+Назовите элемент, например, `value`: `for (const value of n.a)` оставит справа доступ к параметру.
 
 </details>
 
@@ -40,14 +44,18 @@ for (const values of values) {
 <summary>Решение</summary>
 
 ```javascript
-for (const value of values) {
-  console.log(value);
+function go(n) {
+  console.log(n);
+
+  for (const value of n.a) {
+    console.log(value);
+  }
 }
 ```
 
-Исходный вариант бросает `ReferenceError` при вычислении правой части `of`: локальная переменная `values` уже существует, но ещё не инициализирована. Новое имя не затеняет массив.
+Исходный вариант сначала выводит переданный объект, затем бросает `ReferenceError` при вычислении `n.a`: переменная цикла уже затеняет параметр, но ещё не инициализирована. Новое имя не затеняет параметр.
 
-Ожидаемый результат: после исправления выводятся строки `1`, `2`, `3`.
+Ожидаемый результат: исходный код выводит объект и затем `ReferenceError`; после исправления выводятся объект, `1`, `2`, `3`.
 
 Ручная проверка: запустите исходный код и зафиксируйте `ReferenceError`, затем замените имя и сравните три строки.
 

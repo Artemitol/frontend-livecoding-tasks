@@ -5,15 +5,16 @@
 ## Условие
 ```javascript
 // Реализуйте maxAtDeepestLevel(values): верните наибольшее число среди элементов на максимальной глубине вложенных массивов.
-// Не изменяйте values; для примера ниже результат должен быть 9, а исходный JSON — неизменным.
+// Не изменяйте values; для примера ниже два вызова должны вернуть 102, а исходный JSON — неизменным.
 // Используйте консольный JavaScript без ESM и browser API.
 
 function maxAtDeepestLevel(values) {
   // Напишите решение.
 }
 
-const values = [1, [7, [3, 9]], [8, [4]]];
+const values = [1, [[20, 1, [101]], 2], [[-2], [[102, 100]]]];
 const before = JSON.stringify(values);
+console.log(maxAtDeepestLevel(values));
 console.log(maxAtDeepestLevel(values));
 console.log('inputUnchanged:', before === JSON.stringify(values));
 ```
@@ -51,6 +52,8 @@ function maxAtDeepestLevel(values) {
     for (const item of items) {
       if (Array.isArray(item)) {
         visit(item, depth + 1);
+      } else if (typeof item !== 'number') {
+        continue;
       } else if (depth > deepest) {
         deepest = depth;
         numbers = [item];
@@ -65,11 +68,11 @@ function maxAtDeepestLevel(values) {
 }
 ```
 
-Обход отделяет глубину от значения: числа на более мелких уровнях больше не участвуют после найденного более глубокого массива.
+Обход отделяет глубину от значения и игнорирует нечисловые листья: числа на более мелких уровнях больше не участвуют после найденного более глубокого массива. Состояние создано внутри функции, поэтому второй вызов независим.
 
-Ожидаемый результат: `9` и `inputUnchanged: true`.
+Ожидаемый результат: `102`, `102` и `inputUnchanged: true`.
 
-Ручная проверка: вставьте решение, затем добавьте `[10, 2]` внутрь самого глубокого массива и убедитесь, что результат равен `10`.
+Ручная проверка: вставьте решение, затем добавьте строку `'100'` рядом с `102` и убедитесь, что результат остаётся `102`.
 
 </details>
 
