@@ -13,7 +13,7 @@ function sumNumbers(source) {
 }
 
 const source = {
-  first: 1,
+  first: 2,
   group: {
     second: 3,
     skipped: '4',
