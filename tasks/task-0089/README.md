@@ -15,7 +15,7 @@ function areBracketsValid(text) {
 console.log(areBracketsValid('[[((]]))'));
 console.log(areBracketsValid('[)'));
 console.log(areBracketsValid('))[[(<>)()]]'));
-console.log(areBracketsValid('[[<<>>]](((([[]]))))'));
+console.log(areBracketsValid('[[<<>>]]' + '(((([[]]))))'));
 console.log(areBracketsValid('([])'));
 ```
 
