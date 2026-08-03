@@ -116,8 +116,10 @@ GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"; test -x "
 git diff --check
 ```
 
-После cutover замените `--mode wave` на `--mode final` в обеих catalog-командах
-и повторно выдайте current-HEAD receipts финального режима перед финальным
+После atomic cutover проверяют ровно 118 immutable-card paths, четыре
+thematic-проекции, real-work и отсутствие legacy ссылок. Полный режим `final`
+остаётся финальным сертификатом: его запускают после публикации тридцати
+симуляций и затем повторно выдают current-HEAD receipts перед финальным
 Beads-аудитом.
 
 Оба режима используют только встроенные модули Node.js и существующие Bash,

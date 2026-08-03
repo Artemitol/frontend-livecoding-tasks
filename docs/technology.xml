@@ -9,5 +9,5 @@
     <profile-ReactTypeScript URL="https://vite.new/react-ts">React with TypeScript.</profile-ReactTypeScript>
   </EditorProfiles>
   <ContentVocabulary><technologies>JavaScript | TypeScript | HTML/CSS | HTML/JavaScript | HTML/CSS/JavaScript | React/TypeScript</technologies><formats>Написать код | Исправить код | Разобрать код | Предсказать результат | Приближённая к реальной работе</formats><difficulties>Базовая | Средняя | Продвинутая</difficulties></ContentVocabulary>
-  <Verification>Use the documented local shell gate; do not use external editors, browsers, or CSS automation.</Verification>
+  <Verification>Use the documented local shell gate; cutover validates immutable cards and thematic projections before static simulations are introduced. Do not use external editors, browsers, or CSS automation.</Verification>
 </TechnologyStack>
