@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # FILE: docs/scripts/validate-army-97-catalog.sh
-# VERSION: 2.5.0
+# VERSION: 2.5.1
 # START_MODULE_CONTRACT
 #   PURPOSE: Validate either a serialized ARMY-97 publication wave or the strict final student catalog without reading or mutating Beads.
 #   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, starter-only pure-versus-browser editor routing, exact thematic-row grammar, real-work projections, final simulations, bounded provenance exclusion, and local links.
@@ -11,7 +11,7 @@
 # END_MODULE_CONTRACT
 #
 # START_CHANGE_SUMMARY
-#   LAST_CHANGE: v2.5.0 - Classify browser APIs from starter code only and bound the standalone author provenance marker.
+#   LAST_CHANGE: v2.5.1 - Accept ordinary non-empty student-facing simulation realism lines without requiring a literal plus sign.
 # END_CHANGE_SUMMARY
 
 set -euo pipefail
@@ -353,7 +353,7 @@ if [ "$gateMode" = 'final' ]; then
     file="collections/interviews/simulation-$id/README.md"
     test -f "$file"
     rg -q "Симуляция собеседования №$number" "$file"
-    rg -q '^Реализм: .\+' "$file"
+    rg -q '^Реализм: .+$' "$file"
     test "$(rg -o "\[Симуляция собеседования №$number\]\([^)]*simulation-$id/README\.md\) — [0-9]+ минут" collections/interviews/README.md | wc -l | tr -d ' ')" -eq 1
     simulationTasks=()
     while IFS= read -r task; do

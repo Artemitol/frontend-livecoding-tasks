@@ -1,5 +1,5 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.5.0
+// VERSION: 2.5.1
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
 //   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, starter-only pure/browser TypeScript editor routing, exact thematic-row grammar, format-driven real-work membership, malformed, and bounded provenance probes.
@@ -17,7 +17,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.5.0 - Cover extended browser TypeScript globals, prose-only browser words, and literal authorization headers.
+//   LAST_CHANGE: v2.5.1 - Require a normal non-empty realism line without a literal plus-sign sentinel.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -483,7 +483,7 @@ function createCompleteCatalogFixture({ nestedProvenance = '' } = {}) {
       [
         `# Симуляция собеседования №${simulationNumber}`,
         '',
-        'Реализм: x+ два задания из разных тематических подборок.',
+        'Реализм: Два задания из разных тематических подборок создают реалистичную последовательность.',
         '',
         'Общее время: 30 минут',
         '',
