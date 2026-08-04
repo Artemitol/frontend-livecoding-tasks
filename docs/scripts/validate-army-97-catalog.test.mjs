@@ -1,8 +1,8 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.5.1
+// VERSION: 2.6.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
-//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus duration, starter-only pure/browser TypeScript editor routing, exact thematic-row grammar, format-driven real-work membership, malformed, and bounded provenance probes.
+//   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus frozen master/topic registry, visible-ID, wording, three-topic simulation, editor-routing, real-work, malformed, and provenance probes.
 //   DEPENDS: node:test, Bash 3+, docs/scripts/validate-army-97-catalog.sh, M-TASK-VALIDATION
 //   LINKS: M-TASK-VALIDATION, V-M-TASK-VALIDATION, M-CATALOG
 //   ROLE: TEST
@@ -12,12 +12,12 @@
 // START_MODULE_MAP
 //   createInventoryFixture - Create controlled task IDs and thematic projections without full card bodies.
 //   createWaveCatalogFixture - Create the closed legacy inventory plus one current ARMY-97 wave and its optional real-work projection.
-//   createCompleteCatalogFixture - Create a complete synthetic 118-card and 30-simulation catalog.
+//   createCompleteTopicCatalogFixture - Create a complete synthetic 118-card catalog with 23 topic pages and 30 simulations.
 //   runProductionCatalogGate - Execute the tracked production Bash gate against one fixture.
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.5.1 - Require a normal non-empty realism line without a literal plus-sign sentinel.
+//   LAST_CHANGE: v2.6.0 - Cover frozen topic navigation, card identity, wording, and three-topic simulation regressions.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -25,6 +25,7 @@ import { spawnSync } from 'node:child_process';
 import {
   mkdirSync,
   mkdtempSync,
+  readFileSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -73,29 +74,59 @@ const legacyThematicPaths = [
   'collections/typescript/type-modeling/README.md',
 ];
 const controlledCollections = [
+  ['javascript', 'JavaScript', 'event-loop', 'Event loop и очереди задач', [15, 16, 18, 19, 20, 23, 25]],
+  ['javascript', 'JavaScript', 'promises-and-async', 'Promise и async/await', [17, 21, 22, 24, 26, 27, 28, 29, 51, 59]],
+  ['javascript', 'JavaScript', 'prototypes-inheritance-and-this', 'Прототипы, наследование и `this`', [30, 31, 32, 34, 35, 36]],
+  ['javascript', 'JavaScript', 'functions-closures-and-scope', 'Функции, замыкания и область видимости', [39, 47, 52, 60, 61, 62, 65, 66, 68, 69, 70, 71, 72, 113]],
+  ['javascript', 'JavaScript', 'objects-and-collections', 'Объекты и коллекции', [33, 40, 41, 42, 43, 44, 45, 50, 118]],
+  ['javascript', 'JavaScript', 'dom-and-events', 'DOM и события', [48, 58, 67]],
+  ['javascript', 'JavaScript', 'dates-and-time-intervals', 'Даты и временные интервалы', [37, 53, 54]],
+  ['javascript', 'JavaScript', 'arrays-search-and-sorting', 'Массивы, поиск и сортировка', [46, 82, 83, 84, 87, 88, 90, 95, 100]],
+  ['javascript', 'JavaScript', 'strings', 'Строки', [85, 86, 97, 98, 99]],
+  ['javascript', 'JavaScript', 'trees-and-recursion', 'Деревья и рекурсия', [73, 74, 75, 76, 77, 78, 79, 80, 81, 91, 96]],
+  ['javascript', 'JavaScript', 'graphs', 'Графы', [55, 56]],
+  ['javascript', 'JavaScript', 'linked-lists-and-stack', 'Связные списки и стек', [64, 89, 92, 93, 94]],
+  ['javascript', 'JavaScript', 'numbers-types-and-operators', 'Числа, типы и операторы', [109, 110, 111, 112, 114, 115, 116, 117]],
+  ['typescript', 'TypeScript', 'generics-and-object-keys', 'Дженерики и ключи объектов', [38, 102, 106]],
+  ['typescript', 'TypeScript', 'mapped-and-conditional-types', 'Mapped и conditional types', [101, 103, 105]],
+  ['typescript', 'TypeScript', 'recursive-types', 'Рекурсивные типы', [104]],
+  ['typescript', 'TypeScript', 'integration-typing', 'Типизация интеграций', [57]],
+  ['react', 'React', 'state-and-event-handlers', 'Состояние и обработчики событий', [9, 63]],
+  ['react', 'React', 'effects-timers-and-cleanup', 'Эффекты, таймеры и очистка', [1, 5, 14]],
+  ['react', 'React', 'rendering-and-memoization', 'Рендеринг и мемоизация', [2, 3, 7]],
+  ['react', 'React', 'async-data-and-ui-states', 'Асинхронные данные и состояния интерфейса', [4, 6, 8, 10]],
+  ['react', 'React', 'component-composition-and-state-management', 'Композиция компонентов и управление состоянием', [11, 12, 13, 49]],
+  ['html-css', 'HTML/CSS', 'cascade-and-selectors', 'Каскад и селекторы', [107, 108]],
+].map(([masterSlug, masterName, topicSlug, topicName, taskIds]) => ({
+  masterSlug,
+  masterName,
+  topicSlug,
+  topicName,
+  name: `${masterName} → ${topicName}`,
+  path: `collections/${masterSlug}/${topicSlug}/README.md`,
+  technology: masterName === 'React' ? 'React/TypeScript' : masterName,
+  taskIds,
+}));
+const waveCollections = [
   {
     path: 'collections/javascript/interview-practice/README.md',
     name: 'JavaScript interview practice',
     technology: 'JavaScript',
-    taskIds: range(1, 92),
   },
   {
     path: 'collections/typescript/interview-practice/README.md',
     name: 'TypeScript interview practice',
     technology: 'TypeScript',
-    taskIds: range(93, 100),
   },
   {
     path: 'collections/react/interview-practice/README.md',
     name: 'React interview practice',
     technology: 'React/TypeScript',
-    taskIds: range(101, 116),
   },
   {
     path: 'collections/html-css/interview-practice/README.md',
     name: 'HTML/CSS interview practice',
     technology: 'HTML/CSS',
-    taskIds: range(117, 118),
   },
 ];
 const editorProfiles = {
@@ -164,7 +195,7 @@ function collectionEntry(
   number,
   {
     prefix = '',
-    title = `Task ${String(number).padStart(4, '0')}`,
+    title = `${taskId(number)} — Task ${String(number).padStart(4, '0')}`,
     description = 'Решите одну изолированную задачу.',
     duration = '15 минут',
     suffix = '',
@@ -172,7 +203,7 @@ function collectionEntry(
 ) {
   const id = taskId(number);
 
-  return `${prefix}1. [${title}](../../../tasks/${id}/README.md) — ${description} — ${duration}${suffix}`;
+  return `${prefix}1. [${title}](../../../tasks/${id}/README.md) — Базовая · ${duration} — ${description}${suffix}`;
 }
 
 function writeControlledCollections(repositoryRoot, collections) {
@@ -182,6 +213,8 @@ function writeControlledCollections(repositoryRoot, collections) {
       collection.path,
       [
         `# ${collection.name}`,
+        '',
+        `[Главная](../../../README.md) → [${collection.masterName}](../README.md) → ${collection.topicName}`,
         '',
         ...collection.taskIds.map(collectionEntry),
         '',
@@ -252,7 +285,7 @@ function cardFixture(
     : 'const value = 1;');
 
   return [
-    `# Task ${paddedNumber}`,
+    `# task-${paddedNumber} — Task ${paddedNumber}`,
     '',
     `Песочница для выполнения — [${editorProfile.name}](${editorProfile.url}).`,
     '',
@@ -327,7 +360,7 @@ function createWaveCatalogFixture({
   duplicateArmyTaskNumber,
   cardDuration = '15 минут',
   cardDurationByNumber = {},
-  armyCollection = controlledCollections[2],
+  armyCollection = waveCollections[2],
   defaultCardOptions = {},
   cardOptionsByNumber = {},
   collectionEntryOptionsByNumber = {},
@@ -404,7 +437,7 @@ function createWaveCatalogFixture({
   );
 
   if (duplicateArmyTaskNumber !== undefined) {
-    const duplicateCollection = controlledCollections[0];
+    const duplicateCollection = waveCollections[0];
 
     writeFixtureFile(
       repositoryRoot,
@@ -421,14 +454,14 @@ function createWaveCatalogFixture({
   return repositoryRoot;
 }
 
-// START_CONTRACT: createCompleteCatalogFixture
+// START_CONTRACT: createCompleteTopicCatalogFixture
 //   PURPOSE: Create the smallest complete synthetic catalog accepted by every production-gate layer.
 //   INPUTS: { nestedProvenance?: string }
 //   OUTPUTS: { string - Temporary repository root }
 //   SIDE_EFFECTS: Creates 118 cards, four thematic projections, 30 simulations, and local indexes.
 //   LINKS: V-M-TASK-VALIDATION, M-TASK-LIBRARY, M-CATALOG
-// END_CONTRACT: createCompleteCatalogFixture
-function createCompleteCatalogFixture({ nestedProvenance = '' } = {}) {
+// END_CONTRACT: createCompleteTopicCatalogFixture
+function createCompleteTopicCatalogFixture({ nestedProvenance = '' } = {}) {
   const repositoryRoot = createFixtureRoot();
 
   writeFixtureFile(
@@ -441,6 +474,31 @@ function createCompleteCatalogFixture({ nestedProvenance = '' } = {}) {
       '',
     ].join('\n'),
   );
+  const masters = [...new Map(
+    controlledCollections.map((collection) => [
+      collection.masterSlug,
+      collection,
+    ]),
+  ).values()];
+
+  for (const master of masters) {
+    const topics = controlledCollections.filter((collection) => (
+      collection.masterSlug === master.masterSlug
+    ));
+
+    writeFixtureFile(
+      repositoryRoot,
+      `collections/${master.masterSlug}/README.md`,
+      [
+        `[Главная](../../README.md) → ${master.masterName}`,
+        '',
+        ...topics.map((collection) => (
+          `- [${collection.topicName}](${collection.topicSlug}/README.md) — ${collection.taskIds.length} задач — Краткое описание темы.`
+        )),
+        '',
+      ].join('\n'),
+    );
+  }
   writeControlledCollections(repositoryRoot, controlledCollections);
   writeFixtureFile(
     repositoryRoot,
@@ -459,23 +517,28 @@ function createCompleteCatalogFixture({ nestedProvenance = '' } = {}) {
   }
 
   const simulationIndex = ['# Симуляции собеседований', ''];
-  const nonJavaScriptTasks = range(93, 118);
+  const simulationTopics = [
+    controlledCollections[0].taskIds,
+    controlledCollections[1].taskIds,
+    controlledCollections[3].taskIds,
+  ];
 
   for (let index = 0; index < 30; index += 1) {
     const simulationNumber = index + 1;
     const simulationId = String(simulationNumber).padStart(3, '0');
     const taskNumbers = [
-      simulationNumber,
-      nonJavaScriptTasks[index % nonJavaScriptTasks.length],
+      simulationTopics[0][index % simulationTopics[0].length],
+      simulationTopics[1][index % simulationTopics[1].length],
+      simulationTopics[2][index % simulationTopics[2].length],
     ];
     const taskLinks = taskNumbers.map((number) => {
       const id = taskId(number);
 
-      return `[Task ${String(number).padStart(4, '0')}](../../../tasks/${id}/README.md) — 15 минут`;
+      return `[${id} — Task ${String(number).padStart(4, '0')}](../../../tasks/${id}/README.md) — 15 минут`;
     });
 
     simulationIndex.push(
-      `[Симуляция собеседования №${simulationNumber}](simulation-${simulationId}/README.md) — 30 минут`,
+      `[Симуляция собеседования №${simulationNumber}](simulation-${simulationId}/README.md) — 45 минут`,
     );
     writeFixtureFile(
       repositoryRoot,
@@ -483,9 +546,9 @@ function createCompleteCatalogFixture({ nestedProvenance = '' } = {}) {
       [
         `# Симуляция собеседования №${simulationNumber}`,
         '',
-        'Реализм: Два задания из разных тематических подборок создают реалистичную последовательность.',
+        'Реализм: Три задания из разных тематических подборок создают реалистичную последовательность.',
         '',
-        'Общее время: 30 минут',
+        'Общее время: 45 минут',
         '',
         ...taskLinks,
         '',
@@ -502,6 +565,43 @@ function createCompleteCatalogFixture({ nestedProvenance = '' } = {}) {
   );
 
   return repositoryRoot;
+}
+
+const createCompleteCatalogFixture = createCompleteTopicCatalogFixture;
+
+function replaceFile(repositoryRoot, relativePath, content) {
+  writeFixtureFile(repositoryRoot, relativePath, content);
+}
+
+function writeSimulation(repositoryRoot, number, taskIds) {
+  const id = String(number).padStart(3, '0');
+  const links = taskIds.map((taskIdentifier) => {
+    const taskNumber = taskIdentifier.slice(-4);
+
+    return `[${taskIdentifier} — Task ${taskNumber}](../../../tasks/${taskIdentifier}/README.md) — 15 минут`;
+  });
+
+  writeFixtureFile(
+    repositoryRoot,
+    `collections/interviews/simulation-${id}/README.md`,
+    [
+      `# Симуляция собеседования №${number}`,
+      '',
+      'Реализм: Три задания проверяют разные механизмы.',
+      '',
+      'Общее время: 45 минут',
+      '',
+      ...links,
+      '',
+    ].join('\n'),
+  );
+}
+
+function assertCatalogFails(repositoryRoot, expectedMessage) {
+  const result = runProductionCatalogGate(repositoryRoot);
+
+  assert.notEqual(result.status, 0);
+  assert.match(`${result.stdout}\n${result.stderr}`, new RegExp(expectedMessage));
 }
 
 // START_CONTRACT: runProductionCatalogGate
@@ -625,7 +725,7 @@ test('rejects React TypeScript published with Programiz', () => {
 
 test('accepts TypeScript Playground for pure TypeScript', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[1],
+    armyCollection: waveCollections[1],
   });
 
   const result = runProductionCatalogGate(repositoryRoot, 'wave');
@@ -639,7 +739,7 @@ test('accepts TypeScript Playground for pure TypeScript', () => {
 
 test('rejects CodePen for pure TypeScript without browser APIs', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[1],
+    armyCollection: waveCollections[1],
     defaultCardOptions: {
       editorProfile: editorProfiles.CodePen,
     },
@@ -653,7 +753,7 @@ test('rejects CodePen for pure TypeScript without browser APIs', () => {
 
 test('accepts CodePen for TypeScript that uses browser APIs', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[1],
+    armyCollection: waveCollections[1],
     defaultCardOptions: {
       editorProfile: editorProfiles.CodePen,
       starterOverride: "const value: HTMLElement | null = document.querySelector('#value');",
@@ -671,7 +771,7 @@ test('accepts CodePen for TypeScript that uses browser APIs', () => {
 
 test('rejects TypeScript Playground for TypeScript that uses browser APIs', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[1],
+    armyCollection: waveCollections[1],
     defaultCardOptions: {
       editorProfile: editorProfiles.TypeScriptPlayground,
       starterOverride: "const value: HTMLElement | null = document.querySelector('#value');",
@@ -691,7 +791,7 @@ for (const [browserGlobal, starterOverride] of [
 ]) {
   test(`accepts CodePen for TypeScript starter using ${browserGlobal}`, () => {
     const repositoryRoot = createWaveCatalogFixture({
-      armyCollection: controlledCollections[1],
+      armyCollection: waveCollections[1],
       defaultCardOptions: {
         editorProfile: editorProfiles.CodePen,
         starterOverride,
@@ -710,7 +810,7 @@ for (const [browserGlobal, starterOverride] of [
 
 test('keeps prose-only document and window references in TypeScript Playground', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[1],
+    armyCollection: waveCollections[1],
     defaultCardOptions: {
       editorProfile: editorProfiles.TypeScriptPlayground,
       solutionExplanation:
@@ -729,7 +829,7 @@ test('keeps prose-only document and window references in TypeScript Playground',
 
 test('accepts CodePen for JavaScript that uses browser APIs', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[0],
+    armyCollection: waveCollections[0],
     defaultCardOptions: {
       editorProfile: editorProfiles.CodePen,
       starterOverride: "const value = document.querySelector('#value');",
@@ -747,7 +847,7 @@ test('accepts CodePen for JavaScript that uses browser APIs', () => {
 
 test('rejects Programiz for JavaScript that uses browser APIs', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[0],
+    armyCollection: waveCollections[0],
     defaultCardOptions: {
       editorProfile: editorProfiles.Programiz,
       starterOverride: "const value = document.querySelector('#value');",
@@ -762,7 +862,7 @@ test('rejects Programiz for JavaScript that uses browser APIs', () => {
 
 test('rejects CodePen for console JavaScript without browser APIs', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[0],
+    armyCollection: waveCollections[0],
     defaultCardOptions: {
       editorProfile: editorProfiles.CodePen,
     },
@@ -776,7 +876,7 @@ test('rejects CodePen for console JavaScript without browser APIs', () => {
 
 test('accepts one CodePen JavaScript real-work card in the real-work collection', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[0],
+    armyCollection: waveCollections[0],
     realWorkTaskNumbers: [1],
     cardOptionsByNumber: {
       1: {
@@ -809,7 +909,7 @@ test('rejects a focused card referenced by the real-work collection', () => {
 
 test('rejects duplicate real-work rows for one real-work card', () => {
   const repositoryRoot = createWaveCatalogFixture({
-    armyCollection: controlledCollections[0],
+    armyCollection: waveCollections[0],
     realWorkTaskNumbers: [1, 1],
     cardOptionsByNumber: {
       1: {
@@ -1050,7 +1150,7 @@ test('rejects an unexpected thematic collection path', () => {
 });
 
 test('accepts a complete controlled production catalog fixture', () => {
-  const repositoryRoot = createCompleteCatalogFixture();
+  const repositoryRoot = createCompleteTopicCatalogFixture();
 
   const result = runProductionCatalogGate(repositoryRoot);
 
@@ -1063,6 +1163,80 @@ test('accepts a complete controlled production catalog fixture', () => {
     result.stdout,
     '{"catalogGate":"PASS","gateMode":"final","tasks":118,"legacyCards":0,"publishedArmyCards":118,"covered":118,"orphans":0,"thematicErrors":0}\n',
   );
+});
+
+test('rejects a card whose visible task ID differs from its immutable path', () => {
+  const root = createCompleteTopicCatalogFixture();
+  replaceFile(root, 'tasks/task-0015/README.md', '# task-0016 — Task 0015');
+  assertCatalogFails(root, 'task H1 must use its immutable task ID');
+});
+
+test('rejects a simulation with three cards from fewer than three topics', () => {
+  const root = createCompleteTopicCatalogFixture();
+  writeSimulation(root, 1, ['task-0001', 'task-0005', 'task-0014']);
+  assertCatalogFails(root, 'at least three topic collections');
+});
+
+test('rejects master topic-count drift', () => {
+  const root = createCompleteTopicCatalogFixture();
+  replaceFile(root, 'collections/react/README.md', [
+    '[Главная](../../README.md) → React',
+    '',
+    '- [Состояние и обработчики событий](state-and-event-handlers/README.md) — 3 задач — Краткое описание темы.',
+    '',
+  ].join('\n'));
+  assertCatalogFails(root, 'master topic count');
+});
+
+test('rejects topic rows with non-ascending initial IDs', () => {
+  const root = createCompleteTopicCatalogFixture();
+  replaceFile(root, 'collections/react/effects-timers-and-cleanup/README.md', [
+    '[Главная](../../../README.md) → [React](../README.md) → Эффекты, таймеры и очистка',
+    '',
+    collectionEntry(5),
+    collectionEntry(1),
+    collectionEntry(14),
+    '',
+  ].join('\n'));
+  assertCatalogFails(root, 'ascending initial task IDs');
+});
+
+test('rejects a broad interview-practice page link', () => {
+  const root = createCompleteTopicCatalogFixture();
+  replaceFile(root, 'README.md', '[JavaScript](collections/javascript/interview-practice/README.md)\n');
+  assertCatalogFails(root, 'broad interview-practice');
+});
+
+test('rejects forbidden fixture vocabulary in a task card', () => {
+  const root = createCompleteTopicCatalogFixture();
+  const path = 'tasks/task-0015/README.md';
+  replaceFile(root, path, `${readFileSync(join(root, path), 'utf8')}\nfixture\n`);
+  assertCatalogFails(root, 'forbidden student vocabulary');
+});
+
+for (const [label, phrase] of [
+  ['ESM', 'ESM'],
+  ['browser API', 'browser API'],
+  ['console JavaScript', 'консольный JavaScript'],
+  ['pure TypeScript instruction', 'используйте чистый TypeScript'],
+  ['CodePen absence instruction', 'CodePen без ESM'],
+]) {
+  test(`rejects forbidden environment wording: ${label}`, () => {
+    const root = createCompleteTopicCatalogFixture();
+    const path = 'tasks/task-0015/README.md';
+    replaceFile(root, path, `${readFileSync(join(root, path), 'utf8')}\n${phrase}\n`);
+    assertCatalogFails(root, 'forbidden environment wording');
+  });
+}
+
+test('rejects metadata collection that differs from the registered topic', () => {
+  const root = createCompleteTopicCatalogFixture();
+  const path = 'tasks/task-0015/README.md';
+  replaceFile(root, path, readFileSync(join(root, path), 'utf8').replace(
+    '- Подборка: JavaScript → Event loop и очереди задач',
+    '- Подборка: JavaScript → Promise и async/await',
+  ));
+  assertCatalogFails(root, 'metadata collection does not match');
 });
 
 test('accepts a literal Authorization header without treating it as provenance', () => {

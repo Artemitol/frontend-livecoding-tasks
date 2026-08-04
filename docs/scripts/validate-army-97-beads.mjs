@@ -1,5 +1,5 @@
 // FILE: docs/scripts/validate-army-97-beads.mjs
-// VERSION: 2.3.0
+// VERSION: 2.4.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Enforce the ARMY-97 source-audit, published-catalog, and publication-decision contract against live Beads metadata.
 //   SCOPE: Immutable snapshot hashing, mutable count derivation, current task/collection/editor inventory with starter-only browser classification, candidate/card synchronization, and structured current-commit evidence.
@@ -21,7 +21,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.3.0 - Derive JavaScript and TypeScript editors from starter code without prose leakage.
+//   LAST_CHANGE: v2.4.0 - Read frozen 23-topic paths plus Markdown title and collection facts for publication validation.
 // END_CHANGE_SUMMARY
 
 import { createHash } from 'node:crypto';
@@ -138,12 +138,36 @@ const editorProfileBySandboxLine = new Map([
     'React TypeScript',
   ],
 ]);
-const allowedTargetCollections = new Set([
-  'collections/javascript/interview-practice/README.md',
-  'collections/typescript/interview-practice/README.md',
-  'collections/react/interview-practice/README.md',
-  'collections/html-css/interview-practice/README.md',
-]);
+const topicRegistry = [
+  ['collections/javascript/event-loop/README.md', 'JavaScript', 'Event loop и очереди задач'],
+  ['collections/javascript/promises-and-async/README.md', 'JavaScript', 'Promise и async/await'],
+  ['collections/javascript/prototypes-inheritance-and-this/README.md', 'JavaScript', 'Прототипы, наследование и `this`'],
+  ['collections/javascript/functions-closures-and-scope/README.md', 'JavaScript', 'Функции, замыкания и область видимости'],
+  ['collections/javascript/objects-and-collections/README.md', 'JavaScript', 'Объекты и коллекции'],
+  ['collections/javascript/dom-and-events/README.md', 'JavaScript', 'DOM и события'],
+  ['collections/javascript/dates-and-time-intervals/README.md', 'JavaScript', 'Даты и временные интервалы'],
+  ['collections/javascript/arrays-search-and-sorting/README.md', 'JavaScript', 'Массивы, поиск и сортировка'],
+  ['collections/javascript/strings/README.md', 'JavaScript', 'Строки'],
+  ['collections/javascript/trees-and-recursion/README.md', 'JavaScript', 'Деревья и рекурсия'],
+  ['collections/javascript/graphs/README.md', 'JavaScript', 'Графы'],
+  ['collections/javascript/linked-lists-and-stack/README.md', 'JavaScript', 'Связные списки и стек'],
+  ['collections/javascript/numbers-types-and-operators/README.md', 'JavaScript', 'Числа, типы и операторы'],
+  ['collections/typescript/generics-and-object-keys/README.md', 'TypeScript', 'Дженерики и ключи объектов'],
+  ['collections/typescript/mapped-and-conditional-types/README.md', 'TypeScript', 'Mapped и conditional types'],
+  ['collections/typescript/recursive-types/README.md', 'TypeScript', 'Рекурсивные типы'],
+  ['collections/typescript/integration-typing/README.md', 'TypeScript', 'Типизация интеграций'],
+  ['collections/react/state-and-event-handlers/README.md', 'React', 'Состояние и обработчики событий'],
+  ['collections/react/effects-timers-and-cleanup/README.md', 'React', 'Эффекты, таймеры и очистка'],
+  ['collections/react/rendering-and-memoization/README.md', 'React', 'Рендеринг и мемоизация'],
+  ['collections/react/async-data-and-ui-states/README.md', 'React', 'Асинхронные данные и состояния интерфейса'],
+  ['collections/react/component-composition-and-state-management/README.md', 'React', 'Композиция компонентов и управление состоянием'],
+  ['collections/html-css/cascade-and-selectors/README.md', 'HTML/CSS', 'Каскад и селекторы'],
+].map(([path, masterName, topicName]) => ({
+  path,
+  collectionName: `${masterName} → ${topicName}`,
+}));
+const allowedTargetCollections = new Set(topicRegistry.map(({ path }) => path));
+const topicByPath = new Map(topicRegistry.map((topic) => [topic.path, topic]));
 const freezeEvidence = 'none: source-audit freeze';
 
 const modulePath = fileURLToPath(import.meta.url);
@@ -678,6 +702,7 @@ function validatePublishedCatalogState({
     }
 
     const cardFact = cardFactsByTaskId[publishedTaskId];
+    const topic = topicByPath.get(thematicByTaskId[publishedTaskId]);
     const expectedMarkdownEditor = expectedEditorProfileForCard(
       cardFact?.technology,
       cardFact?.starterCode,
@@ -688,6 +713,20 @@ function validatePublishedCatalogState({
       || cardFact.editorProfile !== card.metadata.editorProfile
     ) {
       fail(`${card.id}: Markdown editor profile does not match card technology and frozen Beads profile`);
+    }
+
+    if (
+      cardFact?.title !== undefined
+      && !cardFact.title.startsWith(`${publishedTaskId} — `)
+    ) {
+      fail(`${publishedTaskId}: Markdown task title does not use its immutable ID`);
+    }
+
+    if (
+      cardFact?.metadataCollection !== undefined
+      && cardFact.metadataCollection !== topic?.collectionName
+    ) {
+      fail(`${publishedTaskId}: Markdown metadata collection does not match its frozen topic`);
     }
 
     const cardEvidence = validateCardMigrationEvidence(card);
@@ -931,15 +970,21 @@ export function loadPublishedCatalogState(cwd = repoRoot) {
     const technology = content.match(
       /^- Технология: (JavaScript|TypeScript|HTML\/CSS|HTML\/JavaScript|HTML\/CSS\/JavaScript|React\/TypeScript)$/m,
     )?.[1];
+    const title = content.match(/^# (.+)$/m)?.[1];
+    const metadataCollection = content.match(
+      /^- Подборка: (.+)$/m,
+    )?.[1];
     const sandboxLine = content.match(
       /^Песочница для выполнения — \[[^\]]+\]\(https?:\/\/[^)]+\)\.$/m,
     )?.[0];
     const starterCode = extractStarterCode(content);
 
     cardFactsByTaskId[taskId] = {
+      title,
       technology,
       editorProfile: editorProfileBySandboxLine.get(sandboxLine),
       starterCode,
+      metadataCollection,
     };
   }
 

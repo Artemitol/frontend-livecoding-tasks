@@ -1,5 +1,5 @@
 // FILE: docs/scripts/run-army-97-catalog-gate.test.mjs
-// VERSION: 2.1.0
+// VERSION: 2.2.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove FullCatalogGateEvidence can only follow a successful exact-commit catalog gate.
 //   SCOPE: Real temporary Git repositories, explicit wave/final execution, passing and failing catalog gates, Markdown editor facts, receipt emission, and transition validation.
@@ -18,7 +18,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.1.0 - Keep causal receipt fixtures synchronized with the published Markdown technology/editor contract.
+//   LAST_CHANGE: v2.2.0 - Route causal receipt fixtures through the frozen topic-path contract.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -55,7 +55,7 @@ const cardMigrationEvidence = {
   sourceLearningGoal: 'Repair one deterministic branch.',
   sourcePrerequisite: 'Basic JavaScript functions.',
   sourceRuntimeAssumption: 'Console JavaScript without browser APIs.',
-  destinationLocations: 'tasks/task-0001/README.md; collections/javascript/interview-practice/README.md; GRACE; Beads',
+  destinationLocations: 'tasks/task-0001/README.md; collections/javascript/event-loop/README.md; GRACE; Beads',
   targetEditorExpectedResult: 'NOT_RUN: Markdown-only delivery',
   targetEditorActualResult: 'NOT_RUN: Markdown-only delivery',
   verdict: 'PASS',
@@ -67,7 +67,7 @@ function cardEvidence(number) {
   return {
     ...structuredClone(cardMigrationEvidence),
     slug: targetTaskId,
-    destinationLocations: `tasks/${targetTaskId}/README.md; collections/javascript/interview-practice/README.md; GRACE; Beads`,
+    destinationLocations: `tasks/${targetTaskId}/README.md; collections/javascript/event-loop/README.md; GRACE; Beads`,
   };
 }
 
@@ -209,7 +209,7 @@ function createRegistryFixture() {
         publicationDecision: isRewrite ? 'needs-rewrite' : 'accepted',
         publicationTransitionEvidence: 'none: source-audit freeze',
         targetTaskId,
-        targetCollection: 'collections/javascript/interview-practice/README.md',
+        targetCollection: 'collections/javascript/event-loop/README.md',
       },
     };
     const card = {
@@ -220,7 +220,7 @@ function createRegistryFixture() {
         targetTaskId,
         editorProfile: 'Programiz',
         format: 'Исправить код',
-        targetCollection: 'collections/javascript/interview-practice/README.md',
+        targetCollection: 'collections/javascript/event-loop/README.md',
         expectedLocalMarkdownEvidence: 'Complete exact-commit catalog gate PASS.',
         prerequisitePublicationDecision: 'accepted',
         sourceAuditDecision: candidate.metadata.sourceAuditDecision,
@@ -233,7 +233,7 @@ function createRegistryFixture() {
     cards.push(card);
     publishedArmyTaskIds.push(targetTaskId);
     thematicByTaskId[targetTaskId] =
-      'collections/javascript/interview-practice/README.md';
+      'collections/javascript/event-loop/README.md';
     cardFactsByTaskId[targetTaskId] = {
       technology: 'JavaScript',
       editorProfile: 'Programiz',

@@ -1,5 +1,5 @@
 // FILE: docs/scripts/validate-army-97-beads.test.mjs
-// VERSION: 2.3.0
+// VERSION: 2.4.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove that the ARMY-97 Beads publication validator rejects invalid decision transitions.
 //   SCOPE: Deterministic in-memory candidate, card, published-wave, starter-classified pure/browser TypeScript editor, immutable-manifest, and structured-evidence probes.
@@ -16,7 +16,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.3.0 - Require frozen TypeScript profiles to match starter-only browser classification.
+//   LAST_CHANGE: v2.4.0 - Cover frozen topic paths and Markdown title and metadata collection synchronization.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -44,7 +44,7 @@ const acceptedCandidate = {
     publicationDecision: 'accepted',
     publicationTransitionEvidence: 'none: source-audit freeze',
     targetTaskId: 'task-0001',
-    targetCollection: 'collections/javascript/interview-practice/README.md',
+    targetCollection: 'collections/javascript/event-loop/README.md',
   },
 };
 
@@ -65,7 +65,7 @@ const rewriteCandidate = {
     publicationDecision: 'needs-rewrite',
     publicationTransitionEvidence: 'none: source-audit freeze',
     targetTaskId: 'task-0002',
-    targetCollection: 'collections/javascript/interview-practice/README.md',
+    targetCollection: 'collections/javascript/event-loop/README.md',
   },
 };
 
@@ -77,7 +77,7 @@ const acceptedCard = {
     targetTaskId: 'task-0001',
     editorProfile: 'Programiz',
     format: 'Исправить код',
-    targetCollection: 'collections/javascript/interview-practice/README.md',
+    targetCollection: 'collections/javascript/event-loop/README.md',
     expectedLocalMarkdownEvidence: 'Complete local gate PASS.',
     prerequisitePublicationDecision: 'accepted',
     sourceAuditDecision: 'accepted',
@@ -94,7 +94,7 @@ const rewriteCard = {
     targetTaskId: 'task-0002',
     editorProfile: 'Programiz',
     format: 'Исправить код',
-    targetCollection: 'collections/javascript/interview-practice/README.md',
+    targetCollection: 'collections/javascript/event-loop/README.md',
     expectedLocalMarkdownEvidence: 'Complete local gate PASS.',
     prerequisitePublicationDecision: 'accepted',
     sourceAuditDecision: 'needs-rewrite',
@@ -111,7 +111,7 @@ const cardMigrationEvidence = {
   sourceLearningGoal: 'Return one deterministic value.',
   sourcePrerequisite: 'Basic JavaScript functions.',
   sourceRuntimeAssumption: 'Console JavaScript without browser APIs.',
-  destinationLocations: 'tasks/task-0001/README.md; collections/javascript/interview-practice/README.md; GRACE; Beads',
+  destinationLocations: 'tasks/task-0001/README.md; collections/javascript/event-loop/README.md; GRACE; Beads',
   targetEditorExpectedResult: 'NOT_RUN: Markdown-only delivery',
   targetEditorActualResult: 'NOT_RUN: Markdown-only delivery',
   verdict: 'PASS',
@@ -223,14 +223,14 @@ function makePublishedWaveFixture({ rewriteTaskNumbers = [] } = {}) {
     card.metadata.cardMigrationEvidence = {
       ...clone(cardMigrationEvidence),
       slug: targetTaskId,
-      destinationLocations: `tasks/${targetTaskId}/README.md; collections/javascript/interview-practice/README.md; GRACE; Beads`,
+      destinationLocations: `tasks/${targetTaskId}/README.md; collections/javascript/event-loop/README.md; GRACE; Beads`,
     };
     card.metadata.fullCatalogGateEvidence = clone(fullCatalogGateEvidence);
     candidates.push(candidate);
     cards.push(card);
     publishedArmyTaskIds.push(targetTaskId);
     thematicByTaskId[targetTaskId] =
-      'collections/javascript/interview-practice/README.md';
+      'collections/javascript/event-loop/README.md';
   }
 
   return {
@@ -335,9 +335,35 @@ test('rejects published thematic membership that drifts from the frozen card map
   const fixture = makePublishedWaveFixture();
 
   fixture.publishedCatalog.thematicByTaskId['task-0001'] =
-    'collections/react/interview-practice/README.md';
+    'collections/react/effects-timers-and-cleanup/README.md';
 
   assertInvalid(fixture, /published thematic collection does not match/);
+});
+
+test('rejects a published Markdown title without its immutable task ID', () => {
+  const fixture = makePublishedWaveFixture();
+
+  fixture.publishedCatalog.cardFactsByTaskId['task-0001'] = {
+    technology: 'JavaScript',
+    editorProfile: 'Programiz',
+    starterCode: 'const value = 1;',
+    title: 'Task 0001',
+  };
+
+  assertInvalid(fixture, /Markdown task title does not use its immutable ID/);
+});
+
+test('rejects a published Markdown metadata collection outside its frozen topic', () => {
+  const fixture = makePublishedWaveFixture();
+
+  fixture.publishedCatalog.cardFactsByTaskId['task-0001'] = {
+    technology: 'JavaScript',
+    editorProfile: 'Programiz',
+    starterCode: 'const value = 1;',
+    metadataCollection: 'JavaScript → Promise и async/await',
+  };
+
+  assertInvalid(fixture, /Markdown metadata collection does not match its frozen topic/);
 });
 
 test('rejects a published card whose Markdown editor differs from the frozen Beads profile', () => {
@@ -358,7 +384,7 @@ test('accepts a published browser TypeScript card with synchronized CodePen meta
   const card = fixture.cards[0];
   const targetTaskId = card.metadata.targetTaskId;
   const targetCollection =
-    'collections/typescript/interview-practice/README.md';
+    'collections/typescript/generics-and-object-keys/README.md';
 
   candidate.metadata.targetCollection = targetCollection;
   card.metadata.targetCollection = targetCollection;
@@ -385,7 +411,7 @@ test('rejects a browser TypeScript card whose Markdown editor differs from froze
   const card = fixture.cards[0];
   const targetTaskId = card.metadata.targetTaskId;
   const targetCollection =
-    'collections/typescript/interview-practice/README.md';
+    'collections/typescript/generics-and-object-keys/README.md';
 
   candidate.metadata.targetCollection = targetCollection;
   card.metadata.targetCollection = targetCollection;
@@ -410,7 +436,7 @@ test('rejects frozen CodePen for a pure TypeScript starter', () => {
   const card = fixture.cards[0];
   const targetTaskId = card.metadata.targetTaskId;
   const targetCollection =
-    'collections/typescript/interview-practice/README.md';
+    'collections/typescript/generics-and-object-keys/README.md';
 
   candidate.metadata.targetCollection = targetCollection;
   card.metadata.targetCollection = targetCollection;
@@ -435,7 +461,7 @@ test('rejects frozen TypeScript Playground for a browser starter', () => {
   const card = fixture.cards[0];
   const targetTaskId = card.metadata.targetTaskId;
   const targetCollection =
-    'collections/typescript/interview-practice/README.md';
+    'collections/typescript/generics-and-object-keys/README.md';
 
   candidate.metadata.targetCollection = targetCollection;
   card.metadata.targetCollection = targetCollection;

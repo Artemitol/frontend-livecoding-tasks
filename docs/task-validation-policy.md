@@ -56,11 +56,18 @@ technology mapping и frozen Beads card metadata. Каждая карточка 
 пути уже отсутствуют, а gate требует:
 
 - ровно 118 карточек и непрерывный диапазон `task-0001..task-0118`;
-- только четыре controlled thematic paths;
-- точные тематические количества JavaScript 92, TypeScript 8, React 16 и
-  HTML/CSS 2;
-- ровно 30 последовательных симуляций с правильными ссылками, суммой времени,
-  минимум двумя тематиками, трёхсимуляционным recurrence и realism evidence.
+- четыре master-index страницы и ровно 23 зарегистрированные topic-страницы;
+- видимый заголовок и ссылки вида `task-XXXX — Название`, точное значение
+  `Подборка: Master → Topic`, breadcrumb и одну topic-строку с ordinal,
+  сложностью, временем и русским описанием;
+- точные topic counts на master-index страницах и исходный возрастающий порядок
+  immutable ID в каждой topic-странице; broad `interview-practice` пути и
+  ссылки запрещены;
+- только в `tasks/**` отсутствуют `fixture`/`fixtures`, русские формы
+  «фикстуры» и зафиксированные отрицательные environment-инструкции;
+- ровно 30 последовательных симуляций с тремя task-ссылками из минимум трёх
+  topic-страниц, правильной суммой времени, трёхсимуляционным recurrence и
+  realism evidence.
 
 ## Evidence и порядок исполнения
 
@@ -116,8 +123,9 @@ GRACE_BIN="$(command -v grace || printf '%s' "$HOME/.bun/bin/grace")"; test -x "
 git diff --check
 ```
 
-После atomic cutover проверяют ровно 118 immutable-card paths, четыре
-thematic-проекции, real-work и отсутствие legacy ссылок. Полный режим `final`
+После atomic cutover проверяют ровно 118 immutable-card paths, четыре master
+index и двадцать три topic-проекции, real-work и отсутствие legacy/broad
+ссылок. Полный режим `final`
 остаётся финальным сертификатом: его запускают после публикации тридцати
 симуляций и затем повторно выдают current-HEAD receipts перед финальным
 Beads-аудитом.
