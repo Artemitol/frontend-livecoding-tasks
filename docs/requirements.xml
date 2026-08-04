@@ -1,7 +1,7 @@
 <RequirementsAnalysis VERSION="1.0.0">
   <Project><name>frontend-livecoding-tasks</name><annotation>ARMY-97 replaces the legacy card library with immutable task-ID interview practice.</annotation></Project>
   <UseCases>
-    <UC-ARMY97-PRACTICE><Actor>Student</Actor><Action>Open a thematic task or a static interview simulation.</Action><AcceptanceCriteria>Every card is self-contained and every simulation is a plausible mixed frontend interview.</AcceptanceCriteria><RelatedFlows>DF-ARMY97-CARD-TO-CATALOG, DF-ARMY97-SIMULATION</RelatedFlows></UC-ARMY97-PRACTICE>
+    <UC-ARMY97-PRACTICE><Actor>Student</Actor><Action>Open a thematic task or a static interview simulation.</Action><AcceptanceCriteria>Every card is self-contained and every simulation is a plausible mixed frontend interview.</AcceptanceCriteria><RelatedFlows>DF-ARMY97-CARD-TO-TOPIC, DF-ARMY97-TOPIC-TO-MASTER, DF-ARMY97-SIMULATION</RelatedFlows></UC-ARMY97-PRACTICE>
     <UC-ARMY97-PUBLISH><Actor>Agent</Actor><Action>Turn an accepted candidate into a card.</Action><AcceptanceCriteria>Only accepted candidates receive an immutable task-XXXX path and one thematic projection.</AcceptanceCriteria><RelatedFlows>DF-ARMY97-CANDIDATE-TO-CARD</RelatedFlows></UC-ARMY97-PUBLISH>
   </UseCases>
   <Constraints>

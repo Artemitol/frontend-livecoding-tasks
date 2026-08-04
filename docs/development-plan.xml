@@ -164,7 +164,7 @@
     <tracked-publication-validator PATH="docs/scripts/validate-army-97-beads.mjs" CATALOG-GATE="docs/scripts/validate-army-97-catalog.sh" EVIDENCE-RUNNER="docs/scripts/run-army-97-catalog-gate.mjs" NEGATIVE-PROBES="docs/scripts/validate-army-97-catalog.test.mjs docs/scripts/validate-army-97-beads.test.mjs docs/scripts/run-army-97-catalog-gate.test.mjs"/>
     <publication-decision-model MUTABLE="true">
       <accepted-source-state FROM="accepted" TO="accepted" EVIDENCE="exact source-audit freeze marker"/>
-      <rewrite-transition FROM="needs-rewrite" TO="accepted" EVIDENCE="exact Beads card reference plus nested ten-field CardMigrationEvidence PASS and nine-field wave-mode FullCatalogGateEvidence emitted and re-verified by executing the complete current catalog at HEAD"/>
+      <rewrite-transition FROM="needs-rewrite" TO="accepted" EVIDENCE="exact Beads card reference plus nested ten-field CardMigrationEvidence PASS and nine-field final-mode FullCatalogGateEvidence emitted and re-verified by executing the complete current final catalog at HEAD"/>
       <rewrite-hold FROM="needs-rewrite" TO="needs-rewrite" EVIDENCE="non-empty correctionPath"/>
       <immutable-source-fields>recordType, candidateId, inputOrder, centralAction, starterBehavior, expectedResult, sourceAuditRevision, sourceAuditDecision, decisionEvidence, duplicateTarget, correctionPath, targetTaskId, targetCollection</immutable-source-fields><navigation-migration SCHEMA="2">Only targetCollection migrated from four retired broad paths to the frozen twenty-three-topic registry; all other immutable source-audit values remain unchanged.</navigation-migration>
     </publication-decision-model>
