@@ -1,4 +1,4 @@
-# Три timer после Promise
+# task-0015 — Три timer после Promise
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,7 @@
 ```javascript
 // Не изменяя код, предскажите восемь строк консоли в точном порядке.
 // Объясните синхронность executor, очередь microtask и порядок трёх timer с нулевой задержкой.
-// Учтите, что второй timer регистрируется из Promise callback; используйте обычный консольный JavaScript без ESM.
+// Учтите, что второй timer регистрируется из Promise callback.
 
 setTimeout(() => {
   console.log('setTimeout 1');
@@ -84,7 +84,7 @@ Executor и `final` выполняются синхронно. Затем оче
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Event loop и очереди задач
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

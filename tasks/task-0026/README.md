@@ -1,4 +1,4 @@
-# Promise с задержкой
+# task-0026 — Promise с задержкой
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Напишите delay, которая возвращает Promise, успешно завершающийся после переданного числа миллисекунд.
 // Не вызывайте callback раньше времени и завершите Promise ровно один раз.
-// Используйте современный консольный JavaScript с Promise и timer без ESM и browser API.
 
 function delay(milliseconds) {
   // Напишите решение.
@@ -63,7 +62,7 @@ function delay(milliseconds) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Написать код
 - Сложность: Базовая
 - Примерное время: 10 минут

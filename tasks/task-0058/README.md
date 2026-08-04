@@ -1,4 +1,4 @@
-# Загрузка скрипта через Promise
+# task-0058 — Загрузка скрипта через Promise
 
 Песочница для выполнения — [CodePen](https://pen.new).
 
@@ -177,7 +177,7 @@ function loadScript(scriptData, selector) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → DOM и события
 - Формат: Исправить код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

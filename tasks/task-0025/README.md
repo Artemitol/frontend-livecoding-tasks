@@ -1,4 +1,4 @@
-# then и await в одной очереди
+# task-0025 — then и await в одной очереди
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите четыре строки консоли в точном порядке.
 // Обе функции вызывают одну фабрику и каждая получает новый сразу разрешённый Promise; сравните регистрацию then и продолжение после await.
-// Используйте современный консольный JavaScript с async, await и Promise без ESM и browser API.
 
 const myPromise = () => Promise.resolve('I have resolved!');
 
@@ -67,7 +66,7 @@ second
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Event loop и очереди задач
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

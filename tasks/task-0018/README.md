@@ -1,4 +1,4 @@
-# Вложенная регистрация then
+# task-0018 — Вложенная регистрация then
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,7 @@
 ```javascript
 // Не изменяя код, предскажите шесть букв в консоли в точном порядке.
 // Объясните, куда попадает then, зарегистрированный внутри другого then у уже fulfilled Promise.
-// Сравните его с ранее зарегистрированным handler и timer; используйте консольный JavaScript без ESM.
+// Сравните его с ранее зарегистрированным handler и timer.
 
 const promise = new Promise((resolve) => {
   console.log('A');
@@ -77,7 +77,7 @@ E
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Event loop и очереди задач
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

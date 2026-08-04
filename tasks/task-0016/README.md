@@ -1,4 +1,4 @@
-# Цепочка Promise между двумя timer
+# task-0016 — Цепочка Promise между двумя timer
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите пять чисел в консоли в точном порядке.
 // Объясните, почему второй then ждёт завершения первого и почему оба timer выполняются позже цепочки.
-// Используйте обычный консольный JavaScript без browser API и ESM.
 
 const promise = Promise.resolve();
 
@@ -73,7 +72,7 @@ console.log(5);
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Event loop и очереди задач
 - Формат: Предсказать результат
 - Сложность: Базовая
 - Примерное время: 10 минут

@@ -1,4 +1,4 @@
-# Очередь с ограничением параллельности
+# task-0051 — Очередь с ограничением параллельности
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -160,7 +160,7 @@ class Queue {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Исправить код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

@@ -8,10 +8,10 @@
 
 ## Подборки по направлениям
 
-- [JavaScript](collections/javascript/interview-practice/README.md)
-- [TypeScript](collections/typescript/interview-practice/README.md)
-- [React и TypeScript](collections/react/interview-practice/README.md)
-- [HTML/CSS](collections/html-css/interview-practice/README.md)
+- [JavaScript](collections/javascript/README.md)
+- [TypeScript](collections/typescript/README.md)
+- [React](collections/react/README.md)
+- [HTML/CSS](collections/html-css/README.md)
 - [Приближённая к реальной работе](collections/real-work/README.md)
 
 ## Симуляции собеседований

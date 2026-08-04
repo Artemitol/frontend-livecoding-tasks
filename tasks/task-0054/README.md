@@ -1,4 +1,4 @@
-# Пиковое число зрителей
+# task-0054 — Пиковое число зрителей
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -89,7 +89,7 @@ function findMaxViewers(stream) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Даты и временные интервалы
 - Формат: Исправить код
 - Сложность: Средняя
 - Примерное время: 20 минут

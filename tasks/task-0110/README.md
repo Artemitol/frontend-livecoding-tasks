@@ -1,4 +1,4 @@
-# Граница безопасных целых чисел
+# task-0110 — Граница безопасных целых чисел
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Предскажите значение expression и выведите оба вычисленных операнда.
 // Объясните результат расстоянием между представимыми IEEE 754 числами около Number.MAX_SAFE_INTEGER, а не «жёстким лимитом» чисел.
-// Используйте консольный JavaScript без ESM и browser API.
 
 const left = Number.MAX_SAFE_INTEGER + 1;
 const right = Number.MAX_SAFE_INTEGER + 2;
@@ -59,7 +58,7 @@ console.log(left, right, expression);
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Числа, типы и операторы
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 20 минут

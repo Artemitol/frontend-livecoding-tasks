@@ -1,4 +1,4 @@
-# Односвязный список
+# task-0092 — Односвязный список
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте класс ListNode с value и next, а также printValues для обхода списка без рекурсии.
 // printValues выводит значения в порядке узлов; для null не выводите ничего.
-// Используйте консольный JavaScript без ESM и browser API.
 
 class ListNode {
   // Напишите решение.
@@ -77,7 +76,7 @@ function printValues(head) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Связные списки и стек
 - Формат: Написать код
 - Сложность: Базовая
 - Примерное время: 20 минут

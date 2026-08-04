@@ -1,4 +1,4 @@
-# Проверка вложенных скобок
+# task-0089 — Проверка вложенных скобок
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте areBracketsValid: для строк из (), [], {}, <> верните true только при корректной вложенности и балансе.
 // Пустая строка валидна; любой неподдерживаемый символ делает строку невалидной.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function areBracketsValid(text) {
   // Напишите решение.
@@ -75,7 +74,7 @@ function areBracketsValid(text) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Связные списки и стек
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 20 минут

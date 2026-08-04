@@ -1,4 +1,4 @@
-# Чтение значения по точечному пути
+# task-0080 — Чтение значения по точечному пути
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте getByPath(source, path): верните значение по сегментам пути через точку или undefined, если сегмент отсутствует.
 // Не изменяйте source; проверки должны вывести Kazan, false, 0, пустую строку и undefined.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function getByPath(source, path) {
   // Напишите решение.
@@ -82,7 +81,7 @@ function getByPath(source, path) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 20 минут

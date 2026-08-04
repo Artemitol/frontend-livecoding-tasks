@@ -1,4 +1,4 @@
-# parseInt как callback map
+# task-0113 — parseInt как callback map
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите содержимое result и объясните роль второго аргумента parseInt.
 // Укажите, почему первый и третий элементы преобразуются по разным основаниям, а второй становится NaN.
-// Используйте консольный JavaScript без ESM и browser API.
 
 const values = ['1', '7', '11'];
 const result = values.map(parseInt);
@@ -54,7 +53,7 @@ console.log(result);
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Функции, замыкания и область видимости
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

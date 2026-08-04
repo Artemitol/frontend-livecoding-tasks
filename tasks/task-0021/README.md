@@ -1,4 +1,4 @@
-# Гонка двух Promise
+# task-0021 — Гонка двух Promise
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите две строки консоли в точном порядке.
 // Учтите, что executor первого Promise выполняется синхронно, а второй timer завершается раньше.
-// Используйте современный консольный JavaScript с Promise и timer без ESM и browser API.
 
 const slow = new Promise((resolve) => {
   console.log(5);
@@ -63,7 +62,7 @@ Executor запускается сразу при создании `slow`, по�
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

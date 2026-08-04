@@ -1,4 +1,4 @@
-# Комбинации с заданной суммой
+# task-0095 — Комбинации с заданной суммой
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте combinationsForSum для уникальных положительных чисел и target.
 // Каждое число можно взять не более одного раза; верните комбинации с числами по возрастанию и в лексикографическом порядке.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function combinationsForSum(numbers, target) {
   // Напишите решение.
@@ -75,7 +74,7 @@ function combinationsForSum(numbers, target) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Массивы, поиск и сортировка
 - Формат: Написать код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

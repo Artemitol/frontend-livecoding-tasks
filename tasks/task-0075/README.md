@@ -1,4 +1,4 @@
-# Распаковка типизированных значений
+# task-0075 — Распаковка типизированных значений
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Исправьте unwrap: объект вида { type: '...', value: ... } заменяется своим value на любой глубине, включая массивы.
 // Верните новые объекты и массивы, не изменяя source; сохраните null и обычный объект с полем value без type, а вложенный wrapper распакуйте до листа.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function unwrap(value) {
   if (value && typeof value === 'object' && 'value' in value) {
@@ -103,7 +102,7 @@ function unwrap(value) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Исправить код
 - Сложность: Средняя
 - Примерное время: 25 минут

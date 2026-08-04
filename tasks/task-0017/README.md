@@ -1,4 +1,4 @@
-# Восстановление двух отклонённых Promise
+# task-0017 — Восстановление двух отклонённых Promise
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -7,7 +7,6 @@
 // Не изменяя код, предскажите две строки и проследите settlement каждой цепочки.
 // Явно укажите пропущенные fulfillment handlers, значения внутри catch и результаты следующих then.
 // Для secondChain объясните: первый catch получает a, возвращает a5, а финальный then получает a5.
-// Используйте обычный консольный JavaScript без ESM.
 
 const firstChain = Promise.reject('a')
   .then((value) => `${value}x`)
@@ -71,7 +70,7 @@ a58
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 20 минут

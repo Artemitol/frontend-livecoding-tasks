@@ -1,4 +1,4 @@
-# Максимум на самой глубокой вложенности
+# task-0076 — Максимум на самой глубокой вложенности
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте maxAtDeepestLevel(values): верните наибольшее число среди элементов на максимальной глубине вложенных массивов.
 // Не изменяйте values; для примера ниже два вызова должны вернуть 102, а исходный JSON — неизменным.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function maxAtDeepestLevel(values) {
   // Напишите решение.
@@ -80,7 +79,7 @@ function maxAtDeepestLevel(values) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Написать код
 - Сложность: Продвинутая
 - Примерное время: 25 минут

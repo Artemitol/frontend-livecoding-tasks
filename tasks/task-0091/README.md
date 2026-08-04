@@ -1,4 +1,4 @@
-# Идентичность двоичных деревьев
+# task-0091 — Идентичность двоичных деревьев
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте isSameTree: два узла одинаковы, если у них равны value, left и right рекурсивно.
 // null равен только null. Верните true для одинаковых tree1/tree3 и false для tree1/tree2.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function isSameTree(first, second) {
   // Напишите решение.
@@ -66,7 +65,7 @@ function isSameTree(first, second) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 20 минут

@@ -1,4 +1,4 @@
-# Упорядоченная подпоследовательность
+# task-0100 — Упорядоченная подпоследовательность
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте isOrderedSubsequence: все символы needle должны встретиться в haystack в том же порядке, но не обязательно рядом.
 // Учитывайте повторы символов; пустая needle считается подходящей.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function isOrderedSubsequence(needle, haystack) {
   // Напишите решение.
@@ -66,7 +65,7 @@ function isOrderedSubsequence(needle, haystack) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Массивы, поиск и сортировка
 - Формат: Написать код
 - Сложность: Базовая
 - Примерное время: 15 минут

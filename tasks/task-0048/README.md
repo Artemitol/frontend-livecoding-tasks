@@ -1,4 +1,4 @@
-# События с on, off и emit
+# task-0048 — События с on, off и emit
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,7 @@
 ```javascript
 // Реализуйте EventEmitter: on добавляет listener к имени события, off удаляет именно этот listener, emit вызывает все текущие listeners с переданными аргументами.
 // Несуществующее событие не должно приводить к ошибке; после off удалённый listener больше не вызывается.
-// Сравните полный журнал с фикстурой; используйте консольный JavaScript без ESM и browser API.
+// Сравните полный журнал с примером.
 
 class EventEmitter {
   on(eventName, listener) {
@@ -113,7 +113,7 @@ class EventEmitter {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → DOM и события
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

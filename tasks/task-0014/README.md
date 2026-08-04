@@ -1,4 +1,4 @@
-# Актуальный счётчик после перехода offline
+# task-0014 — Актуальный счётчик после перехода offline
 
 Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).
 
@@ -157,7 +157,7 @@ function OfflineCounter({ onOffline }: OfflineCounterProps) {
 <summary>О задаче</summary>
 
 - Технология: React/TypeScript
-- Подборка: React и TypeScript: практика к собеседованию
+- Подборка: React → Эффекты, таймеры и очистка
 - Формат: Исправить код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

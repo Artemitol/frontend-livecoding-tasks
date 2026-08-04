@@ -1,4 +1,4 @@
-# Подсчёт цветных областей
+# task-0096 — Подсчёт цветных областей
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте countRegions для прямоугольной сетки символов.
 // Область образуют одинаковые символы, соединённые только по сторонам; для пустой сетки верните 0.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function countRegions(picture) {
   // Напишите решение.
@@ -91,7 +90,7 @@ function countRegions(picture) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

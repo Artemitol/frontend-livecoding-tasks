@@ -1,4 +1,4 @@
-# Общие свободные интервалы
+# task-0053 — Общие свободные интервалы
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -107,7 +107,7 @@ function findFreeMeetingSlots(schedules) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Даты и временные интервалы
 - Формат: Исправить код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

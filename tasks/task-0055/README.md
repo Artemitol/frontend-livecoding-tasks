@@ -1,4 +1,4 @@
-# Максимальные пути ориентированного графа
+# task-0055 — Максимальные пути ориентированного графа
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -104,7 +104,7 @@ function getMaximalPaths(connections) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Графы
 - Формат: Написать код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

@@ -1,4 +1,4 @@
-# Агрегаторы Promise в порядке входа
+# task-0027 — Агрегаторы Promise в порядке входа
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Напишите promiseAll и promiseAllSettled для массива Promise или обычных значений.
 // promiseAll возвращает значения в порядке входа, отклоняется при первой ошибке и для пустого массива возвращает []; promiseAllSettled всегда возвращает упорядоченные записи { status, value } или { status, reason } и для пустого массива возвращает [].
-// Используйте современный консольный JavaScript с Promise и timer без ESM и browser API.
 
 const fulfillAfter = (value, milliseconds) => new Promise((resolve) => {
   setTimeout(resolve, milliseconds, value);
@@ -117,7 +116,7 @@ function promiseAllSettled(values) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Написать код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

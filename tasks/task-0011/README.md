@@ -1,4 +1,4 @@
-# Управление модальным окном через render props
+# task-0011 — Управление модальным окном через render props
 
 Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).
 
@@ -131,7 +131,7 @@ function ModalController({
 <summary>О задаче</summary>
 
 - Технология: React/TypeScript
-- Подборка: React и TypeScript: практика к собеседованию
+- Подборка: React → Композиция компонентов и управление состоянием
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

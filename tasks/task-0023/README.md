@@ -1,4 +1,4 @@
-# Цепочки с задержками и finally
+# task-0023 — Цепочки с задержками и finally
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите порядок восьми строк консоли.
 // Сопоставьте синхронный executor, Promise callback, timer на 100 мс, цепочку на 500 мс и timer, созданный в finally.
-// Используйте современный консольный JavaScript с Promise и timer без ESM и browser API.
 
 setTimeout(() => {
   console.log('setTimeout 100');
@@ -78,7 +77,7 @@ Executor и основной стек завершаются до microtask. Tim
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Event loop и очереди задач
 - Формат: Предсказать результат
 - Сложность: Продвинутая
 - Примерное время: 25 минут

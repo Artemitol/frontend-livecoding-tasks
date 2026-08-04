@@ -1,4 +1,4 @@
-# Разворот каждого второго слова
+# task-0097 — Разворот каждого второго слова
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте reverseEverySecondWord: разворачивайте каждое второе слово только из латинских букв.
 // Числа, пробелы и символы оставляйте на прежних местах; счётчик слов не меняется на несловных токенах.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function reverseEverySecondWord(text) {
   // Напишите решение.
@@ -65,7 +64,7 @@ function reverseEverySecondWord(text) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Строки
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 20 минут

@@ -1,4 +1,4 @@
-# Глубокое клонирование данных
+# task-0079 — Глубокое клонирование данных
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте deepClone: создайте независимую копию вложенных массивов, объектов, null и примитивов.
 // После изменения clone.user.tags[0] и clone.settings.theme исходный source должен сохранить 'js' и 'light'.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function deepClone(value) {
   // Напишите решение.
@@ -83,7 +82,7 @@ function deepClone(value) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

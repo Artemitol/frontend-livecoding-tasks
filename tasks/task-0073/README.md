@@ -1,4 +1,4 @@
-# Плоский объект с ключами-путями
+# task-0073 — Плоский объект с ключами-путями
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Исправьте flatten: она должна записывать каждый не-объектный лист в новый объект по ключу из сегментов через точку.
 // Не изменяйте source; для данных ниже выведите JSON с ключами user.name, user.address.city и active.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function flatten(source, prefix = '', result = {}) {
   for (const [key, value] of Object.entries(source)) {
@@ -89,7 +88,7 @@ function flatten(source, prefix = '', result = {}) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Исправить код
 - Сложность: Средняя
 - Примерное время: 25 минут

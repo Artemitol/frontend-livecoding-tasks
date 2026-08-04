@@ -1,4 +1,4 @@
-# Значение после finally
+# task-0024 — Значение после finally
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите пять строк консоли в точном порядке.
 // Promise начинается со значения 2; then меняет его, catch пропускается, а finally не получает значение выполнения.
-// Используйте современный консольный JavaScript с Promise и timer без ESM и browser API.
 
 const a = 2;
 const b = 3;
@@ -81,7 +80,7 @@ undefined
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

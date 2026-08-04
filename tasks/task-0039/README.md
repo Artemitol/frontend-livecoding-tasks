@@ -1,4 +1,4 @@
-# Свой map и метод массива
+# task-0039 — Свой map и метод массива
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Напишите customMap, которая передаёт callback каждый элемент и его индекс и возвращает новый массив в исходном порядке.
 // Реализуйте Array.prototype.customMap через готовую customMap; обе формы должны вернуть ["1|0","2|1"] и не изменить items.
-// Используйте современный консольный JavaScript без ESM и browser API.
 
 function customMap(array, callback) {
   // Напишите решение.
@@ -77,7 +76,7 @@ Array.prototype.customMap = function(callback) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Функции, замыкания и область видимости
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

@@ -1,4 +1,4 @@
-# Собственная реализация Pick
+# task-0103 — Собственная реализация Pick
 
 Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).
 
@@ -6,7 +6,6 @@
 ```typescript
 // Опишите NewPick<T, K>, оставляющий только ключи K из объекта T с исходными типами значений.
 // RequiredUser должен содержать обязательные id и name и не содержать surname.
-// Используйте чистый TypeScript без browser API.
 
 type User = {
   id: number;
@@ -62,7 +61,7 @@ Mapped type строит объект только по выбранному о�
 <summary>О задаче</summary>
 
 - Технология: TypeScript
-- Подборка: TypeScript: практика к собеседованию
+- Подборка: TypeScript → Mapped и conditional types
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 20 минут

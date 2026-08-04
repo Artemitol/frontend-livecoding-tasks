@@ -1,4 +1,4 @@
-# Единственное значение среди пар
+# task-0083 — Единственное значение среди пар
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Исправьте findLoneValue: верните число, встречающееся ровно один раз, если все остальные числа встречаются чётное число раз.
 // Если такого единственного числа нет или условие о чётности нарушено, верните null.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function findLoneValue(numbers) {
   return numbers.reduce((result, number) => result ^ number, 0);
@@ -69,7 +68,7 @@ function findLoneValue(numbers) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Массивы, поиск и сортировка
 - Формат: Исправить код
 - Сложность: Средняя
 - Примерное время: 20 минут

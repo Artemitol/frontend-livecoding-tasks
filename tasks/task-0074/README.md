@@ -1,4 +1,4 @@
-# Сумма числовых листьев
+# task-0074 — Сумма числовых листьев
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте sumNumbers(source): рекурсивно сложите все числовые значения в объектах любой глубины и пропустите остальные значения.
 // Не изменяйте source; проверки должны вывести -5 и true.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function sumNumbers(source) {
   // Напишите решение.
@@ -80,7 +79,7 @@ function sumNumbers(source) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 20 минут

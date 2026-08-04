@@ -1,4 +1,4 @@
-# Асинхронное дерево с поиском
+# task-0004 — Асинхронное дерево с поиском
 
 Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).
 
@@ -17,7 +17,7 @@ type TreeNode = {
   children?: TreeNode[];
 };
 
-const TREE_FIXTURE: TreeNode[] = [
+const TREE_EXAMPLE: TreeNode[] = [
   {
     id: 'products',
     name: 'Продукты',
@@ -51,7 +51,7 @@ const TREE_FIXTURE: TreeNode[] = [
 
 function loadTree(): Promise<TreeNode[]> {
   return new Promise((resolve) => {
-    window.setTimeout(() => resolve(TREE_FIXTURE), 350);
+    window.setTimeout(() => resolve(TREE_EXAMPLE), 350);
   });
 }
 
@@ -252,7 +252,7 @@ export default function App() {
 <summary>О задаче</summary>
 
 - Технология: React/TypeScript
-- Подборка: React и TypeScript: практика к собеседованию
+- Подборка: React → Асинхронные данные и состояния интерфейса
 - Формат: Приближённая к реальной работе
 - Сложность: Продвинутая
 - Примерное время: 60 минут

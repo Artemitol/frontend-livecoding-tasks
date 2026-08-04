@@ -1,4 +1,4 @@
-# Замыкания и переназначенные значения
+# task-0047 — Замыкания и переназначенные значения
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите пять строк консоли в точном порядке, включая две итоговые цены.
 // Объясните, почему применение скидки читает текущие globalDiscount и regionalDiscount, но сохраняет объект discount конкретного discounter.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function getDiscountedPrice(initialPrice, discounts) {
   return discounts.reduce(
@@ -98,7 +97,7 @@ console.log(discountedPriceA, discountedPriceB);
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Функции, замыкания и область видимости
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 20 минут

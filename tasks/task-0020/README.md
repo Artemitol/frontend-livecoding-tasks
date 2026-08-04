@@ -1,4 +1,4 @@
-# Возобновление async после await
+# task-0020 — Возобновление async после await
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,7 @@
 ```javascript
 // Не изменяя код, предскажите восемь строк консоли в точном порядке.
 // Объясните синхронную часть async-функции, timer callback и microtask возобновления после await.
-// Учтите логи до и после resolve и момент settlement внешнего Promise; используйте консольный JavaScript без ESM.
+// Учтите логи до и после resolve и момент settlement внешнего Promise.
 
 async function run() {
   console.log(1);
@@ -83,7 +83,7 @@ console.log(7);
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Event loop и очереди задач
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

@@ -1,4 +1,4 @@
-# Общие и собственные поля prototype
+# task-0036 — Общие и собственные поля prototype
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите шесть строк консоли в точном порядке.
 // Объясните общую мутацию массива из prototype, собственное поле color, эффект delete для унаследованного names и последующее затенение names у fruit2.
-// Используйте современный консольный JavaScript с class и prototype без ESM и browser API.
 
 class Fruit {}
 
@@ -85,7 +84,7 @@ console.log('6:', Object.hasOwn(fruit1, 'names'), Object.hasOwn(fruit2, 'names')
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Прототипы, наследование и `this`
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 20 минут

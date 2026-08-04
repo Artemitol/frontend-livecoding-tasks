@@ -1,4 +1,4 @@
-# Поллинг статуса ресурса
+# task-0059 — Поллинг статуса ресурса
 
 Песочница для выполнения — [CodePen](https://pen.new).
 
@@ -6,7 +6,7 @@
 ```javascript
 // Исправьте createStatusPoller(options, dependencies): верните poller, который последовательно отправляет POST на options.url с JSON {"resourceId":...}, Content-Type и Authorization: Bearer <authToken>.
 // status processing означает ровно одну delay-паузу и повтор; status done вызывает onSuccess(data) один раз и resolve(data), а HTTP, network или status error вызывает onError(error) один раз и reject тем же Error.
-// Используйте только fetchImpl и sleepImpl: успешная фикстура даёт 3 одинаковых полных request { url, method, body, headers }, задержки 25,25, исходный done-payload в onSuccess и success: 1 error: 0; ошибочная — 1 request, 0 задержек, один и тот же Error в onError и reject.
+// Используйте только fetchImpl и sleepImpl: успешный пример даёт 3 одинаковых полных request { url, method, body, headers }, задержки 25,25, исходный done-payload в onSuccess и success: 1 error: 0; неуспешный пример — 1 request, 0 задержек, один и тот же Error в onError и reject.
 
 function createStatusPoller(options, dependencies) {
   return async () => {
@@ -231,7 +231,7 @@ function createStatusPoller(options, dependencies) {
 }
 ```
 
-Фабрика замыкает идентификатор, URL, токен и callbacks в одном poller. Последовательный цикл исключает перекрывающиеся запросы, а terminal-ветви немедленно завершают функцию: `onSuccess` получает тот же объект, с которым завершается Promise, а `onError` — тот же `Error`, который отклоняет Promise. Ошибочная фикстура отдельно подтверждает, что `onSuccess` не вызывался.
+Фабрика замыкает идентификатор, URL, токен и callbacks в одном poller. Последовательный цикл исключает перекрывающиеся запросы, а terminal-ветви немедленно завершают функцию: `onSuccess` получает тот же объект, с которым завершается Promise, а `onError` — тот же `Error`, который отклоняет Promise. Пример ошибки отдельно подтверждает, что `onSuccess` не вызывался.
 
 Ожидаемый результат: выводится один массив из трёх одинаковых записей `[{"url":"/jobs/status","method":"POST","body":"{\\"resourceId\\":\\"42\\"}","headers":{"contentType":"application/json","authorization":"Bearer local-token"}}, ...]`, затем `{"status":"done","result":"ready"}`, `successPayload: true`, `{"success":1,"error":0}`, `delays: 25,25`; далее одна запись `[{"url":"/jobs/status","method":"POST","body":"{\\"resourceId\\":\\"broken\\"}","headers":{"contentType":"application/json","authorization":"Bearer failed-token"}}]`, `failedCallbacks: {"success":0,"error":1} failedSuccessPayload: true failedCallbackError: true`, `Job failed`, затем `failedRequests: 1 failedDelays: 0 errors: 1`.
 
@@ -243,7 +243,7 @@ function createStatusPoller(options, dependencies) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Исправить код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

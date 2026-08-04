@@ -1,4 +1,4 @@
-# Объединение ключей объекта
+# task-0102 — Объединение ключей объекта
 
 Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).
 
@@ -6,7 +6,6 @@
 ```typescript
 // Замените any в ObjectKey на тип объединения ключей объекта user.
 // Строки 'name' и 'age' должны проходить проверку, а другие строки и числа — нет.
-// Используйте чистый TypeScript без browser API.
 
 const user = {
   name: 'Nik',
@@ -59,7 +58,7 @@ type ObjectKey = keyof typeof user;
 <summary>О задаче</summary>
 
 - Технология: TypeScript
-- Подборка: TypeScript: практика к собеседованию
+- Подборка: TypeScript → Дженерики и ключи объектов
 - Формат: Написать код
 - Сложность: Базовая
 - Примерное время: 15 минут

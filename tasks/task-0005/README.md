@@ -1,4 +1,4 @@
-# Часы на interval и timeout
+# task-0005 — Часы на interval и timeout
 
 Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).
 
@@ -167,7 +167,7 @@ Interval повторяется сам, а рекурсивный timeout пла
 <summary>О задаче</summary>
 
 - Технология: React/TypeScript
-- Подборка: React и TypeScript: практика к собеседованию
+- Подборка: React → Эффекты, таймеры и очистка
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 30 минут

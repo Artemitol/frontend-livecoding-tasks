@@ -1,4 +1,4 @@
-# Конвертер BTC с обновлением курсов
+# task-0008 — Конвертер BTC с обновлением курсов
 
 Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).
 
@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 type Currency = 'USD' | 'EUR' | 'GBP';
 type Rates = Record<Currency, number>;
 
-const RATE_FIXTURES: readonly Rates[] = [
+const RATE_EXAMPLES: readonly Rates[] = [
   { USD: 64000, EUR: 59000, GBP: 50500 },
   { USD: 64500, EUR: 59400, GBP: 50800 },
   { USD: 63800, EUR: 58700, GBP: 50100 },
@@ -24,7 +24,7 @@ export default function App() {
   const [snapshotIndex, setSnapshotIndex] = useState(0);
   const [currency] = useState<Currency>('USD');
   const [btcInput] = useState('1');
-  const rates = RATE_FIXTURES[snapshotIndex];
+  const rates = RATE_EXAMPLES[snapshotIndex];
   const converted = 0;
 
   useEffect(() => {
@@ -84,14 +84,14 @@ export default function App() {
 <details>
 <summary>Подсказка 2 — с чего начать</summary>
 
-Получите варианты selector через `Object.keys(rates)`, а следующий индекс вычисляйте по модулю длины `RATE_FIXTURES`.
+Получите варианты selector через `Object.keys(rates)`, а следующий индекс вычисляйте по модулю длины `RATE_EXAMPLES`.
 
 </details>
 
 <details>
 <summary>Подсказка 3 — почти решение</summary>
 
-Один и тот же функциональный переход `(current + 1) % RATE_FIXTURES.length` используйте в interval и кнопке; результат равен `Number(btcInput) * rates[currency]`.
+Один и тот же функциональный переход `(current + 1) % RATE_EXAMPLES.length` используйте в interval и кнопке; результат равен `Number(btcInput) * rates[currency]`.
 
 </details>
 
@@ -103,12 +103,12 @@ export default function App() {
   const [snapshotIndex, setSnapshotIndex] = useState(0);
   const [currency, setCurrency] = useState<Currency>('USD');
   const [btcInput, setBtcInput] = useState('1');
-  const rates = RATE_FIXTURES[snapshotIndex];
+  const rates = RATE_EXAMPLES[snapshotIndex];
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       setSnapshotIndex(
-        (current) => (current + 1) % RATE_FIXTURES.length,
+        (current) => (current + 1) % RATE_EXAMPLES.length,
       );
     }, 60000);
 
@@ -133,7 +133,7 @@ export default function App() {
 
   const showNextRates = (): void => {
     setSnapshotIndex(
-      (current) => (current + 1) % RATE_FIXTURES.length,
+      (current) => (current + 1) % RATE_EXAMPLES.length,
     );
   };
 
@@ -194,7 +194,7 @@ export default function App() {
 <summary>О задаче</summary>
 
 - Технология: React/TypeScript
-- Подборка: React и TypeScript: практика к собеседованию
+- Подборка: React → Асинхронные данные и состояния интерфейса
 - Формат: Приближённая к реальной работе
 - Сложность: Продвинутая
 - Примерное время: 50 минут

@@ -1,4 +1,4 @@
-# Ключи по разрешаемому типу
+# task-0105 — Ключи по разрешаемому типу
 
 Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).
 
@@ -6,7 +6,7 @@
 ```typescript
 // Опишите ResolvableKeysOf<T, Value>: ключ подходит, если его прямое значение, Promise-значение или результат функции разрешается в Value.
 // NumberKeys должен быть 'a' | 'b' | 'c' | 'd' | 'e', а StringOrNullKeys — 'x' | 'y'.
-// Все проверки ниже должны компилироваться. Используйте чистый TypeScript без browser API.
+// Все проверки ниже должны компилироваться.
 
 class Test {
   a = 1;
@@ -73,7 +73,7 @@ type ResolvableKeysOf<T, Value> = {
 <summary>О задаче</summary>
 
 - Технология: TypeScript
-- Подборка: TypeScript: практика к собеседованию
+- Подборка: TypeScript → Mapped и conditional types
 - Формат: Написать код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

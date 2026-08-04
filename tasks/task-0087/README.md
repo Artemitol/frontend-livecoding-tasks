@@ -1,4 +1,4 @@
-# Вычитание значений одного массива из другого
+# task-0087 — Вычитание значений одного массива из другого
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Исправьте subtractValues: верните из first все значения, которых нет в second, сохранив порядок и повторы first.
 // Каждое значение second исключает все равные ему вхождения из first; входные массивы не изменяйте.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function subtractValues(first, second) {
   return first.filter((value) => !second.indexOf(value));
@@ -64,7 +63,7 @@ function subtractValues(first, second) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Массивы, поиск и сортировка
 - Формат: Исправить код
 - Сложность: Базовая
 - Примерное время: 15 минут

@@ -1,4 +1,4 @@
-# Собственная реализация Partial
+# task-0101 — Собственная реализация Partial
 
 Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).
 
@@ -6,7 +6,6 @@
 ```typescript
 // Опишите NewPartial<T>: каждое свойство T должно стать необязательным, сохраняя исходный тип значения.
 // PartialUser должен принимать объект без id и объект с числовым id.
-// Используйте чистый TypeScript без browser API.
 
 type User = {
   id: number;
@@ -62,7 +61,7 @@ Mapped type сохраняет типы значений и меняет тол�
 <summary>О задаче</summary>
 
 - Технология: TypeScript
-- Подборка: TypeScript: практика к собеседованию
+- Подборка: TypeScript → Mapped и conditional types
 - Формат: Написать код
 - Сложность: Базовая
 - Примерное время: 20 минут

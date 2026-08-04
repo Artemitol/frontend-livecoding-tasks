@@ -1,4 +1,4 @@
-# Слияние отсортированных списков
+# task-0093 — Слияние отсортированных списков
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте mergeSortedLists для двух односвязных списков с числами по возрастанию.
 // Переиспользуйте исходные узлы, сохраните порядок по возрастанию и верните второй список, если первый пуст.
-// Используйте консольный JavaScript без ESM и browser API.
 
 class ListNode {
   constructor(value, next = null) {
@@ -89,7 +88,7 @@ function mergeSortedLists(first, second) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Связные списки и стек
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

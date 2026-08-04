@@ -1,4 +1,4 @@
-# Замена prototype после создания объекта
+# task-0030 — Замена prototype после создания объекта
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите результат первого лога и точный тип ошибки второго вызова.
 // Один экземпляр создан до полной замены Person.prototype, второй — после неё; объясните, почему они ссылаются на разные объекты prototype.
-// Используйте современный консольный JavaScript с constructor functions и prototype без ESM и browser API.
 
 function Person(name) {
   this.name = name;
@@ -67,7 +66,7 @@ TypeError: juan.getName is not a function
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Прототипы, наследование и `this`
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 15 минут

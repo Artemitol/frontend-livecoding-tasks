@@ -1,4 +1,4 @@
-# Кратчайший маршрут в графе
+# task-0056 — Кратчайший маршрут в графе
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -99,7 +99,7 @@ function findPath(from, to, graph) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Графы
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

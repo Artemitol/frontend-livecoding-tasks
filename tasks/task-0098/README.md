@@ -1,4 +1,4 @@
-# Поиск строк с подстрокой
+# task-0098 — Поиск строк с подстрокой
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте findSubstring: верните строки, в которых есть подстрока с тем же регистром и непрерывными символами.
 // Сохраните порядок входного массива; используйте те же данные для проверки, включая перекрывающийся префикс.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function findSubstring(substring, strings) {
   // Напишите решение.
@@ -60,7 +59,7 @@ function findSubstring(substring, strings) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Строки
 - Формат: Написать код
 - Сложность: Базовая
 - Примерное время: 15 минут

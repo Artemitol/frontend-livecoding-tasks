@@ -1,4 +1,4 @@
-# Счётчик без лишнего рендера
+# task-0002 — Счётчик без лишнего рендера
 
 Песочница для выполнения — [React TypeScript](https://vite.new/react-ts).
 
@@ -96,7 +96,7 @@ const CountDisplay = memo(function CountDisplay({
 <summary>О задаче</summary>
 
 - Технология: React/TypeScript
-- Подборка: React и TypeScript: практика к собеседованию
+- Подборка: React → Рендеринг и мемоизация
 - Формат: Исправить код
 - Сложность: Базовая
 - Примерное время: 15 минут

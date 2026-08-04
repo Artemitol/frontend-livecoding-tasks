@@ -1,4 +1,4 @@
-# var в отложенных callback
+# task-0068 — var в отложенных callback
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,7 @@
 ```javascript
 // Не изменяя код, предскажите все строки консоли и объясните результат через область видимости var и порядок синхронного цикла и timer callbacks.
 // Укажите точное количество одинаковых строк и значение в каждой из них.
-// Используйте консольный JavaScript без ESM и browser API, кроме встроенного setTimeout.
+// Используйте встроенный setTimeout.
 
 for (var index = 0; index < 10; index += 1) {
   setTimeout(function logIndex() {
@@ -64,7 +64,7 @@ for (var index = 0; index < 10; index += 1) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Функции, замыкания и область видимости
 - Формат: Предсказать результат
 - Сложность: Базовая
 - Примерное время: 15 минут

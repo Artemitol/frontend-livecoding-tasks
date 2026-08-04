@@ -1,4 +1,4 @@
-# Рекурсивное раскрытие объекта
+# task-0077 — Рекурсивное раскрытие объекта
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Исправьте flattenObject: она должна вернуть новый объект с путями через точку для всех примитивных листьев.
 // Обрабатывайте null как лист и не изменяйте source; проверки должны вывести JSON с profile.name, profile.city, active, extra и true.
-// Используйте консольный JavaScript без ESM и browser API.
 
 function flattenObject(source, prefix = '') {
   const result = {};
@@ -92,7 +91,7 @@ function flattenObject(source, prefix = '') {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Деревья и рекурсия
 - Формат: Исправить код
 - Сложность: Средняя
 - Примерное время: 20 минут

@@ -1,4 +1,4 @@
-# Повторный запрос с лимитом попыток
+# task-0029 — Повторный запрос с лимитом попыток
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Исправьте runWithRetry: после ошибки она ждёт delayMilliseconds и повторяет request, а после limit неудачных попыток отклоняется последней ошибкой.
 // Используйте локальные сценарии и встроенные счётчики: успех требует 2 попытки и 1 завершившееся ожидание, три ошибки — 3 попытки и 2 завершившихся ожидания по 10 мс; сетевой доступ не нужен.
-// Используйте современный консольный JavaScript с async, await, Promise и timer без ESM и browser API.
 
 const waitLog = [];
 
@@ -111,7 +110,7 @@ async function runWithRetry(request, limit, delayMilliseconds) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Исправить код
 - Сложность: Средняя
 - Примерное время: 25 минут

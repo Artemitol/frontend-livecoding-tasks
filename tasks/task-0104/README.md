@@ -1,12 +1,12 @@
-# Пути к строковым листьям
+# task-0104 — Пути к строковым листьям
 
 Песочница для выполнения — [TypeScript Playground](https://www.typescriptlang.org/play/).
 
 ## Условие
 ```typescript
 // Опишите StringLeafPaths<T>: верните объединение точечных путей только к строковым листьям вложенного объекта.
-// Используйте fixture как as const; допустимы только greeting.hello, greeting.goodbye, user.profile и user.settings.
-// Непромежуточные пути greeting и user не должны проходить проверку. Используйте чистый TypeScript без browser API.
+// Объявите исходный объект с `as const`; допустимы только greeting.hello, greeting.goodbye, user.profile и user.settings.
+// Непромежуточные пути greeting и user не должны проходить проверку.
 
 const dictionary = {
   greeting: {
@@ -72,7 +72,7 @@ type StringLeafPaths<T> = {
 <summary>О задаче</summary>
 
 - Технология: TypeScript
-- Подборка: TypeScript: практика к собеседованию
+- Подборка: TypeScript → Рекурсивные типы
 - Формат: Написать код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

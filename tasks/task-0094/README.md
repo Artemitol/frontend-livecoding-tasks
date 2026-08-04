@@ -1,4 +1,4 @@
-# Сложение чисел в связанных списках
+# task-0094 — Сложение чисел в связанных списках
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Реализуйте addReversedNumbers: цифры неотрицательных чисел хранятся от младшей к старшей.
 // Верните новый список цифр суммы; обработайте перенос после последней цифры и списки разной длины.
-// Используйте консольный JavaScript без ESM и browser API.
 
 class ListNode {
   constructor(value, next = null) {
@@ -84,7 +83,7 @@ function addReversedNumbers(first, second) {
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Связные списки и стек
 - Формат: Написать код
 - Сложность: Средняя
 - Примерное время: 25 минут

@@ -1,4 +1,4 @@
-# Типизированная интеграция браузерного скрипта
+# task-0057 — Типизированная интеграция браузерного скрипта
 
 Песочница для выполнения — [CodePen](https://pen.new).
 
@@ -6,7 +6,7 @@
 ```typescript
 // Исправьте интеграцию: loadScript создаёт один script с id FOO_SCRIPT_ID и локальным data-URL, ставит callback до append и для существующего элемента вызывает callback сразу.
 // Типизируйте входные options и config; удаляйте дубли options по id с сохранением первого, отображая id/cardType/title в code/label/value/dataTest; маршруты details/coming/results/live заменяют hash на #events/#calendar/#results/#live.
-// initScript ищет wrapper без #, применяет stickyTop 70 и themeName defaultTheme, сохраняет onLogin/onRegister и один раз вызывает init; фикстура синхронно вызывает load во время append и выводит обе полные option-маппинга, все четыре hash, оба callback-счётчика, два loader-callback, один script с точными id/src и один init.
+// initScript ищет wrapper без #, применяет stickyTop 70 и themeName defaultTheme, сохраняет onLogin/onRegister и один раз вызывает init; пример синхронно вызывает load во время append и выводит обе полные option-маппинга, все четыре hash, оба callback-счётчика, два loader-callback, один script с точными id/src и один init.
 
 type OptionInput = {
   readonly id: string;
@@ -309,7 +309,7 @@ function initScript(params: InitScriptParams): RendererConfig | null {
 <summary>О задаче</summary>
 
 - Технология: TypeScript
-- Подборка: TypeScript: практика к собеседованию
+- Подборка: TypeScript → Типизация интеграций
 - Формат: Исправить код
 - Сложность: Продвинутая
 - Примерное время: 30 минут

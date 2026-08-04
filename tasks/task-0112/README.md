@@ -1,4 +1,4 @@
-# Пустые Math.max и Math.min
+# task-0112 — Пустые Math.max и Math.min
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите три строки вывода для Math.max и Math.min без аргументов.
 // Объясните, почему результат сравнения не зависит от отсутствия чисел в вызовах.
-// Используйте консольный JavaScript без ESM и browser API.
 
 const maximum = Math.max();
 const minimum = Math.min();
@@ -59,7 +58,7 @@ false
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Числа, типы и операторы
 - Формат: Предсказать результат
 - Сложность: Базовая
 - Примерное время: 15 минут

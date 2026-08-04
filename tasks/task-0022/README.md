@@ -1,4 +1,4 @@
-# Ветки отклонённого Promise
+# task-0022 — Ветки отклонённого Promise
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,6 @@
 ```javascript
 // Не изменяя код, предскажите шесть строк консоли в точном порядке.
 // Один Promise отклоняется после лога; у трёх веток есть обработчики отклонения, а первая ветка продолжается дальше.
-// Используйте современный консольный JavaScript с Promise и timer без ESM и browser API.
 
 console.log(77);
 
@@ -70,7 +69,7 @@ reject
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Promise и async/await
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 20 минут

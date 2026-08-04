@@ -1,4 +1,4 @@
-# Обычные и стрелочные функции с this
+# task-0034 — Обычные и стрелочные функции с this
 
 Песочница для выполнения — [Programiz](https://www.programiz.com/javascript/online-compiler/).
 
@@ -6,7 +6,7 @@
 ```javascript
 // Не изменяя код, предскажите все шесть чисел в точном порядке.
 // Объясните, когда regular читает receiver места вызова, а arrow сохраняет receiver вызова createPair.
-// Все вызовы receiver заданы явно, поэтому результат не зависит от strict mode; используйте консольный JavaScript без ESM и browser API.
+// Все вызовы receiver заданы явно, поэтому результат не зависит от strict mode.
 
 function createPair() {
   return {
@@ -77,7 +77,7 @@ console.log(second.arrow());
 <summary>О задаче</summary>
 
 - Технология: JavaScript
-- Подборка: JavaScript: практика к собеседованию
+- Подборка: JavaScript → Прототипы, наследование и `this`
 - Формат: Предсказать результат
 - Сложность: Средняя
 - Примерное время: 20 минут
