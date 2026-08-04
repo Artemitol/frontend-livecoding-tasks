@@ -482,7 +482,8 @@ if [ "$gateMode" = 'final' ]; then
     orderedSimulationTasks=()
     while IFS= read -r task; do
       orderedSimulationTasks+=("$task")
-    done < <(rg -o 'tasks/task-[0-9]{4}/README\.md' "$file")
+    done < <(rg -o '\]\([^)]*tasks/task-[0-9]{4}/README\.md\)' "$file" |
+      sed -E 's#.*(tasks/task-[0-9]{4}/README\.md).*#\1#')
     while IFS= read -r task; do
       simulationTasks+=("$task")
     done < <(rg -o 'tasks/task-[0-9]{4}/README\.md' "$file" | sort -u)

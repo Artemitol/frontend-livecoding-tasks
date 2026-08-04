@@ -1181,6 +1181,17 @@ test('rejects a simulation whose frozen third task drifts', () => {
   assertCatalogFails(root, 'frozen third task must be task-0033');
 });
 
+test('rejects prose task paths that attempt to hide a frozen third-task drift', () => {
+  const root = createCompleteTopicCatalogFixture();
+  const path = 'collections/interviews/simulation-001/README.md';
+  writeSimulation(root, 1, ['task-0033', 'task-0015', 'task-0098']);
+  replaceFile(root, path, readFileSync(join(root, path), 'utf8').replace(
+    'Общее время: 45 минут',
+    'Справка: tasks/task-0033/README.md и tasks/task-0015/README.md остаются только текстом.\n\nОбщее время: 45 минут',
+  ));
+  assertCatalogFails(root, 'frozen third task must be task-0033');
+});
+
 test('rejects master topic-count drift', () => {
   const root = createCompleteTopicCatalogFixture();
   replaceFile(root, 'collections/react/README.md', [
