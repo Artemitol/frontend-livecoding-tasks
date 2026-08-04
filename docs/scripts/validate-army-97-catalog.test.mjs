@@ -1,5 +1,5 @@
 // FILE: docs/scripts/validate-army-97-catalog.test.mjs
-// VERSION: 2.6.0
+// VERSION: 2.6.1
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove the production ARMY-97 catalog gate separates valid serialized waves from the strict final inventory certificate.
 //   SCOPE: Real Bash 3 production-gate execution against controlled wave/final catalogs plus frozen master/topic registry, visible-ID, wording, three-topic simulation, editor-routing, real-work, malformed, and provenance probes.
@@ -17,7 +17,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.6.0 - Cover frozen topic navigation, card identity, wording, and three-topic simulation regressions.
+//   LAST_CHANGE: v2.6.1 - Cover exact master rows, frozen third-task projection, and real-work link titles.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -128,6 +128,11 @@ const waveCollections = [
     name: 'HTML/CSS interview practice',
     technology: 'HTML/CSS',
   },
+];
+const frozenSimulationThirdTasks = [
+  33, 16, 30, 65, 87, 98, 109, 67, 74, 89,
+  37, 63, 31, 44, 100, 66, 111, 77, 85, 92,
+  32, 45, 68, 112, 80, 82, 97, 93, 35, 114,
 ];
 const editorProfiles = {
   Programiz: {
@@ -458,7 +463,7 @@ function createWaveCatalogFixture({
 //   PURPOSE: Create the smallest complete synthetic catalog accepted by every production-gate layer.
 //   INPUTS: { nestedProvenance?: string }
 //   OUTPUTS: { string - Temporary repository root }
-//   SIDE_EFFECTS: Creates 118 cards, four thematic projections, 30 simulations, and local indexes.
+//   SIDE_EFFECTS: Creates 118 cards, four master indexes, 23 topic projections, 30 simulations, and local indexes.
 //   LINKS: V-M-TASK-VALIDATION, M-TASK-LIBRARY, M-CATALOG
 // END_CONTRACT: createCompleteTopicCatalogFixture
 function createCompleteTopicCatalogFixture({ nestedProvenance = '' } = {}) {
@@ -517,19 +522,22 @@ function createCompleteTopicCatalogFixture({ nestedProvenance = '' } = {}) {
   }
 
   const simulationIndex = ['# Симуляции собеседований', ''];
-  const simulationTopics = [
-    controlledCollections[0].taskIds,
-    controlledCollections[1].taskIds,
-    controlledCollections[3].taskIds,
-  ];
+  const simulationTopics = [controlledCollections[0], controlledCollections[1], controlledCollections[3]];
 
   for (let index = 0; index < 30; index += 1) {
     const simulationNumber = index + 1;
     const simulationId = String(simulationNumber).padStart(3, '0');
+    const thirdTaskNumber = frozenSimulationThirdTasks[index];
+    const thirdCollection = controlledCollections.find((collection) => (
+      collection.taskIds.includes(thirdTaskNumber)
+    ));
+    const baseTopics = simulationTopics.filter((collection) => (
+      collection !== thirdCollection
+    ));
     const taskNumbers = [
-      simulationTopics[0][index % simulationTopics[0].length],
-      simulationTopics[1][index % simulationTopics[1].length],
-      simulationTopics[2][index % simulationTopics[2].length],
+      baseTopics[0].taskIds[index % baseTopics[0].taskIds.length],
+      baseTopics[1].taskIds[index % baseTopics[1].taskIds.length],
+      thirdTaskNumber,
     ];
     const taskLinks = taskNumbers.map((number) => {
       const id = taskId(number);
@@ -1114,23 +1122,13 @@ test('rejects a 118-card catalog whose immutable task range has a gap', () => {
 });
 
 test('rejects thematic counts that drift from the frozen registry', () => {
-  const driftedCollections = structuredClone(controlledCollections);
-
-  driftedCollections[0].taskIds = range(1, 91);
-  driftedCollections[1].taskIds = range(92, 100);
-
-  const repositoryRoot = createInventoryFixture({
-    taskNumbers: range(1, 118),
-    collections: driftedCollections,
-  });
-
-  const result = runProductionCatalogGate(repositoryRoot);
-
-  assert.notEqual(result.status, 0);
-  assert.match(
-    result.stderr,
-    /expected 92 task links in collections\/javascript\/interview-practice\/README\.md; found 91/,
-  );
+  const root = createCompleteTopicCatalogFixture();
+  const path = 'collections/javascript/event-loop/README.md';
+  replaceFile(root, path, readFileSync(join(root, path), 'utf8').replace(
+    /^1\. \[task-0025.+\n/m,
+    '',
+  ));
+  assertCatalogFails(root, 'expected 7 task links');
 });
 
 test('rejects an unexpected thematic collection path', () => {
@@ -1177,6 +1175,12 @@ test('rejects a simulation with three cards from fewer than three topics', () =>
   assertCatalogFails(root, 'at least three topic collections');
 });
 
+test('rejects a simulation whose frozen third task drifts', () => {
+  const root = createCompleteTopicCatalogFixture();
+  writeSimulation(root, 1, ['task-0015', 'task-0017', 'task-0040']);
+  assertCatalogFails(root, 'frozen third task must be task-0033');
+});
+
 test('rejects master topic-count drift', () => {
   const root = createCompleteTopicCatalogFixture();
   replaceFile(root, 'collections/react/README.md', [
@@ -1186,6 +1190,20 @@ test('rejects master topic-count drift', () => {
     '',
   ].join('\n'));
   assertCatalogFails(root, 'master topic count');
+});
+
+test('rejects an extra topic entry on a master page', () => {
+  const root = createCompleteTopicCatalogFixture();
+  const path = 'collections/react/README.md';
+  replaceFile(root, path, `${readFileSync(join(root, path), 'utf8')}- [Лишняя тема](extra/README.md) — 1 задач — Лишняя строка.\n`);
+  assertCatalogFails(root, 'must list exactly its registered topic rows');
+});
+
+test('rejects a direct task row on a master page', () => {
+  const root = createCompleteTopicCatalogFixture();
+  const path = 'collections/react/README.md';
+  replaceFile(root, path, `${readFileSync(join(root, path), 'utf8')}1. [task-0001 — Task 0001](../../tasks/task-0001/README.md) — Базовая · 15 минут — Лишняя строка.\n`);
+  assertCatalogFails(root, 'must list exactly its registered topic rows');
 });
 
 test('rejects topic rows with non-ascending initial IDs', () => {
@@ -1237,6 +1255,22 @@ test('rejects metadata collection that differs from the registered topic', () =>
     '- Подборка: JavaScript → Promise и async/await',
   ));
   assertCatalogFails(root, 'metadata collection does not match');
+});
+
+test('rejects a real-work row whose visible title differs from the card H1', () => {
+  const root = createCompleteTopicCatalogFixture();
+  const cardPath = 'tasks/task-0015/README.md';
+  replaceFile(root, cardPath, readFileSync(join(root, cardPath), 'utf8').replace(
+    '- Формат: Написать код',
+    '- Формат: Приближённая к реальной работе',
+  ));
+  replaceFile(root, 'collections/real-work/README.md', [
+    '# Real-work tasks',
+    '',
+    '[task-0015 — Wrong title](../../tasks/task-0015/README.md) — 15 минут',
+    '',
+  ].join('\n'));
+  assertCatalogFails(root, 'real-work row title must match the card title');
 });
 
 test('accepts a literal Authorization header without treating it as provenance', () => {

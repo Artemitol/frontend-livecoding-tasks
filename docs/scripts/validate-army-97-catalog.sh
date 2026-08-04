@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # FILE: docs/scripts/validate-army-97-catalog.sh
-# VERSION: 2.6.0
+# VERSION: 2.6.1
 # START_MODULE_CONTRACT
 #   PURPOSE: Validate either a serialized ARMY-97 publication wave or the strict final student catalog without reading or mutating Beads.
 #   SCOPE: Closed legacy compatibility, complete wave prefixes, canonical duration, starter-only pure-versus-browser editor routing, registry-backed master/topic navigation, task wording, real-work projections, final simulations, bounded provenance exclusion, and local links.
@@ -11,7 +11,7 @@
 # END_MODULE_CONTRACT
 #
 # START_CHANGE_SUMMARY
-#   LAST_CHANGE: v2.6.0 - Validate the frozen 23-topic navigation registry, visible IDs, task wording, and three-topic simulations.
+#   LAST_CHANGE: v2.6.1 - Enforce exact master rows, frozen simulation third tasks, and real-work visible titles.
 # END_CHANGE_SUMMARY
 
 set -euo pipefail
@@ -79,6 +79,11 @@ registeredMasterFiles="$(printf '%s\n' \
   'collections/typescript/README.md' \
   'collections/react/README.md' \
   'collections/html-css/README.md' | sort)"
+frozenSimulationThirdTasks=(
+  task-0033 task-0016 task-0030 task-0065 task-0087 task-0098 task-0109 task-0067 task-0074 task-0089
+  task-0037 task-0063 task-0031 task-0044 task-0100 task-0066 task-0111 task-0077 task-0085 task-0092
+  task-0032 task-0045 task-0068 task-0112 task-0080 task-0082 task-0097 task-0093 task-0035 task-0114
+)
 
 legacyTaskFiles="$(printf '%s\n' \
   'tasks/accessible-keyboard-tabs/README.md' \
@@ -225,6 +230,17 @@ else
     test "$(rg -F -- "$masterRow" "$masterFile" | wc -l | tr -d ' ')" -eq 1 ||
       catalogFail "$masterFile master topic count or row drift"
   done
+  while IFS= read -r masterFile; do
+    [ -z "$masterFile" ] && continue
+    masterSlug="$(basename "$(dirname "$masterFile")")"
+    expectedMasterTopicCount="$(printf '%s\n' "${thematicSpecifications[@]}" |
+      rg -c "^collections/$masterSlug/[^/]+/README\\.md\\|" || true)"
+    actualMasterTopicCount="$(rg -c '^- ' "$masterFile" || true)"
+    if [ "$actualMasterTopicCount" -ne "$expectedMasterTopicCount" ] ||
+      rg -q 'tasks/task-[0-9]{4}/README\.md' "$masterFile"; then
+      catalogFail "$masterFile must list exactly its registered topic rows"
+    fi
+  done <<< "$registeredMasterFiles"
   if rg -n 'interview-practice' README.md collections; then
     catalogFail 'broad interview-practice pages and links are forbidden'
   fi
@@ -441,6 +457,10 @@ while IFS= read -r taskFile; do
     if [ "$realWorkReferenceCount" -ne 1 ]; then
       catalogFail "$taskFile real-work format must appear exactly once in the real-work collection"
     fi
+    realWorkRow="$(rg -F "$taskFile" collections/real-work/README.md || true)"
+    if ! printf '%s\n' "$realWorkRow" | rg -qF "[$cardTitle]("; then
+      catalogFail "$taskFile real-work row title must match the card title"
+    fi
   elif [ "$realWorkReferenceCount" -ne 0 ]; then
     catalogFail "$taskFile focused card must not appear in the real-work collection"
   fi
@@ -459,6 +479,10 @@ if [ "$gateMode" = 'final' ]; then
     rg -q '^Реализм: .+$' "$file"
     test "$(rg -o "\[Симуляция собеседования №$number\]\([^)]*simulation-$id/README\.md\) — [0-9]+ минут" collections/interviews/README.md | wc -l | tr -d ' ')" -eq 1
     simulationTasks=()
+    orderedSimulationTasks=()
+    while IFS= read -r task; do
+      orderedSimulationTasks+=("$task")
+    done < <(rg -o 'tasks/task-[0-9]{4}/README\.md' "$file")
     while IFS= read -r task; do
       simulationTasks+=("$task")
     done < <(rg -o 'tasks/task-[0-9]{4}/README\.md' "$file" | sort -u)
@@ -477,6 +501,12 @@ if [ "$gateMode" = 'final' ]; then
     done
     test "$(printf '%b' "$collections" | sort -u | rg '.' | wc -l | tr -d ' ')" -ge 3 ||
       catalogFail "$file must cover at least three topic collections"
+    expectedThirdTask="${frozenSimulationThirdTasks[$((number - 1))]}"
+    actualThirdTask="$(printf '%s\n' "${orderedSimulationTasks[2]}" |
+      sed -E 's#tasks/(task-[0-9]{4})/README\.md#\1#')"
+    if [ "$actualThirdTask" != "$expectedThirdTask" ]; then
+      catalogFail "$file frozen third task must be $expectedThirdTask"
+    fi
     declared="$(rg -o 'Общее время: [0-9]+ минут' "$file" | rg -o '[0-9]+')"
     test "$declared" -ge 30
     test "$declared" -le 120
