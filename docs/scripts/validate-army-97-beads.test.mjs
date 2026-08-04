@@ -1,5 +1,5 @@
 // FILE: docs/scripts/validate-army-97-beads.test.mjs
-// VERSION: 2.4.0
+// VERSION: 2.5.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Prove that the ARMY-97 Beads publication validator rejects invalid decision transitions.
 //   SCOPE: Deterministic in-memory candidate, card, published-wave, starter-classified pure/browser TypeScript editor, immutable-manifest, and structured-evidence probes.
@@ -16,7 +16,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.4.0 - Cover frozen topic paths and Markdown title and metadata collection synchronization.
+//   LAST_CHANGE: v2.5.0 - Cover the schema-v2 immutable navigation migration and reject retired broad collection paths.
 // END_CHANGE_SUMMARY
 
 import assert from 'node:assert/strict';
@@ -294,6 +294,25 @@ test('rejects mutation of an immutable source-audit field', () => {
   fixture.candidates[1].metadata.decisionEvidence = 'Changed after the source freeze.';
 
   assertInvalid(fixture, /immutable source snapshot/);
+});
+
+test('versions the frozen topic mapping in the immutable manifest', () => {
+  const fixture = makeFixture();
+
+  assert.equal(fixture.manifest.schemaVersion, 2);
+  assert.ok(fixture.manifest.immutableCandidateFields.includes('targetCollection'));
+});
+
+test('rejects a retired broad collection even under a regenerated manifest', () => {
+  const fixture = makeFixture();
+  const retiredCollection =
+    'collections/javascript/interview-practice/README.md';
+
+  fixture.candidates[0].metadata.targetCollection = retiredCollection;
+  fixture.cards[0].metadata.targetCollection = retiredCollection;
+  fixture.manifest = validator.createImmutableManifest(fixture.candidates);
+
+  assertInvalid(fixture, /unsupported targetCollection/);
 });
 
 test('rejects reverting an accepted source candidate to needs-rewrite', () => {

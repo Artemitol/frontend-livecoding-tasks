@@ -9,5 +9,6 @@
     <profile-ReactTypeScript URL="https://vite.new/react-ts">React with TypeScript.</profile-ReactTypeScript>
   </EditorProfiles>
   <ContentVocabulary><technologies>JavaScript | TypeScript | HTML/CSS | HTML/JavaScript | HTML/CSS/JavaScript | React/TypeScript</technologies><formats>Написать код | Исправить код | Разобрать код | Предсказать результат | Приближённая к реальной работе</formats><difficulties>Базовая | Средняя | Продвинутая</difficulties></ContentVocabulary>
-  <Verification>Use the documented local shell gate; cutover validates immutable cards and thematic projections before static simulations are introduced. Do not use external editors, browsers, or CSS automation.</Verification>
+  <StudentEnvironmentWording>Sandbox detection remains technology- and starter-runtime-driven. Cards state only the positive runtime assumption needed for transfer and contain no redundant negative environment wording.</StudentEnvironmentWording>
+  <Verification>Use the documented local shell gate; final mode validates visible IDs, four master indexes, twenty-three topic projections, task-only wording scans, and three-topic static simulations. Do not use external editors, browsers, or CSS automation.</Verification>
 </TechnologyStack>

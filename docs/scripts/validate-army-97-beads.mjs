@@ -1,5 +1,5 @@
 // FILE: docs/scripts/validate-army-97-beads.mjs
-// VERSION: 2.4.0
+// VERSION: 2.5.0
 // START_MODULE_CONTRACT
 //   PURPOSE: Enforce the ARMY-97 source-audit, published-catalog, and publication-decision contract against live Beads metadata.
 //   SCOPE: Immutable snapshot hashing, mutable count derivation, current task/collection/editor inventory with starter-only browser classification, candidate/card synchronization, and structured current-commit evidence.
@@ -21,7 +21,7 @@
 // END_MODULE_MAP
 //
 // START_CHANGE_SUMMARY
-//   LAST_CHANGE: v2.4.0 - Read frozen 23-topic paths plus Markdown title and collection facts for publication validation.
+//   LAST_CHANGE: v2.5.0 - Version the one-time immutable navigation migration from retired broad paths to the frozen 23-topic registry.
 // END_CHANGE_SUMMARY
 
 import { createHash } from 'node:crypto';
@@ -76,6 +76,7 @@ const immutableManifestFields = [
   'sourceAuditCounts',
   'immutableCandidateRecordsSha256',
 ];
+const immutableManifestSchemaVersion = 2;
 const candidateIdPattern = /^frontend-livecoding-tasks-army-97-candidate-(\d{3})$/;
 const cardIdPattern = /^frontend-livecoding-tasks-army-97-task-(\d{4})$/;
 const taskIdPattern = /^task-(\d{4})$/;
@@ -285,7 +286,7 @@ export function createImmutableManifest(candidates) {
   }
 
   return {
-    schemaVersion: 1,
+    schemaVersion: immutableManifestSchemaVersion,
     sourceAuditRevision: records[0]?.sourceAuditRevision,
     candidateRegisterSize: records.length,
     immutableCandidateFields: [...IMMUTABLE_CANDIDATE_FIELDS],

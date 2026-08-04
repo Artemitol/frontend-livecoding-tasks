@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceAuditRevision": "round-1",
   "candidateRegisterSize": 118,
   "immutableCandidateFields": [
@@ -23,5 +23,5 @@
     "rejected": 0,
     "duplicate": 0
   },
-  "immutableCandidateRecordsSha256": "58743f396f7a7a25c9c0f7f85d12aa9146da3b25607caf6943c84fddf6eae91f"
+  "immutableCandidateRecordsSha256": "4732ae71cd1f76e50b80cf432ab40cf5404b704363ed5df3be64ffaa095d4a15"
 }
