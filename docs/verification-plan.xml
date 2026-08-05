@@ -1,231 +1,84 @@
-<VerificationPlan VERSION="0.2.0">
-  <GlobalPolicy>
-    <evidence-format>module-id, verification-ref, artifact-path, check, observed-result</evidence-format>
-    <deterministic-first>true</deterministic-first>
-    <module-level-focus>Check mandatory document structure, stable anchors, and local references close to the changed artifact.</module-level-focus>
-    <wave-level-focus>Prove atomic synchronization across task card, catalog, knowledge graph, and verification deltas.</wave-level-focus>
-    <phase-level-focus>Validate all GRACE XML, catalog projection integrity, controlled vocabulary use, and GitHub rendering when shared Markdown structure changes.</phase-level-focus>
-    <autonomy-gate>Every module requires executable or manual checks, observable artifact evidence, stop conditions, and wave or phase follow-up before autonomous edits.</autonomy-gate>
-    <mentor-review-gate>Structural checks never replace mentor review of new or materially changed solution content.</mentor-review-gate>
-    <redaction>Never include secrets, credentials, private student data, or proprietary source material in repository content or evidence.</redaction>
-  </GlobalPolicy>
-
-  <CriticalFlows>
-    <VF-001 NAME="StudentStudiesTask" USE_CASES="UC-001, UC-002" DATA_FLOW="DF-STUDY-TASK" PRIORITY="high">
-      <scenario>A student selects a suitable task and controls theory, hint, and solution disclosure on GitHub.</scenario>
-      <expected-outcome>The catalog link works, metadata matches, required prompt content is visible, and every guidance block is independently collapsed.</expected-outcome>
-      <required-signals>
-        <artifact-marker>README.md catalog row and relative task link</artifact-marker>
-        <artifact-marker>task metadata table and required headings</artifact-marker>
-        <trace-sequence>CATALOG_SELECTED -> TASK_OPENED -> THEORY_OPTIONAL -> HINT_N_OPTIONAL -> SOLUTION_OPTIONAL -> SELF_CHECK</trace-sequence>
-      </required-signals>
-    </VF-001>
-    <VF-002 NAME="AgentAddsTask" USE_CASES="UC-003" DATA_FLOW="DF-ADD-TASK" PRIORITY="high">
-      <scenario>An AI agent adds one task from a mentor request.</scenario>
-      <expected-outcome>The task card, catalog projection, graph entry, and verification evidence change atomically, followed by mentor solution review.</expected-outcome>
-      <required-signals>
-        <artifact-marker>tasks/&lt;task-slug&gt;/README.md</artifact-marker>
-        <artifact-marker>README.md unique catalog entry</artifact-marker>
-        <artifact-marker>docs/knowledge-graph.xml task-library context</artifact-marker>
-        <trace-sequence>CONTRACT_READ -> METADATA_RESOLVED -> TASK_WRITTEN -> CATALOG_SYNCED -> GRAPH_SYNCED -> CHECKED -> MENTOR_REVIEWED</trace-sequence>
-      </required-signals>
-    </VF-002>
-    <VF-003 NAME="AgentUpdatesTask" USE_CASES="UC-004" DATA_FLOW="DF-UPDATE-TASK" PRIORITY="high">
-      <scenario>An AI agent changes task content or metadata without leaving stale derived references.</scenario>
-      <expected-outcome>Catalog placement, graph facts, prerequisites, assets, and inbound links remain consistent; ambiguous edits stop before drift is introduced.</expected-outcome>
-      <required-signals>
-        <artifact-marker>before and after canonical metadata</artifact-marker>
-        <artifact-marker>unique matching catalog projection</artifact-marker>
-        <trace-sequence>CHANGE_CLASSIFIED -> DERIVED_ARTIFACTS_IDENTIFIED -> SYNCHRONIZED -> LINKS_RESOLVED -> EVIDENCE_RECORDED</trace-sequence>
-      </required-signals>
-    </VF-003>
-  </CriticalFlows>
-
-  <ModuleVerification>
-    <V-M-GOVERNANCE MODULE="M-GOVERNANCE" PRIORITY="high">
-      <test-files>
-        <file>AGENTS.md</file>
-        <file>.gitignore</file>
-        <file>.agents/skills/grace-cli/SKILL.md</file>
-        <file>docs/requirements.xml</file>
-        <file>docs/technology.xml</file>
-        <file>docs/development-plan.xml</file>
-        <file>docs/verification-plan.xml</file>
-        <file>docs/knowledge-graph.xml</file>
-        <file>docs/operational-packets.xml</file>
-      </test-files>
-      <module-checks>
-        <check-1>xmllint --noout docs/*.xml</check-1>
-        <check-2>Search for unresolved template placeholders and placeholder IDs.</check-2>
-        <check-3>Cross-check every M-*, V-M-*, DF-*, VF-*, UC-*, Phase-*, and Gate-Phase-* reference.</check-3>
-        <check-4>Verify that every accepted task slug has exactly one export-&lt;task-slug&gt; annotation under M-TASK-LIBRARY.</check-4>
-        <check-5>Verify that AGENTS.md forbids direct commits and pushes to main, requires delivery from feature/* through a pull request targeting main, and that .gitignore excludes /docs/superpowers/.</check-5>
-        <check-6>Verify that AGENTS.md and .agents/skills/grace-cli/SKILL.md define the same PATH-then-$HOME/.bun/bin/grace resolution order; resolve GRACE_BIN, verify it is executable, and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</check-6>
-      </module-checks>
-      <scenarios>
-        <scenario-1 kind="success">All planning artifacts parse and every shared reference resolves consistently.</scenario-1>
-        <scenario-2 kind="failure">A missing verification ref, contradictory contract, or invalid XML blocks completion.</scenario-2>
-        <scenario-3 kind="success">A non-interactive shell omits grace from PATH, GRACE_BIN resolves to $HOME/.bun/bin/grace, and the standard lint completes without issues.</scenario-3>
-        <scenario-4 kind="failure">Neither PATH nor $HOME/.bun/bin/grace provides an executable CLI, so the agent reports the missing tool and uses the documented direct-inspection fallback.</scenario-4>
-      </scenarios>
-      <required-evidence-anchors>
-        <marker-1>M-GOVERNANCE</marker-1>
-        <marker-2>V-M-GOVERNANCE</marker-2>
-        <marker-3>$HOME/.bun/bin/grace</marker-3>
-        <marker-4>.agents/skills/grace-cli/SKILL.md</marker-4>
-      </required-evidence-anchors>
-      <required-trace-assertions>
-        <assertion-1>No implementation phase begins while a blocking shared-artifact contradiction remains.</assertion-1>
-      </required-trace-assertions>
-      <wave-follow-up>Apply task-wave graph and verification deltas through the controller-owned artifacts.</wave-follow-up>
-      <phase-follow-up>Run the full XML and cross-reference audit.</phase-follow-up>
-    </V-M-GOVERNANCE>
-
-    <V-M-TASK-TEMPLATE MODULE="M-TASK-TEMPLATE" PRIORITY="high">
-      <test-files>
-        <file>templates/task-template.md</file>
-      </test-files>
-      <module-checks>
-        <check-1>Verify exact mandatory metadata labels: Технологии, Тема, Уровень, Время, Навыки, and Предварительные знания.</check-1>
-        <check-2>Verify visible goal, prompt, starter-code guidance, readiness criteria, and self-check sections.</check-2>
-        <check-3>Verify separate closed details blocks for theory, each hint, and the solution; reject the open attribute.</check-3>
-        <check-4>Review the rendered GitHub view whenever the template or its HTML structure changes.</check-4>
-      </module-checks>
-      <scenarios>
-        <scenario-1 kind="success">The template renders compactly and allows theory, one hint at a time, and the solution to be opened independently.</scenario-1>
-        <scenario-2 kind="failure">Missing metadata, combined hints, an open details block, or malformed nested Markdown blocks completion.</scenario-2>
-      </scenarios>
-      <required-evidence-anchors>
-        <marker-1>Условие</marker-1>
-        <marker-2>Критерии готовности</marker-2>
-        <marker-3>Теория</marker-3>
-        <marker-4>Подсказка N</marker-4>
-        <marker-5>Решение</marker-5>
-        <marker-6>Самопроверка</marker-6>
-      </required-evidence-anchors>
-      <required-trace-assertions>
-        <assertion-1>The initial rendered page must not expose theory, hint bodies, or solution content.</assertion-1>
-      </required-trace-assertions>
-      <wave-follow-up>Use the current template contract for every added task.</wave-follow-up>
-      <phase-follow-up>Sample the GitHub-rendered template and first conforming task.</phase-follow-up>
-    </V-M-TASK-TEMPLATE>
-
-    <V-M-TASK-LIBRARY MODULE="M-TASK-LIBRARY" PRIORITY="high">
-      <test-files>
-        <file>tasks/&lt;task-slug&gt;/README.md</file>
-        <file>tasks/&lt;task-slug&gt;/assets/*</file>
-      </test-files>
-      <module-checks>
-        <check-1>Enumerate task cards and verify each conforms to the current template contract.</check-1>
-        <check-2>Resolve every prerequisite and asset link against the repository filesystem.</check-2>
-        <check-3>Verify metadata vocabulary, stable slug, self-contained theory, incremental hints, and task-specific version assumptions.</check-3>
-        <check-4>Record explicit mentor review for new or materially changed solution content.</check-4>
-      </module-checks>
-      <scenarios>
-        <scenario-1 kind="success">A student can understand and attempt the task using only the GitHub-rendered card.</scenario-1>
-        <scenario-2 kind="failure">A missing prerequisite, missing asset, undeclared knowledge dependency, ambiguous classification, or unreviewed solution blocks acceptance.</scenario-2>
-      </scenarios>
-      <required-evidence-anchors>
-        <marker-1>canonical metadata table</marker-1>
-        <marker-2>relative prerequisite links</marker-2>
-        <marker-3>mentor-review status</marker-3>
-      </required-evidence-anchors>
-      <required-trace-assertions>
-        <assertion-1>A task edit must not complete before dependent catalog and graph updates are verified.</assertion-1>
-      </required-trace-assertions>
-      <wave-follow-up>Compare changed task metadata with its catalog projection and graph delta.</wave-follow-up>
-      <phase-follow-up>Review vocabulary consistency and sample student-facing task rendering.</phase-follow-up>
-    </V-M-TASK-LIBRARY>
-
-    <V-M-CATALOG MODULE="M-CATALOG" PRIORITY="high">
-      <test-files>
-        <file>README.md</file>
-        <file>tasks/*/README.md</file>
-      </test-files>
-      <module-checks>
-        <check-1>Enumerate all task cards and prove that each stable slug appears exactly once in the catalog.</check-1>
-        <check-2>Resolve every catalog link and compare projected metadata with the canonical task metadata.</check-2>
-        <check-3>Verify one compact canonical table, exactly one row per task, all required metadata columns, and an explicit empty state before the first task exists.</check-3>
-      </module-checks>
-      <scenarios>
-        <scenario-1 kind="success">A student can choose and open a task using compact, accurate metadata.</scenario-1>
-        <scenario-2 kind="failure">A missing, duplicate, broken, or misclassified catalog entry blocks completion.</scenario-2>
-      </scenarios>
-      <required-evidence-anchors>
-        <marker-1>unique task slug</marker-1>
-        <marker-2>relative task link</marker-2>
-        <marker-3>projected metadata</marker-3>
-      </required-evidence-anchors>
-      <required-trace-assertions>
-        <assertion-1>Catalog synchronization must use task metadata as source of truth and must not silently rewrite the task to match a stale catalog row.</assertion-1>
-      </required-trace-assertions>
-      <wave-follow-up>Run full projection checks after every task wave.</wave-follow-up>
-      <phase-follow-up>Review catalog usability and controlled vocabulary consistency.</phase-follow-up>
-    </V-M-CATALOG>
-  </ModuleVerification>
-
-  <PhaseGates>
-    <Gate-Phase-1 PHASE="Phase-1">
-      <goal>Approved requirements and architecture are valid, consistent, and ready for implementation planning.</goal>
-      <commands>
-        <command-1>xmllint --noout docs/*.xml</command-1>
-        <command-2>Review module, verification, flow, use-case, and phase cross-references.</command-2>
-        <command-3>Resolve GRACE_BIN from PATH with $HOME/.bun/bin/grace as fallback and run "$GRACE_BIN" lint --fail-on errors --path "$PWD".</command-3>
-      </commands>
-      <required-evidence>
-        <evidence-1>All approved design decisions appear in requirements, technology, development plan, verification plan, and knowledge graph.</evidence-1>
-        <evidence-2>No unresolved placeholder or blocking open question affects Phases 2 through 4.</evidence-2>
-      </required-evidence>
-    </Gate-Phase-1>
-    <Gate-Phase-2 PHASE="Phase-2">
-      <goal>The task template proves the GitHub-first progressive-disclosure contract before any task content is added.</goal>
-      <commands>
-        <command-1>Run all V-M-TASK-TEMPLATE checks.</command-1>
-        <command-2>Review the rendered GitHub template or first conforming task.</command-2>
-      </commands>
-      <required-evidence>
-        <evidence-1>All mandatory metadata and document anchors exist.</evidence-1>
-        <evidence-2>Theory, hints, and solution are independently collapsed by default.</evidence-2>
-      </required-evidence>
-    </Gate-Phase-2>
-    <Gate-Phase-3 PHASE="Phase-3">
-      <goal>The repository landing page is usable before task waves begin.</goal>
-      <commands>
-        <command-1>Run all V-M-CATALOG checks against the explicit empty catalog state.</command-1>
-      </commands>
-      <required-evidence>
-        <evidence-1>README.md explains navigation and agent-maintained synchronization.</evidence-1>
-      </required-evidence>
-    </Gate-Phase-3>
-    <Gate-Phase-4 PHASE="Phase-4">
-      <goal>Each task wave leaves the student view and agent navigation internally consistent.</goal>
-      <commands>
-        <command-1>Run V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE.</command-1>
-        <command-2>Scan changed files for trailing whitespace, unresolved placeholders, and malformed document anchors.</command-2>
-      </commands>
-      <required-evidence>
-        <evidence-1>Task, catalog, graph, and verification deltas are atomic.</evidence-1>
-        <evidence-2>All links resolve and the task appears exactly once.</evidence-2>
-        <evidence-3>Mentor solution review is recorded in the task's Beads issue before that issue is closed.</evidence-3>
-      </required-evidence>
-    </Gate-Phase-4>
-    <Gate-Phase-5 PHASE="Phase-5">
-      <goal>Automation is introduced only when observed scale or drift justifies its maintenance cost.</goal>
-      <commands>
-        <command-1>Review task count, catalog drift incidents, vocabulary conflicts, and repeated manual verification cost.</command-1>
-      </commands>
-      <required-evidence>
-        <evidence-1>A Beads issue records the observed problem, alternatives, mentor decision, and resulting scope.</evidence-1>
-        <evidence-2>No generator, validator, CI, or runtime tooling is added without explicit approval.</evidence-2>
-      </required-evidence>
-    </Gate-Phase-5>
-  </PhaseGates>
-
-  <FailurePackets>
-    <packet-template>
-      <canonical-schema>docs/operational-packets.xml</canonical-schema>
-      <expected-fields>scenario, contract-ref, expected-evidence, observed-evidence, first-divergent-artifact-or-anchor, next-action</expected-fields>
-      <stop-conditions>ambiguous metadata; missing prerequisite or asset; unexpected GitHub rendering; catalog drift; unresolved inbound link; unreviewed solution</stop-conditions>
-    </packet-template>
-  </FailurePackets>
+<VerificationPlan VERSION="1.0.0">
+  <VerificationModules>
+    <V-M-GOVERNANCE MODULE="M-GOVERNANCE"><module-checks><command-1>xmllint --noout docs/*.xml</command-1><command-2>Grace lint and git diff --check</command-2><command-3>Verify .superpowers/ is ignored and transient content removed.</command-3></module-checks><failure>Contradictory contract, invalid XML, or unresolved governance reference blocks all work.</failure></V-M-GOVERNANCE>
+    <V-M-TASK-TEMPLATE MODULE="M-TASK-TEMPLATE"><module-checks><command-1>Verify visible task-XXXX — Title identity in every card H1 and task link, starter-only technology-mapped exact sandbox line, starter-comment requirements, order, three closed hints, closed solution, exact metadata labels, canonical N минут duration, and exact ordinal-link-substantive-sentence-duration thematic-row grammar.</command-1></module-checks><failure>Any editor mismatch, digits-only duration, collection-row prefix, suffix, punctuation-only prose, extra field, other row drift, provenance, prose requirement, extra hint, or open details blocks publication.</failure></V-M-TASK-TEMPLATE>
+    <V-M-TASK-VALIDATION MODULE="M-TASK-VALIDATION"><module-checks><command-1>node --test docs/scripts/validate-army-97-catalog.test.mjs docs/scripts/validate-army-97-beads.test.mjs docs/scripts/run-army-97-catalog-gate.test.mjs</command-1><command-2>At cutover verify exactly 118 contiguous task IDs with visible H1/link identity, four master indexes, twenty-three registered topic owners covering 92/8/16/2 cards, exact Master → Topic metadata, real-work membership, no broad paths, local links, XML, Grace, and diff.</command-2><command-3>Run node docs/scripts/run-army-97-catalog-gate.mjs --mode final --commit HEAD --verify-only after simulations with the final current catalog.</command-3><command-4>Run node docs/scripts/validate-army-97-beads.mjs only after the worktree and exact-HEAD final catalog gates pass.</command-4><command-5>Verify exactly 118 synchronized Army97CandidateRecord and Army97CardWorkItem issues with contiguous candidate IDs and task-0001 through task-0118.</command-5><command-6>Verify the immutable round-1 source snapshot hash is 4732ae71cd1f76e50b80cf432ab40cf5404b704363ed5df3be64ffaa095d4a15, with 56 accepted, 62 needs-rewrite, zero rejected, and zero duplicate while retaining initial 74/44 history.</command-6><command-7>Require every published ID to have N минут duration, exact technology/editor mapping synchronized to frozen Beads metadata, exact ordinal-link-substantive-sentence-duration thematic-row grammar, exactly one real-work row when and only when format is Приближённая к реальной работе regardless of technology, accepted publication state, and exact ten-field CardMigrationEvidence PASS.</command-7><command-8>In final mode require exactly 118 contiguous task IDs, four master indexes, twenty-three topic pages covering 92/8/16/2 cards, no retired broad paths or forbidden task wording, and thirty simulations with exactly three rows from at least three topics before a final receipt can be issued.</command-8><command-9>Run focused probes for canonical versus digits-only duration, every editor profile plus browser/console JavaScript mismatch and pure/browser-DOM TypeScript mismatch, one CodePen JavaScript real-work card, focused-card rejection from real-work, duplicate real-work rejection, valid substantive Russian sentence, arbitrary collection-row prefix, punctuation-only description, extra row field, row suffix, missing description, mismatched linked title, mismatched collection time, Markdown/Beads editor drift, final master/topic fixtures, visible-ID mismatch, master count drift, topic order drift, forbidden task wording, malformed ARMY card, duplicate topic membership, unpublished reference, final gap/count/path drift, nested provenance, free-form or missing evidence, explicit mode binding, evidence slug absent from exact commit, gate failure, unexecuted or stale ancestor evidence, forged digest, candidate/card drift, immutable drift, and state reversal.</command-9></module-checks><failure>Noncanonical duration, technology/editor mismatch, malformed collection-row grammar, missing, duplicate, or format-inconsistent real-work projection, unpublished card, catalog coverage drift, catalog failure before transition validation, wrong-mode, fabricated, or stale gate evidence, mutable counts treated as constants, immutable hash drift, unsynchronized state, or non-accepted published state blocks a card.</failure></V-M-TASK-VALIDATION>
+    <V-M-TASK-LIBRARY MODULE="M-TASK-LIBRARY"><module-checks><command-1>Verify every tasks/task-XXXX/README.md path, visible task-XXXX — Title H1, and exactly one registered topic membership.</command-1><command-2>Verify requirements stay in starter comments and student-facing provenance, fixture vocabulary, and redundant negative environment wording are absent from task cards.</command-2><command-3>Verify 118 card work items are assigned to twelve serialized waves sized 10,10,10,10,10,10,10,10,10,10,10,8.</command-3></module-checks><failure>Invalid ID, incomplete starter, non-accepted candidate, or orphan card blocks its wave.</failure></V-M-TASK-LIBRARY>
+    <V-M-CATALOG MODULE="M-CATALOG"><module-checks><command-1>Verify four master indexes list only their registered topic pages with exact counts and all twenty-three topic pages use exact breadcrumbs and rows.</command-1><command-2>Verify every task-XXXX card is linked by exact visible identity from exactly one topic page whose Master → Topic value matches card metadata and frozen Beads mapping.</command-2><command-3>Verify 30 sequential simulations have exactly three task rows from at least three topic pages, exact duration sums, recurrence compliance, and substantive realism evidence.</command-3></module-checks><failure>Master/topic registry, visible identity, row grammar, card ownership, real-work membership, or three-topic simulation drift blocks cutover.</failure></V-M-CATALOG>
+    <V-M-COLLECTION-MASTER-JAVASCRIPT MODULE="M-COLLECTION-MASTER-JAVASCRIPT"><module-checks><command-1>Verify collections/javascript/README.md has the master breadcrumb and lists exactly 13 registered topic rows, no direct task rows, and exact counts.</command-1></module-checks><failure>Missing, extra, miscounted, or direct-task master rows block navigation publication.</failure></V-M-COLLECTION-MASTER-JAVASCRIPT>
+    <V-M-COLLECTION-MASTER-TYPESCRIPT MODULE="M-COLLECTION-MASTER-TYPESCRIPT"><module-checks><command-1>Verify collections/typescript/README.md has the master breadcrumb and lists exactly 4 registered topic rows, no direct task rows, and exact counts.</command-1></module-checks><failure>Missing, extra, miscounted, or direct-task master rows block navigation publication.</failure></V-M-COLLECTION-MASTER-TYPESCRIPT>
+    <V-M-COLLECTION-MASTER-REACT MODULE="M-COLLECTION-MASTER-REACT"><module-checks><command-1>Verify collections/react/README.md has the master breadcrumb and lists exactly 5 registered topic rows, no direct task rows, and exact counts.</command-1></module-checks><failure>Missing, extra, miscounted, or direct-task master rows block navigation publication.</failure></V-M-COLLECTION-MASTER-REACT>
+    <V-M-COLLECTION-MASTER-HTML-CSS MODULE="M-COLLECTION-MASTER-HTML-CSS"><module-checks><command-1>Verify collections/html-css/README.md has the master breadcrumb and lists exactly 1 registered topic rows, no direct task rows, and exact counts.</command-1></module-checks><failure>Missing, extra, miscounted, or direct-task master rows block navigation publication.</failure></V-M-COLLECTION-MASTER-HTML-CSS>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-EVENT-LOOP MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-EVENT-LOOP"><module-checks><command-1>Verify collections/javascript/event-loop/README.md owns exactly task-0015 task-0016 task-0018 task-0019 task-0020 task-0023 task-0025 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-EVENT-LOOP>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-PROMISES-AND-ASYNC MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-PROMISES-AND-ASYNC"><module-checks><command-1>Verify collections/javascript/promises-and-async/README.md owns exactly task-0017 task-0021 task-0022 task-0024 task-0026 task-0027 task-0028 task-0029 task-0051 task-0059 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-PROMISES-AND-ASYNC>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-PROTOTYPES-INHERITANCE-AND-THIS MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-PROTOTYPES-INHERITANCE-AND-THIS"><module-checks><command-1>Verify collections/javascript/prototypes-inheritance-and-this/README.md owns exactly task-0030 task-0031 task-0032 task-0034 task-0035 task-0036 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-PROTOTYPES-INHERITANCE-AND-THIS>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-FUNCTIONS-CLOSURES-AND-SCOPE MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-FUNCTIONS-CLOSURES-AND-SCOPE"><module-checks><command-1>Verify collections/javascript/functions-closures-and-scope/README.md owns exactly task-0039 task-0047 task-0052 task-0060 task-0061 task-0062 task-0065 task-0066 task-0068 task-0069 task-0070 task-0071 task-0072 task-0113 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-FUNCTIONS-CLOSURES-AND-SCOPE>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-OBJECTS-AND-COLLECTIONS MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-OBJECTS-AND-COLLECTIONS"><module-checks><command-1>Verify collections/javascript/objects-and-collections/README.md owns exactly task-0033 task-0040 task-0041 task-0042 task-0043 task-0044 task-0045 task-0050 task-0118 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-OBJECTS-AND-COLLECTIONS>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-DOM-AND-EVENTS MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-DOM-AND-EVENTS"><module-checks><command-1>Verify collections/javascript/dom-and-events/README.md owns exactly task-0048 task-0058 task-0067 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-DOM-AND-EVENTS>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-DATES-AND-TIME-INTERVALS MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-DATES-AND-TIME-INTERVALS"><module-checks><command-1>Verify collections/javascript/dates-and-time-intervals/README.md owns exactly task-0037 task-0053 task-0054 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-DATES-AND-TIME-INTERVALS>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-ARRAYS-SEARCH-AND-SORTING MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-ARRAYS-SEARCH-AND-SORTING"><module-checks><command-1>Verify collections/javascript/arrays-search-and-sorting/README.md owns exactly task-0046 task-0082 task-0083 task-0084 task-0087 task-0088 task-0090 task-0095 task-0100 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-ARRAYS-SEARCH-AND-SORTING>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-STRINGS MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-STRINGS"><module-checks><command-1>Verify collections/javascript/strings/README.md owns exactly task-0085 task-0086 task-0097 task-0098 task-0099 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-STRINGS>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-TREES-AND-RECURSION MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-TREES-AND-RECURSION"><module-checks><command-1>Verify collections/javascript/trees-and-recursion/README.md owns exactly task-0073 task-0074 task-0075 task-0076 task-0077 task-0078 task-0079 task-0080 task-0081 task-0091 task-0096 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-TREES-AND-RECURSION>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-GRAPHS MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-GRAPHS"><module-checks><command-1>Verify collections/javascript/graphs/README.md owns exactly task-0055 task-0056 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-GRAPHS>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-LINKED-LISTS-AND-STACK MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-LINKED-LISTS-AND-STACK"><module-checks><command-1>Verify collections/javascript/linked-lists-and-stack/README.md owns exactly task-0064 task-0089 task-0092 task-0093 task-0094 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-LINKED-LISTS-AND-STACK>
+    <V-M-COLLECTION-TOPIC-JAVASCRIPT-NUMBERS-TYPES-AND-OPERATORS MODULE="M-COLLECTION-TOPIC-JAVASCRIPT-NUMBERS-TYPES-AND-OPERATORS"><module-checks><command-1>Verify collections/javascript/numbers-types-and-operators/README.md owns exactly task-0109 task-0110 task-0111 task-0112 task-0114 task-0115 task-0116 task-0117 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-JAVASCRIPT-NUMBERS-TYPES-AND-OPERATORS>
+    <V-M-COLLECTION-TOPIC-TYPESCRIPT-GENERICS-AND-OBJECT-KEYS MODULE="M-COLLECTION-TOPIC-TYPESCRIPT-GENERICS-AND-OBJECT-KEYS"><module-checks><command-1>Verify collections/typescript/generics-and-object-keys/README.md owns exactly task-0038 task-0102 task-0106 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-TYPESCRIPT-GENERICS-AND-OBJECT-KEYS>
+    <V-M-COLLECTION-TOPIC-TYPESCRIPT-MAPPED-AND-CONDITIONAL-TYPES MODULE="M-COLLECTION-TOPIC-TYPESCRIPT-MAPPED-AND-CONDITIONAL-TYPES"><module-checks><command-1>Verify collections/typescript/mapped-and-conditional-types/README.md owns exactly task-0101 task-0103 task-0105 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-TYPESCRIPT-MAPPED-AND-CONDITIONAL-TYPES>
+    <V-M-COLLECTION-TOPIC-TYPESCRIPT-RECURSIVE-TYPES MODULE="M-COLLECTION-TOPIC-TYPESCRIPT-RECURSIVE-TYPES"><module-checks><command-1>Verify collections/typescript/recursive-types/README.md owns exactly task-0104 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-TYPESCRIPT-RECURSIVE-TYPES>
+    <V-M-COLLECTION-TOPIC-TYPESCRIPT-INTEGRATION-TYPING MODULE="M-COLLECTION-TOPIC-TYPESCRIPT-INTEGRATION-TYPING"><module-checks><command-1>Verify collections/typescript/integration-typing/README.md owns exactly task-0057 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-TYPESCRIPT-INTEGRATION-TYPING>
+    <V-M-COLLECTION-TOPIC-REACT-STATE-AND-EVENT-HANDLERS MODULE="M-COLLECTION-TOPIC-REACT-STATE-AND-EVENT-HANDLERS"><module-checks><command-1>Verify collections/react/state-and-event-handlers/README.md owns exactly task-0009 task-0063 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-REACT-STATE-AND-EVENT-HANDLERS>
+    <V-M-COLLECTION-TOPIC-REACT-EFFECTS-TIMERS-AND-CLEANUP MODULE="M-COLLECTION-TOPIC-REACT-EFFECTS-TIMERS-AND-CLEANUP"><module-checks><command-1>Verify collections/react/effects-timers-and-cleanup/README.md owns exactly task-0001 task-0005 task-0014 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-REACT-EFFECTS-TIMERS-AND-CLEANUP>
+    <V-M-COLLECTION-TOPIC-REACT-RENDERING-AND-MEMOIZATION MODULE="M-COLLECTION-TOPIC-REACT-RENDERING-AND-MEMOIZATION"><module-checks><command-1>Verify collections/react/rendering-and-memoization/README.md owns exactly task-0002 task-0003 task-0007 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-REACT-RENDERING-AND-MEMOIZATION>
+    <V-M-COLLECTION-TOPIC-REACT-ASYNC-DATA-AND-UI-STATES MODULE="M-COLLECTION-TOPIC-REACT-ASYNC-DATA-AND-UI-STATES"><module-checks><command-1>Verify collections/react/async-data-and-ui-states/README.md owns exactly task-0004 task-0006 task-0008 task-0010 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-REACT-ASYNC-DATA-AND-UI-STATES>
+    <V-M-COLLECTION-TOPIC-REACT-COMPONENT-COMPOSITION-AND-STATE-MANAGEMENT MODULE="M-COLLECTION-TOPIC-REACT-COMPONENT-COMPOSITION-AND-STATE-MANAGEMENT"><module-checks><command-1>Verify collections/react/component-composition-and-state-management/README.md owns exactly task-0011 task-0012 task-0013 task-0049 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-REACT-COMPONENT-COMPOSITION-AND-STATE-MANAGEMENT>
+    <V-M-COLLECTION-TOPIC-HTML-CSS-CASCADE-AND-SELECTORS MODULE="M-COLLECTION-TOPIC-HTML-CSS-CASCADE-AND-SELECTORS"><module-checks><command-1>Verify collections/html-css/cascade-and-selectors/README.md owns exactly task-0107 task-0108 in ascending initial-ID order with breadcrumb and exact title, difficulty, duration, and description row grammar.</command-1></module-checks><failure>Topic path, membership, order, breadcrumb, metadata, title, or row drift blocks publication.</failure></V-M-COLLECTION-TOPIC-HTML-CSS-CASCADE-AND-SELECTORS>
+  </VerificationModules>
+  <Army97ExpectedCatalog candidate-register-size="118" exact-duplicate-group-count="0" expected-card-count="118">
+      <master-javascript PATH="collections/javascript/README.md" TOPICS="13" TASKS="92"/>
+      <master-typescript PATH="collections/typescript/README.md" TOPICS="4" TASKS="8"/>
+      <master-react PATH="collections/react/README.md" TOPICS="5" TASKS="16"/>
+      <master-html-css PATH="collections/html-css/README.md" TOPICS="1" TASKS="2"/>
+      <topic-javascript-event-loop PATH="collections/javascript/event-loop/README.md" MASTER="collections/javascript/README.md" EXPECTED="7" TASKS="task-0015 task-0016 task-0018 task-0019 task-0020 task-0023 task-0025"/>
+      <topic-javascript-promises-and-async PATH="collections/javascript/promises-and-async/README.md" MASTER="collections/javascript/README.md" EXPECTED="10" TASKS="task-0017 task-0021 task-0022 task-0024 task-0026 task-0027 task-0028 task-0029 task-0051 task-0059"/>
+      <topic-javascript-prototypes-inheritance-and-this PATH="collections/javascript/prototypes-inheritance-and-this/README.md" MASTER="collections/javascript/README.md" EXPECTED="6" TASKS="task-0030 task-0031 task-0032 task-0034 task-0035 task-0036"/>
+      <topic-javascript-functions-closures-and-scope PATH="collections/javascript/functions-closures-and-scope/README.md" MASTER="collections/javascript/README.md" EXPECTED="14" TASKS="task-0039 task-0047 task-0052 task-0060 task-0061 task-0062 task-0065 task-0066 task-0068 task-0069 task-0070 task-0071 task-0072 task-0113"/>
+      <topic-javascript-objects-and-collections PATH="collections/javascript/objects-and-collections/README.md" MASTER="collections/javascript/README.md" EXPECTED="9" TASKS="task-0033 task-0040 task-0041 task-0042 task-0043 task-0044 task-0045 task-0050 task-0118"/>
+      <topic-javascript-dom-and-events PATH="collections/javascript/dom-and-events/README.md" MASTER="collections/javascript/README.md" EXPECTED="3" TASKS="task-0048 task-0058 task-0067"/>
+      <topic-javascript-dates-and-time-intervals PATH="collections/javascript/dates-and-time-intervals/README.md" MASTER="collections/javascript/README.md" EXPECTED="3" TASKS="task-0037 task-0053 task-0054"/>
+      <topic-javascript-arrays-search-and-sorting PATH="collections/javascript/arrays-search-and-sorting/README.md" MASTER="collections/javascript/README.md" EXPECTED="9" TASKS="task-0046 task-0082 task-0083 task-0084 task-0087 task-0088 task-0090 task-0095 task-0100"/>
+      <topic-javascript-strings PATH="collections/javascript/strings/README.md" MASTER="collections/javascript/README.md" EXPECTED="5" TASKS="task-0085 task-0086 task-0097 task-0098 task-0099"/>
+      <topic-javascript-trees-and-recursion PATH="collections/javascript/trees-and-recursion/README.md" MASTER="collections/javascript/README.md" EXPECTED="11" TASKS="task-0073 task-0074 task-0075 task-0076 task-0077 task-0078 task-0079 task-0080 task-0081 task-0091 task-0096"/>
+      <topic-javascript-graphs PATH="collections/javascript/graphs/README.md" MASTER="collections/javascript/README.md" EXPECTED="2" TASKS="task-0055 task-0056"/>
+      <topic-javascript-linked-lists-and-stack PATH="collections/javascript/linked-lists-and-stack/README.md" MASTER="collections/javascript/README.md" EXPECTED="5" TASKS="task-0064 task-0089 task-0092 task-0093 task-0094"/>
+      <topic-javascript-numbers-types-and-operators PATH="collections/javascript/numbers-types-and-operators/README.md" MASTER="collections/javascript/README.md" EXPECTED="8" TASKS="task-0109 task-0110 task-0111 task-0112 task-0114 task-0115 task-0116 task-0117"/>
+      <topic-typescript-generics-and-object-keys PATH="collections/typescript/generics-and-object-keys/README.md" MASTER="collections/typescript/README.md" EXPECTED="3" TASKS="task-0038 task-0102 task-0106"/>
+      <topic-typescript-mapped-and-conditional-types PATH="collections/typescript/mapped-and-conditional-types/README.md" MASTER="collections/typescript/README.md" EXPECTED="3" TASKS="task-0101 task-0103 task-0105"/>
+      <topic-typescript-recursive-types PATH="collections/typescript/recursive-types/README.md" MASTER="collections/typescript/README.md" EXPECTED="1" TASKS="task-0104"/>
+      <topic-typescript-integration-typing PATH="collections/typescript/integration-typing/README.md" MASTER="collections/typescript/README.md" EXPECTED="1" TASKS="task-0057"/>
+      <topic-react-state-and-event-handlers PATH="collections/react/state-and-event-handlers/README.md" MASTER="collections/react/README.md" EXPECTED="2" TASKS="task-0009 task-0063"/>
+      <topic-react-effects-timers-and-cleanup PATH="collections/react/effects-timers-and-cleanup/README.md" MASTER="collections/react/README.md" EXPECTED="3" TASKS="task-0001 task-0005 task-0014"/>
+      <topic-react-rendering-and-memoization PATH="collections/react/rendering-and-memoization/README.md" MASTER="collections/react/README.md" EXPECTED="3" TASKS="task-0002 task-0003 task-0007"/>
+      <topic-react-async-data-and-ui-states PATH="collections/react/async-data-and-ui-states/README.md" MASTER="collections/react/README.md" EXPECTED="4" TASKS="task-0004 task-0006 task-0008 task-0010"/>
+      <topic-react-component-composition-and-state-management PATH="collections/react/component-composition-and-state-management/README.md" MASTER="collections/react/README.md" EXPECTED="4" TASKS="task-0011 task-0012 task-0013 task-0049"/>
+      <topic-html-css-cascade-and-selectors PATH="collections/html-css/cascade-and-selectors/README.md" MASTER="collections/html-css/README.md" EXPECTED="2" TASKS="task-0107 task-0108"/>
+    <wave-sizes>10,10,10,10,10,10,10,10,10,10,10,8</wave-sizes>
+  </Army97ExpectedCatalog>
+  <Army97WaveCatalog STATUS="historical" LEGACY-CARD-COUNT="21" COMPLETE-ARMY-PREFIX-COUNTS="0,10,20,30,40,50,60,70,80,90,100,110,118"><coverage>Historical serialized-wave reports record that every then-current task path existed in exactly one thematic collection, real-work membership followed format, and each published card passed the wave contract.</coverage><evidence>Historical reports retain their exact-HEAD wave-mode receipts; they do not describe the active publication transition or current receipt mode after final cutover.</evidence><not-required>Final 92/8/16/2 counts and 30 simulations were deferred to the later cutover and final-audit gates.</not-required></Army97WaveCatalog>
+  <Army97FinalCatalog LEGACY-CARD-COUNT="0" ARMY-CARD-COUNT="118" MASTER-COUNT="4" TOPIC-COUNT="23" SIMULATION-COUNT="30"><certificate>Exactly task-0001..task-0118; four master indexes; twenty-three registered topic owners; visible H1/link IDs; no broad paths or forbidden task wording; and every three-topic simulation constraint.</certificate></Army97FinalCatalog>
+  <Army97StaticSimulationSet COUNT="30" MINUTES-MIN="30" MINUTES-MAX="120" TOPIC-MIN="3" TASKS-PER-SIMULATION="3" RECURRENCE-WINDOW="3"><evidence>Each sequential Beads simulation issue records the ordered task IDs, registered topic paths, declared and calculated total, and PASS: plausible frontend technical interview manual-realism outcome before its Markdown page is accepted.</evidence></Army97StaticSimulationSet>
+  <Army97Wave-001 STATUS="published" FIRST="task-0001" LAST="task-0010" COUNT="10"><cards>task-0001 task-0002 task-0003 task-0004 task-0005 task-0006 task-0007 task-0008 task-0009 task-0010</cards><real-work PATH="collections/real-work/README.md">task-0004 task-0006 task-0008</real-work><card-content-review>Exact starter-comment contracts, complete starters, progressive hints, changed-code solutions, expected results, and manual checks.</card-content-review><catalog-certificate MODE="wave" TASKS="31" LEGACY="21" ARMY="10" COVERED="31" ORPHANS="0" THEMATIC-ERRORS="0">Exact-HEAD receipts and synchronized publication state are stored in the ten card issues and re-executed by the live Beads validator.</catalog-certificate></Army97Wave-001>
+  <Army97Wave-002 STATUS="published" FIRST="task-0011" LAST="task-0020" COUNT="10"><cards>task-0011 task-0012 task-0013 task-0014 task-0015 task-0016 task-0017 task-0018 task-0019 task-0020</cards><real-work PATH="collections/real-work/README.md">task-0013</real-work><card-content-review>Review-finding correction verifies two simultaneously open modal instances and callback statuses; an independent input update before remaining validation; .ts, .tsx, and fallback file-icon branches; and a pure count updater with separate latest-count, cadence, listener-cleanup, and interval-cleanup checks.</card-content-review><catalog-certificate MODE="wave" TASKS="41" LEGACY="21" ARMY="20" COVERED="41" ORPHANS="0" THEMATIC-ERRORS="0">After the correction commit, current exact-HEAD receipts for all twenty published ARMY card issues and synchronized publication state are re-executed by the live Beads validator.</catalog-certificate></Army97Wave-002>
+  <Army97Wave-003 STATUS="published" FIRST="task-0021" LAST="task-0030" COUNT="10"><cards>task-0021 task-0022 task-0023 task-0024 task-0025 task-0026 task-0027 task-0028 task-0029 task-0030</cards><real-work>none</real-work><publication-transitions>task-0027 task-0028 task-0029 task-0030</publication-transitions><card-content-review>PASS after both scoped fix rounds: task-0023 names the actual 500-ms chain; task-0025 distinguishes factory reuse from Promise identity; task-0027 observes empty and rejected aggregate results; task-0028 observes the immediate concurrent-start snapshot; task-0029 records timer completion before retry, so a missing await produces empty wait logs and fails the manual check.</card-content-review><catalog-certificate MODE="wave" TASKS="51" LEGACY="21" ARMY="30" COVERED="51" ORPHANS="0" THEMATIC-ERRORS="0">After the correction commit, current exact-HEAD receipts for all thirty published ARMY card issues and synchronized publication state are re-executed by the live Beads validator.</catalog-certificate></Army97Wave-003>
+  <Army97Wave-004 STATUS="published" FIRST="task-0031" LAST="task-0040" COUNT="10"><cards>task-0031 task-0032 task-0033 task-0034 task-0035 task-0036 task-0037 task-0038 task-0039 task-0040</cards><real-work>none</real-work><publication-transitions>task-0031 task-0032 task-0033 task-0034 task-0036 task-0037</publication-transitions><card-content-review>PASS after deterministic behavior checks and scoped review fixes: task-0031 requires both receiver-loss explanation and repair; task-0033 relies only on portable TypeError evidence; task-0038 proves invalid-key rejection, a distinct result object, source immutability, and inferred selected-field types.</card-content-review><catalog-certificate MODE="wave" TASKS="61" LEGACY="21" ARMY="40" COVERED="61" ORPHANS="0" THEMATIC-ERRORS="0">At the focused Wave 004 commit, current exact-HEAD receipts for all forty published ARMY card issues and synchronized publication state are re-executed by the live Beads validator.</catalog-certificate></Army97Wave-004>
+  <Army97Wave-005 STATUS="published" FIRST="task-0041" LAST="task-0050" COUNT="10"><cards>task-0041 task-0042 task-0043 task-0044 task-0045 task-0046 task-0047 task-0048 task-0049 task-0050</cards><real-work PATH="collections/real-work/README.md">task-0049 task-0050</real-work><publication-transitions>task-0041 task-0043 task-0045 task-0046 task-0049 task-0050</publication-transitions><card-content-review>PASS after scoped review fixes and deterministic behavior checks: task-0041 omits only the dynamic index key; task-0043 preserves the input and exact zero-padded chronology; task-0045 preserves tuple order and treats squad zero as present; task-0046 resolves the equal-note 6000 fixture toward 5000 plus two 500 notes; task-0049 proves two synchronized consumers and exact unmount cleanup; task-0050 uses three local datasets with explicit missing-user and zero-comment results and appears once in real-work.</card-content-review><catalog-certificate MODE="wave" TASKS="71" LEGACY="21" ARMY="50" COVERED="71" ORPHANS="0" THEMATIC-ERRORS="0">At the focused Wave 005 commit, current exact-HEAD receipts for all fifty published ARMY card issues and synchronized publication state are re-executed by the live Beads validator.</catalog-certificate></Army97Wave-005>
+  <Army97Wave-006 STATUS="published" FIRST="task-0051" LAST="task-0060" COUNT="10"><cards>task-0051 task-0052 task-0053 task-0054 task-0055 task-0056 task-0057 task-0058 task-0059 task-0060</cards><real-work>none</real-work><publication-transitions>task-0051 task-0053 task-0054 task-0056 task-0057 task-0058 task-0059 task-0060</publication-transitions><card-content-review>PASS after independent review and two scoped re-reviews closed literal Authorization provenance, starter-only TypeScript browser routing, task-0057 complete integration observability, and synchronous loader-order evidence with zero open findings.</card-content-review><catalog-certificate MODE="wave" TASKS="81" LEGACY="21" ARMY="60" COVERED="81" ORPHANS="0" THEMATIC-ERRORS="0">At the focused Wave 006 commit, current exact-HEAD receipts for all sixty published ARMY card issues and synchronized publication state are re-executed by the live Beads validator.</catalog-certificate></Army97Wave-006>
+  <Army97Wave-007 STATUS="published" FIRST="task-0061" LAST="task-0070" COUNT="10"><cards>task-0061 task-0062 task-0063 task-0064 task-0065 task-0066 task-0067 task-0068 task-0069 task-0070</cards><real-work>task-0063</real-work><publication-transitions>task-0061 task-0063 task-0067 task-0068</publication-transitions><card-content-review>PASS after independent review and scoped re-review: task-0066 explicitly requires explaining the original Count is 0 before the Count is 3 repair, task-0063 names its complete starter files correctly, and no Critical, Important, or Minor finding remains.</card-content-review><catalog-certificate MODE="wave" TASKS="91" LEGACY="21" ARMY="70" COVERED="91" ORPHANS="0" THEMATIC-ERRORS="0">At the focused Wave 007 commit, current exact-HEAD receipts for all seventy published ARMY card issues and synchronized publication state are re-executed by the live Beads validator.</catalog-certificate></Army97Wave-007>
+  <Army97Wave-008 STATUS="published" FIRST="task-0071" LAST="task-0080" COUNT="10"><cards>task-0071 task-0072 task-0073 task-0074 task-0075 task-0076 task-0077 task-0078 task-0079 task-0080</cards><real-work>none</real-work><publication-transitions>task-0073 task-0074 task-0075 task-0076 task-0077 task-0078 task-0080</publication-transitions><card-content-review>PASS after independent review: each card exposes its declared TDZ, recursive transformation, iterative traversal, cloning, or path-lookup result and retains complete local fixtures.</card-content-review><catalog-certificate MODE="wave" TASKS="101" LEGACY="21" ARMY="80" COVERED="101" ORPHANS="0" THEMATIC-ERRORS="0">At the focused Wave 008 commit, current exact-HEAD receipts for all eighty published ARMY card issues and synchronized publication state are re-executed by the live Beads validator.</catalog-certificate></Army97Wave-008>
+  <Army97Wave-009 STATUS="published" FIRST="task-0081" LAST="task-0090" COUNT="10"><cards>task-0081 task-0082 task-0083 task-0084 task-0085 task-0086 task-0087 task-0088 task-0089 task-0090</cards><real-work>none</real-work><publication-transitions>task-0081 task-0083 task-0084 task-0086 task-0087 task-0088 task-0090</publication-transitions><card-content-review>PASS: local contracts correct the synchronized tree fixture, lone-value sentinel, two-sum pair and no-solution result, anagram-group ordering, value-based duplicate semantics, pairwise symmetric-difference counts, and empty immutable range compression. Current final receipts are re-executed by live Beads validation.</card-content-review></Army97Wave-009>
+  <Army97Wave-010 STATUS="published" FIRST="task-0091" LAST="task-0100" COUNT="10"><cards>task-0091 task-0092 task-0093 task-0094 task-0095 task-0096 task-0097 task-0098 task-0099 task-0100</cards><real-work>none</real-work><publication-transitions>task-0091 task-0093 task-0094 task-0095 task-0097 task-0098</publication-transitions><card-content-review>PASS: local contracts supply a true TODO tree-equality boundary, ascending linked-list fixtures, reversed-digit carry addition, deterministic no-repetition combinations, lexical-word-only reversal, and unchanged case-sensitive contiguous-substring fixtures. Current final receipts are re-executed by live Beads validation.</card-content-review></Army97Wave-010>
+  <Army97Wave-011 STATUS="published" FIRST="task-0101" LAST="task-0110" COUNT="10"><cards>task-0101 task-0102 task-0103 task-0104 task-0105 task-0106 task-0107 task-0108 task-0109 task-0110</cards><real-work>none</real-work><publication-transitions>task-0104 task-0105 task-0110</publication-transitions><card-content-review>PASS: local contracts add the as-const string-leaf fixture and invalid path, direct/Promise/function resolved-value checks, and exact IEEE-754 operands without publication assertion. Current final receipts are re-executed by live Beads validation.</card-content-review></Army97Wave-011>
+  <Army97Wave-012 STATUS="published" FIRST="task-0111" LAST="task-0118" COUNT="8"><cards>task-0111 task-0112 task-0113 task-0114 task-0115 task-0116 task-0117 task-0118</cards><real-work>none</real-work><publication-transitions>task-0114</publication-transitions><card-content-review>PASS: local prediction contracts cover NaN equality, empty Math extrema, map callback radix, unambiguous array-object coercion, chained comparison coercion, stateful object conversion, logical short-circuit precedence, and ordinary object-key conversion. Current final receipts are re-executed by live Beads validation.</card-content-review></Army97Wave-012>
+  <Army97SourceAuditSnapshot REVISION="round-1" INITIAL-RECORDED-ACCEPTED="74" INITIAL-RECORDED-NEEDS-REWRITE="44" ACCEPTED="56" NEEDS-REWRITE="62" REJECTED="0" DUPLICATE="0"/>
+  <Army97PublicationDecisionGate MUTABLE="true" VALIDATOR="docs/scripts/validate-army-97-beads.mjs" CATALOG-GATE="docs/scripts/validate-army-97-catalog.sh" EVIDENCE-RUNNER="docs/scripts/run-army-97-catalog-gate.mjs" MANIFEST="docs/army-97-candidate-audit.json"><allowed-hold>sourceAuditDecision needs-rewrite with publicationDecision needs-rewrite, non-empty correctionPath, and the exact source-freeze marker</allowed-hold><allowed-transition>During the active final catalog state, sourceAuditDecision needs-rewrite may transition to publicationDecision accepted only after the complete final catalog passes at current HEAD and emits exact nine-field final-mode evidence; live validation re-executes that receipt and cross-checks the published file, canonical duration, Markdown editor against technology and frozen profile, exact topic-row grammar, decision, topic mapping, and card evidence.</allowed-transition><invalid-state>task-ID gap, legacy inventory drift, digits-only duration, technology/editor mismatch, topic-row grammar drift, missing or multiple topic coverage, unpublished reference, malformed ARMY card, final catalog failure, missing execution verifier, wrong mode, ancestor instead of current HEAD, fabricated digest without execution, missing fields, free-form evidence, candidate/card drift, or immutable snapshot change</invalid-state></Army97PublicationDecisionGate>
+  <FlowChecks><VF-ARMY97-CANDIDATE-TO-CARD FLOW="DF-ARMY97-CANDIDATE-TO-CARD">publicationDecision accepted precedes card publication while sourceAuditDecision remains immutable.</VF-ARMY97-CANDIDATE-TO-CARD><VF-ARMY97-CARD-TO-TOPIC FLOW="DF-ARMY97-CARD-TO-TOPIC">Each card, topic projection, graph link, verification fact, and Beads mapping change together.</VF-ARMY97-CARD-TO-TOPIC><VF-ARMY97-TOPIC-TO-MASTER FLOW="DF-ARMY97-TOPIC-TO-MASTER">Each registered topic projects into exactly one master index with synchronized count and navigation evidence.</VF-ARMY97-TOPIC-TO-MASTER><VF-ARMY97-SIMULATION FLOW="DF-ARMY97-SIMULATION">Static simulation facts are derived from published cards and local checks.</VF-ARMY97-SIMULATION></FlowChecks>
 </VerificationPlan>

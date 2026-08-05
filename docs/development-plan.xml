@@ -1,220 +1,340 @@
-<DevelopmentPlan VERSION="0.2.0">
-  <ArchitectureNotes>
-    <objective>Provide a GitHub-first, self-contained frontend task knowledge base that an AI agent can extend without catalog or graph drift.</objective>
-    <non-goal>Do not build an executable learning platform, catalog generator, or mandatory repository runtime.</non-goal>
-    <risk-1>Task metadata is canonical while the student catalog and knowledge graph are derived, so all three artifacts must change atomically.</risk-1>
-    <risk-2>Structural verification cannot prove solution correctness; mentor content review remains a required gate.</risk-2>
-    <risk-3>Collapsed details prevent accidental spoilers but do not conceal solutions from raw Markdown or repository search.</risk-3>
-  </ArchitectureNotes>
-
+<DevelopmentPlan VERSION="1.0.0">
   <Modules>
-    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY" LAYER="0" ORDER="1" STATUS="partial">
-      <contract>
-        <purpose>Define the repository's authoring, delivery, synchronization, verification, and stop-condition rules.</purpose>
-        <inputs>
-          <param name="approved-design" type="DesignDecisions" />
-          <param name="repository-state" type="ArtifactSet" />
-        </inputs>
-        <outputs>
-          <param name="authoring-rules" type="AGENTS.md" />
-          <param name="shared-contracts" type="GRACEArtifacts" />
-        </outputs>
-        <errors>
-          <error code="GOVERNANCE_CONTRADICTION" />
-          <error code="UNRESOLVED_REFERENCE" />
-        </errors>
-      </contract>
-      <interface>
-        <export-authoringRules PURPOSE="Expose task authoring, delivery, tool-resolution, and synchronization requirements" />
-        <export-verificationContracts PURPOSE="Expose module, flow, and phase completion evidence" />
-      </interface>
-      <depends>none</depends>
-      <target>
-        <source>AGENTS.md; .gitignore; .agents/skills/grace-cli/SKILL.md; docs/*.xml</source>
-        <tests>V-M-GOVERNANCE direct artifact checks</tests>
-      </target>
-      <observability>
-        <evidence-anchor>M-GOVERNANCE / V-M-GOVERNANCE / XML roots and cross-references</evidence-anchor>
-        <critical-check>All shared artifacts are valid and mutually consistent.</critical-check>
-      </observability>
-      <verification-ref>V-M-GOVERNANCE</verification-ref>
-      <notes>
-        <note-1>The approved content architecture is recorded; this module remains partial until written-spec review closes Phase 1 and project-facing governance updates are implemented.</note-1>
-      </notes>
-    </M-GOVERNANCE>
-
-    <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY" LAYER="1" ORDER="1" STATUS="planned">
-      <contract>
-        <purpose>Define one canonical GitHub-rendered structure for every self-contained frontend task card.</purpose>
-        <inputs>
-          <param name="task-intent" type="MentorRequest" />
-          <param name="controlled-metadata" type="TaskMetadata" />
-        </inputs>
-        <outputs>
-          <param name="task-card-contract" type="MarkdownTemplate" />
-        </outputs>
-        <errors>
-          <error code="MISSING_REQUIRED_SECTION" />
-          <error code="INVALID_PROGRESSIVE_DISCLOSURE" />
-        </errors>
-      </contract>
-      <interface>
-        <type-TaskMetadata PURPOSE="Exact labels and values for technologies, topic, level, duration, skills, and prerequisites" />
-        <export-taskSchema PURPOSE="Expose mandatory metadata, visible sections, collapsed sections, and self-check structure" />
-      </interface>
-      <depends>M-GOVERNANCE</depends>
-      <target>
-        <source>templates/task-template.md</source>
-        <tests>V-M-TASK-TEMPLATE document-contract checks</tests>
-      </target>
-      <observability>
-        <evidence-anchor>metadata table; Условие; Критерии готовности; Теория; Подсказка N; Решение; Самопроверка</evidence-anchor>
-        <critical-check>All details blocks are closed by default and each hint has its own block.</critical-check>
-      </observability>
-      <verification-ref>V-M-TASK-TEMPLATE</verification-ref>
-      <notes>
-        <note-1>The template may contain fenced examples but introduces no runnable repository tooling.</note-1>
-      </notes>
-    </M-TASK-TEMPLATE>
-
-    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER" LAYER="2" ORDER="1" STATUS="planned">
-      <contract>
-        <purpose>Store self-contained task cards whose metadata is canonical for every derived navigation artifact.</purpose>
-        <inputs>
-          <param name="approved-task-content" type="TaskCardDraft" />
-          <param name="mentor-review" type="ContentReviewDecision" />
-        </inputs>
-        <outputs>
-          <param name="task-card" type="tasks/&lt;task-slug&gt;/README.md" />
-          <param name="canonical-metadata" type="TaskMetadata" />
-          <param name="review-evidence" type="BeadsIssueRecord" />
-        </outputs>
-        <errors>
-          <error code="AMBIGUOUS_METADATA" />
-          <error code="MISSING_PREREQUISITE" />
-          <error code="MISSING_ASSET" />
-          <error code="SOLUTION_REVIEW_REQUIRED" />
-        </errors>
-      </contract>
-      <interface>
-        <type-TaskMetadataSet PURPOSE="Collection of canonical task metadata records exposed to the catalog" />
-        <export-taskCard PURPOSE="Expose the complete student-facing exercise through GitHub" />
-      </interface>
-      <depends>M-TASK-TEMPLATE, M-GOVERNANCE</depends>
-      <target>
-        <source>tasks/&lt;task-slug&gt;/README.md; tasks/&lt;task-slug&gt;/assets/*</source>
-        <tests>V-M-TASK-LIBRARY per-card and cross-card checks</tests>
-      </target>
-      <observability>
-        <evidence-anchor>task slug; metadata values; prerequisite links; asset links; mentor-review status</evidence-anchor>
-        <critical-check>The task is self-contained and every referenced repository path resolves.</critical-check>
-      </observability>
-      <verification-ref>V-M-TASK-LIBRARY</verification-ref>
-      <notes>
-        <note-1>A slug is stable. Renaming it is a migration that must verify every inbound reference.</note-1>
-        <note-2>Collapsed solutions are spoiler-resistant, not access-controlled.</note-2>
-        <note-3>The Beads issue remains open until mentor solution review is recorded.</note-3>
-        <note-4>Each accepted task adds one export-&lt;task-slug&gt; public annotation under M-TASK-LIBRARY in the knowledge graph.</note-4>
-      </notes>
-    </M-TASK-LIBRARY>
-
-    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT" LAYER="3" ORDER="1" STATUS="planned">
-      <contract>
-        <purpose>Provide the GitHub repository entry point and a compact, agent-synchronized projection of task metadata.</purpose>
-        <inputs>
-          <param name="canonical-task-metadata" type="TaskMetadataSet" />
-        </inputs>
-        <outputs>
-          <param name="student-index" type="README.md" />
-        </outputs>
-        <errors>
-          <error code="TASK_MISSING_FROM_CATALOG" />
-          <error code="DUPLICATE_CATALOG_ENTRY" />
-          <error code="CATALOG_METADATA_DRIFT" />
-          <error code="BROKEN_TASK_LINK" />
-        </errors>
-      </contract>
-      <interface>
-        <export-studentIndex PURPOSE="Expose one compact canonical table in which every task appears once with all required metadata" />
-      </interface>
-      <depends>M-TASK-LIBRARY, M-GOVERNANCE</depends>
-      <target>
-        <source>README.md</source>
-        <tests>V-M-CATALOG full projection checks</tests>
-      </target>
-      <observability>
-        <evidence-anchor>catalog row; relative task link; projected metadata; unique task slug</evidence-anchor>
-        <critical-check>Every task appears exactly once and matches its canonical metadata.</critical-check>
-      </observability>
-      <verification-ref>V-M-CATALOG</verification-ref>
-      <notes>
-        <note-1>The catalog is maintained by an AI agent under contract, not generated by a script.</note-1>
-        <note-2>The catalog accepts an empty TaskMetadataSet so Phase 3 can create an explicit empty state before the first Phase 4 task wave.</note-2>
-      </notes>
-    </M-CATALOG>
+    <M-GOVERNANCE NAME="ProjectGovernance" TYPE="UTILITY"><purpose>Own branch, cleanup, authoring, stop, and full-gate rules.</purpose><inputs>Approved ARMY-97 design</inputs><outputs>AGENTS.md, .gitignore, shared contracts</outputs><verification-ref>V-M-GOVERNANCE</verification-ref></M-GOVERNANCE>
+    <M-TASK-TEMPLATE NAME="TaskTemplate" TYPE="UTILITY"><purpose>Define the immutable task-XXXX student-card and thematic-row contract.</purpose><inputs>Task intent, controlled technology/editor profile, metadata, and thematic mapping</inputs><outputs>ConciseStudentTaskCard with N минут duration and one exact ordinal-link-substantive-sentence-duration thematic row without prefix, suffix, or extra field</outputs><depends>M-GOVERNANCE</depends><verification-ref>V-M-TASK-TEMPLATE</verification-ref></M-TASK-TEMPLATE>
+    <M-TASK-VALIDATION NAME="TaskValidation" TYPE="UTILITY"><purpose>Own tracked immutable source-audit state, current published-catalog state, Markdown editor and collection-row synchronization, derived mutable publication state, and causally executed mode-bound exact-commit evidence.</purpose><inputs>Live Beads Army97CandidateRecord and Army97CardWorkItem metadata; current tasks and collections; docs/army-97-candidate-audit.json; committed catalog</inputs><outputs>Derived publication and catalog counts, canonical duration and editor/row verdicts, CardMigrationEvidence, executed wave or final FullCatalogGateEvidence, deterministic PASS or failure</outputs><depends>M-GOVERNANCE, M-TASK-TEMPLATE</depends><verification-ref>V-M-TASK-VALIDATION</verification-ref></M-TASK-VALIDATION>
+    <M-TASK-LIBRARY NAME="TaskLibrary" TYPE="DATA_LAYER"><purpose>Own tasks/task-XXXX cards.</purpose><inputs>candidate with publicationDecision accepted</inputs><outputs>self-contained student card</outputs><depends>M-TASK-VALIDATION, M-TASK-TEMPLATE</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-TASK-LIBRARY>
+    <M-CARD-TASK-0001 NAME="task-0001 — Модальное окно с актуальными обработчиками" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0001.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0001/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0001>
+    <M-CARD-TASK-0002 NAME="task-0002 — Счётчик без лишнего рендера" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0002.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0002/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0002>
+    <M-CARD-TASK-0003 NAME="task-0003 — Стабильная кнопка инкремента" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0003.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0003/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0003>
+    <M-CARD-TASK-0004 NAME="task-0004 — Асинхронное дерево с поиском" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0004.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0004/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0004>
+    <M-CARD-TASK-0005 NAME="task-0005 — Часы на interval и timeout" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0005.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0005/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0005>
+    <M-CARD-TASK-0006 NAME="task-0006 — Посты, комментарии и таймер" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0006.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0006/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0006>
+    <M-CARD-TASK-0007 NAME="task-0007 — Оптимизация дерева компонентов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0007.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0007/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0007>
+    <M-CARD-TASK-0008 NAME="task-0008 — Конвертер BTC с обновлением курсов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0008.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0008/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0008>
+    <M-CARD-TASK-0009 NAME="task-0009 — Счётчик с изменяемым шагом" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0009.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0009/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0009>
+    <M-CARD-TASK-0010 NAME="task-0010 — Ошибки асинхронного хука" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0010.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0010/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0010>
+    <M-CARD-TASK-0011 NAME="task-0011 — Управление модальным окном через render props" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0011.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0011/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0011>
+    <M-CARD-TASK-0012 NAME="task-0012 — Динамическая коллекция валидных полей" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0012.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0012/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0012>
+    <M-CARD-TASK-0013 NAME="task-0013 — Интерактивное дерево файлов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0013.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0013/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0013>
+    <M-CARD-TASK-0014 NAME="task-0014 — Актуальный счётчик после перехода offline" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0014.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0014/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0014>
+    <M-CARD-TASK-0015 NAME="task-0015 — Три timer после Promise" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0015.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0015/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0015>
+    <M-CARD-TASK-0016 NAME="task-0016 — Цепочка Promise между двумя timer" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0016.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0016/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0016>
+    <M-CARD-TASK-0017 NAME="task-0017 — Восстановление двух отклонённых Promise" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0017.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0017/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0017>
+    <M-CARD-TASK-0018 NAME="task-0018 — Вложенная регистрация then" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0018.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0018/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0018>
+    <M-CARD-TASK-0019 NAME="task-0019 — Параллельные ветки одного Promise" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0019.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0019/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0019>
+    <M-CARD-TASK-0020 NAME="task-0020 — Возобновление async после await" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0020.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0020/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0020>
+    <M-CARD-TASK-0021 NAME="task-0021 — Гонка двух Promise" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0021.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0021/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0021>
+    <M-CARD-TASK-0022 NAME="task-0022 — Ветки отклонённого Promise" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0022.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0022/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0022>
+    <M-CARD-TASK-0023 NAME="task-0023 — Цепочки с задержками и finally" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0023.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0023/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0023>
+    <M-CARD-TASK-0024 NAME="task-0024 — Значение после finally" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0024.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0024/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0024>
+    <M-CARD-TASK-0025 NAME="task-0025 — then и await в одной очереди" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0025.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0025/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0025>
+    <M-CARD-TASK-0026 NAME="task-0026 — Promise с задержкой" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0026.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0026/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0026>
+    <M-CARD-TASK-0027 NAME="task-0027 — Агрегаторы Promise в порядке входа" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0027.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0027/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0027>
+    <M-CARD-TASK-0028 NAME="task-0028 — Параллельная загрузка записей" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0028.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0028/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0028>
+    <M-CARD-TASK-0029 NAME="task-0029 — Повторный запрос с лимитом попыток" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0029.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0029/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0029>
+    <M-CARD-TASK-0030 NAME="task-0030 — Замена prototype после создания объекта" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0030.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0030/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0030>
+    <M-CARD-TASK-0031 NAME="task-0031 — Привязка отсоединённого метода" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0031.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0031/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0031>
+    <M-CARD-TASK-0032 NAME="task-0032 — Повторная привязка функции" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0032.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0032/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0032>
+    <M-CARD-TASK-0033 NAME="task-0033 — Опечатка во вложенном свойстве" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0033.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0033/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0033>
+    <M-CARD-TASK-0034 NAME="task-0034 — Обычные и стрелочные функции с this" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0034.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0034/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0034>
+    <M-CARD-TASK-0035 NAME="task-0035 — Собственные и унаследованные свойства" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0035.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0035/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0035>
+    <M-CARD-TASK-0036 NAME="task-0036 — Общие и собственные поля prototype" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0036.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0036/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0036>
+    <M-CARD-TASK-0037 NAME="task-0037 — Стоимость проживания по дням недели" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0037.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0037/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0037>
+    <M-CARD-TASK-0038 NAME="task-0038 — Типизированный выбор полей объекта" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0038.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0038/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0038>
+    <M-CARD-TASK-0039 NAME="task-0039 — Свой map и метод массива" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0039.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0039/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0039>
+    <M-CARD-TASK-0040 NAME="task-0040 — Группировка и сводка по типу" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0040.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0040/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0040>
+    <M-CARD-TASK-0041 NAME="task-0041 — Вложенный индекс записей" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0041.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0041/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0041>
+    <M-CARD-TASK-0042 NAME="task-0042 — Сводка товаров по материалу" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0042.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0042/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0042>
+    <M-CARD-TASK-0043 NAME="task-0043 — Операции по годам в хронологическом порядке" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0043.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0043/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0043>
+    <M-CARD-TASK-0044 NAME="task-0044 — Объект из ключей и значений" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0044.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0044/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0044>
+    <M-CARD-TASK-0045 NAME="task-0045 — Разделение игроков по командам" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0045.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0045/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0045>
+    <M-CARD-TASK-0046 NAME="task-0046 — Выдача купюр с ограниченным запасом" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0046.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0046/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0046>
+    <M-CARD-TASK-0047 NAME="task-0047 — Замыкания и переназначенные значения" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0047.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0047/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0047>
+    <M-CARD-TASK-0048 NAME="task-0048 — События с on, off и emit" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0048.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0048/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0048>
+    <M-CARD-TASK-0049 NAME="task-0049 — Небольшой store для React" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0049.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0049/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0049>
+    <M-CARD-TASK-0050 NAME="task-0050 — Сводка данных для страницы постов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0050.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0050/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0050>
+    <M-CARD-TASK-0051 NAME="task-0051 — Очередь с ограничением параллельности" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0051.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0051/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0051>
+    <M-CARD-TASK-0052 NAME="task-0052 — Шпион для метода без подмены поведения" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0052.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0052/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0052>
+    <M-CARD-TASK-0053 NAME="task-0053 — Общие свободные интервалы" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0053.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0053/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0053>
+    <M-CARD-TASK-0054 NAME="task-0054 — Пиковое число зрителей" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0054.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0054/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0054>
+    <M-CARD-TASK-0055 NAME="task-0055 — Максимальные пути ориентированного графа" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0055.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0055/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0055>
+    <M-CARD-TASK-0056 NAME="task-0056 — Кратчайший маршрут в графе" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0056.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0056/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0056>
+    <M-CARD-TASK-0057 NAME="task-0057 — Типизированная интеграция браузерного скрипта" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0057.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0057/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0057>
+    <M-CARD-TASK-0058 NAME="task-0058 — Загрузка скрипта через Promise" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0058.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0058/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0058>
+    <M-CARD-TASK-0059 NAME="task-0059 — Поллинг статуса ресурса" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0059.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0059/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0059>
+    <M-CARD-TASK-0060 NAME="task-0060 — Мемоизация по кортежу аргументов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0060.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0060/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0060>
+    <M-CARD-TASK-0061 NAME="task-0061 — Сумма с прямым и каррированным вызовом" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0061.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0061/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0061>
+    <M-CARD-TASK-0062 NAME="task-0062 — Сумма с цепочкой каррированных вызовов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0062.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0062/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0062>
+    <M-CARD-TASK-0063 NAME="task-0063 — Игра «Память» с перезапуском" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0063.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0063/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0063>
+    <M-CARD-TASK-0064 NAME="task-0064 — Калькулятор в обратной польской записи" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0064.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0064/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0064>
+    <M-CARD-TASK-0065 NAME="task-0065 — Снимок и актуальное значение в замыкании" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0065.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0065/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0065>
+    <M-CARD-TASK-0066 NAME="task-0066 — Актуальное сообщение в замыкании" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0066.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0066/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0066>
+    <M-CARD-TASK-0067 NAME="task-0067 — Индексы DOM-обработчиков в цикле" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0067.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0067/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0067>
+    <M-CARD-TASK-0068 NAME="task-0068 — var в отложенных callback" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0068.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0068/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0068>
+    <M-CARD-TASK-0069 NAME="task-0069 — Числовые функции и каррированное сложение" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0069.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0069/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0069>
+    <M-CARD-TASK-0070 NAME="task-0070 — Переприсваивание const внутри IIFE" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0070.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0070/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0070>
+    <M-CARD-TASK-0071 NAME="task-0071 — TDZ и затенение переменной" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0071.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0071/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0071>
+    <M-CARD-TASK-0072 NAME="task-0072 — TDZ переменной цикла for-of" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0072.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0072/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0072>
+    <M-CARD-TASK-0073 NAME="task-0073 — Плоский объект с ключами-путями" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0073.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0073/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0073>
+    <M-CARD-TASK-0074 NAME="task-0074 — Сумма числовых листьев" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0074.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0074/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0074>
+    <M-CARD-TASK-0075 NAME="task-0075 — Распаковка типизированных значений" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0075.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0075/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0075>
+    <M-CARD-TASK-0076 NAME="task-0076 — Максимум на самой глубокой вложенности" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0076.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0076/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0076>
+    <M-CARD-TASK-0077 NAME="task-0077 — Рекурсивное раскрытие объекта" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0077.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0077/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0077>
+    <M-CARD-TASK-0078 NAME="task-0078 — Инверсия двоичных листьев без рекурсии" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0078.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0078/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0078>
+    <M-CARD-TASK-0079 NAME="task-0079 — Глубокое клонирование данных" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0079.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0079/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0079>
+    <M-CARD-TASK-0080 NAME="task-0080 — Чтение значения по точечному пути" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0080.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0080/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0080>
+    <M-CARD-TASK-0081 NAME="task-0081 — Итеративный вывод дерева" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0081.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0081/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0081>
+    <M-CARD-TASK-0082 NAME="task-0082 — Слияние двух отсортированных массивов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0082.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0082/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0082>
+    <M-CARD-TASK-0083 NAME="task-0083 — Единственное значение среди пар" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0083.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0083/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0083>
+    <M-CARD-TASK-0084 NAME="task-0084 — Индексы пары с заданной суммой" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0084.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0084/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0084>
+    <M-CARD-TASK-0085 NAME="task-0085 — Проверка двух строк на анаграмму" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0085.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0085/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0085>
+    <M-CARD-TASK-0086 NAME="task-0086 — Группировка анаграмм в порядке входа" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0086.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0086/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0086>
+    <M-CARD-TASK-0087 NAME="task-0087 — Вычитание значений одного массива из другого" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0087.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0087/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0087>
+    <M-CARD-TASK-0088 NAME="task-0088 — Симметрическая разность отсортированных массивов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0088.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0088/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0088>
+    <M-CARD-TASK-0089 NAME="task-0089 — Проверка вложенных скобок" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0089.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0089/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0089>
+    <M-CARD-TASK-0090 NAME="task-0090 — Сжатие последовательных числовых диапазонов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0090.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0090/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0090>
+    <M-CARD-TASK-0091 NAME="task-0091 — Идентичность двоичных деревьев" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0091.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0091/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0091>
+    <M-CARD-TASK-0092 NAME="task-0092 — Односвязный список" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0092.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0092/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0092>
+    <M-CARD-TASK-0093 NAME="task-0093 — Слияние отсортированных списков" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0093.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0093/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0093>
+    <M-CARD-TASK-0094 NAME="task-0094 — Сложение чисел в связанных списках" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0094.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0094/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0094>
+    <M-CARD-TASK-0095 NAME="task-0095 — Комбинации с заданной суммой" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0095.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0095/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0095>
+    <M-CARD-TASK-0096 NAME="task-0096 — Подсчёт цветных областей" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0096.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0096/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0096>
+    <M-CARD-TASK-0097 NAME="task-0097 — Разворот каждого второго слова" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0097.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0097/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0097>
+    <M-CARD-TASK-0098 NAME="task-0098 — Поиск строк с подстрокой" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0098.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0098/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0098>
+    <M-CARD-TASK-0099 NAME="task-0099 — Заглавная буква в каждом слове" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0099.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0099/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0099>
+    <M-CARD-TASK-0100 NAME="task-0100 — Упорядоченная подпоследовательность" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0100.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0100/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0100>
+    <M-CARD-TASK-0101 NAME="task-0101 — Собственная реализация Partial" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0101.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0101/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0101>
+    <M-CARD-TASK-0102 NAME="task-0102 — Объединение ключей объекта" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0102.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0102/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0102>
+    <M-CARD-TASK-0103 NAME="task-0103 — Собственная реализация Pick" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0103.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0103/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0103>
+    <M-CARD-TASK-0104 NAME="task-0104 — Пути к строковым листьям" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0104.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0104/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0104>
+    <M-CARD-TASK-0105 NAME="task-0105 — Ключи по разрешаемому типу" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0105.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0105/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0105>
+    <M-CARD-TASK-0106 NAME="task-0106 — Типизированное чтение свойства" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0106.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0106/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0106>
+    <M-CARD-TASK-0107 NAME="task-0107 — Каскад равных классов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0107.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0107/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0107>
+    <M-CARD-TASK-0108 NAME="task-0108 — Разбор CSS-селекторов" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0108.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0108/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0108>
+    <M-CARD-TASK-0109 NAME="task-0109 — Сравнение десятичных дробей" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0109.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0109/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0109>
+    <M-CARD-TASK-0110 NAME="task-0110 — Граница безопасных целых чисел" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0110.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0110/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0110>
+    <M-CARD-TASK-0111 NAME="task-0111 — NaN и сравнение с самим собой" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0111.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0111/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0111>
+    <M-CARD-TASK-0112 NAME="task-0112 — Пустые Math.max и Math.min" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0112.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0112/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0112>
+    <M-CARD-TASK-0113 NAME="task-0113 — parseInt как callback map" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0113.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0113/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0113>
+    <M-CARD-TASK-0114 NAME="task-0114 — Сложение пустых массива и объекта" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0114.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0114/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0114>
+    <M-CARD-TASK-0115 NAME="task-0115 — Цепочка сравнений" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0115.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0115/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0115>
+    <M-CARD-TASK-0116 NAME="task-0116 — Приведение объекта в трёх сравнениях" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0116.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0116/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0116>
+    <M-CARD-TASK-0117 NAME="task-0117 — Приоритет &amp;&amp; и || с коротким замыканием" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0117.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0117/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0117>
+    <M-CARD-TASK-0118 NAME="task-0118 — Объекты как ключи обычного объекта" TYPE="DATA_LAYER"><purpose>Own the immutable visible-ID student card task-0118.</purpose><inputs>Accepted synchronized candidate/card metadata</inputs><outputs>tasks/task-0118/README.md</outputs><depends>M-TASK-LIBRARY, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-CARD-TASK-0118>
+    <M-CATALOG NAME="StudentCatalog" TYPE="ENTRY_POINT"><purpose>Own four master indexes, twenty-three topic drills, real-work, and simulation projections.</purpose><inputs>published cards with one frozen topic owner</inputs><outputs>master/topic collections and student hub</outputs><depends>M-TASK-LIBRARY</depends><verification-ref>V-M-CATALOG</verification-ref></M-CATALOG>
+    <M-COLLECTION-MASTER-JAVASCRIPT NAME="JavaScriptMasterIndex" TYPE="ENTRY_POINT"><purpose>List only the registered JavaScript topic drills with exact task counts.</purpose><inputs>Registered topic modules and current topic counts</inputs><outputs>collections/javascript/README.md</outputs><depends>M-CATALOG</depends><verification-ref>V-M-COLLECTION-MASTER-JAVASCRIPT</verification-ref></M-COLLECTION-MASTER-JAVASCRIPT>
+    <M-COLLECTION-MASTER-TYPESCRIPT NAME="TypeScriptMasterIndex" TYPE="ENTRY_POINT"><purpose>List only the registered TypeScript topic drills with exact task counts.</purpose><inputs>Registered topic modules and current topic counts</inputs><outputs>collections/typescript/README.md</outputs><depends>M-CATALOG</depends><verification-ref>V-M-COLLECTION-MASTER-TYPESCRIPT</verification-ref></M-COLLECTION-MASTER-TYPESCRIPT>
+    <M-COLLECTION-MASTER-REACT NAME="ReactMasterIndex" TYPE="ENTRY_POINT"><purpose>List only the registered React topic drills with exact task counts.</purpose><inputs>Registered topic modules and current topic counts</inputs><outputs>collections/react/README.md</outputs><depends>M-CATALOG</depends><verification-ref>V-M-COLLECTION-MASTER-REACT</verification-ref></M-COLLECTION-MASTER-REACT>
+    <M-COLLECTION-MASTER-HTML-CSS NAME="HTML/CSSMasterIndex" TYPE="ENTRY_POINT"><purpose>List only the registered HTML/CSS topic drills with exact task counts.</purpose><inputs>Registered topic modules and current topic counts</inputs><outputs>collections/html-css/README.md</outputs><depends>M-CATALOG</depends><verification-ref>V-M-COLLECTION-MASTER-HTML-CSS</verification-ref></M-COLLECTION-MASTER-HTML-CSS>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-EVENT-LOOP NAME="JavaScript — Event loop и очереди задач" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 7 immutable cards in Event loop и очереди задач.</purpose><inputs>task-0015 task-0016 task-0018 task-0019 task-0020 task-0023 task-0025</inputs><outputs>collections/javascript/event-loop/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-EVENT-LOOP</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-EVENT-LOOP>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-PROMISES-AND-ASYNC NAME="JavaScript — Promise и async/await" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 10 immutable cards in Promise и async/await.</purpose><inputs>task-0017 task-0021 task-0022 task-0024 task-0026 task-0027 task-0028 task-0029 task-0051 task-0059</inputs><outputs>collections/javascript/promises-and-async/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-PROMISES-AND-ASYNC</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-PROMISES-AND-ASYNC>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-PROTOTYPES-INHERITANCE-AND-THIS NAME="JavaScript — Прототипы, наследование и `this`" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 6 immutable cards in Прототипы, наследование и `this`.</purpose><inputs>task-0030 task-0031 task-0032 task-0034 task-0035 task-0036</inputs><outputs>collections/javascript/prototypes-inheritance-and-this/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-PROTOTYPES-INHERITANCE-AND-THIS</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-PROTOTYPES-INHERITANCE-AND-THIS>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-FUNCTIONS-CLOSURES-AND-SCOPE NAME="JavaScript — Функции, замыкания и область видимости" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 14 immutable cards in Функции, замыкания и область видимости.</purpose><inputs>task-0039 task-0047 task-0052 task-0060 task-0061 task-0062 task-0065 task-0066 task-0068 task-0069 task-0070 task-0071 task-0072 task-0113</inputs><outputs>collections/javascript/functions-closures-and-scope/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-FUNCTIONS-CLOSURES-AND-SCOPE</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-FUNCTIONS-CLOSURES-AND-SCOPE>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-OBJECTS-AND-COLLECTIONS NAME="JavaScript — Объекты и коллекции" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 9 immutable cards in Объекты и коллекции.</purpose><inputs>task-0033 task-0040 task-0041 task-0042 task-0043 task-0044 task-0045 task-0050 task-0118</inputs><outputs>collections/javascript/objects-and-collections/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-OBJECTS-AND-COLLECTIONS</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-OBJECTS-AND-COLLECTIONS>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-DOM-AND-EVENTS NAME="JavaScript — DOM и события" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 3 immutable cards in DOM и события.</purpose><inputs>task-0048 task-0058 task-0067</inputs><outputs>collections/javascript/dom-and-events/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-DOM-AND-EVENTS</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-DOM-AND-EVENTS>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-DATES-AND-TIME-INTERVALS NAME="JavaScript — Даты и временные интервалы" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 3 immutable cards in Даты и временные интервалы.</purpose><inputs>task-0037 task-0053 task-0054</inputs><outputs>collections/javascript/dates-and-time-intervals/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-DATES-AND-TIME-INTERVALS</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-DATES-AND-TIME-INTERVALS>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-ARRAYS-SEARCH-AND-SORTING NAME="JavaScript — Массивы, поиск и сортировка" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 9 immutable cards in Массивы, поиск и сортировка.</purpose><inputs>task-0046 task-0082 task-0083 task-0084 task-0087 task-0088 task-0090 task-0095 task-0100</inputs><outputs>collections/javascript/arrays-search-and-sorting/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-ARRAYS-SEARCH-AND-SORTING</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-ARRAYS-SEARCH-AND-SORTING>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-STRINGS NAME="JavaScript — Строки" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 5 immutable cards in Строки.</purpose><inputs>task-0085 task-0086 task-0097 task-0098 task-0099</inputs><outputs>collections/javascript/strings/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-STRINGS</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-STRINGS>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-TREES-AND-RECURSION NAME="JavaScript — Деревья и рекурсия" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 11 immutable cards in Деревья и рекурсия.</purpose><inputs>task-0073 task-0074 task-0075 task-0076 task-0077 task-0078 task-0079 task-0080 task-0081 task-0091 task-0096</inputs><outputs>collections/javascript/trees-and-recursion/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-TREES-AND-RECURSION</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-TREES-AND-RECURSION>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-GRAPHS NAME="JavaScript — Графы" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 2 immutable cards in Графы.</purpose><inputs>task-0055 task-0056</inputs><outputs>collections/javascript/graphs/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-GRAPHS</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-GRAPHS>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-LINKED-LISTS-AND-STACK NAME="JavaScript — Связные списки и стек" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 5 immutable cards in Связные списки и стек.</purpose><inputs>task-0064 task-0089 task-0092 task-0093 task-0094</inputs><outputs>collections/javascript/linked-lists-and-stack/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-LINKED-LISTS-AND-STACK</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-LINKED-LISTS-AND-STACK>
+    <M-COLLECTION-TOPIC-JAVASCRIPT-NUMBERS-TYPES-AND-OPERATORS NAME="JavaScript — Числа, типы и операторы" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 8 immutable cards in Числа, типы и операторы.</purpose><inputs>task-0109 task-0110 task-0111 task-0112 task-0114 task-0115 task-0116 task-0117</inputs><outputs>collections/javascript/numbers-types-and-operators/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-JAVASCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-JAVASCRIPT-NUMBERS-TYPES-AND-OPERATORS</verification-ref></M-COLLECTION-TOPIC-JAVASCRIPT-NUMBERS-TYPES-AND-OPERATORS>
+    <M-COLLECTION-TOPIC-TYPESCRIPT-GENERICS-AND-OBJECT-KEYS NAME="TypeScript — Дженерики и ключи объектов" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 3 immutable cards in Дженерики и ключи объектов.</purpose><inputs>task-0038 task-0102 task-0106</inputs><outputs>collections/typescript/generics-and-object-keys/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-TYPESCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-TYPESCRIPT-GENERICS-AND-OBJECT-KEYS</verification-ref></M-COLLECTION-TOPIC-TYPESCRIPT-GENERICS-AND-OBJECT-KEYS>
+    <M-COLLECTION-TOPIC-TYPESCRIPT-MAPPED-AND-CONDITIONAL-TYPES NAME="TypeScript — Mapped и conditional types" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 3 immutable cards in Mapped и conditional types.</purpose><inputs>task-0101 task-0103 task-0105</inputs><outputs>collections/typescript/mapped-and-conditional-types/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-TYPESCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-TYPESCRIPT-MAPPED-AND-CONDITIONAL-TYPES</verification-ref></M-COLLECTION-TOPIC-TYPESCRIPT-MAPPED-AND-CONDITIONAL-TYPES>
+    <M-COLLECTION-TOPIC-TYPESCRIPT-RECURSIVE-TYPES NAME="TypeScript — Рекурсивные типы" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 1 immutable cards in Рекурсивные типы.</purpose><inputs>task-0104</inputs><outputs>collections/typescript/recursive-types/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-TYPESCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-TYPESCRIPT-RECURSIVE-TYPES</verification-ref></M-COLLECTION-TOPIC-TYPESCRIPT-RECURSIVE-TYPES>
+    <M-COLLECTION-TOPIC-TYPESCRIPT-INTEGRATION-TYPING NAME="TypeScript — Типизация интеграций" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 1 immutable cards in Типизация интеграций.</purpose><inputs>task-0057</inputs><outputs>collections/typescript/integration-typing/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-TYPESCRIPT</depends><verification-ref>V-M-COLLECTION-TOPIC-TYPESCRIPT-INTEGRATION-TYPING</verification-ref></M-COLLECTION-TOPIC-TYPESCRIPT-INTEGRATION-TYPING>
+    <M-COLLECTION-TOPIC-REACT-STATE-AND-EVENT-HANDLERS NAME="React — Состояние и обработчики событий" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 2 immutable cards in Состояние и обработчики событий.</purpose><inputs>task-0009 task-0063</inputs><outputs>collections/react/state-and-event-handlers/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-REACT</depends><verification-ref>V-M-COLLECTION-TOPIC-REACT-STATE-AND-EVENT-HANDLERS</verification-ref></M-COLLECTION-TOPIC-REACT-STATE-AND-EVENT-HANDLERS>
+    <M-COLLECTION-TOPIC-REACT-EFFECTS-TIMERS-AND-CLEANUP NAME="React — Эффекты, таймеры и очистка" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 3 immutable cards in Эффекты, таймеры и очистка.</purpose><inputs>task-0001 task-0005 task-0014</inputs><outputs>collections/react/effects-timers-and-cleanup/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-REACT</depends><verification-ref>V-M-COLLECTION-TOPIC-REACT-EFFECTS-TIMERS-AND-CLEANUP</verification-ref></M-COLLECTION-TOPIC-REACT-EFFECTS-TIMERS-AND-CLEANUP>
+    <M-COLLECTION-TOPIC-REACT-RENDERING-AND-MEMOIZATION NAME="React — Рендеринг и мемоизация" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 3 immutable cards in Рендеринг и мемоизация.</purpose><inputs>task-0002 task-0003 task-0007</inputs><outputs>collections/react/rendering-and-memoization/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-REACT</depends><verification-ref>V-M-COLLECTION-TOPIC-REACT-RENDERING-AND-MEMOIZATION</verification-ref></M-COLLECTION-TOPIC-REACT-RENDERING-AND-MEMOIZATION>
+    <M-COLLECTION-TOPIC-REACT-ASYNC-DATA-AND-UI-STATES NAME="React — Асинхронные данные и состояния интерфейса" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 4 immutable cards in Асинхронные данные и состояния интерфейса.</purpose><inputs>task-0004 task-0006 task-0008 task-0010</inputs><outputs>collections/react/async-data-and-ui-states/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-REACT</depends><verification-ref>V-M-COLLECTION-TOPIC-REACT-ASYNC-DATA-AND-UI-STATES</verification-ref></M-COLLECTION-TOPIC-REACT-ASYNC-DATA-AND-UI-STATES>
+    <M-COLLECTION-TOPIC-REACT-COMPONENT-COMPOSITION-AND-STATE-MANAGEMENT NAME="React — Композиция компонентов и управление состоянием" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 4 immutable cards in Композиция компонентов и управление состоянием.</purpose><inputs>task-0011 task-0012 task-0013 task-0049</inputs><outputs>collections/react/component-composition-and-state-management/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-REACT</depends><verification-ref>V-M-COLLECTION-TOPIC-REACT-COMPONENT-COMPOSITION-AND-STATE-MANAGEMENT</verification-ref></M-COLLECTION-TOPIC-REACT-COMPONENT-COMPOSITION-AND-STATE-MANAGEMENT>
+    <M-COLLECTION-TOPIC-HTML-CSS-CASCADE-AND-SELECTORS NAME="HTML/CSS — Каскад и селекторы" TYPE="DATA_LAYER"><purpose>Own the sole thematic projection for 2 immutable cards in Каскад и селекторы.</purpose><inputs>task-0107 task-0108</inputs><outputs>collections/html-css/cascade-and-selectors/README.md</outputs><depends>M-TASK-LIBRARY, M-COLLECTION-MASTER-HTML-CSS</depends><verification-ref>V-M-COLLECTION-TOPIC-HTML-CSS-CASCADE-AND-SELECTORS</verification-ref></M-COLLECTION-TOPIC-HTML-CSS-CASCADE-AND-SELECTORS>
+    <M-ARMY-97-WAVE-008 NAME="Army97Wave008" TYPE="DATA_LAYER"><purpose>Publish the synchronized task-0071 through task-0080 JavaScript wave.</purpose><inputs>frozen Wave 008 candidate records</inputs><outputs>ten cards, registered topic projections, and Wave 008 evidence</outputs><depends>M-TASK-LIBRARY, M-CATALOG, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-ARMY-97-WAVE-008>
+    <M-ARMY-97-WAVE-009 NAME="Army97Wave009" TYPE="DATA_LAYER"><purpose>Publish synchronized task-0081 through task-0090 JavaScript cards with completed Wave 009 publication transitions and final evidence.</purpose><inputs>frozen Wave 009 candidate records and correction paths</inputs><outputs>ten published cards, registered topic projections, and current final receipt verification</outputs><depends>M-TASK-LIBRARY, M-CATALOG, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-ARMY-97-WAVE-009>
+    <M-ARMY-97-WAVE-010 NAME="Army97Wave010" TYPE="DATA_LAYER"><purpose>Publish synchronized task-0091 through task-0100 JavaScript cards with completed Wave 010 publication transitions and final evidence.</purpose><inputs>frozen Wave 010 candidate records and correction paths</inputs><outputs>ten published cards, registered topic projections, and current final receipt verification</outputs><depends>M-TASK-LIBRARY, M-CATALOG, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-ARMY-97-WAVE-010>
+    <M-ARMY-97-WAVE-011 NAME="Army97Wave011" TYPE="DATA_LAYER" STATUS="published"><purpose>Publish synchronized task-0101 through task-0110 TypeScript, HTML/CSS, and JavaScript cards with completed Wave 011 publication transitions and final evidence.</purpose><inputs>frozen Wave 011 candidate records and correction paths</inputs><outputs>ten published cards, registered topic projections, and current final receipt verification</outputs><depends>M-TASK-LIBRARY, M-CATALOG, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-ARMY-97-WAVE-011>
+    <M-ARMY-97-WAVE-012 NAME="Army97Wave012" TYPE="DATA_LAYER" STATUS="published"><purpose>Publish synchronized task-0111 through task-0118 JavaScript prediction cards with completed Wave 012 publication transition and final evidence.</purpose><inputs>frozen Wave 012 candidate records and the task-0114 coercion correction path</inputs><outputs>eight published cards, registered topic projections, and current final receipt verification</outputs><depends>M-TASK-LIBRARY, M-CATALOG, M-TASK-VALIDATION</depends><verification-ref>V-M-TASK-LIBRARY</verification-ref></M-ARMY-97-WAVE-012>
   </Modules>
-
-  <DataFlow>
-    <DF-ADD-TASK NAME="AddTask" TRIGGER="Mentor asks an AI agent to add a task">
-      <step-1>The agent reads M-GOVERNANCE and M-TASK-TEMPLATE.</step-1>
-      <step-2>The agent resolves mandatory metadata and stops if classification is ambiguous.</step-2>
-      <step-3>The agent creates tasks/&lt;task-slug&gt;/README.md and optional colocated assets.</step-3>
-      <step-4>The agent synchronizes README.md and adds one export-&lt;task-slug&gt; annotation to M-TASK-LIBRARY in docs/knowledge-graph.xml.</step-4>
-      <step-5>The agent runs V-M-TASK-LIBRARY, V-M-CATALOG, and V-M-GOVERNANCE checks.</step-5>
-      <step-6>The mentor reviews solution correctness before content acceptance.</step-6>
-      <evidence>Task path, catalog row, graph entry, link-resolution results, document anchors, and mentor-review status.</evidence>
-    </DF-ADD-TASK>
-
-    <DF-STUDY-TASK NAME="StudyTask" TRIGGER="Student opens the repository on GitHub">
-      <step-1>The student chooses a task from README.md using visible metadata.</step-1>
-      <step-2>GitHub follows a relative link to the task card.</step-2>
-      <step-3>The student reads the visible goal, prompt, starter code, and readiness criteria.</step-3>
-      <step-4>The student optionally opens theory and then reveals hints one at a time.</step-4>
-      <step-5>The student opens the solution after attempting the task and completes self-check questions.</step-5>
-      <evidence>Working relative link, matching metadata, visible required sections, and closed progressive-disclosure blocks.</evidence>
-    </DF-STUDY-TASK>
-
-    <DF-UPDATE-TASK NAME="UpdateTask" TRIGGER="Agent changes task content, metadata, path, prerequisites, or assets">
-      <step-1>The agent treats the task card metadata and stable slug as the current canonical record.</step-1>
-      <step-2>The agent updates the task content and identifies every derived artifact and inbound reference.</step-2>
-      <step-3>The agent synchronizes catalog placement and knowledge-graph facts.</step-3>
-      <step-4>The agent checks uniqueness, metadata equality, prerequisites, assets, and relative links.</step-4>
-      <step-5>A slug change uses a dedicated migration path and verifies all inbound references.</step-5>
-      <evidence>Before/after metadata, unique catalog projection, resolved links, graph delta, and migration evidence when applicable.</evidence>
-    </DF-UPDATE-TASK>
-  </DataFlow>
-
-  <ImplementationOrder>
-    <Phase-1 name="Governance" status="in-progress">
-      <goal>Record approved requirements, technology boundaries, module contracts, data flows, verification references, and stop conditions.</goal>
-      <step-1 module="M-GOVERNANCE" status="in-progress" verification="V-M-GOVERNANCE">Finalize and review all GRACE planning artifacts.</step-1>
-    </Phase-1>
-    <Phase-2 name="TaskContract" status="pending">
-      <goal>Create the canonical GitHub-first task structure before any task content is added.</goal>
-      <step-1 module="M-TASK-TEMPLATE" status="pending" verification="V-M-TASK-TEMPLATE">Create and render-review templates/task-template.md.</step-1>
-    </Phase-2>
-    <Phase-3 name="StudentEntryPoint" status="pending">
-      <goal>Create an understandable repository landing page and an explicit empty catalog state.</goal>
-      <step-1 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Create README.md with navigation rules and the catalog projection contract.</step-1>
-    </Phase-3>
-    <Phase-4 name="TaskWaves" status="pending">
-      <goal>Add mentor-approved tasks through atomic task, catalog, graph, and evidence updates.</goal>
-      <step-1 module="M-TASK-LIBRARY" status="pending" verification="V-M-TASK-LIBRARY">Add one task card from the canonical template.</step-1>
-      <step-2 module="M-CATALOG" status="pending" verification="V-M-CATALOG">Synchronize the student catalog for the task wave.</step-2>
-      <step-3 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Apply graph and verification deltas and record mentor-review status in the Beads issue.</step-3>
-    </Phase-4>
-    <Phase-5 name="ScaleReview" status="pending">
-      <goal>Reassess controlled vocabularies and deterministic validation only after observed catalog size or drift justifies added tooling.</goal>
-      <step-1 module="M-GOVERNANCE" status="pending" verification="V-M-GOVERNANCE">Review drift evidence and explicitly approve or reject automation.</step-1>
-    </Phase-5>
-  </ImplementationOrder>
-
-  <ExecutionPolicy>
-    <default-profile>balanced</default-profile>
-    <controller-owns>docs/development-plan.xml, docs/knowledge-graph.xml, docs/verification-plan.xml, and catalog synchronization decisions</controller-owns>
-    <worker-owns>Only the explicitly approved task card, colocated assets, and packet-scoped derived updates</worker-owns>
-    <max-fix-attempts-per-step>2</max-fix-attempts-per-step>
-    <replan-trigger>Ambiguous metadata, missing prerequisite or asset, unexpected GitHub rendering, contradictory task and catalog facts, unreviewed solution logic, or any requirement for new runtime tooling.</replan-trigger>
-    <checkpoint-requirement>Every step must leave assumptions, artifacts changed, checks run, observed evidence, mentor-review status, and next action.</checkpoint-requirement>
-  </ExecutionPolicy>
+  <DataFlows><DF-ARMY97-CANDIDATE-TO-CARD NAME="Candidate to card">M-TASK-VALIDATION -&gt; M-TASK-LIBRARY</DF-ARMY97-CANDIDATE-TO-CARD><DF-ARMY97-CARD-TO-TOPIC NAME="Card to topic">Each M-CARD-TASK-XXXX -&gt; exactly one M-COLLECTION-TOPIC-*</DF-ARMY97-CARD-TO-TOPIC><DF-ARMY97-TOPIC-TO-MASTER NAME="Topic to master">Each M-COLLECTION-TOPIC-* -&gt; exactly one M-COLLECTION-MASTER-*</DF-ARMY97-TOPIC-TO-MASTER><DF-ARMY97-SIMULATION NAME="Simulation">M-CATALOG validates each three-card simulation against three distinct M-COLLECTION-TOPIC-* owners</DF-ARMY97-SIMULATION></DataFlows>
+  <Army97CandidateRegistry>
+    <annotations candidate-register-size="118" source-audit-revision="round-1" source-audit-accepted-count="56" source-audit-needs-rewrite-count="62" source-audit-rejected-count="0" source-audit-duplicate-count="0" exact-duplicate-group-count="0" distinct-target-count="118"/>
+    <source-audit-round-1 INITIAL-RECORDED-ACCEPTED="74" INITIAL-RECORDED-NEEDS-REWRITE="44" RECLASSIFIED="candidate-014 candidate-017 candidate-027 candidate-030 candidate-031 candidate-034 candidate-043 candidate-056 candidate-068 candidate-074 candidate-076 candidate-080 candidate-081 candidate-086 candidate-097 candidate-098 candidate-105 candidate-110" CORRECTED-WITHOUT-RECLASSIFICATION="candidate-107"/>
+    <tracked-source-audit-manifest PATH="docs/army-97-candidate-audit.json" SHA256="4732ae71cd1f76e50b80cf432ab40cf5404b704363ed5df3be64ffaa095d4a15"/>
+    <tracked-publication-validator PATH="docs/scripts/validate-army-97-beads.mjs" CATALOG-GATE="docs/scripts/validate-army-97-catalog.sh" EVIDENCE-RUNNER="docs/scripts/run-army-97-catalog-gate.mjs" NEGATIVE-PROBES="docs/scripts/validate-army-97-catalog.test.mjs docs/scripts/validate-army-97-beads.test.mjs docs/scripts/run-army-97-catalog-gate.test.mjs"/>
+    <publication-decision-model MUTABLE="true">
+      <accepted-source-state FROM="accepted" TO="accepted" EVIDENCE="exact source-audit freeze marker"/>
+      <rewrite-transition FROM="needs-rewrite" TO="accepted" EVIDENCE="exact Beads card reference plus nested ten-field CardMigrationEvidence PASS and nine-field final-mode FullCatalogGateEvidence emitted and re-verified by executing the complete current final catalog at HEAD"/>
+      <rewrite-hold FROM="needs-rewrite" TO="needs-rewrite" EVIDENCE="non-empty correctionPath"/>
+      <immutable-source-fields>recordType, candidateId, inputOrder, centralAction, starterBehavior, expectedResult, sourceAuditRevision, sourceAuditDecision, decisionEvidence, duplicateTarget, correctionPath, targetTaskId, targetCollection</immutable-source-fields><navigation-migration SCHEMA="2">Only targetCollection migrated from four retired broad paths to the frozen twenty-three-topic registry; all other immutable source-audit values remain unchanged.</navigation-migration>
+    </publication-decision-model>
+    <publication-gate-modes>
+      <wave LEGACY-CARDS="21" ARMY-PREFIX-COUNTS="0,10,20,30,40,50,60,70,80,90,100,110,118">Task 3 cumulative catalog; every current task has exactly one thematic membership; every task-NNNN has canonical N минут duration, technology-mapped editor, exact ordinal-link-substantive-sentence-duration thematic row without extra text or fields, accepted publication state, and current receipt; simulations and final thematic counts are not required.</wave>
+      <final LEGACY-CARDS="0" ARMY-CARDS="118" SIMULATIONS="30">Cutover and final-audit certificate; task-0001..task-0118, controlled 92/8/16/2 thematic counts, and all simulation constraints are required.</final>
+    </publication-gate-modes>
+    <navigation-registry>
+      <master-javascript PATH="collections/javascript/README.md" TOPICS="13" TASKS="92"/>
+      <master-typescript PATH="collections/typescript/README.md" TOPICS="4" TASKS="8"/>
+      <master-react PATH="collections/react/README.md" TOPICS="5" TASKS="16"/>
+      <master-html-css PATH="collections/html-css/README.md" TOPICS="1" TASKS="2"/>
+      <topic-javascript-event-loop PATH="collections/javascript/event-loop/README.md" MASTER="collections/javascript/README.md" EXPECTED="7" TASKS="task-0015 task-0016 task-0018 task-0019 task-0020 task-0023 task-0025"/>
+      <topic-javascript-promises-and-async PATH="collections/javascript/promises-and-async/README.md" MASTER="collections/javascript/README.md" EXPECTED="10" TASKS="task-0017 task-0021 task-0022 task-0024 task-0026 task-0027 task-0028 task-0029 task-0051 task-0059"/>
+      <topic-javascript-prototypes-inheritance-and-this PATH="collections/javascript/prototypes-inheritance-and-this/README.md" MASTER="collections/javascript/README.md" EXPECTED="6" TASKS="task-0030 task-0031 task-0032 task-0034 task-0035 task-0036"/>
+      <topic-javascript-functions-closures-and-scope PATH="collections/javascript/functions-closures-and-scope/README.md" MASTER="collections/javascript/README.md" EXPECTED="14" TASKS="task-0039 task-0047 task-0052 task-0060 task-0061 task-0062 task-0065 task-0066 task-0068 task-0069 task-0070 task-0071 task-0072 task-0113"/>
+      <topic-javascript-objects-and-collections PATH="collections/javascript/objects-and-collections/README.md" MASTER="collections/javascript/README.md" EXPECTED="9" TASKS="task-0033 task-0040 task-0041 task-0042 task-0043 task-0044 task-0045 task-0050 task-0118"/>
+      <topic-javascript-dom-and-events PATH="collections/javascript/dom-and-events/README.md" MASTER="collections/javascript/README.md" EXPECTED="3" TASKS="task-0048 task-0058 task-0067"/>
+      <topic-javascript-dates-and-time-intervals PATH="collections/javascript/dates-and-time-intervals/README.md" MASTER="collections/javascript/README.md" EXPECTED="3" TASKS="task-0037 task-0053 task-0054"/>
+      <topic-javascript-arrays-search-and-sorting PATH="collections/javascript/arrays-search-and-sorting/README.md" MASTER="collections/javascript/README.md" EXPECTED="9" TASKS="task-0046 task-0082 task-0083 task-0084 task-0087 task-0088 task-0090 task-0095 task-0100"/>
+      <topic-javascript-strings PATH="collections/javascript/strings/README.md" MASTER="collections/javascript/README.md" EXPECTED="5" TASKS="task-0085 task-0086 task-0097 task-0098 task-0099"/>
+      <topic-javascript-trees-and-recursion PATH="collections/javascript/trees-and-recursion/README.md" MASTER="collections/javascript/README.md" EXPECTED="11" TASKS="task-0073 task-0074 task-0075 task-0076 task-0077 task-0078 task-0079 task-0080 task-0081 task-0091 task-0096"/>
+      <topic-javascript-graphs PATH="collections/javascript/graphs/README.md" MASTER="collections/javascript/README.md" EXPECTED="2" TASKS="task-0055 task-0056"/>
+      <topic-javascript-linked-lists-and-stack PATH="collections/javascript/linked-lists-and-stack/README.md" MASTER="collections/javascript/README.md" EXPECTED="5" TASKS="task-0064 task-0089 task-0092 task-0093 task-0094"/>
+      <topic-javascript-numbers-types-and-operators PATH="collections/javascript/numbers-types-and-operators/README.md" MASTER="collections/javascript/README.md" EXPECTED="8" TASKS="task-0109 task-0110 task-0111 task-0112 task-0114 task-0115 task-0116 task-0117"/>
+      <topic-typescript-generics-and-object-keys PATH="collections/typescript/generics-and-object-keys/README.md" MASTER="collections/typescript/README.md" EXPECTED="3" TASKS="task-0038 task-0102 task-0106"/>
+      <topic-typescript-mapped-and-conditional-types PATH="collections/typescript/mapped-and-conditional-types/README.md" MASTER="collections/typescript/README.md" EXPECTED="3" TASKS="task-0101 task-0103 task-0105"/>
+      <topic-typescript-recursive-types PATH="collections/typescript/recursive-types/README.md" MASTER="collections/typescript/README.md" EXPECTED="1" TASKS="task-0104"/>
+      <topic-typescript-integration-typing PATH="collections/typescript/integration-typing/README.md" MASTER="collections/typescript/README.md" EXPECTED="1" TASKS="task-0057"/>
+      <topic-react-state-and-event-handlers PATH="collections/react/state-and-event-handlers/README.md" MASTER="collections/react/README.md" EXPECTED="2" TASKS="task-0009 task-0063"/>
+      <topic-react-effects-timers-and-cleanup PATH="collections/react/effects-timers-and-cleanup/README.md" MASTER="collections/react/README.md" EXPECTED="3" TASKS="task-0001 task-0005 task-0014"/>
+      <topic-react-rendering-and-memoization PATH="collections/react/rendering-and-memoization/README.md" MASTER="collections/react/README.md" EXPECTED="3" TASKS="task-0002 task-0003 task-0007"/>
+      <topic-react-async-data-and-ui-states PATH="collections/react/async-data-and-ui-states/README.md" MASTER="collections/react/README.md" EXPECTED="4" TASKS="task-0004 task-0006 task-0008 task-0010"/>
+      <topic-react-component-composition-and-state-management PATH="collections/react/component-composition-and-state-management/README.md" MASTER="collections/react/README.md" EXPECTED="4" TASKS="task-0011 task-0012 task-0013 task-0049"/>
+      <topic-html-css-cascade-and-selectors PATH="collections/html-css/cascade-and-selectors/README.md" MASTER="collections/html-css/README.md" EXPECTED="2" TASKS="task-0107 task-0108"/>
+    </navigation-registry>
+    <candidate-task-mapping>
+      <candidate-001 BEAD="frontend-livecoding-tasks-army-97-candidate-001" TARGET="task-0001" THEMATIC="collections/react/effects-timers-and-cleanup/README.md"/>
+      <candidate-002 BEAD="frontend-livecoding-tasks-army-97-candidate-002" TARGET="task-0002" THEMATIC="collections/react/rendering-and-memoization/README.md"/>
+      <candidate-003 BEAD="frontend-livecoding-tasks-army-97-candidate-003" TARGET="task-0003" THEMATIC="collections/react/rendering-and-memoization/README.md"/>
+      <candidate-004 BEAD="frontend-livecoding-tasks-army-97-candidate-004" TARGET="task-0004" THEMATIC="collections/react/async-data-and-ui-states/README.md"/>
+      <candidate-005 BEAD="frontend-livecoding-tasks-army-97-candidate-005" TARGET="task-0005" THEMATIC="collections/react/effects-timers-and-cleanup/README.md"/>
+      <candidate-006 BEAD="frontend-livecoding-tasks-army-97-candidate-006" TARGET="task-0006" THEMATIC="collections/react/async-data-and-ui-states/README.md"/>
+      <candidate-007 BEAD="frontend-livecoding-tasks-army-97-candidate-007" TARGET="task-0007" THEMATIC="collections/react/rendering-and-memoization/README.md"/>
+      <candidate-008 BEAD="frontend-livecoding-tasks-army-97-candidate-008" TARGET="task-0008" THEMATIC="collections/react/async-data-and-ui-states/README.md"/>
+      <candidate-009 BEAD="frontend-livecoding-tasks-army-97-candidate-009" TARGET="task-0009" THEMATIC="collections/react/state-and-event-handlers/README.md"/>
+      <candidate-010 BEAD="frontend-livecoding-tasks-army-97-candidate-010" TARGET="task-0010" THEMATIC="collections/react/async-data-and-ui-states/README.md"/>
+      <candidate-011 BEAD="frontend-livecoding-tasks-army-97-candidate-011" TARGET="task-0011" THEMATIC="collections/react/component-composition-and-state-management/README.md"/>
+      <candidate-012 BEAD="frontend-livecoding-tasks-army-97-candidate-012" TARGET="task-0012" THEMATIC="collections/react/component-composition-and-state-management/README.md"/>
+      <candidate-013 BEAD="frontend-livecoding-tasks-army-97-candidate-013" TARGET="task-0013" THEMATIC="collections/react/component-composition-and-state-management/README.md"/>
+      <candidate-014 BEAD="frontend-livecoding-tasks-army-97-candidate-014" TARGET="task-0014" THEMATIC="collections/react/effects-timers-and-cleanup/README.md"/>
+      <candidate-015 BEAD="frontend-livecoding-tasks-army-97-candidate-015" TARGET="task-0015" THEMATIC="collections/javascript/event-loop/README.md"/>
+      <candidate-016 BEAD="frontend-livecoding-tasks-army-97-candidate-016" TARGET="task-0016" THEMATIC="collections/javascript/event-loop/README.md"/>
+      <candidate-017 BEAD="frontend-livecoding-tasks-army-97-candidate-017" TARGET="task-0017" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-018 BEAD="frontend-livecoding-tasks-army-97-candidate-018" TARGET="task-0018" THEMATIC="collections/javascript/event-loop/README.md"/>
+      <candidate-019 BEAD="frontend-livecoding-tasks-army-97-candidate-019" TARGET="task-0019" THEMATIC="collections/javascript/event-loop/README.md"/>
+      <candidate-020 BEAD="frontend-livecoding-tasks-army-97-candidate-020" TARGET="task-0020" THEMATIC="collections/javascript/event-loop/README.md"/>
+      <candidate-021 BEAD="frontend-livecoding-tasks-army-97-candidate-021" TARGET="task-0021" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-022 BEAD="frontend-livecoding-tasks-army-97-candidate-022" TARGET="task-0022" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-023 BEAD="frontend-livecoding-tasks-army-97-candidate-023" TARGET="task-0023" THEMATIC="collections/javascript/event-loop/README.md"/>
+      <candidate-024 BEAD="frontend-livecoding-tasks-army-97-candidate-024" TARGET="task-0024" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-025 BEAD="frontend-livecoding-tasks-army-97-candidate-025" TARGET="task-0025" THEMATIC="collections/javascript/event-loop/README.md"/>
+      <candidate-026 BEAD="frontend-livecoding-tasks-army-97-candidate-026" TARGET="task-0026" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-027 BEAD="frontend-livecoding-tasks-army-97-candidate-027" TARGET="task-0027" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-028 BEAD="frontend-livecoding-tasks-army-97-candidate-028" TARGET="task-0028" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-029 BEAD="frontend-livecoding-tasks-army-97-candidate-029" TARGET="task-0029" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-030 BEAD="frontend-livecoding-tasks-army-97-candidate-030" TARGET="task-0030" THEMATIC="collections/javascript/prototypes-inheritance-and-this/README.md"/>
+      <candidate-031 BEAD="frontend-livecoding-tasks-army-97-candidate-031" TARGET="task-0031" THEMATIC="collections/javascript/prototypes-inheritance-and-this/README.md"/>
+      <candidate-032 BEAD="frontend-livecoding-tasks-army-97-candidate-032" TARGET="task-0032" THEMATIC="collections/javascript/prototypes-inheritance-and-this/README.md"/>
+      <candidate-033 BEAD="frontend-livecoding-tasks-army-97-candidate-033" TARGET="task-0033" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-034 BEAD="frontend-livecoding-tasks-army-97-candidate-034" TARGET="task-0034" THEMATIC="collections/javascript/prototypes-inheritance-and-this/README.md"/>
+      <candidate-035 BEAD="frontend-livecoding-tasks-army-97-candidate-035" TARGET="task-0035" THEMATIC="collections/javascript/prototypes-inheritance-and-this/README.md"/>
+      <candidate-036 BEAD="frontend-livecoding-tasks-army-97-candidate-036" TARGET="task-0036" THEMATIC="collections/javascript/prototypes-inheritance-and-this/README.md"/>
+      <candidate-037 BEAD="frontend-livecoding-tasks-army-97-candidate-037" TARGET="task-0037" THEMATIC="collections/javascript/dates-and-time-intervals/README.md"/>
+      <candidate-038 BEAD="frontend-livecoding-tasks-army-97-candidate-038" TARGET="task-0038" THEMATIC="collections/typescript/generics-and-object-keys/README.md"/>
+      <candidate-039 BEAD="frontend-livecoding-tasks-army-97-candidate-039" TARGET="task-0039" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-040 BEAD="frontend-livecoding-tasks-army-97-candidate-040" TARGET="task-0040" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-041 BEAD="frontend-livecoding-tasks-army-97-candidate-041" TARGET="task-0041" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-042 BEAD="frontend-livecoding-tasks-army-97-candidate-042" TARGET="task-0042" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-043 BEAD="frontend-livecoding-tasks-army-97-candidate-043" TARGET="task-0043" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-044 BEAD="frontend-livecoding-tasks-army-97-candidate-044" TARGET="task-0044" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-045 BEAD="frontend-livecoding-tasks-army-97-candidate-045" TARGET="task-0045" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-046 BEAD="frontend-livecoding-tasks-army-97-candidate-046" TARGET="task-0046" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-047 BEAD="frontend-livecoding-tasks-army-97-candidate-047" TARGET="task-0047" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-048 BEAD="frontend-livecoding-tasks-army-97-candidate-048" TARGET="task-0048" THEMATIC="collections/javascript/dom-and-events/README.md"/>
+      <candidate-049 BEAD="frontend-livecoding-tasks-army-97-candidate-049" TARGET="task-0049" THEMATIC="collections/react/component-composition-and-state-management/README.md"/>
+      <candidate-050 BEAD="frontend-livecoding-tasks-army-97-candidate-050" TARGET="task-0050" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+      <candidate-051 BEAD="frontend-livecoding-tasks-army-97-candidate-051" TARGET="task-0051" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-052 BEAD="frontend-livecoding-tasks-army-97-candidate-052" TARGET="task-0052" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-053 BEAD="frontend-livecoding-tasks-army-97-candidate-053" TARGET="task-0053" THEMATIC="collections/javascript/dates-and-time-intervals/README.md"/>
+      <candidate-054 BEAD="frontend-livecoding-tasks-army-97-candidate-054" TARGET="task-0054" THEMATIC="collections/javascript/dates-and-time-intervals/README.md"/>
+      <candidate-055 BEAD="frontend-livecoding-tasks-army-97-candidate-055" TARGET="task-0055" THEMATIC="collections/javascript/graphs/README.md"/>
+      <candidate-056 BEAD="frontend-livecoding-tasks-army-97-candidate-056" TARGET="task-0056" THEMATIC="collections/javascript/graphs/README.md"/>
+      <candidate-057 BEAD="frontend-livecoding-tasks-army-97-candidate-057" TARGET="task-0057" THEMATIC="collections/typescript/integration-typing/README.md"/>
+      <candidate-058 BEAD="frontend-livecoding-tasks-army-97-candidate-058" TARGET="task-0058" THEMATIC="collections/javascript/dom-and-events/README.md"/>
+      <candidate-059 BEAD="frontend-livecoding-tasks-army-97-candidate-059" TARGET="task-0059" THEMATIC="collections/javascript/promises-and-async/README.md"/>
+      <candidate-060 BEAD="frontend-livecoding-tasks-army-97-candidate-060" TARGET="task-0060" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-061 BEAD="frontend-livecoding-tasks-army-97-candidate-061" TARGET="task-0061" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-062 BEAD="frontend-livecoding-tasks-army-97-candidate-062" TARGET="task-0062" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-063 BEAD="frontend-livecoding-tasks-army-97-candidate-063" TARGET="task-0063" THEMATIC="collections/react/state-and-event-handlers/README.md"/>
+      <candidate-064 BEAD="frontend-livecoding-tasks-army-97-candidate-064" TARGET="task-0064" THEMATIC="collections/javascript/linked-lists-and-stack/README.md"/>
+      <candidate-065 BEAD="frontend-livecoding-tasks-army-97-candidate-065" TARGET="task-0065" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-066 BEAD="frontend-livecoding-tasks-army-97-candidate-066" TARGET="task-0066" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-067 BEAD="frontend-livecoding-tasks-army-97-candidate-067" TARGET="task-0067" THEMATIC="collections/javascript/dom-and-events/README.md"/>
+      <candidate-068 BEAD="frontend-livecoding-tasks-army-97-candidate-068" TARGET="task-0068" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-069 BEAD="frontend-livecoding-tasks-army-97-candidate-069" TARGET="task-0069" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-070 BEAD="frontend-livecoding-tasks-army-97-candidate-070" TARGET="task-0070" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-071 BEAD="frontend-livecoding-tasks-army-97-candidate-071" TARGET="task-0071" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-072 BEAD="frontend-livecoding-tasks-army-97-candidate-072" TARGET="task-0072" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-073 BEAD="frontend-livecoding-tasks-army-97-candidate-073" TARGET="task-0073" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-074 BEAD="frontend-livecoding-tasks-army-97-candidate-074" TARGET="task-0074" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-075 BEAD="frontend-livecoding-tasks-army-97-candidate-075" TARGET="task-0075" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-076 BEAD="frontend-livecoding-tasks-army-97-candidate-076" TARGET="task-0076" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-077 BEAD="frontend-livecoding-tasks-army-97-candidate-077" TARGET="task-0077" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-078 BEAD="frontend-livecoding-tasks-army-97-candidate-078" TARGET="task-0078" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-079 BEAD="frontend-livecoding-tasks-army-97-candidate-079" TARGET="task-0079" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-080 BEAD="frontend-livecoding-tasks-army-97-candidate-080" TARGET="task-0080" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-081 BEAD="frontend-livecoding-tasks-army-97-candidate-081" TARGET="task-0081" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-082 BEAD="frontend-livecoding-tasks-army-97-candidate-082" TARGET="task-0082" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-083 BEAD="frontend-livecoding-tasks-army-97-candidate-083" TARGET="task-0083" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-084 BEAD="frontend-livecoding-tasks-army-97-candidate-084" TARGET="task-0084" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-085 BEAD="frontend-livecoding-tasks-army-97-candidate-085" TARGET="task-0085" THEMATIC="collections/javascript/strings/README.md"/>
+      <candidate-086 BEAD="frontend-livecoding-tasks-army-97-candidate-086" TARGET="task-0086" THEMATIC="collections/javascript/strings/README.md"/>
+      <candidate-087 BEAD="frontend-livecoding-tasks-army-97-candidate-087" TARGET="task-0087" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-088 BEAD="frontend-livecoding-tasks-army-97-candidate-088" TARGET="task-0088" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-089 BEAD="frontend-livecoding-tasks-army-97-candidate-089" TARGET="task-0089" THEMATIC="collections/javascript/linked-lists-and-stack/README.md"/>
+      <candidate-090 BEAD="frontend-livecoding-tasks-army-97-candidate-090" TARGET="task-0090" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-091 BEAD="frontend-livecoding-tasks-army-97-candidate-091" TARGET="task-0091" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-092 BEAD="frontend-livecoding-tasks-army-97-candidate-092" TARGET="task-0092" THEMATIC="collections/javascript/linked-lists-and-stack/README.md"/>
+      <candidate-093 BEAD="frontend-livecoding-tasks-army-97-candidate-093" TARGET="task-0093" THEMATIC="collections/javascript/linked-lists-and-stack/README.md"/>
+      <candidate-094 BEAD="frontend-livecoding-tasks-army-97-candidate-094" TARGET="task-0094" THEMATIC="collections/javascript/linked-lists-and-stack/README.md"/>
+      <candidate-095 BEAD="frontend-livecoding-tasks-army-97-candidate-095" TARGET="task-0095" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-096 BEAD="frontend-livecoding-tasks-army-97-candidate-096" TARGET="task-0096" THEMATIC="collections/javascript/trees-and-recursion/README.md"/>
+      <candidate-097 BEAD="frontend-livecoding-tasks-army-97-candidate-097" TARGET="task-0097" THEMATIC="collections/javascript/strings/README.md"/>
+      <candidate-098 BEAD="frontend-livecoding-tasks-army-97-candidate-098" TARGET="task-0098" THEMATIC="collections/javascript/strings/README.md"/>
+      <candidate-099 BEAD="frontend-livecoding-tasks-army-97-candidate-099" TARGET="task-0099" THEMATIC="collections/javascript/strings/README.md"/>
+      <candidate-100 BEAD="frontend-livecoding-tasks-army-97-candidate-100" TARGET="task-0100" THEMATIC="collections/javascript/arrays-search-and-sorting/README.md"/>
+      <candidate-101 BEAD="frontend-livecoding-tasks-army-97-candidate-101" TARGET="task-0101" THEMATIC="collections/typescript/mapped-and-conditional-types/README.md"/>
+      <candidate-102 BEAD="frontend-livecoding-tasks-army-97-candidate-102" TARGET="task-0102" THEMATIC="collections/typescript/generics-and-object-keys/README.md"/>
+      <candidate-103 BEAD="frontend-livecoding-tasks-army-97-candidate-103" TARGET="task-0103" THEMATIC="collections/typescript/mapped-and-conditional-types/README.md"/>
+      <candidate-104 BEAD="frontend-livecoding-tasks-army-97-candidate-104" TARGET="task-0104" THEMATIC="collections/typescript/recursive-types/README.md"/>
+      <candidate-105 BEAD="frontend-livecoding-tasks-army-97-candidate-105" TARGET="task-0105" THEMATIC="collections/typescript/mapped-and-conditional-types/README.md"/>
+      <candidate-106 BEAD="frontend-livecoding-tasks-army-97-candidate-106" TARGET="task-0106" THEMATIC="collections/typescript/generics-and-object-keys/README.md"/>
+      <candidate-107 BEAD="frontend-livecoding-tasks-army-97-candidate-107" TARGET="task-0107" THEMATIC="collections/html-css/cascade-and-selectors/README.md"/>
+      <candidate-108 BEAD="frontend-livecoding-tasks-army-97-candidate-108" TARGET="task-0108" THEMATIC="collections/html-css/cascade-and-selectors/README.md"/>
+      <candidate-109 BEAD="frontend-livecoding-tasks-army-97-candidate-109" TARGET="task-0109" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-110 BEAD="frontend-livecoding-tasks-army-97-candidate-110" TARGET="task-0110" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-111 BEAD="frontend-livecoding-tasks-army-97-candidate-111" TARGET="task-0111" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-112 BEAD="frontend-livecoding-tasks-army-97-candidate-112" TARGET="task-0112" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-113 BEAD="frontend-livecoding-tasks-army-97-candidate-113" TARGET="task-0113" THEMATIC="collections/javascript/functions-closures-and-scope/README.md"/>
+      <candidate-114 BEAD="frontend-livecoding-tasks-army-97-candidate-114" TARGET="task-0114" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-115 BEAD="frontend-livecoding-tasks-army-97-candidate-115" TARGET="task-0115" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-116 BEAD="frontend-livecoding-tasks-army-97-candidate-116" TARGET="task-0116" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-117 BEAD="frontend-livecoding-tasks-army-97-candidate-117" TARGET="task-0117" THEMATIC="collections/javascript/numbers-types-and-operators/README.md"/>
+      <candidate-118 BEAD="frontend-livecoding-tasks-army-97-candidate-118" TARGET="task-0118" THEMATIC="collections/javascript/objects-and-collections/README.md"/>
+    </candidate-task-mapping>
+    <wave-registry>
+      <wave-001 BEAD="frontend-livecoding-tasks-army-97-wave-001" FIRST="task-0001" LAST="task-0010" SIZE="10"/>
+      <wave-002 BEAD="frontend-livecoding-tasks-army-97-wave-002" FIRST="task-0011" LAST="task-0020" SIZE="10"/>
+      <wave-003 BEAD="frontend-livecoding-tasks-army-97-wave-003" FIRST="task-0021" LAST="task-0030" SIZE="10"/>
+      <wave-004 BEAD="frontend-livecoding-tasks-army-97-wave-004" FIRST="task-0031" LAST="task-0040" SIZE="10"/>
+      <wave-005 BEAD="frontend-livecoding-tasks-army-97-wave-005" FIRST="task-0041" LAST="task-0050" SIZE="10"/>
+      <wave-006 BEAD="frontend-livecoding-tasks-army-97-wave-006" FIRST="task-0051" LAST="task-0060" SIZE="10"/>
+      <wave-007 BEAD="frontend-livecoding-tasks-army-97-wave-007" FIRST="task-0061" LAST="task-0070" SIZE="10"/>
+      <wave-008 BEAD="frontend-livecoding-tasks-army-97-wave-008" FIRST="task-0071" LAST="task-0080" SIZE="10"/>
+      <wave-009 BEAD="frontend-livecoding-tasks-army-97-wave-009" FIRST="task-0081" LAST="task-0090" SIZE="10"/>
+      <wave-010 BEAD="frontend-livecoding-tasks-army-97-wave-010" FIRST="task-0091" LAST="task-0100" SIZE="10"/>
+      <wave-011 BEAD="frontend-livecoding-tasks-army-97-wave-011" FIRST="task-0101" LAST="task-0110" SIZE="10"/>
+      <wave-012 BEAD="frontend-livecoding-tasks-army-97-wave-012" FIRST="task-0111" LAST="task-0118" SIZE="8"/>
+    </wave-registry>
+  </Army97CandidateRegistry>
+  <Phases><Phase-ARMY97-GOVERNANCE STATUS="complete">Replace legacy rules and validate the deterministic contract.</Phase-ARMY97-GOVERNANCE><Phase-ARMY97-AUDIT STATUS="complete">Freeze candidates, exact duplicates, immutable IDs, thematic registry, and serialized waves.</Phase-ARMY97-AUDIT><Phase-ARMY97-WAVES STATUS="complete">Published accepted 8-10-card waves through task-0118.</Phase-ARMY97-WAVES><Phase-ARMY97-CUTOVER STATUS="complete">Replace legacy catalog with the complete immutable card projection.</Phase-ARMY97-CUTOVER><Phase-ARMY97-SIMULATIONS STATUS="complete">Published 30 static simulations with duration, composition, recurrence, and realism evidence.</Phase-ARMY97-SIMULATIONS><Phase-ARMY97-FINAL-AUDIT STATUS="planned">Run final local audit.</Phase-ARMY97-FINAL-AUDIT></Phases>
 </DevelopmentPlan>

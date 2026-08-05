@@ -38,9 +38,35 @@ Choose JavaScript, TypeScript, or React examples according to the learning goal 
 
 Markdown-only tasks do not require automated tests. Review their structure, links, code fences, terminology, and example consistency manually. When a task includes a runnable solution or bug fix, add tests using `*.test.ts` or `*.test.tsx` and describe behavior rather than implementation details. In frontend tests, prefer `data-testid` selectors when identifying elements. Do not test CSS or visual styling with automated tests; verify it manually or with browser-based visual checks. Cover the primary interaction, an edge case, and failure handling when relevant. Document any task-specific manual verification steps in its Markdown file or README.
 
+## Task Publication Contract
+
+- Publish an accepted card only at `tasks/task-XXXX/README.md`. `task-XXXX` is an immutable hidden technical ID: never reuse or renumber it, and never show it in the title, metadata, or collection row.
+- Every `ConciseStudentTaskCard` has this exact order: title; `Песочница для выполнения — [Название](URL).`; `## Условие`; complete minimal starter code; exactly three closed progressive hints; closed `Решение`; closed five-field `О задаче`.
+- Every requirement, including a genuine runtime assumption, exists only in leading comments of the first editable starter file. Do not put requirements in prose under `Условие`, editor instructions, hints, metadata, collections, or simulations.
+- Use exactly three closed hints with summaries `Подсказка 1 — куда смотреть`, `Подсказка 2 — с чего начать`, and `Подсказка 3 — почти решение`; `Решение` and `О задаче` are separate `<details>` without `open`.
+- `О задаче` contains exactly `Технология`, `Подборка`, `Формат`, `Сложность`, and `Примерное время`; write the last value only as `N минут`, for example `10 минут`. Keep source repositories, authors, migration/import language, and provenance links out of every student-facing card, collection, root page, and simulation.
+- Match technology to the exact sandbox profile: Programiz at `https://www.programiz.com/javascript/online-compiler/` for console JavaScript without browser APIs or ESM; CodePen at `https://pen.new` for browser JavaScript, DOM, HTML/CSS, or ESM; TypeScript Playground at `https://www.typescriptlang.org/play/` for pure TypeScript; React TypeScript at `https://vite.new/react-ts` for React/TypeScript.
+- A task belongs to exactly one thematic collection. Its row uses only `N. [Exact title](../../../tasks/task-XXXX/README.md) — Substantive sentence. — N минут`: no prefix, suffix, or extra field is allowed; the linked title and canonical duration match the card, and the description contains substantive words with exactly one terminal sentence mark. A card with format `Приближённая к реальной работе` also belongs exactly once to `collections/real-work/README.md`, regardless of technology; every focused card appears there zero times. The root keeps its four current second-level sections and links one interview index, not individual simulations.
+- Publish only candidates with an `accepted` Beads decision. `Army97CandidateRecord` and `CardMigrationEvidence` are durable internal evidence; they are never student-facing content.
+- Interview practice is exactly thirty static mixed pages at `collections/interviews/simulation-001/README.md` through `simulation-030/README.md`. Each has 30–120 minutes, at least two tasks from at least two thematic collections, recorded realism evidence, and no task repeated within a sliding three-simulation window.
+- Run the complete local ARMY-97 command in `docs/task-validation-policy.md` after every `tasks/` or `collections/` change. It is the publication gate; do not substitute external editors, browsers, GitHub rendering, CSS tests, or a partial scan.
+- Stop when a starter is incomplete, a requirement is not solely in starter comments, metadata or membership drifts, a link fails, simulation composition/recurrence is invalid, or deterministic validation fails.
+
 ## Commit & Pull Request Guidelines
 
 Agents are authorized to create branches, commits, pushes, and pull requests automatically. Never commit or push directly to `main`. Before making project changes, create or reuse a `feature/*` branch. After a coherent change passes its relevant verification gates, create a focused commit, push the active `feature/*` branch, and open a pull request targeting `main` without asking for additional permission. An explicit user instruction not to branch, commit, push, or create a pull request overrides this default for that task.
+
+### Worktree Isolation
+
+Before making project changes, work from an isolated Git worktree based on the current remote default branch:
+
+1. Detect whether the current checkout is already a linked worktree. Do not create a nested worktree.
+2. Run `git fetch origin` and use the resulting `origin/main` as the base; do not assume the local `main` is current.
+3. Prefer a native worktree facility when the agent environment provides one. Otherwise use `git worktree add`.
+4. For a Beads story, create or reuse `feature/<story-id>` and keep every child issue for that story in the same worktree and branch.
+5. Prefer `.worktrees/` for a project-local manual worktree. The directory must remain ignored by Git.
+6. Verify a clean project-appropriate baseline before editing. If the baseline fails, report the evidence and get direction before proceeding.
+7. Before final delivery, fetch `origin` again and report branch divergence. Do not force-push, rewrite published history, or integrate a conflicting `main` without the required explicit authority.
 
 Write commit messages in English and follow Conventional Commits 1.0.0:
 
@@ -297,7 +323,7 @@ bd prime                # Refresh Beads context
 
 ### Rules
 
-- Use `bd` for all task tracking; do not create markdown TODO lists.
+- Use `bd` for all task tracking; do not create markdown task lists.
 - Run `bd prime` when Beads context is missing or stale. Codex 0.129.0+ can load Beads context automatically through native hooks; use `/hooks` to inspect or toggle them.
 - Keep persistent project memory in Beads via `bd remember`; do not create ad hoc memory files.
 
